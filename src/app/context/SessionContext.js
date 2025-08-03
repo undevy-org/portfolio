@@ -21,7 +21,7 @@ const domainConfigs = {
     telegram: 'https://t.me/undevy',
   },
   'foxous.design': {
-    brandingToken: '$foxous_portfolio',
+    brandingToken: '$foxous_design',
     telegram: 'https://t.me/foxous',
   },
 };
@@ -29,7 +29,7 @@ const domainConfigs = {
 export function SessionProvider({ children }) {
   // ========== DOMAIN ==========
   const [currentDomain, setCurrentDomain] = useState(null);
-  const [domainData, setDomainData] = useState(null); // like branding, links
+  const [domainData, setDomainData] = useState(null); 
 
   // ========== SESSION STATE ==========
   const [sessionData, setSessionData] = useState(null);
@@ -67,6 +67,11 @@ export function SessionProvider({ children }) {
         setDomainData(domainConfigs[hostname]);
         addLog(`DOMAIN DETECTED: ${hostname}`);
       } else {
+        // Default config for unknown domains
+        setDomainData({
+          brandingToken: '$portfolio',
+          telegram: 'https://t.me/undevy',
+        });
         addLog(`UNKNOWN DOMAIN: ${hostname}`);
       }
     }

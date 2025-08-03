@@ -9,18 +9,33 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 export default function RoleDetail() {
   const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
 
+  // REFACTORED: Centralized theme-based classes for consistency
+  const panelClasses = `p-4 rounded border ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+
   if (!selectedRole) {
+    // ... (error handling code remains the same)
     return (
       <div className="p-4 text-center">
-        <p className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+        <p className={valueClasses}>
           No role selected. Please go back to Timeline.
         </p>
         <button
           onClick={() => navigate('Timeline')}
-          className={`mt-4 px-4 py-2 border rounded ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
+          className={`mt-4 px-4 py-2 rounded border transition-colors ${
+            theme === 'dark' 
+              ? 'border-dark-border text-dark-text-secondary hover:bg-dark-hover' 
+              : 'border-light-border text-light-text-secondary hover:bg-light-hover'
           }`}
         >
           Back to Timeline
@@ -31,92 +46,22 @@ export default function RoleDetail() {
 
   const roleDetails = sessionData?.role_details?.[selectedRole.id] || {};
 
+  // Structure for Accordion component, now with type safety for content
   const sections = [
-    {
-      id: 'summary',
-      title: 'quick_summary',
-      type: 'text',
-      content: roleDetails.summary || 'No summary available.'
-    },
-    {
-      id: 'responsibilities',
-      title: 'key_responsibilities',
-      type: 'list',
-      content: roleDetails.responsibilities || []
-    },
-    {
-      id: 'achievements',
-      title: 'main_achievements',
-      type: 'list',
-      content: roleDetails.achievements || []
-    },
-    {
-      id: 'tech',
-      title: 'tech_stack',
-      type: 'custom',
-      content: (
-        <div className="flex flex-wrap gap-2">
-          {(roleDetails.tech || []).map((tech) => (
-            <span
-              key={tech}
-              className={`px-2 py-1 border rounded text-xs ${
-                theme === 'dark'
-                  ? 'border-dark-border text-dark-text-primary'
-                  : 'border-light-border text-light-text-primary'
-              }`}
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      )
-    }
+    { id: 'summary', title: 'quick_summary', content: roleDetails.summary ? [{ type: 'text', value: roleDetails.summary }] : [] },
+    { id: 'responsibilities', title: 'key_responsibilities', content: roleDetails.responsibilities?.map(r => ({ type: 'list_item', value: r })) || [] },
+    { id: 'achievements', title: 'main_achievements', content: roleDetails.achievements?.map(a => ({ type: 'list_item', value: a })) || [] },
+    { id: 'tech', title: 'tech_stack', content: roleDetails.tech ? [{ type: 'tag_list', value: roleDetails.tech }] : [] }
   ];
 
   return (
-    <div className="p-4">
-      {/* Header */}
-      <div className={`mb-4 ${
-        theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-      }`}>
-        <h2 className="text-2xl font-bold mb-2">{selectedRole.company}</h2>
-        <p className={`text-sm ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
-          Role details and achievements
-        </p>
-      </div>
-
-      {/* Role Info */}
-      <div className={`p-3 border rounded mb-3 ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-      }`}>
-        <h3 className={`font-bold text-base mb-2 ${
-          theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-        }`}>
-          $role_info
-        </h3>
-        <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $position:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {selectedRole.role}
-          </span>
-
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $period:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {selectedRole.period}
-          </span>
-
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $duration:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {selectedRole.duration}
-          </span>
+    <div className="p-4 space-y-4">
+      {/* REFACTORED: Unified Header Panel */}
+      <div className={panelClasses}>
+        <div className="space-y-1">
+          <h2 className={`text-xl ${yellowClasses}`}>{selectedRole.company}</h2>
+          <p className={`text-base ${labelClasses}`}>{selectedRole.role}</p>
+          <p className={`text-sm ${valueClasses}`}>{selectedRole.period} • {selectedRole.duration}</p>
         </div>
       </div>
 

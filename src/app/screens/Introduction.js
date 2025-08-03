@@ -2,18 +2,32 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { ChevronRight, UserCheck, Mail } from 'lucide-react';
+import { UserCheck, Mail } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 export default function Introduction() {
   const { sessionData, theme, navigate, addLog } = useSession();
 
+  // REFACTORED: Centralized theme-based classes for consistency
+  const panelClasses = `p-4 rounded border mb-4 ${
+    theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+  }`;
+  const yellowClasses = `text-base ${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+
   const profile = sessionData?.profile || {};
-  const introText =
+    const introText =
     sessionData?.introduction?.[sessionData?.meta?.tone] ||
     sessionData?.introduction?.formal ||
     'Welcome to my portfolio!';
-
+    
   const handleNavigate = (screen, label) => {
     addLog(`NAVIGATE: ${label}`);
     navigate(screen);
@@ -22,13 +36,10 @@ export default function Introduction() {
 return (
   <div className="p-4 font-mono">
     {/* Profile Summary */}
-    <div className={`p-4 rounded border mb-4 ${
-      theme === 'dark'
-        ? 'border-green-700 bg-black text-green-300'
-        : 'border-gray-400 bg-white text-gray-800'
-    }`}>
-      <h3 className="mb-2 text-green-400">$profile_data</h3>
-      <div className="flex flex-wrap gap-x-2 text-sm">
+      <div className={panelClasses}>
+        <h3 className={`mb-2 ${yellowClasses}`}>$profile_data</h3>
+        {/* REFACTORED: Applied valueClasses to text */}
+        <div className={`flex flex-wrap gap-x-2 text-sm ${valueClasses}`}>
         <span>{profile.summary?.title}</span>
         <span className="opacity-50">|</span>
         <span>{profile.summary?.specialization}</span>
@@ -38,47 +49,40 @@ return (
     </div>
 
     {/* About Me */}
-    <div className={`p-4 rounded border mb-4 ${
-      theme === 'dark'
-        ? 'border-green-700 bg-black text-green-300'
-        : 'border-gray-400 bg-white text-gray-800'
-    }`}>
-      <h3 className="mb-2 text-green-400">$about_me</h3>
-      <p className="text-sm leading-relaxed opacity-90">{introText}</p>
+      <div className={panelClasses}>
+        {/* REFACTORED: Applied yellowClasses to header */}
+        <h3 className={`mb-2 ${yellowClasses}`}>$about_me</h3>
+        {/* REFACTORED: Applied valueClasses to text */}
+        <p className={`text-sm leading-relaxed ${valueClasses}`}>{introText}</p>
     </div>
 
     {/* Core Attributes */}
-    <div className={`p-4 rounded border mb-4 ${
-      theme === 'dark'
-        ? 'border-green-700 bg-black text-green-300'
-        : 'border-gray-400 bg-white text-gray-800'
-    }`}>
-      <h3 className="mb-2 text-green-400">$core_attributes</h3>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <div className={panelClasses}>
+        <h3 className={`mb-2 ${yellowClasses}`}>$core_attributes</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
         {profile.attributes?.map((attr, index) => (
           <div key={index}>
-            <span className="text-yellow-400">[√]</span> {attr}
+              {/* REFACTORED: Prefix is now a green label, text is a gray value */}
+              <span className={labelClasses}>[√] </span>
+              <span className={valueClasses}>{attr}</span>
           </div>
         ))}
       </div>
     </div>
 
     {/* Current Status */}
-    <div className={`p-4 rounded border mb-4 ${
-      theme === 'dark'
-        ? 'border-green-700 bg-black text-green-300'
-        : 'border-gray-400 bg-white text-gray-800'
-    }`}>
-      <h3 className="mb-2 text-green-400">$current_status</h3>
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-        <span className="text-green-400">$seeking:</span>
-        <span>{profile.status?.seeking}</span>
+      <div className={panelClasses}>
+        <h3 className={`mb-2 ${yellowClasses}`}>$current_status</h3>
+        {/* REFACTORED: Structure is now identical to AnalyticsPanel */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+          <span className={labelClasses}>$seeking:</span>
+          <span className={valueClasses}>{profile.status?.seeking}</span>
 
-        <span className="text-green-400">$location:</span>
-        <span>{profile.status?.location}</span>
+          <span className={labelClasses}>$location:</span>
+          <span className={valueClasses}>{profile.status?.location}</span>
 
-        <span className="text-green-400">$availability:</span>
-        <span>{profile.status?.availability}</span>
+          <span className={labelClasses}>$availability:</span>
+          <span className={valueClasses}>{profile.status?.availability}</span>
       </div>
     </div>
 

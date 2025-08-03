@@ -38,7 +38,9 @@ export async function GET(request) {
     console.warn(`Could not read server content file. Falling back to local test data. Reason: ${error.message}`);
     
     try {
-      const testFilePath = path.join(process.cwd(), 'src/app/test-content.json');
+      const testFilePath = process.env.USE_LOCAL_TEST_CONTENT
+      ? path.join(process.cwd(), 'test-content-local.json')
+      : path.join(process.cwd(), 'src/app/test-content.json');
       const testContent = await fs.readFile(testFilePath, 'utf-8');
       const testData = JSON.parse(testContent);
       
@@ -73,7 +75,8 @@ function mergeSessionData(userProfile, globalData) {
     case_details: globalData.case_details || {},
     side_projects: globalData.side_projects || [],
     public_speaking: globalData.public_speaking || [],
-    contact: globalData.contact || {}
+    contact: globalData.contact || {},
+    total_case_count: Object.keys(globalData.case_studies || {}).length,
   };
   
   return sessionData;

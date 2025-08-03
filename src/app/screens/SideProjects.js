@@ -7,162 +7,92 @@ import { ExternalLink } from 'lucide-react';
 export default function SideProjects() {
   const { sessionData, theme, addLog } = useSession();
   
+  // REFACTORED: Centralized theme-based classes
+  const panelClasses = `p-4 rounded border ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+
   const projects = sessionData?.side_projects || [];
   const speaking = sessionData?.public_speaking || [];
   
   const handleExternalLink = (label, url) => {
     addLog(`EXTERNAL LINK: ${label}`);
-    window.open(url, '_blank');
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColorClasses = (status) => {
+    // This color logic was approved, so we keep it.
     switch(status) {
       case 'COMPLETED':
-        return theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
+        return theme === 'dark' ? 'border-green-700 bg-green-900/30 text-green-400' : 'border-green-600 bg-green-100 text-green-700';
       case 'IN_PROGRESS':
-        return theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
+        return theme === 'dark' ? 'border-yellow-600 bg-yellow-900/30 text-yellow-400' : 'border-yellow-500 bg-yellow-100 text-yellow-600';
       case 'EXPERIMENTAL':
       default:
-        return theme === 'dark' ? 'text-gray-500' : 'text-gray-500';
+        return theme === 'dark' ? 'border-gray-600 bg-gray-900/30 text-gray-400' : 'border-gray-400 bg-gray-200 text-gray-500';
     }
   };
   
   return (
-    <div className="p-4">
-      <div className={`mb-4 ${
-        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-      }`}>
-        <h2 className="text-2xl mb-2">Side Projects & Initiatives</h2>
-        <p className={`text-sm ${
-          theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-        }`}>
-          Personal explorations and community contributions
-        </p>
-      </div>
-
-      <div className={`mb-4 ${
-        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-      }`}>
-        <h3 className={`text-base mb-3 ${
-          theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'
-        }`}>
-          $personal_projects
-        </h3>
-        
-        <div className="space-y-2">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className={`p-3 border rounded ${
-                theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-              }`}
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <div className={`text-sm ${
-                    theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'
-                  }`}>
-                    ${project.id}
-                  </div>
-                  <div className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                    {project.name}
-                  </div>
-                </div>
-                <span className={`text-xs px-2 py-1 border rounded ${
-                  theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-                } ${getStatusColor(project.status)}`}>
-                  {project.status}
-                </span>
+    <div className="p-4 space-y-4">
+      {/* MODIFIED: Each project is now its own panel, no master title */}
+      <div className="space-y-3">
+        {projects.map((project) => (
+          <div key={project.id} className={panelClasses}>
+            <div className="flex items-start justify-between mb-2">
+              <div className="space-y-1">
+                <h3 className={`text-base ${yellowClasses}`}>${project.id}</h3>
+                <p className={`text-base ${labelClasses}`}>{project.name}</p>
               </div>
-              
-              <p className={`text-xs mb-2 ${
-                theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-              }`}>
-                {project.desc}
-              </p>
-              
-              <div className="flex flex-wrap gap-1">
-                {project.tech?.map((tech) => (
-                  <span
-                    key={tech}
-                    className={`text-xs ${
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                    }`}
-                  >
-                    [{tech}]
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={`p-3 border rounded ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-      }`}>
-        <h3 className={`text-base mb-3 ${
-          theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'
-        }`}>
-          $public_speaking
-        </h3>
-        
-        <div className="space-y-2">
-          {speaking.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => handleExternalLink(item.title, item.url)}
-              className={`w-full text-left p-2 rounded transition-colors flex items-center justify-between ${
-                theme === 'dark'
-                  ? 'hover:bg-dark-hover text-gray-300'
-                  : 'hover:bg-light-hover text-gray-700'
-              }`}
-            >
-              <span className="text-sm">
-                <span className={theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'}>
-                  [→]
-                </span>
-                {' '}{item.title}
+              <span className={`text-xs px-2 py-0.5 border rounded-full ml-4 whitespace-nowrap ${getStatusColorClasses(project.status)}`}>
+                {project.status}
               </span>
-              <ExternalLink className={`w-3 h-3 ${
-                theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'
-              }`} />
-            </button>
-          ))}
-        </div>
+            </div>
+            
+            <p className={`text-sm mb-2 ${valueClasses}`}>{project.desc}</p>
+            
+            <div className={`flex flex-wrap gap-x-2 text-sm ${valueClasses}`}>
+              {project.tech?.map((tech) => (
+                <span key={tech}>[{tech}]</span>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className={`mt-4 p-3 border rounded ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-      }`}>
-        <h3 className={`text-base mb-2 ${
-          theme === 'dark' ? 'text-yellow-400' : 'text-yellow-500'
-        }`}>
-          $activity_summary
-        </h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}>
-            active_projects:
-          </span>
-          <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-            {projects.filter(p => p.status === 'IN_PROGRESS').length}
-          </span>
-          
-          <span className={theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}>
-            completed:
-          </span>
-          <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-            {projects.filter(p => p.status === 'COMPLETED').length}
-          </span>
-          
-          <span className={theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}>
-            talks_given:
-          </span>
-          <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-            {speaking.length}
-          </span>
+      {/* MODIFIED: Public speaking section with list items similar to other screens */}
+      {speaking.length > 0 && (
+        <div className={panelClasses}>
+          <h3 className={`text-base mb-3 ${yellowClasses}`}>$public_speaking</h3>
+          <div className="space-y-1">
+            {speaking.map((item, index) => (
+              <a
+                key={index}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => addLog(`EXTERNAL LINK: ${item.title}`)}
+                className={`flex items-center justify-between p-2 rounded transition-colors group ${theme === 'dark' ? 'hover:bg-dark-hover' : 'hover:bg-light-hover'}`}
+              >
+                <div className="text-sm flex items-start">
+                  <span className={`mr-2 ${yellowClasses}`}>[→]</span>
+                  <span className={`${valueClasses} group-hover:underline`}>{item.title}</span>
+                </div>
+                <ExternalLink className={`w-4 h-4 transition-colors ${valueClasses} group-hover:${labelClasses}`} />
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
