@@ -3,6 +3,8 @@
 
 import { useSession } from '../context/SessionContext';
 import Tabs from '../components/ui/Tabs';
+import Button from '../components/ui/Button';
+import { ArrowLeft, Zap } from 'lucide-react';
 
 export default function CaseDetail() {
   const { sessionData, theme, navigate, addLog, selectedCase } = useSession();
@@ -13,16 +15,13 @@ export default function CaseDetail() {
         <p className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
           No case selected. Please go back to Case List.
         </p>
-        <button
+        <Button
           onClick={() => navigate('CaseList')}
-          className={`mt-4 px-4 py-2 border rounded ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          }`}
+          variant="inline"
+          className="mt-4 px-4 py-2"
         >
           Back to Cases
-        </button>
+        </Button>
       </div>
     );
   }
@@ -145,33 +144,31 @@ export default function CaseDetail() {
       <Tabs tabs={tabs} defaultTab="challenge" />
 
       <div className="mt-4 flex gap-2">
-        <button
+        <Button
           onClick={() => {
             addLog('RETURN TO CASE LIST');
             navigate('CaseList');
           }}
-          className={`flex-1 p-2 border rounded flex items-center justify-center transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          }`}
+            icon={ArrowLeft}
+            iconPosition="left"
+            variant="flex"
+            className="p-2"
         >
           BACK TO CASES
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={() => {
             addLog('NAVIGATE: skills matrix');
             navigate('SkillsGrid');
           }}
-          className={`flex-1 p-2 border rounded flex items-center justify-center transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          }`}
+            icon={Zap}
+            iconPosition="left"
+            variant="flex"
+            className="p-2"
         >
           VIEW SKILLS
-        </button>
+        </Button>
       </div>
     </div>
   );

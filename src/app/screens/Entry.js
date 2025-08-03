@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { useSession } from '../context/SessionContext';
 import { useRouter } from 'next/navigation';
+import Button from '../components/ui/Button';
 
 export default function Entry() {
   const [code, setCode] = useState('');
@@ -51,28 +52,22 @@ export default function Entry() {
         disabled={isLoading}
       />
 
-      <button
+      <Button
         onClick={handleSubmit}
         disabled={isLoading}
-        className={`w-full p-3 mb-2 border rounded font-bold transition-colors ${
-          theme === 'dark'
-            ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-            : 'border-light-border hover:bg-light-hover text-light-text-primary'
-        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        variant="full"
+        className="mb-2 font-bold"
       >
         {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
-      </button>
+      </Button>
 
-      <button
+      <Button
         onClick={handleGetCode}
-        className={`w-full p-3 border rounded font-bold transition-colors ${
-          theme === 'dark'
-            ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-            : 'border-light-border hover:bg-light-hover text-light-text-primary'
-        }`}
+        variant="full"
+        className="font-bold"
       >
         GET CODE
-      </button>
+      </Button>
     </div>
   );
 }

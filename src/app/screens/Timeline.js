@@ -2,6 +2,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import Button from '../components/ui/Button';
 import { ChevronRight, FolderGit2, Settings2 } from 'lucide-react';
 
 export default function Timeline() {
@@ -20,14 +21,11 @@ export default function Timeline() {
       {/* Experience Items */}
       <div className="space-y-3">
         {roles.map((role, index) => (
-          <button
+          <Button
             key={`${role.id}-${index}`}
             onClick={() => handleRoleClick(role)}
-            className={`w-full p-4 rounded border flex text-left transition-colors font-mono ${
-              theme === 'dark'
-                ? 'border-green-700 bg-black hover:bg-green-900/10 text-green-300'
-                : 'border-gray-400 hover:bg-gray-100 text-gray-800'
-            }`}
+            variant="full"
+            className="p-4 text-left"
           >
             <div className="flex items-start w-full">
               {/* Index */}
@@ -60,41 +58,35 @@ export default function Timeline() {
               {/* Chevron */}
               <ChevronRight className="w-4 h-4 mt-1 ml-2 opacity-60" />
             </div>
-          </button>
+          </Button>
         ))}
       </div>
 
       {/* Bottom Buttons */}
       <div className="mt-5 flex gap-3">
-        <button
+        <Button
           onClick={() => {
             addLog('NAVIGATE: case studies');
             navigate('CaseList');
           }}
-          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors font-mono ${
-            theme === 'dark'
-              ? 'border-green-700 bg-black hover:bg-green-900/10 text-green-300'
-              : 'border-gray-400 hover:bg-gray-100 text-gray-800'
-          }`}
+          icon={FolderGit2}
+          iconPosition="left"
+          variant="flex"
         >
-          <FolderGit2 className="w-4 h-4" />
           VIEW PROJECTS
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => {
             addLog('NAVIGATE: skills matrix');
             navigate('SkillsGrid');
           }}
-          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors font-mono ${
-            theme === 'dark'
-              ? 'border-green-700 bg-black hover:bg-green-900/10 text-green-300'
-              : 'border-gray-400 hover:bg-gray-100 text-gray-800'
-          }`}
+          icon={Settings2}
+          iconPosition="left"
+          variant="flex"
         >
-          <Settings2 className="w-4 h-4" />
           VIEW SKILLS
-        </button>
+        </Button>
       </div>
     </div>
   );

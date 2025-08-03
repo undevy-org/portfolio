@@ -3,7 +3,8 @@
 
 import { useSession } from '../context/SessionContext';
 import Accordion from '../components/ui/Accordion';
-import { ChevronRight } from 'lucide-react';
+import Button from '../components/ui/Button';
+import { ChevronRight, ArrowLeft } from 'lucide-react';
 
 export default function RoleDetail() {
   const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
@@ -124,34 +125,31 @@ export default function RoleDetail() {
 
       {/* Navigation */}
       <div className="mt-4 flex gap-2">
-        <button
+        <Button
           onClick={() => {
             addLog('RETURN TO TIMELINE');
             navigate('Timeline');
           }}
-          className={`flex-1 p-2 border rounded flex items-center justify-center transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          }`}
+            icon={ArrowLeft}
+            iconPosition="left"
+            variant="flex"
+            className="p-2"
         >
           BACK TO TIMELINE
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => {
             addLog('VIEW CASE STUDIES');
             navigate('CaseList');
           }}
-          className={`flex-1 p-2 border rounded flex items-center justify-center transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          }`}
+          icon={ChevronRight}
+          iconPosition="right"
+          variant="flex"
+          className="p-2"
         >
           VIEW CASES
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </button>
+        </Button>
       </div>
     </div>
   );

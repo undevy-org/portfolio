@@ -1,488 +1,554 @@
 {
-  "DEFI123": {
+  "LERUSIK": {
     "meta": {
-      "company": "Quantum Financial",
-      "timeline": "scenario_b",
+      "company": "Universal Portfolio",
+      "timeline": "scenario_a",
       "depth": "detailed",
-      "emphasis": [
-        "algorithmic_trading",
-        "risk_modeling"
-      ],
-      "tone": "technical",
-      "cases": [
-        "project_cygnus",
-        "project_phoenix"
-      ]
-    }
-  },
-  "WEB3456": {
-    "meta": {
-      "company": "Nebula Labs",
-      "timeline": "scenario_a",
-      "depth": "quick",
-      "emphasis": [
-        "rapid_prototyping",
-        "user_growth"
-      ],
       "tone": "casual",
       "cases": [
-        "project_orion",
-        "project_pegasus"
-      ]
-    }
-  },
-  "CORP789": {
-    "meta": {
-      "company": "Apex Industries",
-      "timeline": "scenario_a",
-      "depth": "standard",
-      "emphasis": [
-        "enterprise_scale",
-        "process_optimization"
+        "gmx_v2",
+        "gmx_multichain", 
+        "gmx_system",
+        "key_app",
+        "cere_nft",
+        "wildberries",
+        "loyalty"
       ],
-      "tone": "formal",
-      "cases": [
-        "project_titan",
-        "project_vega"
-      ]
-    }
-  },
-  "LOCAL_TEST": {
-    "meta": {
-      "company": "Sandbox Environment",
-      "timeline": "scenario_a",
-      "depth": "standard",
-      "tone": "casual",
-      "cases": [
-        "project_cygnus",
-        "project_orion"
-      ]
+      "lastModified": "2025-08-02T10:00:00.000Z"
     },
     "profile": {
-      "greeting_name": "Test User",
       "summary": {
         "title": "Product Designer",
-        "specialization": "Web3/DeFi Specialist",
-        "background": "Engineering Background"
+        "specialization": "Full-Stack Design Professional",
+        "background": "9 Years of Diverse Experience"
       },
       "attributes": [
-        "Web3/DeFi UX Expert",
-        "Design Systems Architect",
-        "Data-Driven Designer",
+        "Web3/DeFi Pioneer",
+        "Design Systems Expert",
+        "User Research Specialist",
         "Technical Background"
       ],
       "status": {
-        "seeking": "Remote Product Designer",
+        "seeking": "Remote Product Design Opportunities",
         "location": "Tbilisi, Georgia (GMT+4)",
-        "availability": "Busy until January 2025"
+        "availability": "Immediate"
       }
     },
     "introduction": {
-      "technical": "Product Designer specializing in DeFi/Web3 with deep technical background. Engineering graduate (MIET) who transitioned into design, bringing unique perspective on bridging technical complexity with user needs. Focused on creating scalable design systems and data-driven solutions for complex financial products.",
-      "casual": "Hey! I'm a product designer who's been making crypto actually usable for the past 4+ years. Started as an engineer, found my passion in design, and never looked back! I love turning complex DeFi protocols into interfaces that even your mom could use.",
-      "formal": "Senior Product Designer with 9 years of experience transforming complex digital products into intuitive experiences. Specialized in Web3/DeFi with a unique technical foundation. Proven track record of leading design initiatives that drive significant business metrics."
+      "technical": "Product Designer with 9 years of experience across Web3, fintech, and e-commerce. Engineering graduate who found passion in design, bringing unique perspective on solving complex problems.",
+      "casual": "Hey! I'm a product designer who's been building digital products for almost a decade. Started as an engineer, discovered design, and never looked back. I've worked on everything from crypto wallets to e-commerce giants!",
+      "formal": "Senior Product Designer with comprehensive experience transforming complex digital products into intuitive experiences across multiple industries and platforms."
+    }
+  },
+  "0XDEFI2311": {
+    "meta": {
+      "company": "DeFi Technical Focus",
+      "timeline": "scenario_b",
+      "depth": "detailed",
+      "tone": "technical",
+      "cases": [
+        "gmx_v2",
+        "gmx_multichain",
+        "gmx_system",
+        "key_app"
+      ],
+      "lastModified": "2025-08-02T10:00:00.000Z"
+    },
+    "profile": {
+      "summary": {
+        "title": "Product Designer",
+        "specialization": "DeFi/Web3 Technical Specialist",
+        "background": "Engineering-First Design Approach"
+      },
+      "attributes": [
+        "DeFi Protocol Expert",
+        "Token-Based Design Systems",
+        "Smart Contract UX",
+        "Developer Collaboration"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer - DeFi/Web3",
+        "location": "Tbilisi, Georgia (GMT+4)",
+        "availability": "Immediate"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer specializing in DeFi/Web3 with deep technical foundation. Engineering degree (MIET) enables me to bridge complex blockchain mechanics with intuitive user experiences. Expertise in designing for permissionless protocols, AMMs, and decentralized trading systems.",
+      "casual": "I make DeFi actually usable. With my engineering background, I translate complex smart contract interactions into interfaces that traders love.",
+      "formal": "Technical Product Designer focused on decentralized finance, bringing engineering rigor to user experience design in blockchain protocols."
+    }
+  },
+  "LEADTHEBEST": {
+    "meta": {
+      "company": "Design Leadership Portfolio",
+      "timeline": "scenario_a",
+      "depth": "detailed",
+      "tone": "formal",
+      "cases": [
+        "key_app",
+        "cere_nft",
+        "gmx_v2",
+        "wildberries"
+      ],
+      "lastModified": "2025-08-02T10:00:00.000Z"
+    },
+    "profile": {
+      "summary": {
+        "title": "Lead Product Designer",
+        "specialization": "Design Leadership & Strategy",
+        "background": "Team Builder & Product Strategist"
+      },
+      "attributes": [
+        "Design Team Leadership",
+        "0-to-1 Product Strategy",
+        "User Growth Expert",
+        "Cross-Functional Leadership"
+      ],
+      "status": {
+        "seeking": "Head of Design / Design Lead",
+        "location": "Tbilisi, Georgia (GMT+4)",
+        "availability": "Immediate"
+      }
+    },
+    "introduction": {
+      "technical": "Design leader with proven track record of building design functions from scratch, mentoring teams, and driving measurable business impact through user-centered design strategies.",
+      "casual": "I build design teams and ship products that users love. From 0-to-1 startups to enterprise scale, I've led it all.",
+      "formal": "Strategic design leader specializing in building high-performing design organizations, establishing scalable processes, and delivering products that drive significant business growth. Proven expertise in team leadership, stakeholder management, and data-driven design decisions."
     }
   },
   "GLOBAL_DATA": {
-    "profile": {
-      "name": "Jane Doe",
-      "title": "Principal Engineer",
-      "specialization": "Distributed Systems",
-      "email": "jane.doe@example.com",
-      "website": "https://example.com",
-      "location": "Global / Remote"
-    },
-    "introduction": {
-      "technical": "Leveraging advanced algorithms and distributed computing paradigms to solve large-scale data processing challenges.",
-      "casual": "I build cool stuff that works at scale. Let's connect and make something amazing.",
-      "formal": "Experienced Principal Engineer with a demonstrated history of working in the computer software industry."
-    },
-    "attributes": [
-      "Distributed Systems",
-      "Cloud Architecture",
-      "Data-Intensive Applications",
-      "Technical Leadership"
-    ],
-    "status": {
-      "seeking": "Principal Engineering Roles",
-      "location": "Remote First",
-      "availability": "Open to offers",
-      "target_comp": "$200,000+",
-      "work_type": "Full-Time"
-    },
     "menu": [
       {
-        "label": "overview",
+        "label": "about_me",
         "screen": "Introduction",
-        "icon": "[INF]",
-        "desc": "Who I am and what I do"
+        "icon": "[USR]",
+        "desc": "Background & approach"
       },
       {
-        "label": "work_history",
+        "label": "experience",
         "screen": "Timeline",
-        "icon": "[HIS]",
-        "desc": "My professional journey"
+        "icon": "[EXP]",
+        "desc": "9 years in product design"
       },
       {
-        "label": "portfolio",
+        "label": "case_studies",
         "screen": "CaseList",
-        "icon": "[FOL]",
-        "desc": "Selected projects"
+        "icon": "[PRJ]",
+        "desc": "Featured projects"
       },
       {
-        "label": "competencies",
+        "label": "skills",
         "screen": "SkillsGrid",
-        "icon": "[CMP]",
-        "desc": "My technical skills"
+        "icon": "[SKL]",
+        "desc": "Technical expertise"
       },
       {
-        "label": "innovations",
+        "label": "side_projects",
         "screen": "SideProjects",
-        "icon": "[INV]",
-        "desc": "Personal explorations"
+        "icon": "[LAB]",
+        "desc": "Personal initiatives"
       },
       {
-        "label": "connect",
+        "label": "contact",
         "screen": "Contact",
-        "icon": "[CON]",
-        "desc": "Let's get in touch"
+        "icon": "[MSG]",
+        "desc": "Get in touch"
       }
     ],
     "experience": {
       "scenario_a": [
         {
-          "id": "acme",
-          "company": "Acme Corp",
-          "role": "Senior Engineer",
-          "period": "2022 - 2024",
-          "duration": "2 years",
-          "highlight": "Led the 'Hydra' data pipeline project."
+          "id": "gmx",
+          "company": "GMX Exchange",
+          "role": "Lead Product Designer",
+          "period": "August 2024 - July 2025",
+          "duration": "1 year",
+          "highlight": "Led V2 redesign, 300% user growth"
         },
         {
-          "id": "globex",
-          "company": "Globex Corporation",
-          "role": "Software Engineer",
-          "period": "2020 - 2022",
-          "duration": "2 years",
-          "highlight": "Developed the core 'Omega' algorithm."
+          "id": "cere",
+          "company": "Cere Network",
+          "role": "Lead Product Designer",
+          "period": "May 2023 - August 2024",
+          "duration": "1+ year",
+          "highlight": "Multi-product Web3 portfolio"
         },
         {
-          "id": "stark",
-          "company": "Stark Industries",
-          "role": "Junior Developer",
-          "period": "2018 - 2020",
+          "id": "p2p",
+          "company": "P2P Validator / Key App",
+          "role": "Lead Product Designer",
+          "period": "July 2021 - May 2023",
           "duration": "2 years",
-          "highlight": "Worked on the initial 'Mark I' prototype."
+          "highlight": "0-to-1 Solana wallet"
+        },
+        {
+          "id": "loyalty",
+          "company": "Loyalty Media Group",
+          "role": "Product Designer",
+          "period": "Nov 2020 - July 2021",
+          "duration": "8 months",
+          "highlight": "B2B2C banking apps"
+        },
+        {
+          "id": "wb",
+          "company": "Wildberries",
+          "role": "Product Designer",
+          "period": "Feb 2020 - Nov 2020",
+          "duration": "9 months",
+          "highlight": "Design system & e-commerce"
         }
       ],
       "scenario_b": [
         {
-          "id": "acme_globex",
-          "company": "Acme & Globex",
-          "role": "Lead Data Architect",
-          "period": "2020 - 2024",
-          "duration": "4 years",
-          "highlight": "Oversaw the merger of two major data platforms."
+          "id": "gmx",
+          "company": "GMX Exchange",
+          "role": "Lead Product Designer",
+          "period": "May 2023 - July 2025",
+          "duration": "2+ years",
+          "highlight": "First designer, built entire design function"
         },
         {
-          "id": "stark",
-          "company": "Stark Industries",
-          "role": "Junior Developer",
-          "period": "2018 - 2020",
+          "id": "p2p",
+          "company": "P2P Validator / Key App",
+          "role": "Lead Product Designer",
+          "period": "July 2021 - May 2023",
           "duration": "2 years",
-          "highlight": "Initial prototype development."
+          "highlight": "0-to-1 Solana wallet, led team of 4"
         }
       ]
     },
     "role_details": {
-      "acme": {
-        "summary": "Led the Hydra data pipeline project, processing 10TB+ daily with 99.9% uptime. Built scalable microservices architecture handling millions of requests.",
+      "gmx": {
+        "summary": "Joined as the first full-time designer to lead the platform's critical V2 update. Built the entire design function from scratch in a fully anonymous, async DAO environment.",
         "responsibilities": [
-          "Architected and implemented distributed data processing pipeline",
-          "Led team of 5 engineers in agile environment",
-          "Optimized system performance reducing latency by 60%",
-          "Established monitoring and alerting infrastructure",
-          "Conducted code reviews and mentored junior developers"
+          "End-to-end design ownership for web and mobile platforms",
+          "User research and data analysis (50+ interviews)",
+          "Design system architecture and implementation",
+          "Cross-functional collaboration with anonymous team",
+          "Documentation and process establishment"
         ],
         "achievements": [
-          "Reduced data processing time from 6 hours to 45 minutes",
-          "Achieved 99.9% uptime for critical services",
-          "Implemented cost optimizations saving K/month",
-          "Built reusable component library used across 3 teams"
+          "300% increase in unique traders post-V2 launch",
+          "60% reduction in order placement errors",
+          "35% increase in TVL through improved LP UX",
+          "40% uplift in cross-chain transaction volume",
+          "Built comprehensive design system from scratch"
         ],
         "tech": [
-          "Go",
-          "Kafka",
-          "Kubernetes",
-          "PostgreSQL",
-          "Redis",
-          "Prometheus"
-        ]
-      },
-      "globex": {
-        "summary": "Developed the core Omega algorithm for real-time recommendation engine. Worked on machine learning models processing user behavior data.",
-        "responsibilities": [
-          "Designed and implemented ML models for recommendations",
-          "Built RESTful APIs for model serving",
-          "Collaborated with data scientists on feature engineering",
-          "Maintained and optimized Python codebase"
-        ],
-        "achievements": [
-          "Increased recommendation accuracy by 35%",
-          "Reduced API response time to under 100ms",
-          "Processed 1M+ recommendations daily",
-          "Open-sourced internal ML utilities library"
-        ],
-        "tech": [
-          "Python",
-          "TensorFlow",
-          "Apache Spark",
-          "AWS",
-          "Docker",
-          "FastAPI"
-        ]
-      },
-      "stark": {
-        "summary": "Junior role focused on frontend development and initial prototype creation. Learned industry best practices and modern development workflows.",
-        "responsibilities": [
-          "Developed responsive UI components",
-          "Participated in daily standups and sprint planning",
-          "Fixed bugs and implemented feature requests",
-          "Wrote unit and integration tests"
-        ],
-        "achievements": [
-          "Completed intern project 2 weeks ahead of schedule",
-          "Improved test coverage from 45% to 80%",
-          "Received mentorship award for helping new hires",
-          "Contributed to company tech blog"
-        ],
-        "tech": [
-          "JavaScript",
+          "Figma",
+          "FigJam",
           "React",
-          "Node.js",
-          "MongoDB",
-          "Jest",
-          "Git"
+          "Design Tokens",
+          "Notion",
+          "Python"
+        ]
+      },
+      "cere": {
+        "summary": "Led design across diverse Web3 portfolio including NFT Marketplace, decentralized storage, and wallet applications.",
+        "responsibilities": [
+          "Design leadership for multi-product portfolio",
+          "Team mentorship and design reviews",
+          "Design system development and maintenance",
+          "Stakeholder management and strategy alignment"
+        ],
+        "achievements": [
+          "150% increase in NFT Marketplace user satisfaction",
+          "20% boost in team velocity through design system",
+          "25% reduction in design turnaround time",
+          "10% increase in user acquisition through gamified flows"
+        ],
+        "tech": [
+          "Figma",
+          "Confluence",
+          "JIRA",
+          "React",
+          "Web3.js"
+        ]
+      },
+      "p2p": {
+        "summary": "Joined as first designer, grew to lead team of 4. Built non-custodial Solana wallet from scratch in true 0-to-1 experience.",
+        "responsibilities": [
+          "Design leadership across iOS, Android, and Web",
+          "User research with crypto natives and newcomers",
+          "Team building and mentorship",
+          "Product strategy and roadmap planning"
+        ],
+        "achievements": [
+          "63% increase in wallet creation conversion",
+          "10,000+ active users from zero",
+          "150% reduction in negative app reviews",
+          "Simplest StableCoin sending on Solana"
+        ],
+        "tech": [
+          "Figma",
+          "Swift",
+          "Kotlin",
+          "React Native",
+          "Solana Web3.js"
         ]
       }
     },
     "case_studies": {
-      "project_cygnus": {
-        "title": "Project Cygnus",
-        "desc": "A distributed data processing engine.",
-        "metrics": "+50% throughput",
+      "gmx_v2": {
+        "title": "GMX V2 Platform Redesign",
+        "desc": "Complete transformation addressing user trust crisis",
+        "metrics": "+300% traders, -60% errors",
         "tags": [
-          "Big Data",
-          "Distributed Systems"
+          "DeFi",
+          "Trading",
+          "Research"
         ]
       },
-      "project_phoenix": {
-        "title": "Project Phoenix",
-        "desc": "A fault-tolerant microservices architecture.",
-        "metrics": "99.999% uptime",
+      "gmx_multichain": {
+        "title": "Multichain Trading Interface",
+        "desc": "Abstracting blockchain complexity for traders",
+        "metrics": "+40% cross-chain volume",
         "tags": [
-          "Microservices",
-          "Resilience"
+          "DeFi",
+          "Innovation",
+          "Complex UX"
         ]
       },
-      "project_orion": {
-        "title": "Project Orion",
-        "desc": "A real-time analytics dashboard.",
-        "metrics": "<50ms latency",
+      "gmx_system": {
+        "title": "GMX Design System",
+        "desc": "Token-based system accelerating development",
+        "metrics": "+30% dev velocity, -40% UI bugs",
         "tags": [
-          "Real-Time",
-          "Data Viz"
+          "Systems",
+          "Scale",
+          "Documentation"
         ]
       },
-      "project_pegasus": {
-        "title": "Project Pegasus",
-        "desc": "A machine learning model deployment platform.",
-        "metrics": "-80% deployment time",
+      "key_app": {
+        "title": "Key App - Solana Wallet",
+        "desc": "0-to-1 non-custodial wallet for mainstream users",
+        "metrics": "10K+ users, +63% onboarding",
         "tags": [
-          "MLOps",
-          "Automation"
+          "Web3",
+          "Mobile",
+          "Consumer"
         ]
       },
-      "project_titan": {
-        "title": "Project Titan",
-        "desc": "An enterprise-grade identity management system.",
-        "metrics": "1M+ users",
+      "cere_nft": {
+        "title": "Cere NFT Marketplace",
+        "desc": "Artist-first marketplace with Web3 onboarding",
+        "metrics": "+150% satisfaction score",
         "tags": [
-          "Security",
-          "IAM"
+          "NFT",
+          "Marketplace",
+          "Web3"
         ]
       },
-      "project_vega": {
-        "title": "Project Vega",
-        "desc": "A scalable e-commerce backend.",
-        "metrics": "10K transactions/sec",
+      "wildberries": {
+        "title": "Wildberries Design System",
+        "desc": "E-commerce design system with Storybook",
+        "metrics": "80% component coverage",
         "tags": [
           "E-commerce",
-          "Scalability"
+          "Systems",
+          "Scale"
+        ]
+      },
+      "loyalty": {
+        "title": "Banking Loyalty Apps",
+        "desc": "White-label B2B2C fintech applications",
+        "metrics": "+50% feature discovery",
+        "tags": [
+          "Fintech",
+          "B2B2C",
+          "Mobile"
         ]
       }
     },
     "case_details": {
-      "project_cygnus": {
-        "challenge": "The existing data processing pipeline was struggling with scale, taking 6+ hours to process daily data and frequently failing. The system needed complete re-architecture to handle 10x growth.",
+      "gmx_v2": {
+        "challenge": "GMX V1 was bleeding user trust. The platform had opaque fee structures, a confusing interface that was hostile to both new and experienced traders, and was missing core features like limit orders. User complaints were mounting and growth was stalling.",
         "approach": [
-          "Conducted thorough analysis of bottlenecks using profiling tools",
-          "Designed new distributed architecture using event-driven patterns",
-          "Implemented proof of concept with subset of data",
-          "Gradually migrated services with zero downtime",
-          "Set up comprehensive monitoring and alerting"
+          "Conducted 50+ semi-structured user interviews to understand pain points",
+          "Analyzed support tickets using LLM aggregation to identify patterns",
+          "Created user journey maps highlighting critical friction points",
+          "Rapid prototyping with continuous async feedback loops",
+          "Close collaboration with engineering on technical constraints"
         ],
-        "solution": "Built a new Kafka-based streaming pipeline that processes data in real-time. Implemented horizontal scaling with Kubernetes, added circuit breakers for resilience, and created a custom monitoring dashboard.",
+        "solution": "Complete redesign of the trading interface focusing on transparency and usability. Introduced clear fee breakdowns, intuitive order placement flow, comprehensive position management, and responsive design for all devices. Built everything within 3 months.",
         "results": [
-          "Reduced processing time from 6 hours to 45 minutes",
-          "Achieved 99.99% uptime over 6 months",
-          "Handled 10x data volume increase seamlessly",
-          "Decreased infrastructure costs by 40%"
+          "300% increase in unique traders within first month",
+          "60% reduction in order placement errors",
+          "Complete reversal in community sentiment",
+          "Platform became the UI standard for DeFi derivatives"
         ],
-        "learnings": "The key learning was the importance of incremental migration. By running old and new systems in parallel, we could validate results and roll back if needed. Also, investing in observability early paid huge dividends."
+        "learnings": "Working in an anonymous DAO taught me the importance of over-communication and documentation. Success came from deeply understanding user needs and translating complex DeFi mechanics into intuitive interfaces."
       },
-      "project_orion": {
-        "challenge": "Users needed real-time visibility into system metrics but existing dashboards were slow, hard to use, and lacked critical features. Support tickets about data visibility were consuming 30% of team time.",
+      "key_app": {
+        "challenge": "Building a non-custodial crypto wallet that mainstream users could actually use. The Solana ecosystem lacked user-friendly wallets, and existing solutions were too technical for average users.",
         "approach": [
-          "Interviewed 20+ users to understand pain points",
-          "Created mockups and prototypes for quick feedback",
-          "Built modular component library for consistency",
-          "Implemented WebSocket connections for real-time updates",
-          "Added advanced filtering and export capabilities"
+          "Competitive analysis of 15+ crypto wallets",
+          "User interviews with both crypto natives and newcomers",
+          "Iterative prototyping with weekly user testing",
+          "Close collaboration with Solana ecosystem partners",
+          "Focus on reducing cognitive load at every step"
         ],
-        "solution": "Developed a React-based dashboard with sub-second data updates. Used D3.js for interactive visualizations, implemented smart caching to reduce API load, and added customizable alerts.",
+        "solution": "Designed the simplest StableCoin sending feature on Solana, integrated social login (Google/Apple) for easy onboarding, created educational tooltips without being patronizing, and built trust through transparent security messaging.",
         "results": [
-          "Reduced support tickets by 75%",
-          "Achieved <100ms average response time",
-          "Increased daily active users by 200%",
-          "Received 4.8/5 user satisfaction score"
+          "63% increase in wallet creation conversion",
+          "10,000+ active users from zero",
+          "150% reduction in negative app reviews",
+          "Featured by Solana Foundation as exemplary UX"
         ],
-        "learnings": "Real-time doesn't always mean instant - users were happy with 1-second updates vs true real-time. This allowed us to batch updates and significantly reduce server load."
+        "learnings": "Simplifying Web3 isn't about hiding complexity—it's about progressive disclosure. Users want to understand what's happening with their money, but only when they're ready for that information."
       }
     },
     "skills": [
       {
-        "name": "Go (Golang)",
-        "id": "golang",
+        "name": "Design Systems",
+        "id": "design_systems",
         "level": "EXPERT",
-        "desc": "Concurrent programming"
+        "desc": "Token-based, scalable systems"
       },
       {
-        "name": "Kubernetes",
-        "id": "kubernetes",
+        "name": "Web3/DeFi UX",
+        "id": "web3_ux",
+        "level": "EXPERT",
+        "desc": "Making crypto accessible"
+      },
+      {
+        "name": "User Research",
+        "id": "user_research",
         "level": "ADVANCED",
-        "desc": "Container orchestration"
+        "desc": "Data-driven insights"
       },
       {
-        "name": "Python",
-        "id": "python",
-        "level": "ADVANCED",
-        "desc": "Data science & scripting"
-      },
-      {
-        "name": "React",
-        "id": "react",
+        "name": "Frontend Dev",
+        "id": "frontend",
         "level": "INTERMEDIATE",
-        "desc": "User interfaces"
+        "desc": "React, CSS, Prototyping"
       },
       {
-        "name": "AWS",
-        "id": "aws",
-        "level": "EXPERT",
-        "desc": "Cloud services"
+        "name": "Data Analysis",
+        "id": "data_analysis",
+        "level": "ADVANCED",
+        "desc": "Metrics & optimization"
       },
       {
-        "name": "System Design",
-        "id": "system_design",
-        "level": "EXPERT",
-        "desc": "Architecting scalable systems"
+        "name": "Team Leadership",
+        "id": "leadership",
+        "level": "ADVANCED",
+        "desc": "Mentorship & processes"
       }
     ],
     "skill_details": {
-      "Go (Golang)": {
-        "description": "Extensive experience in building high-performance, concurrent services.",
+      "Design Systems": {
+        "description": "Built comprehensive design systems from scratch at multiple companies, focusing on scalability and developer handoff.",
         "examples": [
-          "Example A"
+          "GMX: Token-based system with Figma variables and JSON export",
+          "Wildberries: Component library with 80% Storybook coverage",
+          "Key App: Multi-platform system for iOS/Android consistency"
         ],
         "tools": [
-          "Go standard library",
-          "gRPC"
+          "Figma",
+          "Design Tokens",
+          "Storybook",
+          "Style Dictionary"
         ],
-        "impact": "Impact A"
+        "impact": "Reduced design inconsistencies by 90%, accelerated development by 30%"
       },
-      "Kubernetes": {
-        "description": "Deep knowledge of orchestrating and managing containerized applications.",
+      "Web3/DeFi UX": {
+        "description": "Specialized in making complex blockchain interactions accessible to mainstream users without sacrificing functionality.",
         "examples": [
-          "Example B"
+          "Simplified gas fee explanations with progressive disclosure",
+          "One-click trading interfaces hiding complex DeFi mechanics",
+          "Social login integration for Web3 onboarding"
         ],
         "tools": [
-          "Helm",
-          "Prometheus"
+          "Web3.js",
+          "Ethers.js",
+          "WalletConnect",
+          "Rainbow Kit"
         ],
-        "impact": "Impact B"
+        "impact": "Increased user adoption by 300%, reduced support tickets by 50%"
       },
-      "System Design": {
-        "description": "Proficient in designing scalable, resilient, and maintainable systems.",
+      "User Research": {
+        "description": "Combining quantitative and qualitative methods to drive design decisions based on real user behavior and needs.",
         "examples": [
-          "Example C"
+          "50+ user interviews for GMX V2 redesign",
+          "LLM-powered support ticket analysis",
+          "Behavioral analytics with Hotjar and Mixpanel"
         ],
         "tools": [
-          "Draw.io",
-          "Excalidraw"
+          "Figma",
+          "Maze",
+          "Hotjar",
+          "Python (for analysis)"
         ],
-        "impact": "Impact C"
+        "impact": "Identified critical UX issues leading to 60% error reduction"
       }
     },
     "side_projects": [
       {
-        "id": "home_automation",
-        "name": "Home Automation System",
-        "desc": "A custom smart home setup.",
+        "id": "arbitrum_app",
+        "name": "Web3 Arbitrum App",
+        "desc": "Encrypted link marketplace on blockchain",
         "status": "IN_PROGRESS",
         "tech": [
-          "Raspberry Pi",
-          "Go"
+          "Solidity",
+          "React",
+          "Web3"
         ]
       },
       {
-        "id": "open_source_lib",
-        "name": "Open Source Library",
-        "desc": "A popular utility library on GitHub.",
+        "id": "counterpress",
+        "name": "CounterPress",
+        "desc": "Sports media platform design & development",
         "status": "COMPLETED",
         "tech": [
-          "Go",
-          "CI/CD"
+          "Design",
+          "PM",
+          "Content"
+        ]
+      },
+      {
+        "id": "teaching",
+        "name": "Teaching at GeekBrains",
+        "desc": "UI/UX courses for 200+ students",
+        "status": "COMPLETED",
+        "tech": [
+          "Education",
+          "Mentorship"
+        ]
+      },
+      {
+        "id": "trading_bot",
+        "name": "Trading Bot",
+        "desc": "Telegram crypto trading automation",
+        "status": "EXPERIMENTAL",
+        "tech": [
+          "Python",
+          "APIs",
+          "Crypto"
         ]
       }
     ],
     "public_speaking": [
       {
-        "title": "Talk at Go Conference",
-        "url": "https://example.com/talk1"
+        "title": "Layer 2 Meetup Tbilisi - 'UX in Web3'",
+        "url": "https://youtu.be/C5NPMy7r_-M?si=3qtQuWzfw6STp14T"
       },
       {
-        "title": "Podcast on Distributed Systems",
-        "url": "https://example.com/podcast1"
+        "title": "BasicBlock Podcast - Guest speaker",
+        "url": "https://basicblockradio.com/e165/"
+      },
+      {
+        "title": "Published articles on Web3 design",
+        "url": "https://mirror.xyz/undevy.eth/YOn0GzSp_B-vgW7iQ0nvB1bsS92Cu-xlPMOIxgIw-mA"
       }
     ],
     "contact": {
       "email": "foxous@proton.me",
       "website": "https://foxous.design",
-      "telegram": "@undevy",
       "location": "Tbilisi, Georgia (GMT+4)",
-      "timezone": "GMT+4",
-      "availability": {
-        "status": "IMMEDIATE",
-        "work_type": "Fully Remote Only",
-        "target_comp": "$8,000+/month",
-        "start_date": "Available Now"
-      },
-      "calendar_link": "https://calendly.com/undevy/30min",
-      "social_links": {
-        "twitter": "https://twitter.com/undevy",
-        "linkedin": "https://linkedin.com/in/undevy",
-        "github": "https://github.com/undevy"
-      }
+      "work_type": "Fully Remote Only",
+      "target_comp": "$8,000+/month",
+      "start_date": "IMMEDIATE"
     }
   }
 }

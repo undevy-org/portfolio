@@ -240,8 +240,8 @@ MATOMO_TOKEN=your-token-here
 
 ```bash
 # Clone the repository
-git clone https://github.com/undevy/undevy-portfolio.git
-cd undevy-portfolio
+git clone https://github.com/undevy-org/portfolio.git
+cd portfolio
 
 # Install dependencies
 npm install
