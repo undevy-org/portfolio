@@ -73,7 +73,7 @@ export default function Timeline() {
           iconPosition="left"
           variant="flex"
         >
-          VIEW PROJECTS
+          READ CASES
         </Button>
 
         <Button

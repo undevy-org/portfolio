@@ -2,11 +2,28 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import { ChevronRight } from 'lucide-react';
 
 export default function SkillsGrid() {
   const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
-  
-  // Check if there are any skills available
+
+  // REFACTORED: Centralized theme-based classes
+  const panelClasses = `p-4 rounded border ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+  const successClasses = `${
+    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+  }`;
+
   const skills = sessionData?.skills || [];
   
   const handleSkillClick = (skill) => {
@@ -15,110 +32,54 @@ export default function SkillsGrid() {
     navigate('SkillDetail');
   };
   
-  // Function to determine the color based on skill level
+  // Function to determine the color based on skill level remains the same
   const getLevelColor = (level) => {
     switch(level) {
       case 'EXPERT':
-        return theme === 'dark' ? 'text-dark-success' : 'text-light-success';
+        return successClasses; // Brightest green for expert
       case 'ADVANCED':
-        return theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary';
+        return labelClasses; // Standard green
       case 'INTERMEDIATE':
-        return theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
+        return valueClasses; // Gray for intermediate
       default:
-        return theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
+        return valueClasses;
     }
   };
   
   return (
-    <div className="p-4">
-      {/* Header */}
-      <div className={`mb-4 ${
-        theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-      }`}>
-        <h2 className="text-2xl font-bold mb-2">Technical Skills</h2>
-        <p className={`text-sm ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
-          Click on any skill to see details and examples
-        </p>
-      </div>
-      
-      {/* Skills Grid */}
-      <div className="grid grid-cols-2 gap-2">
+    <div className="p-4 space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {skills.map((skill) => (
           <button
             key={skill.id}
             onClick={() => handleSkillClick(skill)}
-            className={`p-3 border rounded text-left transition-colors ${
+            className={`p-4 border rounded text-left transition-colors flex justify-between items-start ${
               theme === 'dark'
-                ? 'border-dark-border hover:bg-dark-hover'
-                : 'border-light-border hover:bg-light-hover'
+                ? 'border-dark-border-darker hover:bg-dark-hover'
+                : 'border-light-border-lighter hover:bg-light-hover'
             }`}
-          >
-            {/* Skill ID */}
-            <div className={`text-xs mb-1 ${
-              theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-            }`}>
-              ${skill.id}
+          > 
+            <div className="space-y-1">
+              {/* Skill Name */}
+              <div className={`text-base ${yellowClasses}`}>
+                {skill.name}
+              </div>
+              
+              {/* Skill Description */}
+              <div className={`text-sm ${valueClasses}`}>
+                {skill.desc}
+              </div>
+              
+              {/* Skill Level */}
+              <div className={`text-sm pt-1 ${getLevelColor(skill.level)}`}>
+                [{skill.level}]
+              </div>
             </div>
-            
-            {/* Skill Name */}
-            <div className={`text-sm mb-1 ${
-              theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-            }`}>
-              {skill.name}
-            </div>
-            
-            {/* Skill Description */}
-            <div className={`text-xs mb-2 ${
-              theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-            }`}>
-              {skill.desc}
-            </div>
-            
-            {/* Skill Level */}
-            <div className={`text-xs ${getLevelColor(skill.level)}`}>
-              [{skill.level}]
-            </div>
+
+            {/* ADDED: ChevronRight icon */}
+            <ChevronRight className={`w-5 h-5 ${valueClasses}`} />
           </button>
         ))}
-      </div>
-      
-      {/* Summary Panel */}
-      <div className={`mt-4 p-3 border rounded ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-      }`}>
-        <h3 className={`font-bold text-base mb-2 ${
-          theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-        }`}>
-          $skill_summary
-        </h3>
-        <div className="grid grid-cols-3 gap-x-4 text-sm">
-          <div>
-            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-              expert:
-            </span>
-            <span className={`ml-2 ${theme === 'dark' ? 'text-dark-success' : 'text-light-success'}`}>
-              {skills.filter(s => s.level === 'EXPERT').length}
-            </span>
-          </div>
-          <div>
-            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-              advanced:
-            </span>
-            <span className={`ml-2 ${theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-              {skills.filter(s => s.level === 'ADVANCED').length}
-            </span>
-          </div>
-          <div>
-            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-              intermediate:
-            </span>
-            <span className={`ml-2 ${theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-              {skills.filter(s => s.level === 'INTERMEDIATE').length}
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

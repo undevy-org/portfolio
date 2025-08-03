@@ -11,10 +11,12 @@ const config = {
       colors: {
         // Dark Theme (Default)
         'dark-bg': '#000000',
+        'dark-text-white': '#ffffff',     // pure white for dark theme
         'dark-text-primary': '#4ade80',    // green-400
         'dark-text-secondary': '#9ca3af', // gray-400
         'dark-text-command': '#facc15',    // yellow-400
         'dark-border': '#22c55e',          // green-500
+        'dark-border-darker': '#166534',   // green-800
         'dark-active': '#15803d',          // green-800
         'dark-error': '#f87171',           // red-400
         'dark-success': '#4ade80',         // green-400
@@ -23,10 +25,12 @@ const config = {
 
         // Light Theme
         'light-bg': '#f3f4f6',             // gray-100
+        'light-text-black': '#000000',     // pure black for light theme
         'light-text-primary': '#166534',   // green-800
         'light-text-secondary': '#4b5563', // gray-600
         'light-text-command': '#ca8a04',   // yellow-600
         'light-border': '#15803d',         // green-700
+        'light-border-lighter': '#4ade80', // green-400
         'light-active': '#dcfce7',         // green-100
         'light-error': '#dc2626',          // red-600
         'light-success': '#16a34a',        // green-600

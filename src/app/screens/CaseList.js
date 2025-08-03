@@ -7,9 +7,25 @@ import { ChevronRight } from 'lucide-react';
 export default function CaseList() {
   const { sessionData, theme, navigate, addLog, setSelectedCase } = useSession();
 
+  const panelClasses = `p-3 border rounded ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+  const successClasses = `${
+    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+  }`;
+
   const cases = sessionData?.case_studies || {};
   const caseIds = Object.keys(cases);
-  const totalCasesCount = 7;
+  const totalCasesCount = sessionData?.total_case_count || caseIds.length;
 
   const handleCaseClick = (caseId, caseData) => {
     setSelectedCase({ id: caseId, ...caseData });
@@ -19,134 +35,67 @@ export default function CaseList() {
 
   return (
     <div className="p-4">
-      <div className={`mb-4 ${
-        theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-      }`}>
-        <h2 className="text-2xl font-bold mb-2">Case Studies</h2>
-        <p className={`text-sm ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
-          Selected projects demonstrating impact and process
-        </p>
-      </div>
-
-      <div className={`mb-3 p-3 border rounded ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-      }`}>
-        <div className={`text-xs mb-2 ${
-          theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-        }`}>
-          $loading_cases
-        </div>
-        <div className={`text-xs ${
-          theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-        }`}>
+      <div className={`mb-4 ${panelClasses}`}>
+        <div className={`text-base mb-2 ${yellowClasses}`}>$loading_cases</div>
+        <div className="text-sm">
           <div className="flex items-center gap-2">
-            <span>[</span>
+            <span className={labelClasses}>[</span>
             {Array.from({ length: caseIds.length }, (_, i) => (
-              <span key={`loaded-${i}`} className={theme === 'dark' ? 'text-dark-success' : 'text-light-success'}>
-                ■
-              </span>
+              <span key={`loaded-${i}`} className={successClasses}>■</span>
             ))}
             {Array.from({ length: totalCasesCount - caseIds.length }, (_, i) => (
-              <span key={`empty-${i}`} className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-                □
-              </span>
+              <span key={`empty-${i}`} className={valueClasses}>□</span>
             ))}
-            <span>]</span>
-            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-              {caseIds.length}/{totalCasesCount} loaded for {sessionData?.meta?.company || sessionData?.company}
+            <span className={labelClasses}>]</span>
+            <span className={valueClasses}>
+              {caseIds.length}/{totalCasesCount} loaded for {sessionData?.meta?.company || 'session'}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {caseIds.map((caseId) => {
           const caseData = cases[caseId];
           return (
             <button
               key={caseId}
               onClick={() => handleCaseClick(caseId, caseData)}
-              className={`w-full p-3 border rounded text-left transition-colors ${
+              className={`w-full p-4 border rounded text-left transition-colors flex items-start gap-4 ${
                 theme === 'dark'
-                  ? 'border-dark-border hover:bg-dark-hover'
-                  : 'border-light-border hover:bg-light-hover'
+                  ? 'border-dark-border-darker hover:bg-dark-hover'
+                  : 'border-light-border-lighter hover:bg-light-hover'
               }`}
             >
-              <div className={`text-sm mb-1 ${
-                theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-              }`}>
-                ${caseId}
-              </div>
-
-              <div className={`mb-1 ${
-                theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-              }`}>
+              <div className="flex-1 space-y-1">
+                <div className={`text-lg ${yellowClasses}`}>
                 {caseData.title}
               </div>
-
-              <div className={`text-xs mb-2 ${
-                theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-              }`}>
+                <div className={`text-sm ${valueClasses}`}>
                 {caseData.desc}
               </div>
-
-              <div className={`text-xs mb-2 ${
-                theme === 'dark' ? 'text-dark-success' : 'text-light-success'
-              }`}>
+                <div className={`text-sm pt-1 ${labelClasses}`}>
                 {caseData.metrics}
               </div>
-
-              <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2 pt-2">
                 {caseData.tags?.map((tag) => (
                   <span
                     key={tag}
-                    className={`px-2 py-0.5 border rounded text-xs ${
+                      className={`px-2 py-0.5 border rounded text-xs ${
                       theme === 'dark'
-                        ? 'border-dark-border text-dark-text-secondary'
-                        : 'border-light-border text-light-text-secondary'
+                          ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
+                          : 'border-light-border-lighter bg-gray-200 text-light-text-secondary'
                     }`}
                   >
                     {tag}
                   </span>
                 ))}
               </div>
+              </div>
+              <ChevronRight className={`w-5 h-5 mt-1 ${valueClasses}`} />
             </button>
           );
         })}
-      </div>
-
-      <div className={`mt-4 p-3 border rounded ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-      }`}>
-        <h3 className={`font-bold text-base mb-2 ${
-          theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-        }`}>
-          $impact_summary
-        </h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            projects_shown:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {caseIds.length}
-          </span>
-
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            industries:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {new Set(caseIds.flatMap(id => cases[id].tags || [])).size}
-          </span>
-
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            focus:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {sessionData?.meta?.emphasis?.[0] || 'diverse'}
-          </span>
-        </div>
       </div>
     </div>
   );

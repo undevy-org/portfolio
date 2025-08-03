@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [Unreleased]
+
+### Changed
+-   Complete UI Refactoring: Rebuilt all major screens to use a consistent set of theme-based CSS classes (`panelClasses`, `yellowClasses`, `labelClasses`, `valueClasses`). This includes: `AnalyticsPanel`, `Introduction`, `MainHub`, `Timeline`, `CaseList`, `CaseDetail`, `RoleDetail`, `SkillDetail`, and `SideProjects`.
+-   Standardized Visual Hierarchy: Implemented a consistent color and typography system across all components:
+    -   Yellow: Used for panel titles, commands, and primary headers.
+    -   Green: Used for key labels, important values, and status indicators.
+    -   Gray: Used for all descriptive text and secondary information.
+-   Layout Unification: All screens now follow consistent layout patterns, such as the unified "Header Panel" on detail pages (`CaseDetail`, `RoleDetail`, `SkillDetail`) and standardized list items.
+-   Component Styling: The `Tabs` and `Accordion` components were completely restyled to seamlessly integrate with the new design system, including proper active states and borders.
+-   Code Cleanup: Refactored all hardcoded styles (e.g., `text-green-400`, `border-dark-border`) to use dynamic theme variables.
+
+### Added
+-   New Border Tokens: Added `dark-border-darker` and `light-border-lighter` to `tailwind.config.mjs` to create visual depth in nested panels.
+
+### Fixed
+-   Critical Runtime Error: Resolved a `section.content.map is not a function` crash in the `Accordion` component by adding robust type-checking, making it resilient to different content structures.
+
+### Removed
+-   Redundant Technical IDs: Removed unnecessary technical IDs (e.g., `$case_id`, `$project_id`) from the UI of `CaseDetail` and `SideProjects` to improve clarity for the end-user.
+
+### Security
+- Fixed hardcoded API token in `/api/admin/content/route.js` - now uses environment variable
+- This prevents accidental exposure of sensitive credentials in the codebase
+
+### Technical Debt
+- Eliminated code duplication by consolidating ~20 button implementations into a single component
+- Improved maintainability - button styles now managed in one location
+- Ensured consistent hover states and theme support across all buttons
+
+---
+
 ### [Migration]
 
 #### Changed

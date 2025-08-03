@@ -64,11 +64,13 @@ export default function AnalyticsPanel() {
       </div>
       
       {/* Navigation Path / Breadcrumbs */}
-      <div className={`mt-3 pt-2 border-t ${
+      <div className={`mt-4 pt-3 border-t ${
         theme === 'dark' ? 'border-dark-border' : 'border-light-border'
       }`}>
-        <div className={`${yellowClasses} text-xs mb-1`}>$navigation_path</div>
-        <div className={`text-xs flex items-center flex-wrap`}>
+
+        <h3 className={`text-base mb-2 ${yellowClasses}`}>$navigation_path:</h3>
+        
+        <div className={`text-sm flex items-center flex-wrap`}>
           {navigationHistory.length > 0 ? (
             <>
               {navigationHistory.slice(-3).map((screen, index) => {
@@ -85,10 +87,11 @@ export default function AnalyticsPanel() {
                   </span>
                 );
               })}
-              <span className={valueClasses}>{currentScreen}</span>
+              
+              <span className={yellowClasses}>{currentScreen}</span>
             </>
           ) : (
-            <span className={valueClasses}>{currentScreen}</span>
+            <span className={yellowClasses}>{currentScreen}</span>
           )}
         </div>
       </div>
