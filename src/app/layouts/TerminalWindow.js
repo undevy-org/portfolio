@@ -2,6 +2,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import Button from '../components/ui/Button';
 import { Sun, X, ArrowLeft } from 'lucide-react';
 
 export default function TerminalWindow({ title, children }) {
@@ -50,20 +51,32 @@ export default function TerminalWindow({ title, children }) {
       <div className={headerClasses}>
         <div className="flex items-center">
           {showBackButton && (
-            <button onClick={goBack} aria-label="Go back" className={backButtonClasses}>
-              <ArrowLeft size={20} />
-            </button>
+            <Button
+              onClick={goBack}
+              icon={ArrowLeft}
+              variant="icon-only"
+              className="p-1"
+              aria-label="Go back"
+            />
           )}
-          <h1 className={`${titleClasses} ml-4`}>${title}</h1>
+          <h1 className={`${titleClasses} ml-2`}>${title}</h1>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={toggleTheme} aria-label="Toggle theme" className={iconClasses}>
-            <Sun size={20} />
-          </button>
+          <Button
+            onClick={toggleTheme}
+            icon={Sun}
+            variant="icon-only"
+            className="p-1 mr-1"
+            aria-label="Toggle theme"
+          />
           {currentScreen !== 'Entry' && (
-            <button onClick={handleClose} aria-label="Close session" className={iconClasses}>
-              <X size={20} />
-            </button>
+            <Button
+              onClick={handleClose}
+              icon={X}
+              variant="icon-only"
+              className="p-1"
+              aria-label="Close session"
+            />
           )}
         </div>
       </div>

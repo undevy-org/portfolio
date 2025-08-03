@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { validateContentStructure, deepMerge } from './validator';
 
-const ADMIN_TOKEN = 'your-super-secret-token-2024';
+const ADMIN_TOKEN = process.env.ADMIN_API_TOKEN || 'development-only-token';
 
 const CONTENT_FILE_PATH = process.env.NODE_ENV === 'production' 
   ? '/home/undevy/content.json'

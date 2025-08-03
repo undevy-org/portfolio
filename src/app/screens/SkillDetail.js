@@ -2,6 +2,8 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import Button from '../components/ui/Button';
+import { ArrowLeft } from 'lucide-react';
 
 export default function SkillDetail() {
   const { sessionData, theme, navigate, addLog, selectedSkill } = useSession();
@@ -12,16 +14,15 @@ export default function SkillDetail() {
         <p className={theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}>
           No skill selected. Please go back to Skills Grid.
         </p>
-        <button
+        <Button
           onClick={() => navigate('SkillsGrid')}
-          className={`mt-4 px-4 py-2 border rounded ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-gray-300'
-              : 'border-light-border hover:bg-light-hover text-gray-700'
-          }`}
+          icon={ArrowLeft}
+          iconPosition="left"
+          variant="inline"
+          className="mt-4 px-4 py-2"
         >
           Back to Skills
-        </button>
+        </Button>
       </div>
     );
   }
@@ -168,19 +169,18 @@ export default function SkillDetail() {
         </div>
       )}
       
-      <button
+      <Button
         onClick={() => {
           addLog('RETURN TO SKILLS GRID');
           navigate('SkillsGrid');
         }}
-        className={`w-full p-2 border rounded flex items-center justify-center transition-colors ${
-          theme === 'dark'
-            ? 'border-dark-border hover:bg-dark-hover text-gray-300'
-            : 'border-light-border hover:bg-light-hover text-gray-700'
-        }`}
+        icon={ArrowLeft}
+        iconPosition="left"
+        variant="full"
+        className="p-2"
       >
         BACK TO SKILLS
-      </button>
+      </Button>
     </div>
   );
 }

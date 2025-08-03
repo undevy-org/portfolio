@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+### [Migration]
+
+#### Changed
+- Migrated repository from personal account to organization (undevy-org)
+- Updated all documentation to reflect new repository location
+- Preserved all git history and CI/CD configuration
+
+#### Repository Links
+- Old: https://github.com/undevy/undevy-portfolio (archived)
+- New: https://github.com/undevy-org/portfolio
+
+---
+
 ### [Phase 6.5] - Analytics Integration (Partial) `[IN PROGRESS]`
 
 This phase implements basic Matomo analytics integration for the Telegram bot.

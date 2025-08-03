@@ -3,6 +3,7 @@
 
 import { useSession } from '../context/SessionContext';
 import { ChevronRight, UserCheck, Mail } from 'lucide-react';
+import Button from '../components/ui/Button';
 
 export default function Introduction() {
   const { sessionData, theme, navigate, addLog } = useSession();
@@ -83,30 +84,24 @@ return (
 
     {/* Navigation Buttons */}
     <div className="flex gap-3">
-      <button
-        onClick={() => handleNavigate('Timeline', 'experience timeline')}
-        className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
-          theme === 'dark'
-            ? 'border-green-700 bg-black hover:bg-green-900/10 text-green-300'
-            : 'border-gray-400 hover:bg-gray-100 text-gray-800'
-        }`}
-      >
-        <UserCheck className="w-4 h-4" />
-        VIEW EXPERIENCE
-      </button>
+  <Button
+    onClick={() => handleNavigate('Timeline', 'experience timeline')}
+    icon={UserCheck}
+    iconPosition="left"
+    variant="flex"
+  >
+    VIEW EXPERIENCE
+  </Button>
 
-      <button
-        onClick={() => handleNavigate('Contact', 'contact info')}
-        className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
-          theme === 'dark'
-            ? 'border-green-700 bg-black hover:bg-green-900/10 text-green-300'
-            : 'border-gray-400 hover:bg-gray-100 text-gray-800'
-        }`}
-      >
-        <Mail className="w-4 h-4" />
-        GET IN TOUCH
-      </button>
-    </div>
+  <Button
+    onClick={() => handleNavigate('Contact', 'contact info')}
+    icon={Mail}
+    iconPosition="left"
+    variant="flex"
+  >
+    GET IN TOUCH
+  </Button>
+  </div>
   </div>
 );
 }
