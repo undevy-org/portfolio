@@ -24,15 +24,21 @@ export default function MatomoTracker() {
     // Initialize the Matomo tracking array
     var _paq = window._paq = window._paq || [];
     
-    // --- CORE TRACKING LOGIC ---
+    // --- CRITICAL FIX: Set custom dimension BEFORE trackPageView ---
     
-    // If a valid access code is present, set it as a custom dimension.
-    // Replace '1' with the actual ID of your Custom Dimension if it's different.
+    // If a valid access code is present, set it as a custom dimension
     if (accessCode) {
+      // Method 1: Set for this page view only
       _paq.push(['setCustomDimension', 1, accessCode]);
+      
+      // Method 2: Set for entire visit (alternative approach)
+      // _paq.push(['setCustomVariable', 1, 'AccessCode', accessCode, 'visit']);
+      
+      console.log('[MATOMO] Setting custom dimension 1 to:', accessCode);
     }
     
-    // Don't track initial page view here - we'll do it in the screen tracking effect
+    // IMPORTANT: Track page view AFTER setting custom dimension
+    _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     
     // --- SCRIPT INJECTION ---
@@ -41,8 +47,17 @@ export default function MatomoTracker() {
       var u = MATOMO_URL;
       _paq.push(['setTrackerUrl', u + '/matomo.php']);
       _paq.push(['setSiteId', SITE_ID]);
+      
+      // Check if Matomo script already loaded
+      if (document.getElementById('matomo-script')) {
+        console.log('[MATOMO] Script already loaded, skipping injection');
+        return;
+      }
+      
       var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-      g.async = true; g.src = u + '/matomo.js';
+      g.id = 'matomo-script';  // Add ID to prevent duplicate loading
+      g.async = true; 
+      g.src = u + '/matomo.js';
       if (s && s.parentNode) {
         s.parentNode.insertBefore(g, s);
       }
@@ -50,6 +65,11 @@ export default function MatomoTracker() {
     
     matomoInitialized.current = true;
     console.log('[MATOMO] Initialized');
+
+    // Debug: Check if dimension was set
+    if (accessCode) {
+      console.log('[MATOMO] Custom dimension should be sent with code:', accessCode);
+    }
 
   }, [searchParams]); // Run when searchParams changes
 
