@@ -1,11 +1,15 @@
 // src/app/components/MatomoTracker.js
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from '../context/SessionContext';
 
 export default function MatomoTracker() {
   const searchParams = useSearchParams();
+  const { currentScreen, sessionData } = useSession();
+  const isInitialMount = useRef(true);
+  const matomoInitialized = useRef(false);
 
   useEffect(() => {
     const MATOMO_URL = 'https://analytics.undevy.com';
@@ -13,7 +17,7 @@ export default function MatomoTracker() {
     const accessCode = searchParams.get('code');
 
     // This makes sure the script is only run in the browser
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || matomoInitialized.current) {
       return;
     }
 
@@ -28,7 +32,7 @@ export default function MatomoTracker() {
       _paq.push(['setCustomDimension', 1, accessCode]);
     }
     
-    _paq.push(['trackPageView']);
+    // Don't track initial page view here - we'll do it in the screen tracking effect
     _paq.push(['enableLinkTracking']);
     
     // --- SCRIPT INJECTION ---
@@ -44,7 +48,65 @@ export default function MatomoTracker() {
       }
     })();
     
-  }, [searchParams]); // Rerun effect if search params change
+    matomoInitialized.current = true;
+    console.log('[MATOMO] Initialized');
+
+  }, [searchParams]); // Run when searchParams changes
+
+  // Track screen changes (including initial screen)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !matomoInitialized.current) {
+      return;
+    }
+
+    // Wait a tick to ensure Matomo script is loaded
+    setTimeout(() => {
+      if (!window._paq) {
+        console.log('[MATOMO] Waiting for _paq to be available...');
+      return;
+    }
+
+    // Construct the new URL with hash
+    const accessCode = searchParams.get('code');
+    const baseUrl = window.location.origin + window.location.pathname;
+    const urlWithHash = accessCode 
+      ? `${baseUrl}?code=${accessCode}#${currentScreen}`
+      : `${baseUrl}#${currentScreen}`;
+
+    // Get a more descriptive page title
+    const getPageTitle = (screen) => {
+      const screenTitles = {
+        Entry: 'Entry - Authentication',
+        MainHub: 'Main Hub - Navigation',
+        Introduction: 'Introduction - About Me',
+        Timeline: 'Timeline - Experience',
+        RoleDetail: 'Role Detail',
+        CaseList: 'Case Studies - List',
+        CaseDetail: 'Case Study - Detail',
+        SkillsGrid: 'Skills - Overview',
+        SkillDetail: 'Skill - Detail',
+        SideProjects: 'Side Projects',
+        Contact: 'Contact Information'
+      };
+      
+      return screenTitles[screen] || `${screen} - Undevy Portfolio`;
+    };
+
+    // Update the URL that Matomo tracks
+    window._paq.push(['setCustomUrl', urlWithHash]);
+    
+    // Track the page view with custom title
+    window._paq.push(['trackPageView', getPageTitle(currentScreen)]);
+    
+      console.log('[MATOMO] Tracked screen:', currentScreen, urlWithHash);
+      
+      // Update ref to know we're no longer on initial mount
+      if (isInitialMount.current) {
+        isInitialMount.current = false;
+      }
+    }, 100); // Small delay to ensure Matomo is ready
+
+  }, [currentScreen, searchParams]); // Track when screen changes
 
   return null; // This component renders nothing
 }
