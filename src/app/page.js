@@ -8,7 +8,7 @@ import ScreenRenderer from './components/ScreenRenderer';
 
 function AppContent() {
   const searchParams = useSearchParams();
-  const { sessionData, setSessionData, navigate, addLog, endSession } = useSession();
+  const { sessionData, setSessionData, navigate, addLog, endSession, setAuthError } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
@@ -40,11 +40,15 @@ function AppContent() {
           navigate('MainHub', false);
         } else {
           addLog(`ACCESS DENIED: Invalid code ${accessCode}`);
+          setAuthError('Invalid access code. Please try again.');
           setIsAuthenticated(false);
+          navigate('Entry', false);
         }
       } catch (error) {
         addLog(`ERROR: Failed to authenticate`);
+        setAuthError('Connection error. Please try again.');
         setIsAuthenticated(false);
+        navigate('Entry', false);
       }
       setIsLoading(false);
     };
@@ -57,7 +61,7 @@ function AppContent() {
       setIsLoading(false);
       setIsAuthenticated(false);
     }
-  }, [searchParams, sessionData, setSessionData, navigate, addLog, isAuthenticated]);
+  }, [searchParams, sessionData, setSessionData, navigate, addLog, isAuthenticated, setAuthError]);
   
   if (isLoading) {
     return (

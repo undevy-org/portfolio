@@ -33,6 +33,7 @@ export function SessionProvider({ children }) {
 
   // ========== SESSION STATE ==========
   const [sessionData, setSessionData] = useState(null);
+  const [authError, setAuthError] = useState(null);
   
   // ========== NAVIGATION ==========
   const [currentScreen, setCurrentScreen] = useState('Entry');
@@ -197,6 +198,7 @@ export function SessionProvider({ children }) {
     setExpandedSections({});
     setActiveTab({});
     setScreensVisitedCount(1);
+    setAuthError(null); // Clear any auth errors
     if (typeof window !== 'undefined') {
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.delete('code');
@@ -252,6 +254,10 @@ export function SessionProvider({ children }) {
 
     // Session management
     endSession,
+    
+    // Auth error state
+    authError,
+    setAuthError,
   };
 
   return (
