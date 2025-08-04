@@ -1,135 +1,95 @@
 # Terminal UI Design System
 
-This document outlines the design principles, visual specifications, and component guidelines for the Interactive Terminal Portfolio. The system creates a cyberpunk-inspired interface that emulates classic computer terminals with modern functionality.
+This document outlines the design philosophy, visual specifications, and component guidelines for the Interactive Terminal Portfolio. Its purpose is twofold: to serve as the single source of truth for development, ensuring consistency, and to demonstrate the systematic, principle-driven approach behind the user interface.
 
-## 1. Core Design Principles
+## 1. Design Philosophy
 
-The Terminal UI system is built on four key principles:
+The Terminal UI system is built not just on aesthetics, but on a core philosophy of clarity, control, and character. Every design decision is guided by four key principles.
 
-1.  Command-Line Aesthetics: Interface elements mimic terminal commands, with prefix identifiers (e.g., `$`, `[USR]`) and a consistent monospace typography.
-2.  Segmented Information Architecture: Content is strictly compartmentalized in clearly bordered sections (panels), creating a structured and readable layout.
-3.  High-Contrast Monochromatic Palette: The design relies on a limited color palette with a strong distinction between background, text, commands, and interactive elements.
-4.  System Feedback Transparency: All significant user actions and system responses are explicitly logged in a prominent, real-time `SystemLog` component, making the application's state transparent.
+1.  **Command-Line Aesthetics**: The interface intentionally mimics classic terminal commands and layouts.
+    *   **Why?** To create a unique, memorable experience that speaks to technical competence and honors the legacy of computing. It's an interface for builders, thinkers, and problem-solvers.
+
+2.  **Segmented Information Architecture**: Content is strictly compartmentalized into clearly bordered panels.
+    *   **Why?** In complex domains like Web3/DeFi, clarity builds trust. Each panel acts as a single "thought block," isolating a piece of information to reduce cognitive load and guide the user through a structured narrative.
+
+3.  **Intentional Hierarchy**: The system uses a strict color and typography hierarchy to direct user attention.
+    *   **Why?** To make the interface scannable and intuitive. The user should instinctively know what is a title, what is a key piece of data, and what is descriptive text, allowing them to consume information at their own pace.
+
+4.  **System Feedback Transparency**: All significant user actions and system responses are explicitly logged in a prominent, real-time `SystemLog`.
+    *   **Why?** To give the user a sense of complete control and predictability, much like a developer using a well-designed tool. The application's state is never a mystery.
 
 ---
 
 ## 2. Color System
 
-The system supports both a dark (default) and a light theme. All colors are defined as custom utilities in `tailwind.config.js`.
+The palette is inspired by classic monochrome monitors (green-on-black) but modernized for the web with an accent command color (yellow). This creates a balance between nostalgia and functionality. The system supports both a dark (default) and a light theme.
 
 ### Dark Theme (Default)
 
-| Element             | Tailwind Class          | Hex Code  | Usage                                         |
-| :------------------ | :---------------------- | :-------- | :-------------------------------------------- |
-| Background          | `bg-dark-bg`            | `#000000` | Main page background.                           |
-| Primary Text        | `text-dark-text-primary`| `#4ade80` | Body copy, default text. (green-400)          |
-| Secondary Text      | `text-dark-text-secondary`| `#9ca3af` | Subtitles, descriptions, log text. (gray-400) |
-| Command Text        | `text-dark-text-command`| `#facc15` | Panel titles (`$`), prefixes (`[USR]`). (yellow-400) |
-| Borders             | `border-dark-border`    | `#22c55e` | All panel and component borders. (green-500) |
-| Active Element      | `bg-dark-active`        | `#15803d` | Active tab background. (green-800)          |
-| Hover State         | `hover:bg-dark-hover`   | `rgba(34, 197, 94, 0.1)` | Subtle background highlight for buttons/links. |
-| Error State         | `text-dark-error`       | `#f87171` | Error messages. (red-400)                   |
-| Success State       | `text-dark-success`     | `#4ade80` | Success indicators, metrics. (green-400)    |
-| Input Background    | `bg-dark-input-bg`      | `#111827` | Background for text input fields. (gray-900)  |
+| Role                | Tailwind Class             | Hex Code  | Usage                                                  |
+| :------------------ | :------------------------- | :-------- | :----------------------------------------------------- |
+| Background          | `bg-dark-bg`               | `#000000` | Main page background.                                  |
+| **Command Text**    | `text-dark-text-command`   | `#facc15` | **Level 1 Hierarchy**: Panel titles, commands (`$`).     |
+| **Primary Text**    | `text-dark-text-primary`   | `#4ade80` | **Level 2 Hierarchy**: Key labels, important values.     |
+| **Secondary Text**  | `text-dark-text-secondary` | `#9ca3af` | **Level 3 Hierarchy**: Descriptions, body copy.          |
+| Primary Border      | `border-dark-border`       | `#22c55e` | Main window and primary component borders.             |
+| Secondary Border    | `border-dark-border-darker`| `#166534` | Nested panels, creating visual depth.                  |
+| Active Element      | `bg-dark-active`           | `#15803d` | Active tab background.                                 |
+| Hover State         | `hover:bg-dark-hover`      | `rgba(34, 197, 94, 0.1)` | Subtle feedback for interactive elements. |
+| Success State       | `text-dark-success`        | `#4ade80` | Success indicators, metrics.                           |
 
 ### Light Theme
 
-| Element             | Tailwind Class           | Hex Code  | Usage                                         |
-| :------------------ | :----------------------- | :-------- | :-------------------------------------------- |
-| Background          | `bg-light-bg`            | `#f3f4f6` | Main page background. (gray-100)            |
-| Primary Text        | `text-light-text-primary`| `#166534` | Body copy, default text. (green-800)          |
-| Secondary Text      | `text-light-text-secondary`| `#4b5563` | Subtitles, descriptions, log text. (gray-600) |
-| Command Text        | `text-light-text-command`| `#ca8a04` | Panel titles, prefixes. (yellow-600)        |
-| Borders             | `border-light-border`    | `#15803d` | All panel and component borders. (green-700) |
-| Active Element      | `bg-light-active`        | `#dcfce7` | Active tab background. (green-100)          |
-| Hover State         | `hover:bg-light-hover`   | `rgba(22, 163, 74, 0.1)`  | Subtle background highlight for buttons/links. |
-| Error State         | `text-light-error`       | `#dc2626` | Error messages. (red-600)                   |
-| Success State       | `text-light-success`     | `#16a34a` | Success indicators, metrics. (green-600)    |
-| Input Background    | `bg-light-input-bg`      | `#ffffff` | Background for text input fields. (white)   |
+| Role                | Tailwind Class              | Hex Code  | Usage                                                  |
+| :------------------ | :-------------------------- | :-------- | :----------------------------------------------------- |
+| Background          | `bg-light-bg`               | `#f3f4f6` | Main page background.                                  |
+| **Command Text**    | `text-light-text-command`   | `#ca8a04` | **Level 1 Hierarchy**: Panel titles, commands (`$`).     |
+| **Primary Text**    | `text-light-text-primary`   | `#166534` | **Level 2 Hierarchy**: Key labels, important values.     |
+| **Secondary Text**  | `text-light-text-secondary` | `#4b5563` | **Level 3 Hierarchy**: Descriptions, body copy.          |
+| Primary Border      | `border-light-border`       | `#15803d` | Main window and primary component borders.             |
+| Secondary Border    | `border-light-border-lighter`| `#4ade80`| Nested panels, creating visual depth.                  |
+| Active Element      | `bg-light-active`           | `#dcfce7` | Active tab background.                                 |
+| Hover State         | `hover:bg-light-hover`      | `rgba(22, 163, 74, 0.1)` | Subtle feedback for interactive elements. |
+| Success State       | `text-light-success`        | `#16a34a` | Success indicators, metrics.                           |
 
 ---
 
 ## 3. Typography
 
-Consistency is maintained through a strict typographic scale.
+A strict typographic scale ensures consistency and readability.
 
--   Font Family: `font-mono` (`Roboto Mono`) is used exclusively across the entire interface. No other font families are permitted.
--   Font Sizes (defined in `tailwind.config.js`):
-    -   `text-xs` (12px): Status labels, log entries, tags.
-    -   `text-sm` (14px): Base text, body copy, descriptions.
-    -   `text-base` (16px): Command text, panel titles.
-    -   `text-lg` (18px): Screen headers.
-    -   `text-xl` (20px): Emphasized data values.
--   Text Styles:
-    -   No `italic` styles are used.
-    -   Emphasis is achieved through `font-bold` or color changes (`text-dark-success`), not size changes.
+-   **Font Family**: `font-mono` (`Roboto Mono`) is used exclusively to maintain the terminal aesthetic.
+-   **Font Sizes**: A limited set of sizes creates a clean, predictable rhythm.
+    -   `text-xs`: The smallest size, for tertiary details like tags and log timestamps.
+    -   `text-sm`: The workhorse for all body copy and descriptions.
+    -   `text-base`: Used for commands and panel titles to give them prominence.
+    -   `text-lg` / `text-xl`: Reserved for key headers to establish a clear screen hierarchy.
+-   **Text Styles**: The system avoids `italic` or complex `font-weight` changes. Emphasis is achieved through the color hierarchy or minimal `font-bold` usage.
 
 ---
 
-## 4. Layout & Spacing
+## 4. Component Library
 
-A consistent spacing system ensures a clean, grid-like structure.
+Components are designed as reusable, self-contained modules that follow the core design principles.
 
--   Main Layout: The root layout is a vertical `flexbox` with `gap-4` (`1rem`) between the main window, analytics panel, and system log.
--   Container Padding: All primary containers and panels use `p-3` (`0.75rem`) or `p-4` (`1rem`) for internal padding.
--   Vertical Spacing: Vertical rhythm between elements within a panel is managed by a parent `space-y-2` (`0.5rem`) or `space-y-4` (`1rem`).
--   Grid Layouts: Data displays (e.g., in the analytics panel) use CSS Grid (`grid grid-cols-2`) with `gap-x-4` and `gap-y-1` to ensure perfect alignment of key-value pairs.
+### 4.1. Panels
+The Panel is the fundamental "atom" of the interface. It is a container with a `1px` border that isolates a single piece of information or a group of related controls. This modularity makes complex information easy to digest. Panels use secondary (darker/lighter) borders to signify that they are content blocks within the main application window.
+
+### 4.2. Progressive Disclosure Components (`Tabs` & `Accordion`)
+Instead of overwhelming the user, the system reveals complexity on demand.
+-   **Role**: To present a clean summary upfront while providing access to deeper information.
+-   **Styling**: These components are styled to appear seamlessly integrated with the content panels they control, using shared borders and active states to create a cohesive feel.
+
+### 4.3. Navigation Elements (`Buttons`, Links)
+All interactive elements are designed for clarity and function.
+-   **Structure**: Elements are clearly defined interactive targets with `hover` states.
+-   **Styling**: Navigation buttons use the primary border color and often include an icon to hint at the action's outcome (e.g., `ArrowLeft` for "Back").
 
 ---
 
-## 5. Component Guidelines
+## 5. Future Directions
 
-### 5.1. Panels & Containers
-
--   Borders: All logical content groups must be enclosed in a container with a `1px` border (`border border-dark-border` or `border-light-border`).
--   Radius: All containers use a standard border radius of `rounded` (`0.25rem`).
--   Headers: Panels that have a title must use a header section with a bottom border (`border-b`). The title itself must be styled with the command text color and prefixed with `$`.
-
-### 5.2. Buttons
-
--   Structure: All interactive navigation elements are `<button>` or `<Link>` tags with consistent styling.
--   Padding: Standard buttons use `p-2` or `p-3`.
--   States:
-    -   Default: Transparent background with a `1px` border.
-    -   Hover: A subtle background color change (`hover:bg-dark-hover` or `hover:bg-light-hover`). No scaling or shadow effects.
-    -   Disabled: `opacity-50` and `cursor-not-allowed`.
-
-### 5.3. System Log Component
-
--   Structure: A fixed-height container (`h-32`) with vertical scroll (`overflow-y-auto`).
--   Content: Log entries are formatted as `[HH:MM:SS] MESSAGE`.
--   Behavior: Must auto-scroll to the latest entry. The log is capped at the last 20 entries to prevent performance degradation.
-
-### 5.4. State & Interaction
-
--   Transitions: State changes should be immediate with no CSS animations or transitions, aside from a subtle `transition-colors` on hover states.
--   Focus States: Minimal visual change. No outlines or focus rings. Interactive elements like inputs may have a subtle background color change on focus.
--   Loading States: Asynchronous operations should display text changes (e.g., "AUTHENTICATING...") rather than spinners or skeletons to maintain the terminal aesthetic.
-
-### 5.5. Accordion Component
-
-Used for expandable content sections with consistent styling:
-
-- Structure: Header button with chevron indicator + collapsible content area
-- States:
-  - Collapsed: Shows only header with down chevron
-  - Expanded: Shows header with up chevron and content below
-- Styling: 
-  - 1px border around each section
-  - Hover state on header button
-  - Smooth chevron rotation
-  - Border between header and content when expanded
-
-### 5.6. Tabs Component
-
-Used for organizing content into switchable views:
-
-- Structure: Horizontal tab headers + content area below
-- States:
-  - Active tab: Solid background (`bg-dark-active` or `bg-light-active`)
-  - Inactive tabs: Transparent with hover state
-- Styling:
-  - Tabs share bottom border with content area
-  - Active tab appears "connected" to content
-  - Equal width tabs using flexbox
-  - Text prefixed with `$` for terminal aesthetic
+This design system is a living document. Future iterations may explore:
+-   **Subtle Animations**: Introducing minimalist transitions for screen and panel states to enhance the user experience without breaking the terminal aesthetic.
+-   **Keyboard Navigation**: Expanding support for keyboard-only interaction to fully realize the "power user" feel of a terminal.
+-   **Data Visualization**: Developing a component for displaying simple charts or graphs within the established design constraints.
