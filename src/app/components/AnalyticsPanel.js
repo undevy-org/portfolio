@@ -65,7 +65,7 @@ export default function AnalyticsPanel() {
       
       {/* Navigation Path / Breadcrumbs */}
       <div className={`mt-4 pt-3 border-t ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+        theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
       }`}>
 
         <h3 className={`text-base mb-2 ${yellowClasses}`}>$navigation_path:</h3>

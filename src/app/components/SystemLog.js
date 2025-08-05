@@ -14,7 +14,6 @@ export default function SystemLog() {
     }
   }, [logEntries]);
 
-  // THE COLOR FIX: Using bg-dark-bg/90 and bg-light-bg/90 to match the main window
   const containerClasses = `w-full max-w-2xl border rounded h-32 overflow-y-auto text-xs p-2 ${
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
   }`;

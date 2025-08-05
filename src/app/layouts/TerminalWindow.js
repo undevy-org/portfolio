@@ -3,7 +3,7 @@
 
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
-import { Sun, X, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, X, Home, ArrowUp } from 'lucide-react';
 
 export default function TerminalWindow({ title, children }) {
    const { 
@@ -13,11 +13,25 @@ export default function TerminalWindow({ title, children }) {
     endSession, 
     currentScreen,
     navigationHistory,
-    currentDomain 
+    currentDomain,
+    goHome,
+    goUp,
+    screenHierarchy
   } = useSession();
 
-  // Show back button if we have navigation history AND we're not on Entry screen
-  const showBackButton = navigationHistory.length > 0 && currentScreen !== 'Entry';
+    const showBackButton = navigationHistory.length > 0 && currentScreen !== 'Entry';
+    const showHomeButton = currentScreen !== 'MainHub' && currentScreen !== 'Entry';
+    const showUpButton = !!screenHierarchy[currentScreen];
+
+    let displayTitle = title; 
+
+    if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
+      if (currentDomain?.includes('undevy')) {
+        displayTitle = 'undevy_portfolio'; 
+      } else {
+        displayTitle = 'foxous_design';
+      }
+  }
 
   const windowClasses = `w-full max-w-2xl border rounded ${
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
@@ -53,26 +67,49 @@ export default function TerminalWindow({ title, children }) {
           {showBackButton && (
             <Button
               onClick={goBack}
-              icon={ArrowLeft}
+              icon={() => <ArrowLeft size={20} strokeWidth={1.5} />}
               variant="icon-only"
               className="p-1"
               aria-label="Go back"
             />
           )}
-          <h1 className={`${titleClasses} ml-2`}>${title}</h1>
+          {showUpButton && (
+            <Button
+              onClick={goUp}
+              icon={() => <ArrowUp size={20} strokeWidth={1.5} />}
+              variant="icon-only"
+              className="p-1"
+              aria-label="Go up one level"
+            />
+          )}
+          <h1 className={`${titleClasses} ml-2`}>${displayTitle}</h1>
         </div>
         <div className="flex items-center gap-3">
+          {showHomeButton && (
+            <Button
+              onClick={goHome}
+              icon={() => <Home size={20} strokeWidth={1.5} />}
+              variant="icon-only"
+              className="p-1"
+              aria-label="Go to Main Hub"
+            />
+          )}
+
           <Button
             onClick={toggleTheme}
-            icon={Sun}
+            icon={() => theme === 'dark' 
+              ? <Sun size={20} strokeWidth={1.5} /> 
+              : <Moon size={20} strokeWidth={1.5} />
+            }
             variant="icon-only"
-            className="p-1 mr-1"
+            className="p-1"
             aria-label="Toggle theme"
           />
+
           {currentScreen !== 'Entry' && (
             <Button
               onClick={handleClose}
-              icon={X}
+              icon={() => <X size={20} strokeWidth={1.5} />}
               variant="icon-only"
               className="p-1"
               aria-label="Close session"

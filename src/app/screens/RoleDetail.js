@@ -9,7 +9,6 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 export default function RoleDetail() {
   const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
 
-  // REFACTORED: Centralized theme-based classes for consistency
   const panelClasses = `p-4 rounded border ${
     theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
   }`;
@@ -24,7 +23,6 @@ export default function RoleDetail() {
   }`;
 
   if (!selectedRole) {
-    // ... (error handling code remains the same)
     return (
       <div className="p-4 text-center">
         <p className={valueClasses}>
@@ -46,7 +44,6 @@ export default function RoleDetail() {
 
   const roleDetails = sessionData?.role_details?.[selectedRole.id] || {};
 
-  // Structure for Accordion component, now with type safety for content
   const sections = [
     { id: 'summary', title: 'quick_summary', content: roleDetails.summary ? [{ type: 'text', value: roleDetails.summary }] : [] },
     { id: 'responsibilities', title: 'key_responsibilities', content: roleDetails.responsibilities?.map(r => ({ type: 'list_item', value: r })) || [] },
@@ -56,7 +53,6 @@ export default function RoleDetail() {
 
   return (
     <div className="p-4 space-y-4">
-      {/* REFACTORED: Unified Header Panel */}
       <div className={panelClasses}>
         <div className="space-y-1">
           <h2 className={`text-xl ${yellowClasses}`}>{selectedRole.company}</h2>
@@ -65,11 +61,9 @@ export default function RoleDetail() {
         </div>
       </div>
 
-      {/* Accordion Content */}
       <Accordion sections={sections} defaultExpanded="summary" />
 
-      {/* Navigation */}
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-col md:flex-row gap-3">
         <Button
           onClick={() => {
             addLog('RETURN TO TIMELINE');

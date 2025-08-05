@@ -8,7 +8,6 @@ import { ArrowLeft } from 'lucide-react';
 export default function SkillDetail() {
   const { sessionData, theme, navigate, addLog, selectedSkill } = useSession();
 
-  // REFACTORED: Centralized theme-based classes
   const panelClasses = `p-4 rounded border ${
     theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
   }`;
@@ -23,7 +22,6 @@ export default function SkillDetail() {
   }`;
 
   if (!selectedSkill) {
-    // ... (error handling code remains the same)
     return (
       <div className="p-4 text-center">
         <p className={valueClasses}>
@@ -71,19 +69,15 @@ export default function SkillDetail() {
   return (
     <div className="p-4 space-y-4">
       <div className={panelClasses}>
-        {/* Top part: Skill Name and Description */}
         <div className="space-y-1">
           <h2 className={`text-xl ${yellowClasses}`}>{selectedSkill.name}</h2>
           <p className={`text-sm ${valueClasses}`}>{selectedSkill.desc}</p>
         </div>
 
-        {/* MODIFIED: Divider is now darker */}
         <div className={`my-3 border-t ${theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'}`}></div>
         
-        {/* Bottom part: Proficiency Level */}
         <div>
           <h3 className={`text-base mb-2 ${yellowClasses}`}>$proficiency_level</h3>
-          {/* MODIFIED: Indicator squares are now to the left of the text */}
           <div className="flex items-center gap-4">
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((level) => (
@@ -129,8 +123,8 @@ export default function SkillDetail() {
             {skillDetails.tools.map((tool) => (
               <span key={tool} className={`px-2 py-0.5 border rounded text-xs ${
                 theme === 'dark'
-                  ? 'border-dark-border bg-gray-900 text-dark-text-secondary'
-                  : 'border-light-border bg-gray-200 text-light-text-secondary'
+                  ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
+                  : 'border-light-border-lighter bg-gray-200 text-light-text-secondary'
               }`}>
                 {tool}
               </span>

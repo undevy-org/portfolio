@@ -2,7 +2,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { Mail, Globe, Calendar, ExternalLink, Copy, MessageCircle } from 'lucide-react';
+import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Contact() {
@@ -15,24 +15,51 @@ export default function Contact() {
     const contact = { ...baseContact };
     
     if (currentDomain?.includes('foxous')) {
-      contact.email = 'foxous@proton.me';
-      contact.telegram = '@foxous';
-      contact.website = 'https://foxous.design';
+    contact.email = 'foxous@proton.me';
+    contact.telegram = '@foxous';
+    contact.website = 'https://foxous.design';
     } else if (currentDomain?.includes('undevy')) {
       contact.email = 'undevy@gmail.com';
       contact.telegram = '@undevy';
       contact.website = 'https://undevy.com';
-    }
-    
-    return contact;
+    } else {
+      contact.email = contact.email || 'foxous@proton.me';
+      contact.telegram = contact.telegram || '@foxous';
+      contact.website = contact.website || 'https://foxous.design';
+  }
+  return contact;
   };
 
   const contactData = getDomainSpecificContact();
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(contactData.email);
-    setEmailCopied(true);
-    addLog(`EMAIL COPIED: ${contactData.email}`);
+  const handleCopyEmail = async () => {
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(contactData.email);
+        setEmailCopied(true);
+        addLog(`EMAIL COPIED: ${contactData.email}`);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+        addLog(`ERROR: Failed to copy email`);
+      }
+    } else {
+      const textArea = document.createElement('textarea');
+      textArea.value = contactData.email;
+      textArea.style.position = 'fixed';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setEmailCopied(true);
+        addLog(`EMAIL COPIED (fallback): ${contactData.email}`);
+      } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+        addLog(`ERROR: Fallback copy failed`);
+      }
+      document.body.removeChild(textArea);
+    }
+
     setTimeout(() => setEmailCopied(false), 2000);
   };
 
@@ -43,7 +70,7 @@ export default function Contact() {
 
   return (
     <div className="p-4">
-      <div className="flex flex-col md:flex-row gap-2 mb-4">
+      <div className="flex flex-col gap-3 mb-4">
         <button
           onClick={handleCopyEmail}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
@@ -73,7 +100,7 @@ export default function Contact() {
             </span>
           </div>
         </button>
-
+        <div className="flex flex-col md:flex-row gap-3">
         <button
           onClick={() => handleExternalLink('Portfolio website', contactData.website)}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
@@ -117,6 +144,7 @@ export default function Contact() {
             }`} />
           </button>
         )}
+        </div>
       </div>
 
       <div className={`p-3 border rounded ${
@@ -156,33 +184,6 @@ export default function Contact() {
             </span>
         </div>
       </div>
-
-      {contactData.social_links && (
-        <div className={`mt-3 p-3 border rounded ${
-          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-        }`}>
-          <h3 className={`font-bold text-base mb-2 ${
-            theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-          }`}>
-            $social_links
-          </h3>
-          <div className="flex gap-2">
-            {Object.entries(contactData.social_links).map(([platform, url]) => (
-              <button
-                key={platform}
-                onClick={() => handleExternalLink(platform, url)}
-                className={`px-2 py-1 border rounded text-xs transition-colors ${
-                  theme === 'dark'
-                    ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-                    : 'border-light-border hover:bg-light-hover text-light-text-primary'
-                }`}
-              >
-                [{platform}]
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
