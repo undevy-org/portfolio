@@ -26,6 +26,21 @@ const domainConfigs = {
   },
 };
 
+const screenHierarchy = {
+  // Deep-level screens 
+  'RoleDetail': 'Timeline',
+  'CaseDetail': 'CaseList',
+  'SkillDetail': 'SkillsGrid',
+  
+  // Top-level screens
+  'Timeline': 'MainHub',
+  'CaseList': 'MainHub',
+  'SkillsGrid': 'MainHub',
+  'Introduction': 'MainHub',
+  'SideProjects': 'MainHub',
+  'Contact': 'MainHub',
+};
+
 export function SessionProvider({ children }) {
   // ========== DOMAIN ==========
   const [currentDomain, setCurrentDomain] = useState(null);
@@ -77,6 +92,21 @@ export function SessionProvider({ children }) {
       }
     }
   }, [addLog]);
+
+  // ========== DYNAMIC DOCUMENT TITLE ==========
+  useEffect(() => {
+    if (currentDomain) {
+      if (currentDomain.includes('foxous')) {
+        document.title = "$foxous_design";
+      } else if (currentDomain.includes('undevy')) {
+        document.title = "$undevy_portfolio";
+      } else {
+        // Fallback for localhost or other domains
+        document.title = "$terminal_portfolio";
+      }
+      addLog(`TITLE SET: ${document.title}`);
+    }
+  }, [currentDomain, addLog]);
   
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {
@@ -137,6 +167,21 @@ export function SessionProvider({ children }) {
       window.history.replaceState({}, '', currentUrl.toString());
     }
   }, [addLog]);
+
+  // ADDED: New function for hierarchical "up" navigation
+  const goUp = useCallback(() => {
+    const parentScreen = screenHierarchy[currentScreen];
+    if (parentScreen) {
+      addLog(`NAVIGATE UP: ${currentScreen} → ${parentScreen}`);
+      // Navigate to the parent, but don't add current screen to history
+      // to avoid creating a confusing back-and-forth loop with the back button.
+      navigate(parentScreen, false);
+    } else {
+      // If no parent is defined, "up" logically means "home".
+      addLog(`NAVIGATE UP: No parent defined, navigating home.`);
+      goHome();
+    }
+  }, [currentScreen, navigate, goHome, addLog]);
 
   // ========== HASH ROUTING ==========
   useEffect(() => {
@@ -230,6 +275,8 @@ export function SessionProvider({ children }) {
     navigate,
     goBack,
     goHome,
+    goUp,
+    screenHierarchy,
 
     // Selected items
     selectedCase,

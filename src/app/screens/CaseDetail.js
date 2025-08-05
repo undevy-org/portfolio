@@ -96,7 +96,7 @@ export default function CaseDetail() {
             {selectedCase.tags?.map((tag) => (
               <span
                 key={tag}
-                className={`px-2 py-0.5 border rounded-md text-xs ${
+                className={`px-2 py-0.5 border rounded text-xs ${
                   theme === 'dark'
                     ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
                     : 'border-light-border-lighter bg-gray-200 text-light-text-secondary'
@@ -111,7 +111,7 @@ export default function CaseDetail() {
 
       <Tabs tabs={tabs} defaultTab="challenge" />
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-col md:flex-row gap-3">
               <Button
                 onClick={() => {
                   addLog('RETURN TO CASE LIST');

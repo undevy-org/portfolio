@@ -8,9 +8,8 @@ import Button from '../components/ui/Button';
 export default function Introduction() {
   const { sessionData, theme, navigate, addLog } = useSession();
 
-  // REFACTORED: Centralized theme-based classes for consistency
   const panelClasses = `p-4 rounded border mb-4 ${
-    theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
   }`;
   const yellowClasses = `text-base ${
     theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
@@ -35,10 +34,8 @@ export default function Introduction() {
 
 return (
   <div className="p-4 font-mono">
-    {/* Profile Summary */}
       <div className={panelClasses}>
         <h3 className={`mb-2 ${yellowClasses}`}>$profile_data</h3>
-        {/* REFACTORED: Applied valueClasses to text */}
         <div className={`flex flex-wrap gap-x-2 text-sm ${valueClasses}`}>
         <span>{profile.summary?.title}</span>
         <span className="opacity-50">|</span>
@@ -48,21 +45,16 @@ return (
       </div>
     </div>
 
-    {/* About Me */}
       <div className={panelClasses}>
-        {/* REFACTORED: Applied yellowClasses to header */}
         <h3 className={`mb-2 ${yellowClasses}`}>$about_me</h3>
-        {/* REFACTORED: Applied valueClasses to text */}
         <p className={`text-sm leading-relaxed ${valueClasses}`}>{introText}</p>
     </div>
 
-    {/* Core Attributes */}
       <div className={panelClasses}>
         <h3 className={`mb-2 ${yellowClasses}`}>$core_attributes</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
         {profile.attributes?.map((attr, index) => (
           <div key={index}>
-              {/* REFACTORED: Prefix is now a green label, text is a gray value */}
               <span className={labelClasses}>[√] </span>
               <span className={valueClasses}>{attr}</span>
           </div>
@@ -70,10 +62,8 @@ return (
       </div>
     </div>
 
-    {/* Current Status */}
       <div className={panelClasses}>
         <h3 className={`mb-2 ${yellowClasses}`}>$current_status</h3>
-        {/* REFACTORED: Structure is now identical to AnalyticsPanel */}
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
           <span className={labelClasses}>$seeking:</span>
           <span className={valueClasses}>{profile.status?.seeking}</span>
@@ -86,26 +76,25 @@ return (
       </div>
     </div>
 
-    {/* Navigation Buttons */}
-    <div className="flex gap-3">
-  <Button
-    onClick={() => handleNavigate('Timeline', 'experience timeline')}
-    icon={UserCheck}
-    iconPosition="left"
-    variant="flex"
-  >
-    VIEW EXPERIENCE
-  </Button>
+    <div className="flex flex-col md:flex-row gap-3">
+      <Button
+        onClick={() => handleNavigate('Timeline', 'experience timeline')}
+        icon={UserCheck}
+        iconPosition="left"
+        variant="flex"
+      >
+        VIEW EXPERIENCE
+      </Button>
 
-  <Button
-    onClick={() => handleNavigate('Contact', 'contact info')}
-    icon={Mail}
-    iconPosition="left"
-    variant="flex"
-  >
-    GET IN TOUCH
-  </Button>
-  </div>
+      <Button
+        onClick={() => handleNavigate('Contact', 'contact info')}
+        icon={Mail}
+        iconPosition="left"
+        variant="flex"
+      >
+        GET IN TOUCH
+      </Button>
+    </div>
   </div>
 );
 }

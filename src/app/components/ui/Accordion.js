@@ -38,8 +38,8 @@ export default function Accordion({ sections, defaultExpanded = null }) {
          return (
           <div key={idx} className="flex flex-wrap gap-2 pt-2">
             {item.value.map((tag) => (
-              <span key={tag} className={`px-2 py-0.5 border rounded-full text-xs ${
-                theme === 'dark' ? 'border-dark-border bg-gray-900 text-dark-text-secondary' : 'border-light-border bg-gray-200 text-light-text-secondary'
+              <span key={tag} className={`px-2 py-0.5 border rounded text-xs ${
+                theme === 'dark' ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary' : 'border-light-border-lighter bg-gray-200 text-light-text-secondary'
               }`}>
                 {tag}
               </span>

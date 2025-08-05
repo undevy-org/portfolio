@@ -13,13 +13,11 @@ export default function Entry() {
   const { theme, addLog, currentDomain, domainData, authError, setAuthError } = useSession();
   const router = useRouter();
 
-  // Watch for auth errors and react to them
   useEffect(() => {
     if (authError) {
       setIsLoading(false);
-      setCode(''); // Clear the field
+      setCode(''); 
       
-      // Clear the error after 5 seconds
       const timer = setTimeout(() => {
         setAuthError(null);
       }, 5000);
@@ -35,7 +33,7 @@ export default function Entry() {
     }
 
     setIsLoading(true);
-    setAuthError(null); // Clear any previous errors
+    setAuthError(null); 
     addLog(`AUTHENTICATING: ${code}`);
     router.push(`/?code=${code}`);
   };
@@ -47,7 +45,6 @@ export default function Entry() {
   };
 
   const handleGetCode = () => {
-    // Use domain-specific telegram or fallback based on current domain
     let telegramUrl;
     if (domainData?.telegram) {
       telegramUrl = domainData.telegram;
@@ -65,7 +62,6 @@ export default function Entry() {
     addLog('WEB3 LOGIN: Coming soon');
     setWeb3Status('coming-soon');
     
-    // Reset status after 3 seconds
     setTimeout(() => {
       setWeb3Status('idle');
     }, 3000);
@@ -105,7 +101,7 @@ export default function Entry() {
       <button
         onClick={handleSubmit}
         disabled={isLoading}
-        className={`w-full p-3 mb-3 border rounded font-bold transition-colors ${
+        className={`w-full p-3 mb-3 border rounded transition-colors ${
           theme === 'dark'
             ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
             : 'border-light-border hover:bg-light-hover text-light-text-primary'
@@ -114,11 +110,10 @@ export default function Entry() {
         {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
       </button>
 
-      {/* Two horizontal buttons */}
       <div className="flex gap-3">
       <button
         onClick={handleGetCode}
-          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 font-bold transition-colors ${
+          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
           theme === 'dark'
             ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
             : 'border-light-border hover:bg-light-hover text-light-text-primary'
@@ -131,7 +126,7 @@ export default function Entry() {
         <button
           onClick={handleWeb3Login}
           disabled={web3Status === 'coming-soon'}
-          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 font-bold transition-colors ${
+          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
             theme === 'dark'
               ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
               : 'border-light-border hover:bg-light-hover text-light-text-primary'

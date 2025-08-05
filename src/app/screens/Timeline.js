@@ -18,24 +18,24 @@ export default function Timeline() {
 
   return (
     <div className="p-4">
-      {/* Experience Items */}
       <div className="space-y-3">
         {roles.map((role, index) => (
-          <Button
+          <button
             key={`${role.id}-${index}`}
             onClick={() => handleRoleClick(role)}
-            variant="full"
-            className="p-4 text-left"
+            className={`w-full p-4 text-left border rounded transition-colors ${
+              theme === 'dark' 
+                ? 'border-dark-border-darker hover:bg-dark-hover' 
+                : 'border-light-border-lighter hover:bg-light-hover'
+            }`}
           >
             <div className="flex items-start w-full">
-              {/* Index */}
               <span className={`mr-4 ${
                 theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
               }`}>
                 [{String(index + 1).padStart(2, '0')}]
               </span>
 
-              {/* Info */}
               <div className="flex-1">
                 <div className={`text-lg font-normal ${
                   theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
@@ -47,23 +47,27 @@ export default function Timeline() {
                 }`}>
                   {role.role}
                 </div>
-                <div className={`text-xs mt-1 opacity-60 ${
-                  theme === 'dark' ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'
+                <div className={`text-xs mt-1 ${
+                  theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
                 }`}>
                   {role.period} • {role.duration}
                 </div>
-                <div className="text-xs mt-1">{role.highlight}</div>
+                <div className={`text-sm mt-1 ${
+                  theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+                }`}>
+                  {role.highlight}
+                </div>
               </div>
 
-              {/* Chevron */}
-              <ChevronRight className="w-4 h-4 mt-1 ml-2 opacity-60" />
+              <ChevronRight className={`w-5 h-5 mt-1 ml-2 ${
+                theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+              }`} />
             </div>
-          </Button>
+          </button>
         ))}
       </div>
 
-      {/* Bottom Buttons */}
-      <div className="mt-5 flex gap-3">
+      <div className="flex mt-5 flex-col md:flex-row gap-3">
         <Button
           onClick={() => {
             addLog('NAVIGATE: case studies');
