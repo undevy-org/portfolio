@@ -34,7 +34,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".next, package.json, package-lock.json, public, next.config.mjs"
+          source: ".next, package.json, package-lock.json, public, next.config.mjs, src"
           target: "/home/undevy/undevy.com"
 
       # Step 5: Install production dependencies and restart the site process
