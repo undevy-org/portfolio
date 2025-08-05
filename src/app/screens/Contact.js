@@ -41,33 +41,15 @@ export default function Contact() {
     window.open(url, '_blank');
   };
 
-  const handleScheduleCall = () => {
-    addLog('CALENDAR: Schedule request initiated');
-    if (contactData.calendar_link) {
-      window.open(contactData.calendar_link, '_blank');
-    }
-  };
-
   return (
     <div className="p-4">
-      <div className={`mb-4 ${
-        theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-      }`}>
-        <h2 className="text-2xl font-bold mb-2">Get in Touch</h2>
-        <p className={`text-sm ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
-          Ready to collaborate on your next project
-        </p>
-      </div>
-
-      <div className="space-y-2 mb-4">
+      <div className="flex flex-col md:flex-row gap-2 mb-4">
         <button
           onClick={handleCopyEmail}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
             theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover'
-              : 'border-light-border hover:bg-light-hover'
+              ? 'border-dark-border-darker hover:bg-dark-hover'
+              : 'border-light-border-lighter hover:bg-light-hover'
           }`}
         >
           <div className="flex items-center">
@@ -87,7 +69,7 @@ export default function Contact() {
                 ? (theme === 'dark' ? 'text-dark-success' : 'text-light-success')
                 : (theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary')
             }`}>
-              {emailCopied ? 'COPIED!' : 'CLICK TO COPY'}
+              {emailCopied ? 'COPIED!' : 'COPY'}
             </span>
           </div>
         </button>
@@ -96,8 +78,8 @@ export default function Contact() {
           onClick={() => handleExternalLink('Portfolio website', contactData.website)}
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
             theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover'
-              : 'border-light-border hover:bg-light-hover'
+              ? 'border-dark-border-darker hover:bg-dark-hover'
+              : 'border-light-border-lighter hover:bg-light-hover'
           }`}
         >
           <div className="flex items-center">
@@ -118,8 +100,8 @@ export default function Contact() {
             onClick={() => handleExternalLink('Telegram', domainData?.telegram || `https://t.me/${contactData.telegram.replace('@', '')}`)}
             className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${
               theme === 'dark'
-                ? 'border-dark-border hover:bg-dark-hover'
-                : 'border-light-border hover:bg-light-hover'
+                ? 'border-dark-border-darker hover:bg-dark-hover'
+                : 'border-light-border-lighter hover:bg-light-hover'
             }`}
           >
             <div className="flex items-center">
@@ -135,60 +117,43 @@ export default function Contact() {
             }`} />
           </button>
         )}
-
-        <button
-          onClick={handleScheduleCall}
-          className={`w-full p-3 border rounded flex items-center transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover'
-              : 'border-light-border hover:bg-light-hover'
-          }`}
-        >
-          <Calendar className={`w-5 h-5 mr-3 ${
-            theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-          }`} />
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            Schedule a Call
-          </span>
-        </button>
       </div>
 
       <div className={`p-3 border rounded ${
-        theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+        theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
       }`}>
-        <h3 className={`font-bold text-base mb-2 ${
-          theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-        }`}>
-          $availability_status
-        </h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $location:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {contactData.location}
-          </span>
+        <h3 className={`text-base mb-2 ${
+            theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+          }`}>
+            $availability_status
+          </h3>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+            <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
+              $location:
+            </span>
+            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+              {sessionData.profile.status.location || 'Not specified'}
+            </span>
 
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $work_type:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {contactData.availability?.work_type}
-          </span>
+            <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
+              $work_type:
+            </span>
+            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+              {sessionData.profile.status.seeking || 'Not specified'}
+            </span>
 
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $target_comp:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
-            {contactData.availability?.target_comp}
-          </span>
-
-          <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-            $start_date:
-          </span>
-          <span className={theme === 'dark' ? 'text-dark-success' : 'text-light-success'}>
-            {contactData.availability?.status}
-          </span>
+            <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
+              $target_comp:
+            </span>
+            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+              {sessionData.profile.status.salary || 'Not specified'}
+            </span>
+            <span className={theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'}>
+              $start_date:
+            </span>
+            <span className={theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+              {sessionData.profile.status.availability || 'Not specified'}
+            </span>
         </div>
       </div>
 

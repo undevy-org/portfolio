@@ -4,10 +4,12 @@
 import { useState, useEffect } from 'react';
 import { useSession } from '../context/SessionContext';
 import { useRouter } from 'next/navigation';
+import { MessageSquare, Wallet } from 'lucide-react';
 
 export default function Entry() {
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [web3Status, setWeb3Status] = useState('idle'); 
   const { theme, addLog, currentDomain, domainData, authError, setAuthError } = useSession();
   const router = useRouter();
 
@@ -59,6 +61,16 @@ export default function Entry() {
     window.open(telegramUrl, '_blank');
   };
 
+  const handleWeb3Login = () => {
+    addLog('WEB3 LOGIN: Coming soon');
+    setWeb3Status('coming-soon');
+    
+    // Reset status after 3 seconds
+    setTimeout(() => {
+      setWeb3Status('idle');
+    }, 3000);
+  };
+
   return (
     <div className="p-4">
       <input
@@ -93,7 +105,7 @@ export default function Entry() {
       <button
         onClick={handleSubmit}
         disabled={isLoading}
-        className={`w-full p-3 mb-2 border rounded font-bold transition-colors ${
+        className={`w-full p-3 mb-3 border rounded font-bold transition-colors ${
           theme === 'dark'
             ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
             : 'border-light-border hover:bg-light-hover text-light-text-primary'
@@ -102,16 +114,33 @@ export default function Entry() {
         {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
       </button>
 
+      {/* Two horizontal buttons */}
+      <div className="flex gap-3">
       <button
         onClick={handleGetCode}
-        className={`w-full p-3 border rounded font-bold transition-colors ${
+          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 font-bold transition-colors ${
           theme === 'dark'
             ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
             : 'border-light-border hover:bg-light-hover text-light-text-primary'
         }`}
       >
+          <MessageSquare className="w-4 h-4" />
         GET CODE
       </button>
+
+        <button
+          onClick={handleWeb3Login}
+          disabled={web3Status === 'coming-soon'}
+          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 font-bold transition-colors ${
+            theme === 'dark'
+              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
+              : 'border-light-border hover:bg-light-hover text-light-text-primary'
+          } ${web3Status === 'coming-soon' ? 'opacity-50' : ''}`}
+        >
+          <Wallet className="w-4 h-4" />
+          {web3Status === 'coming-soon' ? 'COMING SOON...' : 'WEB3 LOGIN'}
+        </button>
+      </div>
     </div>
   );
 }

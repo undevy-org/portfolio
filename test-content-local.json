@@ -32,7 +32,8 @@
       "status": {
         "seeking": "Remote Product Design Opportunities",
         "location": "Tbilisi, Georgia (GMT+4)",
-        "availability": "Immediate"
+        "availability": "Immediate",
+        "salary": "Negotiable"
       }
     },
     "introduction": {
@@ -71,7 +72,8 @@
       "status": {
         "seeking": "Senior Product Designer - DeFi/Web3",
         "location": "Tbilisi, Georgia (GMT+4)",
-        "availability": "Immediate"
+        "availability": "Immediate",
+        "salary": "Negotiable"
       }
     },
     "introduction": {
@@ -110,7 +112,8 @@
       "status": {
         "seeking": "Head of Design / Design Lead",
         "location": "Tbilisi, Georgia (GMT+4)",
-        "availability": "Immediate"
+        "availability": "Immediate",
+        "salary": "Negotiable"
       }
     },
     "introduction": {
@@ -289,6 +292,54 @@
           "React Native",
           "Solana Web3.js"
         ]
+      },
+      "loyalty": {
+        "summary": "Designed white-label banking applications for financial institutions' loyalty programs, focusing on B2B2C user experiences.",
+        "responsibilities": [
+          "Creating white-label banking and fintech applications",
+          "Conducting card-sorting exercises for intuitive navigation",
+          "Developing custom UI kit from scratch",
+          "Redesigning information architecture based on user research",
+          "Collaborating with banks for customization requirements"
+        ],
+        "achievements": [
+          "50% improvement in key screen discovery",
+          "Enhanced feature discoverability for loyalty programs",
+          "Created modular system flexible for multiple bank partners",
+          "Redesigned over 50 screens based on user research",
+          "Developed architecture serving millions of end-users"
+        ],
+        "tech": [
+          "Figma",
+          "Sketch",
+          "Principle",
+          "Miro",
+          "UserTesting"
+        ]
+      },
+      "wb": {
+        "summary": "Created Russia's largest e-commerce design system while working in the financial department on complex dashboards and CRM systems.",
+        "responsibilities": [
+          "Building comprehensive design system from scratch",
+          "Implementing components in Storybook for developers",
+          "Designing CRM systems for finance staff",
+          "Creating financial dashboards for internal users",
+          "Providing UX consulting for iOS and Android payment apps"
+        ],
+        "achievements": [
+          "80% component implementation in Storybook",
+          "Created the company's most technically advanced design system",
+          "Standardized design across multiple departments",
+          "Improved internal workflow efficiency through better tools",
+          "Established design processes that outlived tenure"
+        ],
+        "tech": [
+          "Figma",
+          "Storybook",
+          "React",
+          "JavaScript",
+          "Design Tokens"
+        ]
       }
     },
     "case_studies": {
@@ -381,6 +432,96 @@
           "Platform became the UI standard for DeFi derivatives"
         ],
         "learnings": "Working in an anonymous DAO taught me the importance of over-communication and documentation. Success came from deeply understanding user needs and translating complex DeFi mechanics into intuitive interfaces."
+      },
+      "gmx_multichain": {
+        "challenge": "Traders needed to manage positions across multiple blockchains (Arbitrum and Avalanche) but were forced to switch networks manually, track positions separately, and manage different gas tokens. This complexity was limiting trading volume and user adoption.",
+        "approach": [
+          "Mapped current multi-chain user journeys to identify friction points",
+          "Researched account abstraction and cross-chain messaging protocols",
+          "Designed unified 'GMX Account' concept to abstract chain complexity",
+          "Created progressive disclosure system for chain-specific details",
+          "Tested prototypes with power traders managing multi-chain positions"
+        ],
+        "solution": "Designed a seamless multi-chain interface where users see a unified portfolio view regardless of underlying chains. Implemented smart routing that automatically selects the best chain for each trade based on liquidity and fees. Chain switching happens invisibly in the background.",
+        "results": [
+          "40% increase in cross-chain transaction volume",
+          "Reduced multi-chain position management time by 65%",
+          "Expanded addressable market to users on both chains",
+          "Set new standard for multi-chain DeFi UX"
+        ],
+        "learnings": "The best Web3 UX often means hiding Web3 complexity entirely. Users care about outcomes (their trades), not the underlying technology (which blockchain). Success came from thinking like a trader, not a blockchain engineer."
+      },
+      "gmx_system": {
+        "challenge": "GMX had accumulated massive design debt with inconsistent components, no documentation, and developers recreating UI elements from scratch. This was slowing development velocity and creating a fragmented user experience across the platform.",
+        "approach": [
+          "Audited entire platform to catalog existing patterns and inconsistencies",
+          "Built token-based architecture using Figma variables and JSON export",
+          "Created comprehensive component library with usage guidelines",
+          "Developed automated documentation system for developer handoff",
+          "Established contribution guidelines for maintaining system integrity"
+        ],
+        "solution": "Built a complete design system from the ground up, featuring semantic color tokens, responsive typography scale, and over 200 production-ready components. Integrated directly with development workflow through automated JSON token export and comprehensive Storybook documentation.",
+        "results": [
+          "30% increase in feature development velocity",
+          "40% reduction in UI-related bug reports",
+          "90% reduction in design-dev handoff time",
+          "Enabled consistent experience across all GMX products"
+        ],
+        "learnings": "A design system is only as good as its adoption. By involving developers from day one and automating as much as possible, we created a system that teams actually wanted to use. The key was making the right thing also the easiest thing."
+      },
+      "cere_nft": {
+        "challenge": "Cere's NFT marketplace struggled with low artist retention and buyer engagement. Artists found the minting process confusing, buyers couldn't discover relevant content, and the Web3 onboarding created massive drop-off rates for mainstream users.",
+        "approach": [
+          "Conducted interviews with 30+ artists about their minting experience",
+          "Analyzed buyer behavior patterns and discovery challenges",
+          "Benchmarked against Web2 marketplaces for UX patterns",
+          "Designed progressive Web3 onboarding with email/social login",
+          "Created artist-first features like batch minting and analytics"
+        ],
+        "solution": "Redesigned the entire marketplace with artists at the center. Simplified minting to a 3-step process, added powerful discovery features with AI-powered recommendations, and implemented Web2-style onboarding that gradually introduced Web3 concepts.",
+        "results": [
+          "150% increase in artist satisfaction scores (CSAT)",
+          "200% improvement in buyer engagement metrics",
+          "Reduced minting abandonment rate by 45%",
+          "10% increase in overall platform user acquisition"
+        ],
+        "learnings": "NFT marketplaces succeed when they prioritize creators. By focusing on artist tools and experience first, we created a virtuous cycle where better content attracted more buyers, which attracted more artists."
+      },
+      "wildberries": {
+        "challenge": "Russia's largest e-commerce platform had no unified design language across teams. Each department built features independently, resulting in inconsistent experiences, duplicated work, and a fragmented brand presence that confused users.",
+        "approach": [
+          "Audited design patterns across all departments and platforms",
+          "Built coalition of stakeholders to champion standardization",
+          "Created design system with developer-first documentation",
+          "Implemented components directly in Storybook for easy adoption",
+          "Established governance model for system maintenance"
+        ],
+        "solution": "Developed the most comprehensive design system in the company's history, with over 80% of components implemented in production Storybook. Created extensive documentation, usage guidelines, and a contribution model that empowered teams while maintaining consistency.",
+        "results": [
+          "80% reduction in design inconsistencies across platforms",
+          "Saved 100+ hours monthly on component recreation",
+          "Improved page load performance through standardized components",
+          "System adopted by 6 different departments within 3 months"
+        ],
+        "learnings": "Building a design system in a large organization is as much about politics as it is about pixels. Success required building consensus, demonstrating value quickly, and making adoption painless for overwhelmed teams."
+      },
+      "loyalty": {
+        "challenge": "Banks needed white-label applications for loyalty programs but existing solutions were generic and failed to engage users. Loyalty features were buried, redemption flows were complex, and personalization was non-existent, leading to low program participation.",
+        "approach": [
+          "Conducted card-sorting with 50+ banking customers",
+          "Analyzed loyalty program engagement across 10 partner banks",
+          "Designed modular architecture for bank customization",
+          "Created information hierarchy based on user mental models",
+          "Built flexible UI kit supporting multiple brand identities"
+        ],
+        "solution": "Restructured entire application around user needs rather than bank requirements. Created intuitive navigation that surfaced loyalty benefits prominently, simplified redemption to 2-tap process, and built personalization engine showing relevant offers based on spending patterns.",
+        "results": [
+          "50% improvement in loyalty feature discovery",
+          "Increased program participation by 35% across partner banks",
+          "Reduced customer support tickets by 40%",
+          "Enabled deployment to 5 new bank partners"
+        ],
+        "learnings": "B2B2C products require balancing multiple stakeholders' needs. By focusing on end-user experience while building flexibility for business customers, we created a solution that served both audiences effectively."
       },
       "key_app": {
         "challenge": "Building a non-custodial crypto wallet that mainstream users could actually use. The Solana ecosystem lacked user-friendly wallets, and existing solutions were too technical for average users.",
@@ -484,6 +625,51 @@
           "Python (for analysis)"
         ],
         "impact": "Identified critical UX issues leading to 60% error reduction"
+      },
+      "Frontend Dev": {
+        "description": "Engineering background enables deep collaboration with developers and ability to prototype complex interactions directly in code.",
+        "examples": [
+          "Built portfolio site with Next.js and custom animations",
+          "Prototyped Web3 interactions in React for faster iteration",
+          "Implemented design tokens pipeline with automated export"
+        ],
+        "tools": [
+          "React",
+          "TypeScript",
+          "Next.js",
+          "Tailwind CSS"
+        ],
+        "impact": "Reduced design-dev friction by 50%, enabled rapid prototyping of complex features"
+      },
+      "Data Analysis": {
+        "description": "Leveraging quantitative data to inform design decisions and measure impact of changes on business metrics.",
+        "examples": [
+          "Built Python scripts to analyze user behavior patterns",
+          "Created dashboards tracking design KPIs in Mixpanel",
+          "Used cohort analysis to optimize onboarding flows"
+        ],
+        "tools": [
+          "Python",
+          "SQL",
+          "Mixpanel",
+          "Google Analytics"
+        ],
+        "impact": "Increased conversion rates by 63% through data-driven optimization"
+      },
+      "Team Leadership": {
+        "description": "Built and led design teams from scratch, establishing processes and culture while maintaining hands-on involvement.",
+        "examples": [
+          "Grew Key App design team from 1 to 4 designers",
+          "Established design review process at Cere Network",
+          "Mentored junior designers at multiple companies"
+        ],
+        "tools": [
+          "Figma",
+          "Notion",
+          "Slack",
+          "Linear"
+        ],
+        "impact": "Improved team velocity by 20%, maintained high designer retention rates"
       }
     },
     "side_projects": [
