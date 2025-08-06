@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <Web3Provider>
             <ThemeManager />
-            <main className="flex flex-col items-center justify-center min-h-screen p-4 gap-4">
+            <main className="flex flex-col items-center justify-start md:justify-center min-h-screen p-2 gap-2">
               {children}
               <AnalyticsPanel />
               <SystemLog />

@@ -63,7 +63,8 @@ export default function TerminalWindow({ title, children }) {
   return (
     <div className={windowClasses}>
       <div className={headerClasses}>
-        <div className="flex items-center">
+        {/* Left-side controls */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {showBackButton && (
             <Button
               onClick={goBack}
@@ -82,9 +83,13 @@ export default function TerminalWindow({ title, children }) {
               aria-label="Go up one level"
             />
           )}
-          <h1 className={`${titleClasses} ml-2`}>${displayTitle}</h1>
         </div>
-        <div className="flex items-center gap-3">
+
+        {/* Title (will shrink and truncate if needed) */}
+        <h1 className={`${titleClasses} mx-2 text-center truncate`}>${displayTitle}</h1>
+
+        {/* Right-side controls */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {showHomeButton && (
             <Button
               onClick={goHome}

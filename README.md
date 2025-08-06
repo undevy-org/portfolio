@@ -8,6 +8,7 @@ After authentication, the application transforms into a seamless Single Page App
 
 -   **Gated & Personalized Access:** The site is accessible only via a unique code (`?code=...`). Based on this code, all content—from greetings to project case studies—is dynamically tailored for the visitor.
 -   **Single Page Application (SPA) Experience:** After a single data load during authentication, all navigation is instantaneous and handled client-side, with bookmarkable URLs for each screen (`#Timeline`, `#CaseDetail`, etc.).
+-   **Dual Authentication System:** Supports both traditional access codes and Web3 wallet login. Users can connect via MetaMask, WalletConnect, etc., using the Reown protocol for a seamless Web3 experience.
 -   **Decoupled Content Architecture:** All portfolio data is stored in a `content.json` file on the server, completely separate from the application code. This allows content updates without redeploying the app.
 -   **Headless CMS via Telegram Bot:** A custom Telegram bot serves as a powerful, on-the-go content management system. You can create, edit, delete, and rollback content versions directly from your phone.
 -   **Privacy-First Analytics:** A self-hosted Matomo instance provides detailed session tracking while ensuring full data ownership and privacy.
@@ -25,6 +26,8 @@ After authentication, the application transforms into a seamless Single Page App
 | **Containerization**| Docker            | Isolates the Matomo & MariaDB stack for a clean, reproducible environment. |
 | **CI/CD**          | GitHub Actions     | Automates the entire deployment pipeline on every push to the `main` branch. |
 | **Bot Framework**  | grammY             | A modern framework for building the Telegram-based CMS.                  |
+| **Web3** | `wagmi` & `viem` | A collection of React Hooks and utilities for interacting with Ethereum wallets and blockchains. |
+| **Web3** | `@reown/appkit` | Powers the user-friendly wallet connection modal (QR code, wallet selection). |
 
 ## Local Development Quick Start
 
@@ -50,6 +53,6 @@ After authentication, the application transforms into a seamless Single Page App
 This project is thoroughly documented. For more details, please see the following files:
 
 -   **[`SETUP.md`](./SETUP.md):** A comprehensive guide to deploying your own instance from scratch.
--   **[`ARCHITECTURE.md`](./ARCHITECTURE.md):** A technical deep-dive into the system's architecture, data flow, and internal logic.
 -   **[`CHANGELOG.md`](./CHANGELOG.md):** A detailed history of all notable changes and project milestones.
 -   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
+-   **[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md):** A detailed overview of the custom terminal-inspired design system, including color palettes, typography, component guidelines, and theming instructions for consistent UI/UX across the portfolio.

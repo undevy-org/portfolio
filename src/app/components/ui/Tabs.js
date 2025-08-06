@@ -44,24 +44,29 @@ export default function Tabs({ tabs, defaultTab = null }) {
     }
   };
 
-  return (
+    return (
     <div>
-      <div className="flex w-full">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => handleTabClick(tab.id, tab.label)}
-            className={`flex-1 text-center px-4 py-3 text-sm rounded-t transition-colors ${
-              activeTab === tab.id
-                ? `${activeBg} ${labelClasses} border-t border-x ${darkerBorder}`
-                : `${valueClasses} ${hoverBg} border-b ${darkerBorder}`
-            }`}
-          >
-            ${tab.label}
-          </button>
-        ))}
+      {/* MODIFIED: Added overflow-x-auto for horizontal scrolling on small screens */}
+      <div className="w-full overflow-x-auto">
+        <div className="flex w-full border-b border-dark-border-darker">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id, tab.label)}
+              // MODIFIED: Removed flex-1 and added whitespace-nowrap
+              className={`text-center px-4 py-3 text-sm rounded-t transition-colors whitespace-nowrap -mb-px ${
+                activeTab === tab.id
+                  ? `${activeBg} ${labelClasses} border-t border-x ${darkerBorder}`
+                  : `${valueClasses} ${hoverBg} border-b-0` // Inactive tabs no longer need a bottom border here
+              }`}
+            >
+              ${tab.label}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className={`p-4 border rounded-b -mt-px ${darkerBorder}`}>
+
+      <div className={`p-4 border rounded-b rounded-tr ${darkerBorder}`}>
         <h3 className={`mb-3 ${yellowClasses}`}>${activeTabData.title}</h3>
         <div className="space-y-2">
           {activeTabData.content.map(renderContentItem)}
