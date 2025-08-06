@@ -234,6 +234,7 @@ export function SessionProvider({ children }) {
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
     addLog('SESSION TERMINATED');
+    const wasWeb3User = sessionData?.isWeb3User;
     setSessionData(null);
     setNavigationHistory([]);
     setCurrentScreen('Entry');
@@ -243,14 +244,18 @@ export function SessionProvider({ children }) {
     setExpandedSections({});
     setActiveTab({});
     setScreensVisitedCount(1);
-    setAuthError(null); // Clear any auth errors
+    setAuthError(null); 
     if (typeof window !== 'undefined') {
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.delete('code');
+      currentUrl.searchParams.delete('web3');
       currentUrl.hash = '';
       window.history.replaceState({}, '', currentUrl.toString());
+      if (wasWeb3User) {
+      window.dispatchEvent(new Event('web3-logout-requested'));
+      }
     }
-  }, [addLog]);
+  }, [addLog, sessionData]);
 
   // ========== INITIALIZATION ==========
   useEffect(() => {
