@@ -7,6 +7,7 @@ import AnalyticsPanel from "./components/AnalyticsPanel";
 import { Suspense } from 'react';
 import { SessionProvider } from "./context/SessionContext";
 import ThemeManager from "./components/ThemeManager";
+import { Web3Provider } from "./components/Web3Provider";
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['100', '200', '300', '400', '500', '600', '700'],
@@ -28,15 +29,17 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${ibmPlexMono.variable} font-mono bg-dark-bg text-dark-text-primary`}>
         <SessionProvider>
-          <ThemeManager />
-          <main className="flex flex-col items-center justify-center min-h-screen p-4 gap-4">
-            {children}
-            <AnalyticsPanel />
-            <SystemLog />
-          </main>
-          <Suspense fallback={null}>
-            <MatomoTracker />
-          </Suspense>
+          <Web3Provider>
+            <ThemeManager />
+            <main className="flex flex-col items-center justify-center min-h-screen p-4 gap-4">
+              {children}
+              <AnalyticsPanel />
+              <SystemLog />
+            </main>
+            <Suspense fallback={null}>
+              <MatomoTracker />
+            </Suspense>
+          </Web3Provider>
         </SessionProvider>
       </body>
     </html>
