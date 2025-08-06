@@ -170,7 +170,6 @@ export default function Entry() {
   addLog('WEB3 LOGIN: Opening wallet connection');
   open();
 };
-  
 
   return (
     <div className="p-4">

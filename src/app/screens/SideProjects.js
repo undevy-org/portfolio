@@ -7,7 +7,6 @@ import { ExternalLink } from 'lucide-react';
 export default function SideProjects() {
   const { sessionData, theme, addLog } = useSession();
   
-  // REFACTORED: Centralized theme-based classes
   const panelClasses = `p-4 rounded border ${
     theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
   }`;
@@ -44,7 +43,6 @@ export default function SideProjects() {
   
   return (
     <div className="p-4 space-y-4">
-      {/* MODIFIED: Each project is now its own panel, no master title */}
       <div className="space-y-3">
         {projects.map((project) => (
           <div key={project.id} className={panelClasses}>
@@ -69,11 +67,11 @@ export default function SideProjects() {
         ))}
       </div>
 
-      {/* MODIFIED: Public speaking section with list items similar to other screens */}
-      {speaking.length > 0 && (
+            {speaking.length > 0 && (
         <div className={panelClasses}>
           <h3 className={`text-base mb-3 ${yellowClasses}`}>$public_speaking</h3>
-          <div className="space-y-1">
+          {/* MODIFIED: Items are now separated panels for better clickability */}
+          <div className="space-y-2">
             {speaking.map((item, index) => (
               <a
                 key={index}
@@ -81,7 +79,12 @@ export default function SideProjects() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => addLog(`EXTERNAL LINK: ${item.title}`)}
-                className={`flex items-center justify-between p-2 rounded transition-colors group ${theme === 'dark' ? 'hover:bg-dark-hover' : 'hover:bg-light-hover'}`}
+                // MODIFIED: Added border and padding to make it a distinct block
+                className={`flex items-center justify-between p-3 border rounded transition-colors group ${
+                  theme === 'dark' 
+                    ? 'border-dark-border hover:bg-dark-hover' 
+                    : 'border-light-border hover:bg-light-hover'
+                }`}
               >
                 <div className="text-sm flex items-start">
                   <span className={`mr-2 ${yellowClasses}`}>[→]</span>

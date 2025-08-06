@@ -29,13 +29,16 @@ export default function Timeline() {
                 : 'border-light-border-lighter hover:bg-light-hover'
             }`}
           >
-            <div className="flex items-start w-full">
-              <span className={`mr-4 ${
+            {/* MODIFIED: Layout changed from flex to a more robust grid */}
+            <div className="grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
+              {/* Column 1: Index */}
+              <span className={`mt-1 ${
                 theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
               }`}>
                 [{String(index + 1).padStart(2, '0')}]
               </span>
 
+              {/* Column 2: Main Content */}
               <div className="flex-1">
                 <div className={`text-lg font-normal ${
                   theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
@@ -59,7 +62,8 @@ export default function Timeline() {
                 </div>
               </div>
 
-              <ChevronRight className={`w-5 h-5 mt-1 ml-2 ${
+              {/* Column 3: Chevron */}
+              <ChevronRight className={`w-5 h-5 mt-1 ${
                 theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
               }`} />
             </div>

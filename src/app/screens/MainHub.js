@@ -7,7 +7,6 @@ import { ChevronRight } from 'lucide-react';
 export default function MainHub() {
   const { sessionData, theme, navigate, addLog } = useSession();
 
-  // REFACTORED: Centralized theme-based classes
   const infoPanelClasses = `p-4 rounded border ${
     theme === 'dark' ? 'border-dark-border' : 'border-light-border'
   }`;
@@ -30,24 +29,29 @@ export default function MainHub() {
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
-      {/* FIXED: Header is now styled exactly like AnalyticsPanel */}
       <div className={`${buttonPanelClasses} mb-4`}>
         <h2 className={`text-base mb-2 ${yellowClasses}`}>$session_info</h2>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={labelClasses}>$user:</span>
-          {/* FIXED: User name is now a gray value */}
-          <span className={valueClasses}>{sessionData?.profile?.greeting_name || 'Guest'}</span>
+        {/* MODIFIED: Layout is now responsive, matching AnalyticsPanel */}
+          <div className="space-y-1 text-sm md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-1 md:space-y-0">
+          {/* These two will be side-by-side on desktop */}
+          <div>
+            <span className={`${labelClasses} mr-2`}>$user:</span>
+            <span className={valueClasses}>{sessionData?.profile?.greeting_name || 'Guest'}</span>
+          </div>
           
-          <span className={labelClasses}>$status:</span>
-          {/* FIXED: Status value is now gray */}
-          <span className={valueClasses}>Authenticated</span>
+          <div>
+            <span className={`${labelClasses} mr-2`}>$status:</span>
+            <span className={valueClasses}>Authenticated</span>
+          </div>
 
-          <span className={labelClasses}>$message:</span>
-          <span className={valueClasses}>Select a command to continue</span>
+          {/* MODIFIED: This div will span both columns on desktop */}
+          <div className="md:col-span-2">
+            <span className={`${labelClasses} mr-2`}>$message:</span>
+            <span className={valueClasses}>Select a command to continue</span>
+          </div>
         </div>
       </div>
 
-      {/* Menu List */}
       <div className="space-y-3">
         {menuItems.map((item) => (
           <button
@@ -56,7 +60,6 @@ export default function MainHub() {
               addLog(`MENU SELECT: ${item.label}`);
               navigate(item.screen);
             }}
-            // FIXED: Using darker border for menu items
             className={`w-full text-left transition-colors flex items-center gap-4 ${buttonPanelClasses}`}
           >
             <span className={`text-base ${yellowClasses}`}>

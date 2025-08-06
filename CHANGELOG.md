@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
 -   Analytics System Overhaul: The Telegram bot's analytics module has been completely stabilized. Real-time visitor notifications are now reliable, displaying the full, accurate user journey and correct company name based on the access code.
 -   New Border Tokens: Added `dark-border-darker` and `light-border-lighter` to `tailwind.config.js` to create more visual depth in nested panels.
 
+### Documentation
+-   Comprehensive Documentation Overhaul: Restructured the entire project documentation suite to establish clear roles for each document, eliminate redundancy, and improve clarity for both internal and external audiences.
+    -   Refactored `README.md` into a high-level project showcase
+    -   Transformed `SETUP.md` into a generic, public-facing deployment guide 
+    -   Made `CONTENT-MODEL.md` a public document, sanitizing it of all personal data to serve as a clean template.
+
 ### Changed
 -   Complete UI Refactoring: Rebuilt all major screens to use a consistent, theme-based design system. This improves visual hierarchy, readability, and maintainability across the application.
 -   Data Parsing Resilience: Significantly improved data extraction functions for the Matomo API. The system is now resilient to unexpected or malformed data, preventing crashes.

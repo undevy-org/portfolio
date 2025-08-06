@@ -213,6 +213,29 @@ pm2 start bot.js --name "portfolio-bot"
 pm2 save
 ```
 
+### 4.5. Web3 Provider Setup (Optional)
+
+This project uses Reown (formerly WalletConnect) for Web3 authentication. To enable this feature in your own deployment, you need to configure it with your own Project ID.
+
+1.  **Get a Project ID:**
+    -   Go to [cloud.reown.com](https://cloud.reown.com).
+    -   Create an account and set up a new project.
+    -   Copy your unique `projectId`.
+
+2.  **Update the Configuration File:**
+    -   Open the following file in the codebase: `src/app/lib/web3-config.js`.
+    -   Replace the existing `projectId` with your own:
+
+    ```javascript
+    // src/app/lib/web3-config.js
+
+    // ... other code
+    export const projectId = 'b75ae0dd3030e509aae32958c74eb59b'; // <-- REPLACE THIS WITH YOUR ID
+    // ... other code
+    ```
+
+3.  **Rebuild and Deploy:** After updating the code, build and deploy your application. The "Web3 Login" feature should now be functional.
+
 ---
 
 ## 5. CI/CD Automation (GitHub Actions)

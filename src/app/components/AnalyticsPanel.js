@@ -49,18 +49,27 @@ export default function AnalyticsPanel() {
   return (
     <div className={panelClasses}>
       <h2 className={`text-base mb-2 ${yellowClasses}`}>$analytics</h2>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-        <span className={labelClasses}>$company:</span>
-        <span className={valueClasses}>{sessionData.meta?.company || sessionData.company}</span>
+      {/* MODIFIED: Layout is now responsive. Switches from single-line to grid on medium screens. */}
+      <div className="space-y-1 md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-1 md:space-y-0">
+        <div>
+          <span className={`${labelClasses} mr-2`}>$company:</span>
+          <span className={valueClasses}>{sessionData.meta?.company || sessionData.company}</span>
+        </div>
 
-        <span className={labelClasses}>$access_level:</span>
-        <span className={valueClasses}>{sessionData.meta?.depth || sessionData.access_level || 'standard'}</span>
+        <div>
+          <span className={`${labelClasses} mr-2`}>$access_level:</span>
+          <span className={valueClasses}>{sessionData.meta?.depth || sessionData.access_level || 'standard'}</span>
+        </div>
 
-        <span className={labelClasses}>$current_screen:</span>
-        <span className={valueClasses}>{currentScreen}</span>
+        <div>
+          <span className={`${labelClasses} mr-2`}>$current_screen:</span>
+          <span className={valueClasses}>{currentScreen}</span>
+        </div>
         
-        <span className={labelClasses}>$screens_visited:</span>
-        <span className={valueClasses}>{screensVisitedCount}</span>
+        <div>
+          <span className={`${labelClasses} mr-2`}>$screens_visited:</span>
+          <span className={valueClasses}>{screensVisitedCount}</span>
+        </div>
       </div>
       
       {/* Navigation Path / Breadcrumbs */}
