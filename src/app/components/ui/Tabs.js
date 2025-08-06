@@ -2,6 +2,13 @@
 'use client';
 import { useState } from 'react';
 import { useSession } from '../../context/SessionContext';
+// Import the image component only if we're using images
+import dynamic from 'next/dynamic';
+
+// Lazy load the image component since not all tabs will have images
+const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
+  loading: () => <div>Loading image...</div>
+});
 
 export default function Tabs({ tabs, defaultTab = null }) {
   const { theme, addLog } = useSession();
@@ -27,7 +34,12 @@ export default function Tabs({ tabs, defaultTab = null }) {
   const renderContentItem = (item, idx) => {
     switch (item.type) {
       case 'text':
-        return <p key={idx} className={`text-sm leading-relaxed ${valueClasses}`}>{item.value}</p>;
+        return (
+          <p key={idx} className={`text-sm leading-relaxed ${valueClasses}`}>
+            {item.value}
+          </p>
+        );
+      
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
@@ -36,12 +48,57 @@ export default function Tabs({ tabs, defaultTab = null }) {
           </div>
         );
       case 'sub_heading':
-        return <div key={idx} className={`mb-2 mt-4 ${yellowClasses}`}>${item.value}</div>;
+        return (
+          <div key={idx} className={`mb-2 mt-4 ${yellowClasses}`}>
+            ${item.value}
+          </div>
+        );
+      
       case 'divider':
-        return <div key={idx} className={`border-t my-3 ${darkerBorder}`}></div>;
+        return (
+          <div key={idx} className={`border-t my-3 ${darkerBorder}`}></div>
+        );
+      
+      case 'image':
+        // New case for handling images
+        return (
+          <div key={idx} className="my-4">
+            <TerminalImagePreview 
+              src={item.src}
+              alt={item.alt || 'Case study image'}
+              height={item.height || 250}
+              aspectRatio={item.aspectRatio || '16/9'}
+            />
+          </div>
+        );
+      
       default:
+        // Log unknown types for debugging
+        console.warn(`Unknown content type: ${item.type}`);
         return null;
     }
+  };
+  
+  // Handle both array content and custom pre-rendered content
+  const renderTabContent = () => {
+    if (!activeTabData) return null;
+    
+    // Check if it's custom type with pre-rendered content (for future compatibility)
+    if (activeTabData.type === 'custom' && !Array.isArray(activeTabData.content)) {
+      return activeTabData.content;
+    }
+    
+    // Default: render array of content items
+    if (Array.isArray(activeTabData.content)) {
+      return (
+        <div className="space-y-2">
+          {activeTabData.content.map(renderContentItem)}
+        </div>
+      );
+    }
+    
+    // Fallback for non-array content
+    return <div className={valueClasses}>No content available</div>;
   };
 
     return (
@@ -66,11 +123,16 @@ export default function Tabs({ tabs, defaultTab = null }) {
         </div>
       </div>
 
+      {/* Tab content */}
       <div className={`p-4 border rounded-b rounded-tr ${darkerBorder}`}>
-        <h3 className={`mb-3 ${yellowClasses}`}>${activeTabData.title}</h3>
-        <div className="space-y-2">
-          {activeTabData.content.map(renderContentItem)}
-        </div>
+        {activeTabData && (
+          <>
+            <h3 className={`mb-3 ${yellowClasses}`}>
+              ${activeTabData.title || activeTabData.label}
+            </h3>
+            {renderTabContent()}
+          </>
+        )}
       </div>
     </div>
   );
