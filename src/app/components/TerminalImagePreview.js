@@ -1,93 +1,187 @@
 // src/app/components/TerminalImagePreview.js
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from '../context/SessionContext';
 import { X } from 'lucide-react';
-import Image from 'next/image';
+import NextImage from 'next/image';
+
+// Global cache for loaded images to maintain state across tab switches
+const imageLoadCache = new Map();
 
 export default function TerminalImagePreview({ 
   src, 
   alt = 'Image preview',
   height = 200, // Height in pixels for the ASCII frame
   width = 400,  // Default width for the image
-  aspectRatio = '16/9' // Default aspect ratio
+  aspectRatio = '16/9', // Default aspect ratio
+  resetOnTabChange = false // Option to reset state when tab changes
 }) {
   const { theme, addLog } = useSession();
-  const [state, setState] = useState('idle'); // idle | loading | ready | error
-  const [progress, setProgress] = useState(0);
-  const [showLightbox, setShowLightbox] = useState(false);
-  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
-
-  // Generate ASCII frame characters based on theme
-  const frameChars = {
-    topLeft: '┌',
-    topRight: '┐',
-    bottomLeft: '└',
-    bottomRight: '┘',
-    horizontal: '─',
-    vertical: '│'
+  
+  // Use src as unique identifier for this image's state
+  const cacheKey = src;
+  
+  // Initialize state from cache if available
+  const getCachedState = () => {
+    if (imageLoadCache.has(cacheKey)) {
+      return imageLoadCache.get(cacheKey);
+    }
+    return { state: 'idle', progress: 0 };
   };
+  
+  const [imageState, setImageStateInternal] = useState(getCachedState);
+  const loadingIntervalRef = useRef(null);
+  const imageRef = useRef(null);
+  
+  // Update cache whenever state changes
+  const setImageState = useCallback((newState) => {
+    setImageStateInternal(newState);
+    imageLoadCache.set(cacheKey, newState);
+  }, [cacheKey]);
+
+  // Detect mobile for responsive design
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handle click on the initial frame
   const handleShowImage = useCallback(() => {
-    if (state !== 'idle') return;
+    if (imageState.state !== 'idle') return;
     
-    setState('loading');
-    setProgress(0);
+    setImageState({ state: 'loading', progress: 0 });
     addLog(`IMAGE REQUEST: ${src.split('/').pop()}`);
     
-    // Simulate loading progress
-    const loadingInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 95) {
-          clearInterval(loadingInterval);
-          return 95; // Stay at 95% until actual load
-        }
-        // Variable speed for more realistic feel
-        const increment = Math.random() * 5 + 2;
-        return Math.min(prev + increment, 95);
-      });
-    }, 100);
-
-    // Store interval ID for cleanup
-    return () => clearInterval(loadingInterval);
-  }, [src, state, addLog]);
-
-  // Handle successful image load
-  const handleImageLoad = useCallback((result) => {
-    setProgress(100);
+    // Realistic loading simulation (3-5 seconds)
+    let currentProgress = 0;
+    const targetDuration = 3000 + Math.random() * 2000; // 3-5 seconds
+    const startTime = Date.now();
     
-    // Store natural dimensions if available
-    if (result.naturalWidth) {
-      setImageDimensions({
-        width: result.naturalWidth,
-        height: result.naturalHeight
-      });
+    loadingIntervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const timeProgress = elapsed / targetDuration;
+      
+      // Simulate network speed variations
+      // Slow start (establishing connection), fast middle (downloading), slow end (processing)
+      let speed;
+      if (timeProgress < 0.1) {
+        // Initial connection (0-10% of time)
+        speed = 0.3;
+      } else if (timeProgress < 0.2) {
+        // Handshake complete, starting download (10-20% of time)
+        speed = 0.8;
+      } else if (timeProgress < 0.8) {
+        // Main download phase (20-80% of time)
+        speed = 1.5 + Math.sin(timeProgress * Math.PI * 4) * 0.3; // Fluctuating speed
+      } else if (timeProgress < 0.95) {
+        // Final chunks (80-95% of time)
+        speed = 0.5;
+      } else {
+        // Processing (95-100% of time)
+        speed = 0.2;
+      }
+      
+      // Add some randomness for realism
+      const randomFactor = 0.8 + Math.random() * 0.4; // 80% to 120%
+      currentProgress += speed * randomFactor * 2;
+      
+      // Cap at 95% until image actually loads
+      currentProgress = Math.min(currentProgress, 95);
+      
+      // Stop interval when time is up
+      if (elapsed >= targetDuration) {
+        clearInterval(loadingIntervalRef.current);
+        loadingIntervalRef.current = null;
+        currentProgress = 95;
+      }
+      
+      setImageState({ state: 'loading', progress: Math.floor(currentProgress) });
+    }, 50); // Update every 50ms for smooth animation
+    
+    // Actually load the image
+    if (!imageRef.current) {
+      imageRef.current = new Image();
     }
     
-    setTimeout(() => {
-      setState('ready');
-      addLog(`IMAGE LOADED: ${src.split('/').pop()}`);
-    }, 300); // Small delay to show 100%
-  }, [src, addLog]);
+    imageRef.current.onload = () => {
 
-  // Handle image error
-  const handleImageError = useCallback(() => {
-    setState('error');
+      // Track when loading started for minimum animation time
+      const loadStartTime = Date.now();
+      
+      // Check if loading was too fast (less than 500ms)
+      const loadTime = Date.now() - loadStartTime;
+      const minLoadTime = 1500; // Minimum 1.5 seconds for visual effect
+
+  if (loadTime < minLoadTime) {
+    // Continue animation for remaining time
+      setTimeout(() => {
+        if (loadingIntervalRef.current) {
+          clearInterval(loadingIntervalRef.current);
+          loadingIntervalRef.current = null;
+        }
+        setImageState({ state: 'loading', progress: 100 });
+        setTimeout(() => {
+          setImageState({ state: 'ready', progress: 100 });
+          addLog(`IMAGE LOADED: ${src.split('/').pop()}`);
+        }, 300);
+      }, minLoadTime - loadTime);
+    } else {
+      // Normal flow for slow loads
+      if (loadingIntervalRef.current) {
+        clearInterval(loadingIntervalRef.current);
+        loadingIntervalRef.current = null;
+      }
+      setImageState({ state: 'loading', progress: 100 });
+      setTimeout(() => {
+        setImageState({ state: 'ready', progress: 100 });
+        addLog(`IMAGE LOADED: ${src.split('/').pop()}`);
+      }, 300);
+    }
+  };
+
+    imageRef.current.onerror = () => {
+      if (loadingIntervalRef.current) {
+        clearInterval(loadingIntervalRef.current);
+        loadingIntervalRef.current = null;
+      }
+      setImageState({ state: 'error', progress: 0 });
     addLog(`ERROR: Failed to load ${src.split('/').pop()}`);
-  }, [src, addLog]);
+    };
+    
+    imageRef.current.src = src;
+  }, [src, imageState.state, addLog, setImageState]);
+  
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (loadingIntervalRef.current) {
+        clearInterval(loadingIntervalRef.current);
+      }
+    };
+  }, []);
 
-  // Generate progress bar visual
+  // Generate responsive progress bar
   const getProgressBar = useCallback(() => {
-    const filled = Math.floor((progress / 100) * 12);
-    const empty = 12 - filled;
+    // Use fewer blocks on mobile for better fit
+    const barLength = isMobile ? 8 : 12;
+    const filled = Math.floor((imageState.progress / 100) * barLength);
+    const empty = barLength - filled;
     return '█'.repeat(filled) + '░'.repeat(empty);
-  }, [progress]);
+  }, [imageState.progress, isMobile]);
 
   // Handle image click to open lightbox
+  const [showLightbox, setShowLightbox] = useState(false);
+  
   const handleImageClick = () => {
-    if (state === 'ready') {
+    if (imageState.state === 'ready') {
       setShowLightbox(true);
       addLog('LIGHTBOX: Opened');
     }
@@ -99,26 +193,26 @@ export default function TerminalImagePreview({
     addLog('LIGHTBOX: Closed');
   };
 
-  // Generate ASCII frame content
-  const renderFrame = () => {
+  // Frame styles
     const frameClasses = `
       relative font-mono text-sm flex items-center justify-center overflow-hidden
       ${theme === 'dark' 
-        ? 'bg-dark-bg text-dark-text-primary border-dark-border' 
-        : 'bg-light-bg text-light-text-primary border-light-border'}
+      ? 'bg-dark-bg text-dark-text-primary' 
+      : 'bg-light-bg text-light-text-primary'}
     `;
 
     const buttonClasses = `
-      px-4 py-2 border rounded cursor-pointer transition-colors z-10
+    px-3 sm:px-4 py-2 border rounded cursor-pointer transition-colors z-10 text-xs sm:text-sm
       ${theme === 'dark'
         ? 'border-dark-border hover:bg-dark-hover text-dark-text-command'
         : 'border-light-border hover:bg-light-hover text-light-text-command'}
     `;
 
-    if (state === 'idle') {
+  // Render based on state
+  if (imageState.state === 'idle') {
       return (
         <div 
-          className={`${frameClasses} cursor-pointer border ${
+        className={`${frameClasses} cursor-pointer border-2 ${
             theme === 'dark' ? 'border-dark-border' : 'border-light-border'
           }`}
           style={{ 
@@ -134,46 +228,46 @@ export default function TerminalImagePreview({
       );
     }
 
-    if (state === 'loading') {
+  if (imageState.state === 'loading') {
       return (
         <div 
-          className={frameClasses}
-          style={{ height: `${height}px`, aspectRatio }}
-        >
-          {/* Hidden Image component that actually loads */}
-          <div className="hidden">
-            <Image 
-              src={src}
-              alt={alt}
-              width={width}
-              height={height}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-              priority
-            />
-          </div>
-          
-          <div className="text-center z-10">
-            <div className={`mb-2 ${
+        className={`${frameClasses} border-2 ${
+          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+        }`}
+        style={{ 
+          height: `${height}px`,
+          borderStyle: 'dashed',
+          padding: '1rem'
+        }}
+      >
+        <div className="text-center z-10 w-full max-w-full px-2">
+          <div className={`mb-2 text-xs sm:text-sm ${
               theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
             }`}>
               Rendering image...
             </div>
-            <div className={`font-mono ${
+          {/* Responsive progress bar container */}
+          <div className={`font-mono flex items-center justify-center gap-1 sm:gap-2 ${
               theme === 'dark' ? 'text-dark-success' : 'text-light-success'
             }`}>
-              {getProgressBar()} {Math.floor(progress)}%
+            <span className="text-xs sm:text-sm">{getProgressBar()}</span>
+            <span className="text-xs sm:text-sm">{Math.floor(imageState.progress)}%</span>
             </div>
           </div>
         </div>
       );
     }
 
-    if (state === 'error') {
+  if (imageState.state === 'error') {
       return (
         <div 
-          className={frameClasses}
-          style={{ height: `${height}px` }}
+        className={`${frameClasses} border ${
+          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+        }`}
+        style={{ 
+          height: `${height}px`,
+          borderStyle: 'dashed'
+        }}
         >
           <div className={`text-center ${
             theme === 'dark' ? 'text-dark-error' : 'text-light-error'
@@ -185,14 +279,9 @@ export default function TerminalImagePreview({
       );
     }
 
-    return null;
-  };
-
-  // Main render
+  if (imageState.state === 'ready') {
   return (
     <>
-      {/* Image or Frame */}
-      {state === 'ready' ? (
         <div 
           className="relative cursor-pointer group"
           onClick={handleImageClick}
@@ -201,7 +290,7 @@ export default function TerminalImagePreview({
           <div className={`relative w-full h-full rounded border overflow-hidden ${
             theme === 'dark' ? 'border-dark-border' : 'border-light-border'
           }`}>
-            <Image 
+            <NextImage 
               src={src} 
               alt={alt}
               fill
@@ -218,11 +307,8 @@ export default function TerminalImagePreview({
             [ CLICK TO EXPAND ]
           </div>
         </div>
-      ) : (
-        renderFrame()
-      )}
 
-      {/* Lightbox Modal */}
+      {/* Lightbox */}
       {showLightbox && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -253,7 +339,7 @@ export default function TerminalImagePreview({
             
             {/* Image Container */}
             <div className="relative w-full h-full">
-              <Image 
+              <NextImage 
                 src={src} 
                 alt={alt}
                 fill
@@ -281,4 +367,7 @@ export default function TerminalImagePreview({
       )}
     </>
   );
+  }
+  
+  return null;
 }

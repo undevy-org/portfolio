@@ -49,6 +49,7 @@ export function SessionProvider({ children }) {
   // ========== SESSION STATE ==========
   const [sessionData, setSessionData] = useState(null);
   const [authError, setAuthError] = useState(null);
+  const [isTerminating, setIsTerminating] = useState(false);
   
   // ========== NAVIGATION ==========
   const [currentScreen, setCurrentScreen] = useState('Entry');
@@ -233,28 +234,48 @@ export function SessionProvider({ children }) {
 
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
-    addLog('SESSION TERMINATED');
+    addLog('SESSION TERMINATING');
+    
+    // CRITICAL: Set termination flag BEFORE clearing session
+    // This prevents Entry.js from trying to re-authenticate
+    setIsTerminating(true);
+    
     const wasWeb3User = sessionData?.isWeb3User;
-    setSessionData(null);
-    setNavigationHistory([]);
-    setCurrentScreen('Entry');
-    setSelectedCase(null);
-    setSelectedRole(null);
-    setSelectedSkill(null);
-    setExpandedSections({});
-    setActiveTab({});
-    setScreensVisitedCount(1);
-    setAuthError(null); 
-    if (typeof window !== 'undefined') {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.delete('code');
-      currentUrl.searchParams.delete('web3');
-      currentUrl.hash = '';
-      window.history.replaceState({}, '', currentUrl.toString());
-      if (wasWeb3User) {
+    
+    // If Web3 user, dispatch event immediately while flag is set
+    if (wasWeb3User && typeof window !== 'undefined') {
       window.dispatchEvent(new Event('web3-logout-requested'));
-      }
     }
+    
+    // Clear session data after a small delay to ensure flag propagates
+    setTimeout(() => {
+      setSessionData(null);
+      setNavigationHistory([]);
+      setCurrentScreen('Entry');
+      setSelectedCase(null);
+      setSelectedRole(null);
+      setSelectedSkill(null);
+      setExpandedSections({});
+      setActiveTab({});
+      setScreensVisitedCount(1);
+      setAuthError(null);
+      
+      if (typeof window !== 'undefined') {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('code');
+        currentUrl.searchParams.delete('web3');
+        currentUrl.hash = '';
+        window.history.replaceState({}, '', currentUrl.toString());
+      }
+      
+      // Reset termination flag after a longer delay
+      // This ensures Entry.js has time to process the logout
+      setTimeout(() => {
+        setIsTerminating(false);
+        addLog('SESSION TERMINATION COMPLETE');
+      }, 1000);
+    }, 100);
+    
   }, [addLog, sessionData]);
 
   // ========== INITIALIZATION ==========
@@ -268,6 +289,7 @@ export function SessionProvider({ children }) {
     // Session data
     sessionData,
     setSessionData,
+    isTerminating,
 
     // Domain
     currentDomain,

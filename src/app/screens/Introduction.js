@@ -55,7 +55,7 @@ return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
         {profile.attributes?.map((attr, index) => (
           <div key={index}>
-              <span className={labelClasses}>[√] </span>
+              <span className={labelClasses}>[✓] </span>
               <span className={valueClasses}>{attr}</span>
           </div>
         ))}
@@ -64,7 +64,8 @@ return (
 
       <div className={panelClasses}>
         <h3 className={`mb-2 ${yellowClasses}`}>$current_status</h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+        {/* MODIFIED: Layout is now responsive. Switches to grid on medium screens. */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
           <span className={labelClasses}>$seeking:</span>
           <span className={valueClasses}>{profile.status?.seeking}</span>
 

@@ -37,7 +37,8 @@ export default function CaseList() {
     <div className="p-4">
       <div className={`mb-4 ${panelClasses}`}>
         <div className={`text-base mb-2 ${yellowClasses}`}>$loading_cases</div>
-        <div className="text-sm">
+        {/* MODIFIED: Flex container is now responsive */}
+        <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm">
           <div className="flex items-center gap-2">
             <span className={labelClasses}>[</span>
             {Array.from({ length: caseIds.length }, (_, i) => (
@@ -47,9 +48,9 @@ export default function CaseList() {
               <span key={`empty-${i}`} className={valueClasses}>□</span>
             ))}
             <span className={labelClasses}>]</span>
-            <span className={valueClasses}>
+          </div>
+          <div className={`${valueClasses} whitespace-nowrap`}>
               {caseIds.length}/{totalCasesCount} loaded for {sessionData?.meta?.company || 'session'}
-            </span>
           </div>
         </div>
       </div>
