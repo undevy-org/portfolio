@@ -45,7 +45,7 @@ export default function TerminalImagePreview({
           return 95; // Stay at 95% until actual load
         }
         // Variable speed for more realistic feel
-        const increment = Math.random() * 15 + 5;
+        const increment = Math.random() * 5 + 2;
         return Math.min(prev + increment, 95);
       });
     }, 100);
@@ -118,19 +118,15 @@ export default function TerminalImagePreview({
     if (state === 'idle') {
       return (
         <div 
-          className={frameClasses}
-          style={{ height: `${height}px` }}
+          className={`${frameClasses} cursor-pointer border ${
+            theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+          }`}
+          style={{ 
+            height: `${height}px`,
+            borderStyle: 'dashed'
+          }}
           onClick={handleShowImage}
         >
-          <pre className={`absolute inset-0 pointer-events-none ${
-            theme === 'dark' ? 'text-dark-border' : 'text-light-border'
-          }`}>
-{`${frameChars.topLeft}${frameChars.horizontal.repeat(50)}${frameChars.topRight}
-${Array(Math.floor(height / 16) - 2).fill(null).map(() => 
-  `${frameChars.vertical}${' '.repeat(50)}${frameChars.vertical}`
-).join('\n')}
-${frameChars.bottomLeft}${frameChars.horizontal.repeat(50)}${frameChars.bottomRight}`}
-          </pre>
           <button className={buttonClasses}>
             [ SHOW IMAGE ]
           </button>
