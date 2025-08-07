@@ -51,6 +51,12 @@ export function SessionProvider({ children }) {
   const [authError, setAuthError] = useState(null);
   const [isTerminating, setIsTerminating] = useState(false);
   
+  // ========== WEB3 LOGOUT STATE (ADDED) ==========
+  // This state provides a direct communication channel between SessionContext and Entry.js
+  // for Web3 logout. It's more reliable than browser events which can be missed if the
+  // component isn't mounted yet. When true, Entry.js knows it needs to disconnect the wallet.
+  const [web3LogoutPending, setWeb3LogoutPending] = useState(false);
+  
   // ========== NAVIGATION ==========
   const [currentScreen, setCurrentScreen] = useState('Entry');
   const [navigationHistory, setNavigationHistory] = useState([]);
@@ -169,7 +175,7 @@ export function SessionProvider({ children }) {
     }
   }, [addLog]);
 
-  // ADDED: New function for hierarchical "up" navigation
+  // New function for hierarchical "up" navigation
   const goUp = useCallback(() => {
     const parentScreen = screenHierarchy[currentScreen];
     if (parentScreen) {
@@ -242,9 +248,18 @@ export function SessionProvider({ children }) {
     
     const wasWeb3User = sessionData?.isWeb3User;
     
-    // If Web3 user, dispatch event immediately while flag is set
-    if (wasWeb3User && typeof window !== 'undefined') {
+    // ENHANCED: For Web3 users, set BOTH the direct state flag AND dispatch the event
+    // The direct state flag (web3LogoutPending) is more reliable as it persists in React state
+    // The browser event is kept as a backup for any legacy listeners
+    if (wasWeb3User) {
+      // Set the direct state flag - this is the PRIMARY logout signal
+      setWeb3LogoutPending(true);
+      addLog('WEB3 LOGOUT PENDING FLAG SET');
+      
+      // Also dispatch browser event as a backup
+      if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('web3-logout-requested'));
+    }
     }
     
     // Clear session data after a small delay to ensure flag propagates
@@ -332,6 +347,12 @@ export function SessionProvider({ children }) {
     // Auth error state
     authError,
     setAuthError,
+    
+    // Web3 logout state (ADDED)
+    // These are exposed to Entry.js for direct state-based communication
+    // This is more reliable than browser events which can be missed
+    web3LogoutPending,
+    setWeb3LogoutPending,
   };
 
   return (

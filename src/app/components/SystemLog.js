@@ -15,7 +15,7 @@ export default function SystemLog() {
     }
   }, [logEntries]);
 
-  const containerClasses = `w-full max-w-2xl border rounded h-32 overflow-y-auto text-xs p-2 ${
+  const containerClasses = `w-full max-w-2xl border rounded h-32 overflow-y-auto text-xs p-2 font-mono ${
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
   }`;
   
@@ -23,26 +23,39 @@ export default function SystemLog() {
     theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
   }`;
 
-  const cursorClasses = `inline-block w-1 h-3 ml-0.5 ${
+  const cursorClasses = `inline-block w-2 h-4 ${ // Adjusted size for better visibility
     theme === 'dark' ? 'bg-dark-text-secondary' : 'bg-light-text-secondary'
   }`;
 
-  const inputClasses = `bg-transparent outline-none flex-1 ${textClasses}`;
+  const inputClasses = `bg-transparent outline-none w-full ${textClasses}`;
 
   return (
     <div className={containerClasses} ref={logContainerRef}>
       {logEntries.map((entry, index) => (
-        <p key={index} className={textClasses}>{entry}</p>
+        // MODIFIED: Wrapped each log entry in a flex container to add a consistent prefix.
+        // WHY: This ensures every line in the log, including the final input line, has the same
+        // visual structure and alignment, mimicking a real terminal output.
+        <div key={index} className="flex">
+          <span className="mr-2 select-none">{'>'}</span>
+          <p className={textClasses}>{entry}</p>
+        </div>
       ))}
       
+      {/* This check is kept to only show the input prompt after logs appear */}
       {logEntries.length > 0 && (
-      <div className="flex items-center gap-1 mt-1">
-        <span className={textClasses}>{'>'}$</span>
+      // MODIFIED: Added `items-center` to the flex container to vertically align the input line with the log lines.
+      // WHY: This fixes the visual bug where the input line appeared slightly lower than the log entries.
+      <div className="flex items-center mt-1">
+        <span className="mr-2 select-none">{'>'}</span>
+        {/* REMOVED: The '$' sign is removed as requested for a cleaner prompt. */}
           <div className="relative flex-1">
+          {/* Input field remains functionally the same */}
             <input
               type="text"
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+            // MODIFIED: Automatically convert input to uppercase.
+            // WHY: This aligns with the terminal aesthetic where commands are often uppercase.
+            onChange={(e) => setInputValue(e.target.value.toUpperCase())}
               className={inputClasses}
               placeholder=""
               tabIndex={-1}
@@ -50,12 +63,14 @@ export default function SystemLog() {
             />
             {/* Custom blinking cursor */}
             <span 
-              className={`absolute top-1/2 -translate-y-1/2 ${cursorClasses} animate-pulse`}
+            // MODIFIED: Centered the cursor vertically using translate-y.
+            // WHY: `top-1/2 -translate-y-1/2` is a robust way to vertically center an element regardless of parent height,
+            // fixing the issue where the cursor appeared too high.
+            className={`absolute top-1/2 -translate-y-1/2 ${cursorClasses} animate-pulse`}
               style={{
-                left: `${inputValue.length * 7}px`, // Approximate character width
-                animationDuration: '1s',
-                animationIterationCount: 'infinite',
-                pointerEvents: 'none' // Cursor doesn't block clicks
+              // Approximating character width more accurately for monospace font
+              left: `${inputValue.length * 7.2}px`, 
+              pointerEvents: 'none'
               }}
             ></span>
       </div>

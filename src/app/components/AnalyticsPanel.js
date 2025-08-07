@@ -49,14 +49,27 @@ export default function AnalyticsPanel() {
   return (
     <div className={panelClasses}>
       <h2 className={`text-base mb-2 ${yellowClasses}`}>$analytics</h2>
-      {/* MODIFIED: Layout is now responsive. Switches to grid on medium screens. */}
+      {/* MODIFIED: Layout is now responsive and element order is corrected. */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
+        {/* 1. Company */}
         <div>
           <span className={`${labelClasses} mr-2`}>$company:</span>
           <span className={valueClasses}>{sessionData.meta?.company}</span>
         </div>
         
-        {/* ADDED: Display wallet address for Web3 users or access code for others */}
+        {/* 2. Access Level */}
+        <div>
+          <span className={`${labelClasses} mr-2`}>$access_level:</span>
+          <span className={valueClasses}>{sessionData.meta?.depth || 'standard'}</span>
+        </div>
+
+        {/* 3. Access Method */}
+        <div>
+          <span className={`${labelClasses} mr-2`}>$access_method:</span>
+          <span className={valueClasses}>{sessionData.meta?.accessMethod || 'Code'}</span>
+        </div>
+
+        {/* 4. Access Code or Wallet */}
         {sessionData.isWeb3User ? (
           <div>
             <span className={`${labelClasses} mr-2`}>$wallet_address:</span>
@@ -71,21 +84,13 @@ export default function AnalyticsPanel() {
           </div>
         )}
 
-        <div>
-          <span className={`${labelClasses} mr-2`}>$access_method:</span>
-          <span className={valueClasses}>{sessionData.meta?.accessMethod || 'Code'}</span>
-        </div>
-
-        <div>
-          <span className={`${labelClasses} mr-2`}>$access_level:</span>
-          <span className={valueClasses}>{sessionData.meta?.depth || 'standard'}</span>
-        </div>
-
+        {/* 5. Current Screen */}
         <div>
           <span className={`${labelClasses} mr-2`}>$current_screen:</span>
           <span className={valueClasses}>{currentScreen}</span>
         </div>
         
+        {/* 6. Screens Visited */}
         <div>
           <span className={`${labelClasses} mr-2`}>$screens_visited:</span>
           <span className={valueClasses}>{screensVisitedCount}</span>
@@ -97,7 +102,7 @@ export default function AnalyticsPanel() {
         theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
       }`}>
 
-        <h3 className={`text-base mb-2 ${yellowClasses}`}>$navigation_path:</h3>
+        <h3 className={`text-base mb-2 ${yellowClasses}`}>$navigation_path</h3>
         
         {/* MODIFIED: Wrapped in flex-wrap for better mobile handling */}
         <div className="text-sm flex items-center flex-wrap">
