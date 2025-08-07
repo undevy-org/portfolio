@@ -122,6 +122,44 @@
       "formal": "Strategic design leader specializing in building high-performing design organizations, establishing scalable processes, and delivering products that drive significant business growth. Proven expertise in team leadership, stakeholder management, and data-driven design decisions."
     }
   },
+  "Inita-vdsN8dTW": {
+    "meta": {
+      "company": "Inita (AI Business Co-pilot)",
+      "timeline": "scenario_a",
+      "tone": "formal",
+      "cases": [
+        "loyalty_superapp",
+        "gmx_mission_critical",
+        "key_app_from_scratch",
+        "gmx_system",
+        "cere_nft"
+      ],
+      "lastModified": "2025-08-10T15:30:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Inita Team",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Complex Systems & Super App Architecture",
+        "background": "9 Years in High-Stakes Environments"
+      },
+      "attributes": [
+        "Mission-Critical UX",
+        "Super App Architecture",
+        "AI-Ready Collaboration",
+        "Scalable Design Systems"
+      ],
+      "status": {
+        "seeking": "Senior UX/UI Designer at Inita",
+        "location": "Tbilisi, Georgia (GMT+4)",
+        "availability": "Immediate",
+        "salary": "Market Rate, Negotiable"
+      }
+    },
+    "introduction": {
+      "formal": "A results-driven Product Designer with nearly 9 years of experience transforming highly complex systems into intuitive, user-centric products. My journey through high-stakes fintech and platform design has centered on a single challenge: making sophisticated technology accessible and safe for a diverse global user base. With an engineering background, I excel at bridging the gap between advanced technical possibilities, like AI, and real human needs—a critical skill for designing trustworthy and effective business platforms."
+    }
+  },
   "GLOBAL_DATA": {
     "menu": [
       {
@@ -412,6 +450,38 @@
           "B2B2C",
           "Mobile"
         ]
+      },
+      "loyalty_superapp": {
+        "title": "Fintech Super App Ecosystem",
+        "desc": "Architecting a white-label B2B2C platform unifying payments, CRM, and loyalty programs.",
+        "metrics": "+50% feature discovery",
+        "tags": [
+          "Super App",
+          "Fintech",
+          "B2B2C",
+          "Ecosystem"
+        ]
+      },
+      "gmx_mission_critical": {
+        "title": "Mission-Critical Platform Redesign",
+        "desc": "Transforming a high-stakes platform to restore user trust and simplify complex workflows.",
+        "metrics": "-60% critical user errors",
+        "tags": [
+          "Complex Systems",
+          "Trust & Safety",
+          "High-Stakes UX"
+        ]
+      },
+      "key_app_from_scratch": {
+        "title": "Building a Consumer App From Scratch",
+        "desc": "Launched and scaled a secure mobile application from zero to over 10,000 active users.",
+        "metrics": "0 to 10K+ users",
+        "tags": [
+          "0-to-1",
+          "Product Launch",
+          "Scaling",
+          "Mobile"
+        ]
       }
     },
     "case_details": {
@@ -568,6 +638,69 @@
           "Featured by Solana Foundation as exemplary UX"
         ],
         "learnings": "Simplifying Web3 isn't about hiding complexity—it's about progressive disclosure. Users want to understand what's happening with their money, but only when they're ready for that information."
+      },
+      "loyalty_superapp": {
+        "challenge": "Financial institutions needed a single mobile platform for their customers, but were offering fragmented services for payments, loyalty programs, and support. This created a disjointed experience, low engagement with value-added features, and brand inconsistency.",
+        "images": {
+          "challenge": "/images/projects/loyalty_challenge.webp",
+          "solution": "/images/projects/loyalty_solution.webp"
+        },
+        "approach": [
+          "Conducted card-sorting with 50+ banking customers to map their mental models",
+          "Designed a modular, white-label architecture to support multiple bank partners",
+          "Created a unified information hierarchy based on core user jobs-to-be-done",
+          "Built a flexible UI kit that allowed for deep brand customization while maintaining structural integrity"
+        ],
+        "solution": "Architected and designed a multi-service 'super app' platform that integrated loyalty programs, payment gateways, and customer engagement tools into a single, seamless ecosystem. The solution provided end-users with a unified experience and gave bank partners a powerful, customizable product.",
+        "results": [
+          "50% improvement in loyalty feature discovery",
+          "Increased program participation by 35% across partner banks",
+          "Enabled deployment to 5 new bank partners due to modular architecture",
+          "Redesigned over 50 screens to create a cohesive platform experience"
+        ],
+        "learnings": "B2B2C products succeed when they prioritize the end-user (C) while providing flexibility for the business customer (B). By designing a robust core architecture, we could satisfy both sides of the market effectively."
+      },
+      "gmx_mission_critical": {
+        "challenge": "A high-stakes platform with billions in volume was losing user trust due to opaque mechanics, a confusing interface, and a high rate of critical user errors. The platform was powerful but hostile to users, creating significant business risk.",
+        "images": {
+          "challenge": "/images/projects/gmx_v2_challenge.webp",
+          "solution": "/images/projects/gmx_v2_solution.webp"
+        },
+        "approach": [
+          "Conducted 50+ user interviews to understand core pain points around trust and complexity",
+          "Analyzed support tickets to systematically identify the most common and costly user errors",
+          "Rapidly prototyped new workflows focused on transparency and error prevention",
+          "Collaborated closely with engineering in a fully async environment to ensure technical feasibility"
+        ],
+        "solution": "Led a complete redesign of the platform's core interface, focusing on clarity, transparency, and safety. Introduced clear cost breakdowns, intuitive action flows, and robust confirmation steps to prevent mistakes. The new design made complex operations feel safe and predictable.",
+        "results": [
+          "60% reduction in critical user errors post-launch",
+          "300% increase in active users, driven by restored trust and improved usability",
+          "Re-established the platform as a market leader in user experience and safety",
+          "Drove a 35% increase in platform asset engagement through improved data visualization"
+        ],
+        "learnings": "In a high-stakes environment, user trust is the most valuable metric. Designing for transparency and predictability isn't just good UX—it's a core business requirement. This project taught me to ruthlessly simplify complexity to protect users."
+      },
+      "key_app_from_scratch": {
+        "challenge": "The market lacked a consumer-friendly mobile application for a new, complex technology. Existing solutions were built by engineers for engineers, creating a massive barrier to entry for mainstream users. The task was to launch and scale a new product from zero.",
+        "images": {
+          "challenge": "/images/projects/key_app_challenge.webp",
+          "solution": "/images/projects/key_app_solution.webp"
+        },
+        "approach": [
+          "Conducted user research with complete newcomers to understand their fears and assumptions",
+          "Benchmarked against best-in-class Web2 consumer apps for onboarding and usability patterns",
+          "Designed and validated a frictionless onboarding flow using familiar social sign-in methods",
+          "Led a small team to build and iterate on the product across iOS and Android"
+        ],
+        "solution": "Designed and shipped a secure mobile application from scratch, focusing on radical simplicity. We abstracted away the underlying technical complexity, introduced educational elements at key moments, and built a user experience that felt familiar and safe to non-technical users.",
+        "results": [
+          "Launched and scaled the user base from zero to over 10,000 active users",
+          "Increased user acquisition conversion by 63% through a simplified onboarding flow",
+          "Achieved a 150% reduction in negative app reviews by systematically addressing user pain points",
+          "Successfully delivered on a key requirement: launching a product from scratch and finding product-market fit."
+        ],
+        "learnings": "Successfully launching a product from scratch requires a relentless focus on solving a core user problem. This experience in simplifying new technology for a mass audience is directly applicable to the challenge of making sophisticated AI tools accessible and useful for everyone."
       }
     },
     "skills": [

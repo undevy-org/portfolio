@@ -49,16 +49,36 @@ export default function AnalyticsPanel() {
   return (
     <div className={panelClasses}>
       <h2 className={`text-base mb-2 ${yellowClasses}`}>$analytics</h2>
-      {/* MODIFIED: Layout is now responsive. Switches from single-line to grid on medium screens. */}
-      <div className="space-y-1 md:grid md:grid-cols-2 md:gap-x-4 md:gap-y-1 md:space-y-0">
+      {/* MODIFIED: Layout is now responsive. Switches to grid on medium screens. */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
         <div>
           <span className={`${labelClasses} mr-2`}>$company:</span>
-          <span className={valueClasses}>{sessionData.meta?.company || sessionData.company}</span>
+          <span className={valueClasses}>{sessionData.meta?.company}</span>
+        </div>
+        
+        {/* ADDED: Display wallet address for Web3 users or access code for others */}
+        {sessionData.isWeb3User ? (
+          <div>
+            <span className={`${labelClasses} mr-2`}>$wallet_address:</span>
+            <span className={valueClasses}>
+              {sessionData.walletAddress.slice(0, 6)}...{sessionData.walletAddress.slice(-4)}
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span className={`${labelClasses} mr-2`}>$access_code:</span>
+            <span className={valueClasses}>{sessionData.accessCode}</span>
+          </div>
+        )}
+
+        <div>
+          <span className={`${labelClasses} mr-2`}>$access_method:</span>
+          <span className={valueClasses}>{sessionData.meta?.accessMethod || 'Code'}</span>
         </div>
 
         <div>
           <span className={`${labelClasses} mr-2`}>$access_level:</span>
-          <span className={valueClasses}>{sessionData.meta?.depth || sessionData.access_level || 'standard'}</span>
+          <span className={valueClasses}>{sessionData.meta?.depth || 'standard'}</span>
         </div>
 
         <div>
@@ -79,23 +99,21 @@ export default function AnalyticsPanel() {
 
         <h3 className={`text-base mb-2 ${yellowClasses}`}>$navigation_path:</h3>
         
-        <div className={`text-sm flex items-center flex-wrap`}>
+        {/* MODIFIED: Wrapped in flex-wrap for better mobile handling */}
+        <div className="text-sm flex items-center flex-wrap">
           {navigationHistory.length > 0 ? (
             <>
-              {navigationHistory.slice(-3).map((screen, index) => {
-                const actualIndex = navigationHistory.indexOf(screen);
-                return (
-                  <span key={index}>
+              {navigationHistory.map((screen, index) => (
+                <span key={index} className="flex items-center">
                     <button
-                      onClick={() => handlePathClick(screen, actualIndex)}
+                    onClick={() => handlePathClick(screen, index)}
                       className={`${secondaryClasses} hover:underline`}
                     >
                       {screen}
                     </button>
                     <span className={`mx-1 ${labelClasses}`}>{'>'}</span>
                   </span>
-                );
-              })}
+              ))}
               
               <span className={yellowClasses}>{currentScreen}</span>
             </>

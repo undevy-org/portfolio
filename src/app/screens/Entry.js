@@ -22,8 +22,10 @@ export default function Entry() {
     domainData, 
     authError, 
     setAuthError, 
+    sessionData,        
     setSessionData, 
-    navigate 
+    navigate,
+    isTerminating
   } = useSession();
   
   // ========== NEXT.JS HOOKS ==========
@@ -38,6 +40,8 @@ export default function Entry() {
   // Critical: These refs persist across renders and prevent race conditions
   const isLoggingOut = useRef(false); // Tracks if we're in the middle of a logout process
   const hasInitialized = useRef(false); // Prevents double initialization in React StrictMode
+  const prevSessionRef = useRef(null); // CRITICAL: Track previous session state for logout detection
+  const intentionalLogout = useRef(false); // Remember intentional logout
   
   // ========== WEB3 AUTHENTICATION HANDLER ==========
   /**
@@ -56,6 +60,11 @@ export default function Entry() {
     // CRITICAL CHECK #2: Prevent double initialization in StrictMode
     if (hasInitialized.current) {
       console.log('[WEB3 AUTH] Blocked: Already initialized');
+      return;
+    }
+    
+    if (intentionalLogout.current) {
+      console.log('[WEB3 AUTH] Blocked: User intentionally logged out');
       return;
     }
     
@@ -158,35 +167,63 @@ export default function Entry() {
     setAuthError
   ]);
   
-  // ========== EFFECT 1: WEB3 AUTHENTICATION MONITOR ==========
-  /**
-   * Monitors wallet connection state and triggers authentication
-   * This effect is the main entry point for Web3 authentication
-   */
+  // ========== EFFECT 1: WEB3 AUTHENTICATION WITH TERMINATION CHECK ==========
   useEffect(() => {
-    // Debug logging to track effect execution
-    console.log(`[WEB3 MONITOR] isConnected: ${isConnected}, address: ${address}, isLoggingOut: ${isLoggingOut.current}, hasInitialized: ${hasInitialized.current}`);
-    
-    // CRITICAL: Check logout flag first to prevent race conditions
-    if (isLoggingOut.current) {
-      console.log('[WEB3 MONITOR] Skipped: Logout in progress');
+
+    // Debugging output to track Web3 state
+    // This helps understand the flow and catch issues early
+    console.log('[WEB3 DEBUG]', {
+      isTerminating,
+      isLoggingOut: isLoggingOut.current,
+      hasInitialized: hasInitialized.current,
+      intentionalLogout: intentionalLogout.current,
+      isConnected,
+      hasSession: !!sessionData
+    });
+
+    // CRITICAL: Check termination flag first
+    if (isTerminating) {
+      console.log('[WEB3 MONITOR] Session is terminating - skip all authentication');
       return;
     }
     
-    // Trigger authentication when wallet connects
-    if (isConnected && address && !hasInitialized.current) {
-      console.log('[WEB3 MONITOR] Wallet connected, starting authentication');
+    // Check if logout is in progress
+    if (isLoggingOut.current) {
+      console.log('[WEB3 MONITOR] Logout in progress - skip authentication');
+      return;
+    }
+    
+    if (intentionalLogout.current) {
+      console.log('[WEB3 MONITOR] Intentional logout detected - skip authentication');
+      return;
+    }
+    
+    // Detect if session was just cleared
+    const hadSession = prevSessionRef.current !== null;
+    const sessionJustCleared = hadSession && !sessionData;
+    prevSessionRef.current = sessionData;
+    
+    if (sessionJustCleared) {
+      console.log('[WEB3 MONITOR] Session was cleared - likely logout');
+      return;
+    }
+    
+    // Authenticate only if all conditions are met
+    if (isConnected && address && !hasInitialized.current && !sessionData && !intentionalLogout.current) {
+      console.log('[WEB3 MONITOR] All conditions met - starting authentication');
       handleWeb3Success(address);
     }
     
-    // Reset initialization flag when wallet disconnects
-    // This allows re-authentication after a proper logout
-    if (!isConnected && hasInitialized.current) {
-      console.log('[WEB3 MONITOR] Wallet disconnected, resetting initialization flag');
+    // Reset flags when wallet disconnects
+    if (!isConnected) {
+      if (hasInitialized.current || intentionalLogout.current) {
+        console.log('[WEB3 MONITOR] Wallet disconnected - resetting all flags');
       hasInitialized.current = false;
+        intentionalLogout.current = false; // Reset only after wallet actually disconnects
       setWeb3Status('idle');
+      }
     }
-  }, [isConnected, address, handleWeb3Success]);
+  }, [isConnected, address, sessionData, isTerminating, handleWeb3Success]);
   
   // ========== EFFECT 2: WEB3 LOGOUT REQUEST HANDLER ==========
   /**
@@ -200,6 +237,7 @@ export default function Entry() {
       // CRITICAL: Set logout flag immediately to prevent re-authentication
       // This must happen before any async operations
       isLoggingOut.current = true;
+      intentionalLogout.current = true; // NEW: Mark this as intentional logout
       setWeb3Status('disconnecting');
       
       if (isConnected) {
@@ -224,6 +262,7 @@ export default function Entry() {
         // Reset flag after a short delay to ensure state consistency
         setTimeout(() => {
           isLoggingOut.current = false;
+          intentionalLogout.current = false;
           setWeb3Status('idle');
           console.log('[WEB3 LOGOUT] Lock released (wallet was already disconnected)');
         }, 100);

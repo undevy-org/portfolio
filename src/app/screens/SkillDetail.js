@@ -20,6 +20,7 @@ export default function SkillDetail() {
   const valueClasses = `${
     theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
   }`;
+  const successClasses = theme === 'dark' ? 'text-dark-success' : 'text-light-success';
 
   if (!selectedSkill) {
     return (
@@ -52,20 +53,6 @@ export default function SkillDetail() {
     }
   };
   
-  const PageButton = ({ onClick, icon: Icon, children }) => (
-    <button 
-      onClick={onClick}
-      className={`w-full flex items-center justify-center gap-2 p-2 rounded border transition-colors ${
-        theme === 'dark' 
-          ? 'border-dark-border text-dark-text-secondary hover:bg-dark-hover' 
-          : 'border-light-border text-light-text-secondary hover:bg-light-hover'
-      }`}
-    >
-      <Icon size={16} className={labelClasses} />
-      <span>{children}</span>
-    </button>
-  );
-
   return (
     <div className="p-4 space-y-4">
       <div className={panelClasses}>
@@ -116,33 +103,43 @@ export default function SkillDetail() {
         </div>
       )}
 
+      {/* REORDERED: Business Impact is now more prominent */}
+      {skillDetails.impact && (
+        <div className={panelClasses}>
+          <h3 className={`text-base mb-2 ${yellowClasses}`}>$business_impact</h3>
+          {/* RESTYLED: Changed from a p tag to a styled list */}
+          <div className="space-y-2">
+            {Array.isArray(skillDetails.impact) ? (
+              skillDetails.impact.map((item, idx) => (
+                <div key={idx} className="text-sm flex items-start">
+                  <span className={`mr-2 ${successClasses}`}>[✓]</span>
+                  <span className={valueClasses}>{item}</span>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm flex items-start">
+                <span className={`mr-2 ${successClasses}`}>[✓]</span>
+                <span className={valueClasses}>{skillDetails.impact}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {skillDetails.tools?.length > 0 && (
         <div className={panelClasses}>
           <h3 className={`text-base mb-2 ${yellowClasses}`}>$related_tools</h3>
-          <div className="flex flex-wrap gap-2">
+          {/* RESTYLED: Tools are now simple text in brackets for consistency */}
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
             {skillDetails.tools.map((tool) => (
-              <span key={tool} className={`px-2 py-0.5 border rounded text-xs ${
-                theme === 'dark'
-                  ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
-                  : 'border-light-border-lighter bg-gray-200 text-light-text-secondary'
-              }`}>
-                {tool}
+              <span key={tool} className={valueClasses}>
+                [{tool}]
               </span>
             ))}
           </div>
         </div>
       )}
 
-      {skillDetails.impact && (
-        <div className={panelClasses}>
-          <h3 className={`text-base mb-2 ${yellowClasses}`}>$business_impact</h3>
-          <p className={`text-sm leading-relaxed ${valueClasses}`}>
-            {skillDetails.impact}
-          </p>
-        </div>
-      )}
-
-      
       <Button
         onClick={() => {
           addLog('RETURN TO SKILLS GRID');

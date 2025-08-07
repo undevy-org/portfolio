@@ -124,7 +124,8 @@ export default function Tabs({ tabs, defaultTab = null }) {
       </div>
 
       {/* Tab content */}
-      <div className={`p-4 border rounded-b rounded-tr ${darkerBorder}`}>
+      {/* MODIFIED: Added -mt-px to seamlessly connect the border */}
+      <div className={`-mt-px p-4 border rounded-b rounded-tr ${darkerBorder}`}>
         {activeTabData && (
           <>
             <h3 className={`mb-3 ${yellowClasses}`}>
