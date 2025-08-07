@@ -25,7 +25,11 @@ export default function Entry() {
     sessionData,        
     setSessionData, 
     navigate,
-    isTerminating
+    isTerminating,
+    // ADDED: Direct state communication for Web3 logout
+    // These replace the unreliable browser event system
+    web3LogoutPending,     // Flag that tells us when to disconnect wallet
+    setWeb3LogoutPending   // Function to clear the flag after disconnection
   } = useSession();
   
   // ========== NEXT.JS HOOKS ==========
@@ -92,8 +96,11 @@ export default function Entry() {
           // Override meta information with Web3 details
           meta: {
             ...userData.meta,
-            company: `Web3 User: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
-            accessMethod: 'web3' // Track how user authenticated
+            // MODIFIED: Changed to a simpler, non-redundant company name.
+            // WHY: The wallet address is already displayed in the analytics panel,
+            // so including a truncated version here was redundant.
+            company: 'Web3 User',
+            accessMethod: 'web3'
           },
           
           // Customize profile data for Web3 users
@@ -103,7 +110,9 @@ export default function Entry() {
             summary: {
               ...userData.profile?.summary,
               title: 'Web3 Authenticated User',
-              specialization: `Wallet: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
+              // MODIFIED: Changed specialization to be more descriptive and less redundant.
+              // WHY: Avoids repeating the wallet address, providing clearer context about the session.
+              specialization: 'Authenticated via Web3',
               background: 'Decentralized Access'
             }
           }
@@ -174,6 +183,7 @@ export default function Entry() {
     // This helps understand the flow and catch issues early
     console.log('[WEB3 DEBUG]', {
       isTerminating,
+      web3LogoutPending,  // ADDED: Now tracking the direct state flag
       isLoggingOut: isLoggingOut.current,
       hasInitialized: hasInitialized.current,
       intentionalLogout: intentionalLogout.current,
@@ -184,6 +194,13 @@ export default function Entry() {
     // CRITICAL: Check termination flag first
     if (isTerminating) {
       console.log('[WEB3 MONITOR] Session is terminating - skip all authentication');
+      return;
+    }
+    
+    // ADDED: Check the direct logout flag from context
+    // This is more reliable than checking isTerminating alone
+    if (web3LogoutPending) {
+      console.log('[WEB3 MONITOR] Web3 logout is pending - skip authentication');
       return;
     }
     
@@ -223,28 +240,29 @@ export default function Entry() {
       setWeb3Status('idle');
       }
     }
-  }, [isConnected, address, sessionData, isTerminating, handleWeb3Success]);
+  }, [isConnected, address, sessionData, isTerminating, web3LogoutPending, handleWeb3Success]);
   
-  // ========== EFFECT 2: WEB3 LOGOUT REQUEST HANDLER ==========
+  // ========== EFFECT 2: WEB3 LOGOUT HANDLER (ENHANCED) ==========
   /**
-   * Listens for logout events from SessionContext
-   * This is triggered when user clicks the X button in the header
+   * ENHANCED: Now uses direct state (web3LogoutPending) instead of browser events
+   * This is more reliable as React guarantees state updates reach all components
+   * Browser events can be missed if the component isn't mounted when fired
    */
   useEffect(() => {
-    const handleWeb3LogoutRequest = async () => {
-      console.log('[WEB3 LOGOUT] Event received from SessionContext');
+    // Only process logout when the flag is set and wallet is connected
+    if (web3LogoutPending && isConnected && !isLoggingOut.current) {
+      console.log('[WEB3 LOGOUT] Processing pending logout from context state');
       
-      // CRITICAL: Set logout flag immediately to prevent re-authentication
-      // This must happen before any async operations
+      // CRITICAL: Set flags immediately to prevent re-authentication
       isLoggingOut.current = true;
-      intentionalLogout.current = true; // NEW: Mark this as intentional logout
+      intentionalLogout.current = true;
       setWeb3Status('disconnecting');
       
-      if (isConnected) {
+      // Async function to handle the disconnection
+      const performDisconnect = async () => {
         addLog('WEB3 LOGOUT: Starting disconnect process');
         
         try {
-          // Attempt to disconnect the wallet
           console.log('[WEB3 LOGOUT] Calling disconnectAsync...');
           await disconnectAsync();
           console.log('[WEB3 LOGOUT] disconnectAsync completed successfully');
@@ -253,30 +271,44 @@ export default function Entry() {
           // Log error but don't throw - we still want to complete logout
           console.error('[WEB3 LOGOUT] Error during disconnect:', error);
           addLog('WEB3 LOGOUT: Error during disconnect (continuing anyway)');
+        } finally {
+          // IMPORTANT: Clear the pending flag in context
+          // This tells SessionContext that we've handled the logout
+          setWeb3LogoutPending(false);
+          console.log('[WEB3 LOGOUT] Cleared web3LogoutPending flag');
         }
-        // DO NOT reset isLoggingOut here - wait for Effect 3 to handle it
-      } else {
-        // Edge case: logout requested but wallet not connected
-        console.log('[WEB3 LOGOUT] Wallet already disconnected');
-        
-        // Reset flag after a short delay to ensure state consistency
-        setTimeout(() => {
+        // Note: isLoggingOut.current is cleared in Effect 3 after disconnect is confirmed
+      };
+      
+      performDisconnect();
+    }
+    
+    // Edge case: If logout was requested but wallet is already disconnected
+    if (web3LogoutPending && !isConnected) {
+      console.log('[WEB3 LOGOUT] Logout requested but wallet already disconnected');
+      setWeb3LogoutPending(false);
           isLoggingOut.current = false;
           intentionalLogout.current = false;
           setWeb3Status('idle');
-          console.log('[WEB3 LOGOUT] Lock released (wallet was already disconnected)');
-        }, 100);
-      }
+    }
+  }, [web3LogoutPending, isConnected, disconnectAsync, addLog, setWeb3LogoutPending]);
+  
+  // ========== EFFECT 2B: LEGACY BROWSER EVENT LISTENER (BACKUP) ==========
+  /**
+   * KEPT AS BACKUP: Still listens for browser events in case something else dispatches them
+   * This provides backwards compatibility but the primary mechanism is now direct state
+   */
+  useEffect(() => {
+    const handleWeb3LogoutRequest = () => {
+      console.log('[WEB3 LOGOUT] Legacy browser event received - ignoring (using state-based approach)');
+      // We don't process this anymore - the state-based approach handles it
     };
     
-    // Register the event listener
     window.addEventListener('web3-logout-requested', handleWeb3LogoutRequest);
-    
-    // Cleanup: remove listener on unmount or dependency change
     return () => {
       window.removeEventListener('web3-logout-requested', handleWeb3LogoutRequest);
     };
-  }, [isConnected, disconnectAsync, addLog]);
+  }, []);
 
   // ========== EFFECT 3: LOGOUT COMPLETION MONITOR ==========
   /**
@@ -433,12 +465,12 @@ export default function Entry() {
         {/* Web3 Login button with Wallet icon */}
         <button
           onClick={handleWeb3Login}
-          disabled={isLoggingOut.current || web3Status === 'disconnecting'}
+          disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending}
           className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
             theme === 'dark'
               ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
               : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          } ${(isLoggingOut.current || web3Status === 'disconnecting') ? 'opacity-50 cursor-not-allowed' : ''}`}
+          } ${(isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending) ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <Wallet className="w-4 h-4" />
           {isConnected 
@@ -459,8 +491,8 @@ export default function Entry() {
         </div>
       )}
       
-      {/* Disconnecting indicator */}
-      {web3Status === 'disconnecting' && (
+      {/* Disconnecting indicator (ENHANCED) */}
+      {(web3Status === 'disconnecting' || web3LogoutPending) && (
         <div className={`mt-2 text-center text-xs ${
           theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
         }`}>
