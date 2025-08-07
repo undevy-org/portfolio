@@ -7,7 +7,7 @@
       "tone": "casual",
       "cases": [
         "gmx_v2",
-        "gmx_multichain", 
+        "gmx_multichain",
         "gmx_system",
         "key_app",
         "cere_nft",
@@ -418,8 +418,8 @@
       "gmx_v2": {
         "challenge": "GMX V1 was bleeding user trust. The platform had opaque fee structures, a confusing interface that was hostile to both new and experienced traders, and was missing core features like limit orders. User complaints were mounting and growth was stalling.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/gmx_v2_challenge.webp",
+          "solution": "/images/projects/gmx_v2_solution.webp"
         },
         "approach": [
           "Conducted 50+ semi-structured user interviews to understand pain points",
@@ -440,8 +440,8 @@
       "gmx_multichain": {
         "challenge": "Traders needed to manage positions across multiple blockchains (Arbitrum and Avalanche) but were forced to switch networks manually, track positions separately, and manage different gas tokens. This complexity was limiting trading volume and user adoption.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/gmx_multichain_challenge.webp",
+          "solution": "/images/projects/gmx_multichain_solution.webp"
         },
         "approach": [
           "Mapped current multi-chain user journeys to identify friction points",
@@ -462,8 +462,8 @@
       "gmx_system": {
         "challenge": "GMX had accumulated massive design debt with inconsistent components, no documentation, and developers recreating UI elements from scratch. This was slowing development velocity and creating a fragmented user experience across the platform.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/gmx_system_challenge.webp",
+          "solution": "/images/projects/gmx_system_solution.webp"
         },
         "approach": [
           "Audited entire platform to catalog existing patterns and inconsistencies",
@@ -484,8 +484,8 @@
       "cere_nft": {
         "challenge": "Cere's NFT marketplace struggled with low artist retention and buyer engagement. Artists found the minting process confusing, buyers couldn't discover relevant content, and the Web3 onboarding created massive drop-off rates for mainstream users.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/cere_nft_challenge.webp",
+          "solution": "/images/projects/cere_nft_solution.webp"
         },
         "approach": [
           "Conducted interviews with 30+ artists about their minting experience",
@@ -506,8 +506,8 @@
       "wildberries": {
         "challenge": "Russia's largest e-commerce platform had no unified design language across teams. Each department built features independently, resulting in inconsistent experiences, duplicated work, and a fragmented brand presence that confused users.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/wildberries_challenge.webp",
+          "solution": "/images/projects/wildberries_solution.webp"
         },
         "approach": [
           "Audited design patterns across all departments and platforms",
@@ -528,8 +528,8 @@
       "loyalty": {
         "challenge": "Banks needed white-label applications for loyalty programs but existing solutions were generic and failed to engage users. Loyalty features were buried, redemption flows were complex, and personalization was non-existent, leading to low program participation.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/loyalty_challenge.webp",
+          "solution": "/images/projects/loyalty_solution.webp"
         },
         "approach": [
           "Conducted card-sorting with 50+ banking customers",
@@ -550,8 +550,8 @@
       "key_app": {
         "challenge": "Building a non-custodial crypto wallet that mainstream users could actually use. The Solana ecosystem lacked user-friendly wallets, and existing solutions were too technical for average users.",
         "images": {
-          "challenge": "/images/projects/challenge.webp",
-          "solution": "/images/projects/solution.webp"
+          "challenge": "/images/projects/key_app_challenge.webp",
+          "solution": "/images/projects/key_app_solution.webp"
         },
         "approach": [
           "Competitive analysis of 15+ crypto wallets",

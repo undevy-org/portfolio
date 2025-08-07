@@ -85,6 +85,31 @@ All interactive elements are designed for clarity and function.
 -   **Structure**: Elements are clearly defined interactive targets with `hover` states.
 -   **Styling**: Navigation buttons use the primary border color and often include an icon to hint at the action's outcome (e.g., `ArrowLeft` for "Back").
 
+### 4.4. Terminal Image Preview Component
+
+A specialized component that provides lazy-loaded image display with terminal aesthetics:
+
+- Structure: Three-state component (idle → loading → ready)
+- Idle State:
+  - ASCII-style frame using box-drawing characters
+  - Centered `[ SHOW IMAGE ]` button
+  - No image preloading for performance
+- Loading State:
+  - Animated progress bar using █ and ░ characters
+  - Percentage counter with simulated progression
+  - Logs events to SystemLog
+- Ready State:
+  - Full image display with hover hint
+  - Click to open lightbox modal
+- Lightbox:
+  - Centered modal with backdrop dimming
+  - Close button and click-outside-to-close
+  - Image caption display when available
+- Technical Notes:
+  - Uses Next.js Image component for optimization
+  - Supports custom heights and aspect ratios
+  - Integrates with theme system for consistent styling
+
 ---
 
 ## 5. Future Directions

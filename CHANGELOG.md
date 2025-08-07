@@ -4,32 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Unreleased]
+## [Phase 7] - Interactive UI & System Stabilization
 
-### Added
--   Analytics System Overhaul: The Telegram bot's analytics module has been completely stabilized. Real-time visitor notifications are now reliable, displaying the full, accurate user journey and correct company name based on the access code.
--   New Border Tokens: Added `dark-border-darker` and `light-border-lighter` to `tailwind.config.js` to create more visual depth in nested panels.
+This major phase introduced a key interactive feature for case studies and included a comprehensive overhaul of the UI, analytics system, and project documentation to improve stability and maintainability.
 
-### Documentation
--   Comprehensive Documentation Overhaul: Restructured the entire project documentation suite to establish clear roles for each document, eliminate redundancy, and improve clarity for both internal and external audiences.
-    -   Refactored `README.md` into a high-level project showcase
-    -   Transformed `SETUP.md` into a generic, public-facing deployment guide 
-    -   Made `CONTENT-MODEL.md` a public document, sanitizing it of all personal data to serve as a clean template.
+### New Feature: Interactive Image Previews
+-   Introduced the `TerminalImagePreview` Component: A new, custom component that displays images within an ASCII-style frame. It features a `[ SHOW IMAGE ]` button, lazy loading with an animated progress bar, and a full-size lightbox modal for viewing.
+-   Extended Content Model: The `case_details` object in `content.json` now supports an `images` field, allowing images to be embedded directly within case study tabs (e.g., Challenge, Solution).
+-   Integrated System Logging: All user interactions with images (loading, opening/closing lightbox) are now tracked in the `SystemLog` for full transparency.
 
-### Changed
--   Complete UI Refactoring: Rebuilt all major screens to use a consistent, theme-based design system. This improves visual hierarchy, readability, and maintainability across the application.
--   Data Parsing Resilience: Significantly improved data extraction functions for the Matomo API. The system is now resilient to unexpected or malformed data, preventing crashes.
--   API Security: Enhanced API security by moving sensitive credentials to environment variables.
+### System & UI Overhaul
+-   Complete UI Refactoring: Rebuilt all major screens using a consistent, theme-based design system, unifying the visual hierarchy and improving readability.
+-   Analytics System Stabilization: Completely refactored the Telegram bot's analytics module. Real-time notifications are now reliable, with accurate user journey tracking and correct company name lookups.
+-   Improved Data Resilience: Hardened the Matomo API data parsing functions, making the system resilient to unexpected data formats and preventing crashes.
+-   Critical Bug Fixes: Resolved multiple runtime errors, including crashes in the Accordion component and analytics module.
 
-### Fixed
--   Critical Runtime Errors: Resolved multiple critical bugs, including a `map is not a function` crash in the Accordion component and several `TypeError` crashes in the analytics module, ensuring smoother application performance.
-
-### Removed
--   Redundant UI Elements: Removed non-essential technical IDs from the user interface to improve clarity and focus on content.
+### Documentation Rework
+-   Comprehensive Documentation Overhaul: Restructured the entire project documentation suite (`README.md`, `ARCHITECTURE.md`, `SETUP.md`, etc.) to establish clear, non-redundant roles for each document and improve clarity for both internal and external audiences.
 
 ---
-
-## [Previous Milestones]
 
 ### Phase 6: Headless CMS & Analytics
 -   [COMPLETED] Interactive Content Editing: Implemented a full suite of interactive commands (`/add_case`, `/edit_case`, `/delete_case`) allowing for complete case study management directly from Telegram. Developed a state management system for handling multi-step user conversations.
