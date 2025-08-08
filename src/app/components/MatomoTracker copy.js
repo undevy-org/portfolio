@@ -30,8 +30,6 @@ export default function MatomoTracker() {
     _paq.push(['forgetConsentGiven']); // Clear any consent data
     
     // --- CRITICAL FIX: Set custom dimension BEFORE trackPageView ---
-    
-    // If a valid access code is present, set it as a custom dimension
     if (accessCode) {
       // Method 1: Standard Custom Dimension (primary method)
       _paq.push(['setCustomDimension', 1, accessCode]);
@@ -72,8 +70,8 @@ export default function MatomoTracker() {
       }
       
       var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-      g.id = 'matomo-script';  // Add ID to prevent duplicate loading
-      g.async = true; 
+      g.id = 'matomo-script'; // Add ID to prevent duplicate loading
+      g.async = true;
       g.src = u + '/matomo.js';
       
       // --- ENHANCEMENT: Add load and error callbacks for debugging ---
@@ -104,7 +102,7 @@ export default function MatomoTracker() {
       siteId: SITE_ID,
       timestamp: new Date().toISOString()
     });
-
+    
   }, [searchParams]); // Run when searchParams changes
 
   // Track screen changes (including initial screen)
@@ -117,37 +115,36 @@ export default function MatomoTracker() {
     setTimeout(() => {
       if (!window._paq) {
         console.log('[MATOMO] Waiting for _paq to be available...');
-      return;
-    }
+        return;
+      }
 
-    // Construct the new URL with hash
-    const accessCode = searchParams.get('code');
-    const baseUrl = window.location.origin + window.location.pathname;
-    const urlWithHash = accessCode 
-      ? `${baseUrl}?code=${accessCode}#${currentScreen}`
-      : `${baseUrl}#${currentScreen}`;
+      // Construct the new URL with hash
+      const accessCode = searchParams.get('code');
+      const baseUrl = window.location.origin + window.location.pathname;
+      const urlWithHash = accessCode 
+        ? `${baseUrl}?code=${accessCode}#${currentScreen}`
+        : `${baseUrl}#${currentScreen}`;
 
-    // Get a more descriptive page title
-    const getPageTitle = (screen) => {
-      const screenTitles = {
-        Entry: 'Entry - Authentication',
-        MainHub: 'Main Hub - Navigation',
-        Introduction: 'Introduction - About Me',
-        Timeline: 'Timeline - Experience',
-        RoleDetail: 'Role Detail',
-        CaseList: 'Case Studies - List',
-        CaseDetail: 'Case Study - Detail',
-        SkillsGrid: 'Skills - Overview',
-        SkillDetail: 'Skill - Detail',
-        SideProjects: 'Side Projects',
-        Contact: 'Contact Information'
+      // Get a more descriptive page title
+      const getPageTitle = (screen) => {
+        const screenTitles = {
+          Entry: 'Entry - Authentication',
+          MainHub: 'Main Hub - Navigation',
+          Introduction: 'Introduction - About Me',
+          Timeline: 'Timeline - Experience',
+          RoleDetail: 'Role Detail',
+          CaseList: 'Case Studies - List',
+          CaseDetail: 'Case Study - Detail',
+          SkillsGrid: 'Skills - Overview',
+          SkillDetail: 'Skill - Detail',
+          SideProjects: 'Side Projects',
+          Contact: 'Contact Information'
+        };
+        return screenTitles[screen] || `${screen} - Undevy Portfolio`;
       };
-      
-      return screenTitles[screen] || `${screen} - Undevy Portfolio`;
-    };
 
-    // Update the URL that Matomo tracks
-    window._paq.push(['setCustomUrl', urlWithHash]);
+      // Update the URL that Matomo tracks
+      window._paq.push(['setCustomUrl', urlWithHash]);
       
       // --- ENHANCEMENT: Re-set custom dimension on every page view ---
       // This ensures dimension persists across navigation
@@ -155,10 +152,10 @@ export default function MatomoTracker() {
         window._paq.push(['setCustomDimension', 1, accessCode]);
         console.log('[MATOMO] Re-setting dimension for screen change:', accessCode);
       }
-    
-    // Track the page view with custom title
-    window._paq.push(['trackPageView', getPageTitle(currentScreen)]);
-    
+      
+      // Track the page view with custom title
+      window._paq.push(['trackPageView', getPageTitle(currentScreen)]);
+      
       // --- ENHANCEMENT: Track screen navigation as an event for debugging ---
       if (accessCode) {
         window._paq.push(['trackEvent', 'Navigation', currentScreen, accessCode]);
@@ -170,13 +167,12 @@ export default function MatomoTracker() {
         accessCode: accessCode || 'none',
         title: getPageTitle(currentScreen)
       });
-      
+
       // Update ref to know we're no longer on initial mount
       if (isInitialMount.current) {
         isInitialMount.current = false;
       }
     }, 100); // Small delay to ensure Matomo is ready
-
   }, [currentScreen, searchParams]); // Track when screen changes
 
   return null; // This component renders nothing
