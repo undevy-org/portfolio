@@ -103,11 +103,9 @@ export default function SkillDetail() {
         </div>
       )}
 
-      {/* REORDERED: Business Impact is now more prominent */}
       {skillDetails.impact && (
         <div className={panelClasses}>
           <h3 className={`text-base mb-2 ${yellowClasses}`}>$business_impact</h3>
-          {/* RESTYLED: Changed from a p tag to a styled list */}
           <div className="space-y-2">
             {Array.isArray(skillDetails.impact) ? (
               skillDetails.impact.map((item, idx) => (
@@ -129,7 +127,6 @@ export default function SkillDetail() {
       {skillDetails.tools?.length > 0 && (
         <div className={panelClasses}>
           <h3 className={`text-base mb-2 ${yellowClasses}`}>$related_tools</h3>
-          {/* RESTYLED: Tools are now simple text in brackets for consistency */}
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
             {skillDetails.tools.map((tool) => (
               <span key={tool} className={valueClasses}>

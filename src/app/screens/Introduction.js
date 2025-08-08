@@ -34,14 +34,22 @@ export default function Introduction() {
 
 return (
   <div className="p-4 font-mono">
+      {/* 
+        MODIFICATION: The $profile_data block has been reformatted.
+        WHY: To match the key-value grid layout used in other panels for better visual consistency.
+        It now uses a responsive grid layout, making it cleaner on both mobile and desktop.
+      */}
       <div className={panelClasses}>
         <h3 className={`mb-2 ${yellowClasses}`}>$profile_data</h3>
-        <div className={`flex flex-wrap gap-x-2 text-sm ${valueClasses}`}>
-        <span>{profile.summary?.title}</span>
-        <span className="opacity-50">|</span>
-        <span>{profile.summary?.specialization}</span>
-        <span className="opacity-50">|</span>
-        <span>{profile.summary?.background}</span>
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm`}>
+          <span className={labelClasses}>$title:</span>
+          <span className={valueClasses}>{profile.summary?.title}</span>
+          
+          <span className={labelClasses}>$specialization:</span>
+          <span className={valueClasses}>{profile.summary?.specialization}</span>
+
+          <span className={labelClasses}>$background:</span>
+          <span className={valueClasses}>{profile.summary?.background}</span>
       </div>
     </div>
 
@@ -62,20 +70,12 @@ return (
       </div>
     </div>
 
-      <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$current_status</h3>
-        {/* MODIFIED: Layout is now responsive. Switches to grid on medium screens. */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={labelClasses}>$seeking:</span>
-          <span className={valueClasses}>{profile.status?.seeking}</span>
-
-          <span className={labelClasses}>$location:</span>
-          <span className={valueClasses}>{profile.status?.location}</span>
-
-          <span className={labelClasses}>$availability:</span>
-          <span className={valueClasses}>{profile.status?.availability}</span>
-      </div>
-    </div>
+      {/*
+        REMOVED: The $current_status block has been removed from this screen.
+        WHY: This information is more relevant in the "Contact" context. Moving it declutters
+        the introduction and places the status details where a user would expect to find them
+        when considering making contact.
+      */}
 
     <div className="flex flex-col md:flex-row gap-3">
       <Button

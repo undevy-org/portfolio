@@ -755,7 +755,10 @@
           "Storybook",
           "Style Dictionary"
         ],
-        "impact": "Reduced design inconsistencies by 90%, accelerated development by 30%"
+        "impact": [
+          "Reduced design inconsistencies by 90%",
+          "Accelerated development by 30%"
+        ]
       },
       "Web3/DeFi UX": {
         "description": "Specialized in making complex blockchain interactions accessible to mainstream users without sacrificing functionality.",
@@ -770,7 +773,10 @@
           "WalletConnect",
           "Rainbow Kit"
         ],
-        "impact": "Increased user adoption by 300%, reduced support tickets by 50%"
+        "impact": [
+          "Increased user adoption by 300%",
+          "Reduced support tickets by 50%"
+        ]
       },
       "User Research": {
         "description": "Combining quantitative and qualitative methods to drive design decisions based on real user behavior and needs.",
@@ -785,7 +791,9 @@
           "Hotjar",
           "Python (for analysis)"
         ],
-        "impact": "Identified critical UX issues leading to 60% error reduction"
+        "impact": [
+          "Identified critical UX issues leading to 60% error reduction"
+        ]
       },
       "Frontend Dev": {
         "description": "Engineering background enables deep collaboration with developers and ability to prototype complex interactions directly in code.",
@@ -800,7 +808,10 @@
           "Next.js",
           "Tailwind CSS"
         ],
-        "impact": "Reduced design-dev friction by 50%, enabled rapid prototyping of complex features"
+        "impact": [
+          "Reduced design-dev friction by 50%",
+          "Enabled rapid prototyping of complex features"
+        ]
       },
       "Data Analysis": {
         "description": "Leveraging quantitative data to inform design decisions and measure impact of changes on business metrics.",
@@ -815,7 +826,9 @@
           "Mixpanel",
           "Google Analytics"
         ],
-        "impact": "Increased conversion rates by 63% through data-driven optimization"
+        "impact": [
+          "Increased conversion rates by 63% through data-driven optimization"
+        ]
       },
       "Team Leadership": {
         "description": "Built and led design teams from scratch, establishing processes and culture while maintaining hands-on involvement.",
@@ -830,7 +843,10 @@
           "Slack",
           "Linear"
         ],
-        "impact": "Improved team velocity by 20%, maintained high designer retention rates"
+        "impact": [
+          "Improved team velocity by 20%",
+          "Maintained high designer retention rates"
+        ]
       }
     },
     "side_projects": [
