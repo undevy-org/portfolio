@@ -24,42 +24,23 @@ export default function MatomoTracker() {
     // Initialize the Matomo tracking array
     var _paq = window._paq = window._paq || [];
     
-    // --- ENHANCEMENT: Reset tracker for clean state ---
-    // This ensures no stale data from previous sessions
-    _paq.push(['deleteCookies']);
-    _paq.push(['forgetConsentGiven']); // Clear any consent data
-    
     // --- CRITICAL FIX: Set custom dimension BEFORE trackPageView ---
     
     // If a valid access code is present, set it as a custom dimension
     if (accessCode) {
-      // Method 1: Standard Custom Dimension (primary method)
+      // Method 1: Set for this page view only
       _paq.push(['setCustomDimension', 1, accessCode]);
-      
-      // Method 2: Custom Variable as fallback (belt and suspenders approach)
-      _paq.push(['setCustomVariable', 1, 'AccessCode', accessCode, 'visit']);
-      
-      // Method 3: Set as User ID for additional tracking
       _paq.push(['setUserId', accessCode]);
       
-      console.log('[MATOMO] Triple-setting access code:', {
-        code: accessCode,
-        dimension: 1,
-        methods: ['setCustomDimension', 'setCustomVariable', 'setUserId']
-      });
+      console.log('[MATOMO] Setting custom dimension 1 to:', accessCode);
     }
     
     // IMPORTANT: Track page view AFTER setting custom dimension
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     
-    // --- ENHANCEMENT: Track initial access as an event for debugging ---
-    if (accessCode) {
-      _paq.push(['trackEvent', 'Authentication', 'AccessCode', accessCode]);
-      console.log('[MATOMO] Tracked authentication event with code:', accessCode);
-    }
+    // --- SCRIPT INJECTION ---
     
-    // --- SCRIPT INJECTION with enhanced error handling ---
     (function() {
       var u = MATOMO_URL;
       _paq.push(['setTrackerUrl', u + '/matomo.php']);
@@ -75,35 +56,18 @@ export default function MatomoTracker() {
       g.id = 'matomo-script';  // Add ID to prevent duplicate loading
       g.async = true; 
       g.src = u + '/matomo.js';
-      
-      // --- ENHANCEMENT: Add load and error callbacks for debugging ---
-      g.onload = function() {
-        console.log('[MATOMO] Script loaded successfully');
-        
-        // Double-check that custom dimension was set after script loads
-        if (accessCode && window._paq) {
-          // Re-send the custom dimension after script loads to be absolutely sure
-          window._paq.push(['setCustomDimension', 1, accessCode]);
-          console.log('[MATOMO] Re-confirmed custom dimension after script load');
-        }
-      };
-      
-      g.onerror = function() {
-        console.error('[MATOMO] Failed to load Matomo script');
-      };
-      
       if (s && s.parentNode) {
         s.parentNode.insertBefore(g, s);
       }
     })();
     
     matomoInitialized.current = true;
-    console.log('[MATOMO] Initialized with full context:', {
-      url: window.location.href,
-      accessCode: accessCode || 'none',
-      siteId: SITE_ID,
-      timestamp: new Date().toISOString()
-    });
+    console.log('[MATOMO] Initialized');
+
+    // Debug: Check if dimension was set
+    if (accessCode) {
+      console.log('[MATOMO] Custom dimension should be sent with code:', accessCode);
+    }
 
   }, [searchParams]); // Run when searchParams changes
 
@@ -149,27 +113,10 @@ export default function MatomoTracker() {
     // Update the URL that Matomo tracks
     window._paq.push(['setCustomUrl', urlWithHash]);
       
-      // --- ENHANCEMENT: Re-set custom dimension on every page view ---
-      // This ensures dimension persists across navigation
-      if (accessCode) {
-        window._paq.push(['setCustomDimension', 1, accessCode]);
-        console.log('[MATOMO] Re-setting dimension for screen change:', accessCode);
-      }
-    
     // Track the page view with custom title
     window._paq.push(['trackPageView', getPageTitle(currentScreen)]);
     
-      // --- ENHANCEMENT: Track screen navigation as an event for debugging ---
-      if (accessCode) {
-        window._paq.push(['trackEvent', 'Navigation', currentScreen, accessCode]);
-      }
-      
-      console.log('[MATOMO] Tracked screen:', {
-        screen: currentScreen,
-        url: urlWithHash,
-        accessCode: accessCode || 'none',
-        title: getPageTitle(currentScreen)
-      });
+      console.log('[MATOMO] Tracked screen:', currentScreen, urlWithHash);
       
       // Update ref to know we're no longer on initial mount
       if (isInitialMount.current) {
