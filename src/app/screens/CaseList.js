@@ -85,7 +85,7 @@ export default function CaseList() {
                       className={`px-2 py-0.5 border rounded text-xs ${
                       theme === 'dark'
                           ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
-                          : 'border-light-border-lighter bg-gray-200 text-light-text-secondary'
+                          : 'border-light-border-lighter bg-gray-50 text-light-text-secondary'
                     }`}
                   >
                     {tag}

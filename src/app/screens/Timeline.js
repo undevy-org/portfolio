@@ -26,7 +26,7 @@ export default function Timeline() {
           <button
             key={`${role.id}-${index}`}
             onClick={() => handleRoleClick(role)}
-            className={`w-full p-4 text-left border rounded transition-colors ${
+            className={`w-full p-4 text-left border rounded transition-colors relative ${
               theme === 'dark' 
                 ? 'border-dark-border-darker hover:bg-dark-hover' 
                 : 'border-light-border-lighter hover:bg-light-hover'
@@ -76,6 +76,9 @@ export default function Timeline() {
               <div className={`mt-2 text-sm text-left ${primaryClasses}`}>
                 {role.highlight}
               </div>
+              
+              {/* Mobile chevron positioned at bottom right */}
+              <ChevronRight className={`w-5 h-5 absolute bottom-4 right-4 ${secondaryClasses}`} />
             </div>
           </button>
         ))}

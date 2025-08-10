@@ -102,7 +102,8 @@ export default function AnalyticsPanel() {
         theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
       }`}>
 
-        <h3 className={`text-base mb-2 ${yellowClasses}`}>$navigation_path</h3>
+        {/* CHANGE: Renamed from $navigation_path to $session_trace to reflect temporal nature */}
+        <h3 className={`text-base mb-2 ${yellowClasses}`}>$session_trace</h3>
         
         {/* MODIFIED: Wrapped in flex-wrap for better mobile handling */}
         <div className="text-sm flex items-center flex-wrap">
@@ -110,20 +111,31 @@ export default function AnalyticsPanel() {
             <>
               {navigationHistory.map((screen, index) => (
                 <span key={index} className="flex items-center">
+                  {/* CHANGE: Added index prefix to show this is a sequential log */}
+                  <span className={`${secondaryClasses} mr-1`}>[{index}]</span>
                     <button
                     onClick={() => handlePathClick(screen, index)}
                       className={`${secondaryClasses} hover:underline`}
                     >
                       {screen}
                     </button>
-                    <span className={`mx-1 ${labelClasses}`}>{'>'}</span>
+                  {/* CHANGE: Replaced '>' with '→' to avoid breadcrumb confusion */}
+                  <span className={`mx-2 ${secondaryClasses}`}>→</span>
                   </span>
               ))}
               
+              {/* CHANGE: Added index to current screen for consistency */}
+              <span className="flex items-center">
+                <span className={`${secondaryClasses} mr-1`}>[{navigationHistory.length}]</span>
               <span className={yellowClasses}>{currentScreen}</span>
+              </span>
             </>
           ) : (
+            <>
+              {/* CHANGE: Added [0] prefix even for the initial screen */}
+              <span className={`${secondaryClasses} mr-1`}>[0]</span>
             <span className={yellowClasses}>{currentScreen}</span>
+            </>
           )}
         </div>
       </div>

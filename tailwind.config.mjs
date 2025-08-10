@@ -25,19 +25,19 @@ const config = {
         'dark-accent': '#22d3ee',                         // cyan-400 
 
         // Light Theme
-        'light-bg': '#e5e7eb',              // gray-200 
-        'light-text-black': '#111827',      // gray-900 
-        'light-text-primary': '#065f46',    // green-900 
-        'light-text-secondary': '#334155',  // gray-700 
-        'light-text-command': '#ca8a04',    // yellow-600 
-        'light-border': '#10b981',          // green-500 
-        'light-border-lighter': '#34d399',  // green-400 
+        'light-bg': '#ffffff',              // white background for maximum contrast
+        'light-text-black': '#0a0a0a',      // almost black for clear text
+        'light-text-primary': '#065f46',    // green for accents
+        'light-text-secondary': '#4b5563',  // gray for secondary text
+        'light-text-command': '#b45309',    // darker yellow for better contrast
+        'light-border': '#10b981',          // green for borders
+        'light-border-lighter': '#6ee7b7',  // green-300 for tag borders
         'light-active': '#d1fae5',          // green-100 
         'light-error': '#dc2626',           // red-600
         'light-success': '#059669',         // green-600
         'light-input-bg': '#ffffff',        // white
         'light-hover': 'rgba(5, 150, 105, 0.1)', // green-600 with 10% opacity
-        'light-accent': '#0ea5e9',               // sky-500
+        'light-accent': '#0284c7',               // sky-400
       },
 
       fontSize: {
