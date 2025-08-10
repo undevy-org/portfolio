@@ -41,7 +41,7 @@ export default function SideProjects() {
         return theme === 'dark' ? 'border-yellow-600 bg-yellow-900/30 text-yellow-400' : 'border-yellow-500 bg-yellow-100 text-yellow-600';
       case 'EXPERIMENTAL':
       default:
-        return theme === 'dark' ? 'border-gray-600 bg-gray-900/30 text-gray-400' : 'border-gray-400 bg-gray-200 text-gray-500';
+        return theme === 'dark' ? 'border-gray-600 bg-gray-900/30 text-gray-400' : 'border-gray-400 bg-gray-50 text-gray-500';
     }
   };
   
