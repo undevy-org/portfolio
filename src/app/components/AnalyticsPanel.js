@@ -14,8 +14,10 @@ export default function AnalyticsPanel() {
     setNavigationHistory 
   } = useSession();
 
-  // Don't render if no session data
-  if (!sessionData) {
+  // MODIFICATION: Do not render on the ProfileBoot screen.
+  // WHY: The ProfileBoot screen is a transitional state before the main interface is shown,
+  // and displaying analytics here is premature and clutters the view.
+  if (!sessionData || currentScreen === 'ProfileBoot') {
     return null;
   }
 
