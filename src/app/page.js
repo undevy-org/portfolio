@@ -55,7 +55,7 @@ function AppContent() {
           };
           setSessionData(enrichedData);
           addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown Company'}`);
-          navigate('MainHub', false);
+          navigate('ProfileBoot', false);
         } else {
           addLog(`ACCESS DENIED: Invalid code ${accessCode}`);
           setAuthError('Invalid access code. Please try again.');
