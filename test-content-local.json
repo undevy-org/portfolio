@@ -82,6 +82,121 @@
       "formal": "Technical Product Designer focused on decentralized finance, bringing engineering rigor to user experience design in blockchain protocols."
     }
   },
+  "CIRCLE-RFLQWFZ6": {
+    "meta": {
+      "company": "Circle.so",
+      "timeline": "scenario_a",
+      "tone": "formal",
+      "cases": [
+        "cere_creator_tools",
+        "loyalty_superapp",
+        "wildberries"
+      ]
+    },
+    "profile": {
+      "greeting_name": "Circle Team",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Creator Tools & Community Platforms",
+        "background": "9 Years in SaaS & Platform Design"
+      }
+    },
+    "introduction": {
+      "formal": "I'm a product designer with 9 years of experience building creator tools, white-label platforms, and scalable design systems. My focus is on creating intuitive experiences that empower creators to build, monetize, and engage their communities, backed by a technical background that ensures seamless collaboration with engineering teams."
+    }
+  },
+  "CRYPTOPAY-BBEWNA3M": {
+    "meta": {
+      "company": "Cryptopay",
+      "timeline": "scenario_c",
+      "tone": "formal",
+      "cases": [
+        "mercuryo_offramp_ecosystem",
+        "mercuryo_rebranding",
+        "wildberries"
+      ]
+    },
+    "profile": {
+      "greeting_name": "Cryptopay Team",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Fintech & Payment Systems",
+        "background": "B2B/B2C Payments Expert"
+      }
+    },
+    "introduction": {
+      "formal": "I'm a product designer with 9 years of experience in fintech and crypto payments, currently leading design at Mercuryo. I specialize in creating scalable, regulatory-compliant systems and have a proven record of increasing conversion and revenue through strategic UX improvements in payment products."
+    }
+  },
+  "BITMEX-MPELXNGO": {
+    "meta": {
+      "company": "BitMEX",
+      "timeline": "scenario_b",
+      "tone": "formal",
+      "cases": [
+        "gmx_mission_critical",
+        "gmx_system",
+        "key_app_from_scratch"
+      ]
+    },
+    "profile": {
+      "greeting_name": "BitMEX Team",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Derivatives Trading Platforms",
+        "background": "Complex Financial Interfaces"
+      }
+    },
+    "introduction": {
+      "formal": "I'm a product designer specializing in complex trading platforms. My experience at GMX involved transforming a powerful but user-hostile interface into an intuitive experience that resulted in a 300% increase in traders. I am adept at solving the exact UX challenges high-frequency trading platforms face today."
+    }
+  },
+  "ZENCODER-ZNPJ9TCC": {
+    "meta": {
+      "company": "Zencoder AI",
+      "timeline": "scenario_b",
+      "tone": "formal",
+      "cases": [
+        "portfolio_dev_experience",
+        "gmx_system",
+        "gmx_mission_critical"
+      ]
+    },
+    "profile": {
+      "greeting_name": "Zencoder Team",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Developer Tools & AI Agents",
+        "background": "Engineer-Turned-Designer"
+      }
+    },
+    "introduction": {
+      "formal": "I'm a product designer with an engineering degree, specializing in creating complex tools for technical users. My hands-on coding ability allows me to design developer tools that feel native to their workflows, bridging the gap between advanced AI capabilities and a seamless developer experience."
+    }
+  },
+  "LIFI-KU8ZPEQB": {
+    "meta": {
+      "company": "Li.Fi",
+      "timeline": "scenario_b",
+      "tone": "formal",
+      "cases": [
+        "gmx_multichain",
+        "portfolio_dev_experience",
+        "gmx_system"
+      ]
+    },
+    "profile": {
+      "greeting_name": "Li.Fi Team",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Web3 Infrastructure & Developer UX",
+        "background": "Cross-Chain Specialist"
+      }
+    },
+    "introduction": {
+      "formal": "I'm a senior product designer specializing in Web3 infrastructure and developer tools. My experience at GMX involved designing complex cross-chain interfaces that served both end-users and developers, a skill directly applicable to Li.Fi's mission of simplifying multi-chain DeFi."
+    }
+  },
   "GLOBAL_DATA": {
     "menu": [
       {
@@ -425,6 +540,28 @@
           "UI/UX",
           "Visual Design"
         ]
+      },
+      "cere_creator_tools": {
+        "title": "Creator Tools & White-Label Platforms",
+        "desc": "Designed a suite of creator monetization tools (NFT marketplace, subscription platform) for enterprise and individual creators.",
+        "metrics": "150% Artist CSAT, +25% Conversion",
+        "tags": [
+          "Creator Economy",
+          "SaaS",
+          "White-Label",
+          "NFT"
+        ]
+      },
+      "portfolio_dev_experience": {
+        "title": "Interactive Terminal Portfolio (Full-Stack Project)",
+        "desc": "Designed and built a full-stack portfolio application with a custom headless CMS, demonstrating deep developer empathy and technical skill.",
+        "metrics": "React, Node.js, CI/CD",
+        "tags": [
+          "Developer Experience",
+          "Full-Stack",
+          "React",
+          "Headless CMS"
+        ]
       }
     },
     "case_details": {
@@ -615,6 +752,40 @@
           "Achieved industry recognition with features on Awwwards and CSS Design Awards."
         ],
         "learnings": "In a sea of minimalist design, a bold and opinionated visual identity can be a powerful competitive advantage. This project proved that customization and brand identity are not opposing forces; a thoughtful design system can empower partners while strengthening the core brand experience."
+      },
+      "cere_creator_tools": {
+        "challenge": "Creators needed powerful tools to monetize their content and build communities, but existing platforms were either too complex or offered limited white-label customization for enterprise partners. The goal was to design a suite of products that were both user-friendly for individual artists and scalable for large brands.",
+        "approach": [
+          "Conducted 30+ interviews with creators to identify their primary monetization pain points and workflow challenges.",
+          "Designed a flexible, multi-tenant architecture for the DaVinci NFT Marketplace, allowing full brand customization.",
+          "Created a modular design system that enabled consistent UX across 5 different white-label products while allowing for unique branding.",
+          "Led the design of CereFans, a subscription platform focused on recurring revenue and simplified creator onboarding."
+        ],
+        "solution": "Delivered a portfolio of creator-focused SaaS products. DaVinci provided a simple, elegant NFT marketplace for artists, while CereFans offered robust subscription tools. The unified design system ensured a cohesive experience and allowed for rapid deployment of new white-label solutions for partners.",
+        "results": [
+          "Achieved a 150% increase in artist satisfaction (CSAT) on the DaVinci marketplace.",
+          "The CereFans platform achieved a 25% higher conversion rate on subscription flows compared to industry benchmarks.",
+          "The new design system reduced design-to-development handoff time by 40%.",
+          "Successfully onboarded 10,000+ creators to the platform suite."
+        ],
+        "learnings": "The creator economy isn't one-size-fits-all. Building successful creator tools requires a deep understanding of different user segments—from individual artists to large enterprises—and providing flexible solutions that cater to their unique needs."
+      },
+      "portfolio_dev_experience": {
+        "challenge": "Standard portfolio websites are static and fail to demonstrate deep technical understanding or developer empathy. I needed a platform that was not just a gallery of my work, but a testament to my skills in product architecture, development, and building tools for technical users.",
+        "approach": [
+          "Designed a fully decoupled, configuration-driven architecture where a single JSON file acts as a headless CMS.",
+          "Developed the frontend using Next.js and Tailwind CSS, creating a dynamic single-page application that renders content based on a server-provided session object.",
+          "Built a custom headless CMS on Telegram using Node.js and the grammY framework to manage all portfolio content on the go.",
+          "Implemented a full CI/CD pipeline with GitHub Actions for automated, zero-downtime deployments."
+        ],
+        "solution": "The result is this interactive terminal-style portfolio. It's a full-stack application that allows for deep personalization for every visitor via unique access codes. The entire content is managed through a secure Telegram bot I built, which includes features for version control, backups, and real-time analytics notifications.",
+        "results": [
+          "Demonstrated proficiency in modern web technologies: React, Next.js, Node.js, and CI/CD.",
+          "Showcased deep understanding of developer experience (DX) by building a custom, practical CMS.",
+          "Proved ability to design and architect complex, scalable systems from the ground up.",
+          "Created a powerful, personalized communication tool that goes far beyond a traditional PDF or website."
+        ],
+        "learnings": "The best way to demonstrate empathy for developers is to build your own tools. This project solidified my belief in the power of decoupled architectures and gave me firsthand experience in every stage of the product development lifecycle, from ideation to deployment and maintenance."
       }
     },
     "skills": [

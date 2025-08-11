@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 // Dynamic imports for optimization
 const screens = {
   Entry: dynamic(() => import('../screens/Entry')),
+  ProfileBoot: dynamic(() => import('../screens/ProfileBoot')),
   MainHub: dynamic(() => import('../screens/MainHub')),
   Introduction: dynamic(() => import('../screens/Introduction')),
   Timeline: dynamic(() => import('../screens/Timeline')),
