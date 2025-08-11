@@ -497,22 +497,22 @@
       }
     ],
     "contact": {
-      "email": "foxous@proton.me",
-      "website": "https://foxous.design",
-      "telegram": "@undevy",
-      "location": "Tbilisi, Georgia (GMT+4)",
-      "timezone": "GMT+4",
+      "email": "your_email@example.com",
+      "website": "https://your_website.com",
+      "telegram": "@your_telegram",
+      "location": "Remote",
+      "timezone": "GMT",
       "availability": {
         "status": "IMMEDIATE",
         "work_type": "Fully Remote Only",
         "target_comp": "$8,000+/month",
         "start_date": "Available Now"
       },
-      "calendar_link": "https://calendly.com/undevy/30min",
+      "calendar_link": "https://calendly.com/your_calendar/30min",
       "social_links": {
-        "twitter": "https://twitter.com/undevy",
-        "linkedin": "https://linkedin.com/in/undevy",
-        "github": "https://github.com/undevy"
+        "twitter": "https://twitter.com/your_handle",
+        "linkedin": "https://linkedin.com/in/your_handle",
+        "github": "https://github.com/your_handle"
       }
     }
   }

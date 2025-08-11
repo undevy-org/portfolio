@@ -909,10 +909,10 @@
       }
     ],
     "contact": {
-      "email": "foxous@proton.me",
-      "website": "https://foxous.design",
-      "location": "Tbilisi, Georgia (GMT+4)",
-      "work_type": "Fully Remote Only",
+      "email": "your_email@example.com",
+      "website": "https://your_website.com",
+      "location": "Remote",
+      "work_type": "Fully Remote",
       "target_comp": "$8,000+/month",
       "start_date": "IMMEDIATE"
     }

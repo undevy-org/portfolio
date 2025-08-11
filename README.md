@@ -33,7 +33,7 @@ After authentication, the application transforms into a seamless Single Page App
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/undevy-org/portfolio.git
+    git clone https://github.com/your-org/your-repo.git
     cd portfolio
     ```
 

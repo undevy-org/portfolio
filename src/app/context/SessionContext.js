@@ -15,16 +15,17 @@ const getTimestamp = () => {
 };
 
 // Optional: mapping per domain
-const domainConfigs = {
-  'undevy.com': {
-    brandingToken: '$undevy_portfolio',
-    telegram: 'https://t.me/undevy',
-  },
-  'foxous.design': {
-    brandingToken: '$foxous_design',
-    telegram: 'https://t.me/foxous',
-  },
+const getDomainConfigs = () => {
+  try {
+    const configs = JSON.parse(process.env.NEXT_PUBLIC_DOMAIN_CONFIGS || '{}');
+    return configs;
+  } catch (error) {
+    console.error('Error parsing NEXT_PUBLIC_DOMAIN_CONFIGS:', error);
+    return {};
+  }
 };
+
+const domainConfigs = getDomainConfigs();
 
 const screenHierarchy = {
   // Deep-level screens 
@@ -86,34 +87,22 @@ export function SessionProvider({ children }) {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       setCurrentDomain(hostname);
-      if (domainConfigs[hostname]) {
-        setDomainData(domainConfigs[hostname]);
-        addLog(`DOMAIN DETECTED: ${hostname}`);
-      } else {
-        // Default config for unknown domains
-        setDomainData({
-          brandingToken: '$portfolio',
-          telegram: 'https://t.me/undevy',
-        });
-        addLog(`UNKNOWN DOMAIN: ${hostname}`);
-      }
+      const config = domainConfigs[hostname] || domainConfigs['localhost'] || {
+        brandingToken: '$terminal_portfolio',
+        telegram: '',
+      };
+      setDomainData(config);
+      addLog(`DOMAIN DETECTED: ${hostname}`);
     }
   }, [addLog]);
 
   // ========== DYNAMIC DOCUMENT TITLE ==========
   useEffect(() => {
-    if (currentDomain) {
-      if (currentDomain.includes('foxous')) {
-        document.title = "$foxous_design";
-      } else if (currentDomain.includes('undevy')) {
-        document.title = "$undevy_portfolio";
-      } else {
-        // Fallback for localhost or other domains
-        document.title = "$terminal_portfolio";
-      }
+    if (domainData) {
+      document.title = domainData.brandingToken;
       addLog(`TITLE SET: ${document.title}`);
     }
-  }, [currentDomain, addLog]);
+  }, [domainData, addLog]);
   
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {

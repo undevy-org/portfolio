@@ -11,7 +11,7 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Access code is required' }, { status: 400 });
   }
 
-  const dataFilePath = '/home/undevy/content.json';
+  const dataFilePath = process.env.CONTENT_FILE_PATH;
 
   try {
     const fileContent = await fs.readFile(dataFilePath, 'utf-8');

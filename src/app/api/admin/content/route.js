@@ -6,15 +6,8 @@ import { validateContentStructure, deepMerge } from './validator';
 
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
 
-const CONTENT_FILE_PATH = process.env.NODE_ENV === 'production' 
-  ? '/home/undevy/content.json'
-  : process.env.USE_LOCAL_TEST_CONTENT 
-    ? path.join(process.cwd(), 'test-content-local.json')
-    : path.join(process.cwd(), 'src/app/test-content.json');
-
-const BACKUP_DIR = process.env.NODE_ENV === 'production'
-  ? '/home/undevy/content-backups'
-  : path.join(process.cwd(), 'content-backups');
+const CONTENT_FILE_PATH = process.env.CONTENT_FILE_PATH || path.join(process.cwd(), 'test-content-local.json');
+const BACKUP_DIR = process.env.BACKUP_DIR || path.join(process.cwd(), 'content-backups');
 
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');

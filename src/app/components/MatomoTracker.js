@@ -7,12 +7,12 @@ import { useSession } from '../context/SessionContext';
 
 export default function MatomoTracker() {
   const searchParams = useSearchParams();
-  const { currentScreen, sessionData } = useSession();
+  const { currentScreen, sessionData, domainData } = useSession();
   const isInitialMount = useRef(true);
   const matomoInitialized = useRef(false);
 
   useEffect(() => {
-    const MATOMO_URL = 'https://analytics.undevy.com';
+    const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
     const SITE_ID = '1';
     const accessCode = searchParams.get('code');
 
@@ -107,7 +107,7 @@ export default function MatomoTracker() {
         Contact: 'Contact Information'
       };
       
-      return screenTitles[screen] || `${screen} - Undevy Portfolio`;
+      return screenTitles[screen] || `${screen} - ${domainData?.brandingToken || 'Portfolio'}`;
     };
 
     // Update the URL that Matomo tracks

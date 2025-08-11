@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ".next, package.json, package-lock.json, public, next.config.mjs, src"
-          target: "/home/undevy/undevy.com"
+          target: "${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
 
       # Step 5: Install production dependencies and restart the site process
       - name: Step 5 - Finalize portfolio deployment
@@ -47,9 +47,9 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /home/undevy/undevy.com
+            cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
             npm install --production
-            pm2 restart undevy-portfolio
+            pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
 
   deploy-bot:
     name: Deploy Telegram Bot
@@ -68,7 +68,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "telegram-bot/*"
-          target: "/home/undevy"
+          target: "${{ secrets.DEPLOY_PATH_BOT }}"
 
       # Step 3: Install production dependencies and restart the bot process
       - name: Step 3 - Finalize bot deployment
@@ -80,6 +80,6 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /home/undevy/telegram-bot
+            cd ${{ secrets.DEPLOY_PATH_BOT }}
             npm install --production
-            pm2 restart portfolio-cms-bot
+            pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}

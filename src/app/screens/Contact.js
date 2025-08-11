@@ -25,20 +25,12 @@ export default function Contact() {
   // NOTE: Domain-specific contact logic remains unchanged.
   const getDomainSpecificContact = () => {
     const contact = { ...baseContact };
-    if (currentDomain?.includes('foxous')) {
-    contact.email = 'foxous@proton.me';
-    contact.telegram = '@foxous';
-    contact.website = 'https://foxous.design';
-    } else if (currentDomain?.includes('undevy')) {
-      contact.email = 'undevy@gmail.com';
-      contact.telegram = '@undevy';
-      contact.website = 'https://undevy.com';
-    } else {
-      contact.email = contact.email || 'foxous@proton.me';
-      contact.telegram = contact.telegram || '@foxous';
-      contact.website = contact.website || 'https://foxous.design';
-  }
-  return contact;
+    if (domainData) {
+      contact.email = domainData.email;
+      contact.telegram = domainData.telegram;
+      contact.website = domainData.website;
+    }
+    return contact;
   };
 
   const contactData = getDomainSpecificContact();
@@ -136,10 +128,10 @@ export default function Contact() {
             <ExternalLink className={`w-4 h-4 ${valueClasses}`} />
         </button>
         {contactData.telegram && (
-            <button onClick={() => handleExternalLink('Telegram', domainData?.telegram || `https://t.me/${contactData.telegram.replace('@', '')}`)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
+          <button onClick={() => handleExternalLink('Telegram', contactData.telegram)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
             <div className="flex items-center">
                 <MessageCircle className={`w-5 h-5 mr-3 ${yellowClasses}`} />
-                <span className={mainTextClasses}>{contactData.telegram}</span>
+                <span className={mainTextClasses}>{contactData.telegram.replace('https://t.me/', '@')}</span>
             </div>
               <ExternalLink className={`w-4 h-4 ${valueClasses}`} />
           </button>

@@ -1,7 +1,7 @@
 // telegram-bot/services/matomo.js
 
 const fetch = require('node-fetch');
-const { MATOMO_URL, MATOMO_SITE_ID, MATOMO_TOKEN } = require('../config/constants');
+const { MATOMO_URL, MATOMO_SITE_ID, MATOMO_TOKEN, PORTFOLIO_GENERIC_NAME } = require('../config/constants');
 
 /**
  * Fetches recent visits from Matomo
@@ -124,7 +124,7 @@ function extractVisitedPages(visit) {
     let pageName = 'Unknown Page';
 
     // First, try to use the page title if it's meaningful and exists
-    if (action.pageTitle && typeof action.pageTitle === 'string' && !action.pageTitle.includes('Undevy Portfolio')) {
+    if (action.pageTitle && typeof action.pageTitle === 'string' && !action.pageTitle.includes(PORTFOLIO_GENERIC_NAME)) {
       pageName = action.pageTitle;
     }
     // Then, try to extract from URL hash

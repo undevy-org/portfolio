@@ -15,6 +15,7 @@ module.exports = {
   MATOMO_URL: process.env.MATOMO_URL,
   MATOMO_SITE_ID: '1',
   ANALYTICS_CHECK_INTERVAL: 5 * 60 * 1000,
+  PORTFOLIO_GENERIC_NAME: process.env.PORTFOLIO_GENERIC_NAME || 'Terminal Portfolio',
   
   // Bot settings
   MAX_MESSAGE_LENGTH: 4096,

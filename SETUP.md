@@ -22,7 +22,7 @@ Before deploying, ensure the project runs on your local machine.
 
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/undevy-org/portfolio.git
+    git clone https://github.com/your-org/your-repo.git
     cd portfolio
     ```
 
@@ -230,7 +230,7 @@ This project uses Reown (formerly WalletConnect) for Web3 authentication. To ena
     // src/app/lib/web3-config.js
 
     // ... other code
-    export const projectId = 'b75ae0dd3030e509aae32958c74eb59b'; // <-- REPLACE THIS WITH YOUR ID
+    export const projectId = 'YOUR_PROJECT_ID'; // <-- REPLACE THIS WITH YOUR ID
     // ... other code
     ```
 
