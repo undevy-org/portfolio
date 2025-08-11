@@ -105,6 +105,11 @@ export default function TerminalWindow({ title, children }) {
           group of buttons does not shrink on smaller screens.
         */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          {/* MODIFIED: Updated condition to hide nav buttons on 'ProfileBoot' AND 'Entry' screens. */}
+          {/* WHY: These screens are entry points and should not have standard navigation controls */}
+          {/* like 'Back', 'Up', or 'Home', providing a cleaner user experience. */}
+          {!['ProfileBoot', 'Entry'].includes(currentScreen) && (
+            <>
           <Button
             onClick={goBack}
             icon={() => <ArrowLeft size={20} strokeWidth={1.5} />}
@@ -129,6 +134,8 @@ export default function TerminalWindow({ title, children }) {
             disabled={isHomeDisabled}
             aria-label="Go to Main Hub"
           />
+            </>
+          )}
           <Button
             onClick={toggleTheme}
             icon={() => theme === 'dark' 
@@ -152,9 +159,9 @@ export default function TerminalWindow({ title, children }) {
 
       </div>
 
-      {/* ADDITION: Hierarchical breadcrumbs below header
-          WHY: Provides true structural navigation that users expect, showing their location in the site hierarchy */}
-      {breadcrumbPath.length > 0 && (
+      {/* MODIFIED: Updated condition to also hide breadcrumbs on the 'Entry' screen. */}
+      {/* WHY: The 'Entry' screen is the main entry point and does not have a navigation path to display. */}
+      {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
         <div className={`px-4 py-2 text-sm border-b ${
           theme === 'dark' ? 'border-dark-border bg-dark-bg/50' : 'border-light-border bg-light-bg/50'
         }`}>
