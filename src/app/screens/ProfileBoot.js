@@ -3,7 +3,10 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSession } from '../context/SessionContext';
-import Button from '../components/ui/Button'; // Using the existing Button component
+import Button from '../components/ui/Button';
+// MODIFICATION: Imported ArrowRight icon from lucide-react.
+// WHY: To add a visual cue to the "VIEW PORTFOLIO" button, indicating progression.
+import { ArrowRight } from 'lucide-react';
 
 export default function ProfileBoot() {
   const { sessionData, theme, navigate, addLog, currentDomain } = useSession();
@@ -126,38 +129,34 @@ export default function ProfileBoot() {
         ))}
       </div>
       
-      {/* Progress indicator with percentage */}
-      <div className={`text-xs mb-4 ${
-        theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-      }`}>
+      <div className="w-full max-w-md h-16 flex flex-col items-center justify-center">
         {!isComplete ? (
-          <>
-            {/* Single animated ASCII loader - like image loading */}
+          // STATE 1: While loading, show the progress indicator.
+          <div className={`text-xs ${
+            theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+          }`}>
             <span className="font-mono">{loaderFrames[loaderFrame]}</span>
             {' '}
           {Math.round(progressPercentage)}% complete
-          </>
+          </div>
         ) : (
-          <span className={theme === 'dark' ? 'text-dark-success' : 'text-light-success'}>
-            ✓ System ready
-          </span>
-        )}
-      </div>
-      
-      {/* View Portfolio Button - only shows after completion */}
-      {isComplete && (
+          // STATE 2: When complete, replace the loader with the final content.
+          <div className="w-full flex flex-col items-center">
+            {/* MODIFICATION: The "System ready" text and its container span have been removed. */}
+            {/* WHY: To ensure the button is the only element that appears after loading is complete, for a cleaner UI. */}
         <Button
           onClick={handleContinue}
           variant="primary"
-          className={`px-6 py-3 font-bold transition-all duration-500 transform ${
-            isComplete 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-4'
-          }`}
+              // MODIFICATION: Added an icon prop to display an arrow.
+              // WHY: To visually indicate that clicking the button will proceed to the next step.
+              icon={() => <ArrowRight size={20} strokeWidth={2} />}
+              className="w-full px-6 py-3 font-bold transition-opacity duration-500"
         >
           VIEW PORTFOLIO
         </Button>
+          </div>
       )}
+    </div>
     </div>
   );
 }
