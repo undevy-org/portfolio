@@ -241,16 +241,23 @@ export function SessionProvider({ children }) {
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
     addLog('SESSION TERMINATING');
+
+    // MODIFICATION: URL clearing logic is moved to the absolute beginning of the function.
+    // WHY: This is the core fix. It removes the `?code=` or `?web3=` parameter from the URL
+    // instantly. This prevents the authentication logic in `page.js` from triggering a
+    // re-login, thus solving the race condition.
+    if (typeof window !== 'undefined') {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.delete('code');
+      currentUrl.searchParams.delete('web3');
+      currentUrl.hash = '';
+      window.history.replaceState({}, '', currentUrl.toString());
+    }
     
-    // CRITICAL: Set termination flag BEFORE clearing session
-    // This prevents Entry.js from trying to re-authenticate
     setIsTerminating(true);
     
     const wasWeb3User = sessionData?.isWeb3User;
     
-    // ENHANCED: For Web3 users, set BOTH the direct state flag AND dispatch the event
-    // The direct state flag (web3LogoutPending) is more reliable as it persists in React state
-    // The browser event is kept as a backup for any legacy listeners
     if (wasWeb3User) {
       // Set the direct state flag - this is the PRIMARY logout signal
       setWeb3LogoutPending(true);
@@ -275,16 +282,8 @@ export function SessionProvider({ children }) {
       setScreensVisitedCount(1);
       setAuthError(null);
       
-      if (typeof window !== 'undefined') {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.delete('code');
-        currentUrl.searchParams.delete('web3');
-        currentUrl.hash = '';
-        window.history.replaceState({}, '', currentUrl.toString());
-      }
+      // The URL clearing was moved, so it is no longer needed here.
       
-      // Reset termination flag after a longer delay
-      // This ensures Entry.js has time to process the logout
       setTimeout(() => {
         setIsTerminating(false);
         addLog('SESSION TERMINATION COMPLETE');

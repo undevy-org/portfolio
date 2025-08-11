@@ -15,10 +15,6 @@ function AppContent() {
   useEffect(() => {
     const code = searchParams.get('code');
 
-    // ADDED: Logic to handle session state change when URL code changes.
-    // WHY: This ensures that if a user with an active session visits a URL with a *different*
-    // access code, the old session is terminated, and a new one starts.
-    // This fixes the bug where a new code was ignored if a session already existed.
     if (sessionData && code && code !== sessionData.accessCode) {
       addLog(`SESSION SWITCH: New code detected. Old: ${sessionData.accessCode}, New: ${code}. Terminating old session.`);
       // Terminate the current session completely before starting a new one.
@@ -47,8 +43,7 @@ function AppContent() {
         const response = await fetch(`/api/session?code=${accessCode}`);
         if (response.ok) {
           const userData = await response.json();
-          // MODIFIED: Renamed to `accessCode` to match the property used in AnalyticsPanel.
-          // WHY: This ensures consistency across components when accessing the current session's code.
+
           const enrichedData = {
             ...userData,
             accessCode: accessCode
@@ -77,8 +72,7 @@ function AppContent() {
       setIsLoading(false);
       navigate('Entry', false);
     }
-  // MODIFIED: Removed isAuthenticated from dependencies as it caused redundant runs.
-  // The logic now relies solely on the presence of `sessionData` and `code`.
+
   }, [searchParams, sessionData, setSessionData, navigate, addLog, setAuthError, endSession]);
   
   if (isLoading) {
