@@ -7,6 +7,8 @@ import Button from '../components/ui/Button';
 // MODIFICATION: Imported ArrowRight icon from lucide-react.
 // WHY: To add a visual cue to the "VIEW PORTFOLIO" button, indicating progression.
 import { ArrowRight } from 'lucide-react';
+// NEW IMPORT: Import the new TerminalProgress component to replace simple text loader
+import TerminalProgress from '../components/ui/TerminalProgress';
 
 export default function ProfileBoot() {
   const { sessionData, theme, navigate, addLog, currentDomain } = useSession();
@@ -132,12 +134,25 @@ export default function ProfileBoot() {
       <div className="w-full max-w-md h-16 flex flex-col items-center justify-center">
         {!isComplete ? (
           // STATE 1: While loading, show the progress indicator.
-          <div className={`text-xs ${
-            theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-          }`}>
-            <span className="font-mono">{loaderFrames[loaderFrame]}</span>
-            {' '}
-          {Math.round(progressPercentage)}% complete
+          // CHANGE: Replaced simple text loader with TerminalProgress component
+          // OLD CODE:
+          // <div className={`text-xs ${
+          //   theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+          // }`}>
+          //   <span className="font-mono">{loaderFrames[loaderFrame]}</span>
+          //   {' '}
+          //   {Math.round(progressPercentage)}% complete
+          // </div>
+          // NEW CODE: Using TerminalProgress component for better visual consistency
+          <div className="w-full max-w-xs">
+            <TerminalProgress 
+              progress={progressPercentage}
+              isLoading={true}
+              label="BOOTING"
+              showPercentage={true}
+              animateProgress={true}
+              height="h-2"
+            />
           </div>
         ) : (
           // STATE 2: When complete, replace the loader with the final content.
