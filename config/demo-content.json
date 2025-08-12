@@ -1,0 +1,65 @@
+{
+  "DEMO_USER": {
+    "meta": {
+      "company": "Demo Company",
+      "timeline": "scenario_a",
+      "depth": "standard",
+      "tone": "casual",
+      "cases": ["project_alpha", "project_beta"]
+    },
+    "profile": {
+      "greeting_name": "Demo User",
+      "summary": {
+        "title": "Senior Developer",
+        "specialization": "Full-Stack Development",
+        "background": "Computer Science"
+      },
+      "attributes": [
+        "Full-Stack Development",
+        "Cloud Architecture",
+        "DevOps Practices",
+        "Technical Leadership"
+      ],
+      "status": {
+        "seeking": "Senior Developer Roles",
+        "location": "Remote",
+        "availability": "Available Now"
+      }
+    },
+    "introduction": {
+      "casual": "Hey! This is a demo portfolio. You're seeing example data that shows how the system works. Pretty cool, right?",
+      "technical": "This demonstration showcases the portfolio's capability to deliver personalized, configuration-driven content.",
+      "formal": "Welcome to the demonstration version of the Terminal Portfolio system."
+    }
+  },
+  "GLOBAL_DATA": {
+    "menu": [
+      {
+        "label": "overview",
+        "screen": "Introduction",
+        "icon": "[INF]",
+        "desc": "Demo introduction"
+      }
+    ],
+    "experience": {
+      "scenario_a": [
+        {
+          "id": "demo_role",
+          "company": "Demo Corp",
+          "role": "Senior Developer",
+          "period": "2020 - 2024",
+          "duration": "4 years",
+          "highlight": "Led demonstration projects"
+        }
+      ]
+    },
+    "case_studies": {
+      "project_alpha": {
+        "title": "Project Alpha",
+        "desc": "A demonstration project",
+        "metrics": "+100% demo success",
+        "tags": ["Demo", "Example"]
+      }
+    }
+  }
+}
