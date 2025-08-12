@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
-const SessionContext = createContext(null);
+export const SessionContext = createContext(null);
 
 const getTimestamp = () => {
   return new Date().toLocaleTimeString('en-GB', {
