@@ -15,10 +15,12 @@ const MockSessionProvider = ({ children, sessionData, theme = 'dark' }) => (
 
 describe('ProfileDataPanel Component', () => {
   const mockSessionData = {
-    profile_data: {
-      title: 'Senior Software Engineer',
-      specialization: 'Frontend & Web3',
-      background: 'Computer Science'
+    profile: {
+      summary: {
+        title: 'Senior Software Engineer',
+        specialization: 'Frontend & Web3',
+        background: 'Computer Science'
+      }
     }
   };
 
@@ -31,7 +33,7 @@ describe('ProfileDataPanel Component', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders nothing if profile_data is not in sessionData', () => {
+  it('renders nothing if profile.summary is not in sessionData', () => {
     const { container } = render(
       <MockSessionProvider sessionData={{ some_other_data: {} }}>
         <ProfileDataPanel />
@@ -50,6 +52,5 @@ describe('ProfileDataPanel Component', () => {
     expect(screen.getByText('Senior Software Engineer')).toBeInTheDocument();
     expect(screen.getByText('Frontend & Web3')).toBeInTheDocument();
     expect(screen.getByText('Computer Science')).toBeInTheDocument();
-    expect(screen.getByText('$profile_data')).toBeInTheDocument();
   });
 });

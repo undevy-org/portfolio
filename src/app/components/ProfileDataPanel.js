@@ -5,9 +5,9 @@ import { useSession } from '../context/SessionContext';
 export default function ProfileDataPanel() {
   const { sessionData, theme } = useSession();
 
-  if (!sessionData?.profile_data) return null;
+  if (!sessionData?.profile?.summary) return null;
 
-  const { title, specialization, background } = sessionData.profile_data;
+  const { title, specialization, background } = sessionData.profile.summary;
 
   const panelClasses = `border rounded p-3 text-sm ${
     theme === 'dark' ? 'border-dark-border' : 'border-light-border'
@@ -17,9 +17,8 @@ export default function ProfileDataPanel() {
 
   return (
     <div className={panelClasses}>
-      <h2 className="font-bold text-base mb-2 text-dark-text-command">$profile_data</h2>
       <div className="flex flex-wrap gap-x-2">
-        <span>{title}</span>
+        <span className="font-bold">{title}</span>
         {separator}
         <span>{specialization}</span>
         {separator}
