@@ -1,4 +1,3 @@
-// src/app/components/MatomoTracker.js
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -7,28 +6,23 @@ import { useSession } from '../context/SessionContext';
 
 export default function MatomoTracker() {
   const searchParams = useSearchParams();
-  // CHANGED: Added domainData to get domain-specific configuration
   const { currentScreen, sessionData, domainData } = useSession();
   const isInitialMount = useRef(true);
   const matomoInitialized = useRef(false);
 
   useEffect(() => {
-    // CHANGED: Use environment variable for Matomo URL instead of hardcoded value
     // This allows different deployments to use their own analytics instances
     const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
-    // CHANGED: Use environment variable for Site ID instead of hardcoded value
     // This allows tracking to different sites in Matomo based on configuration
     const SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID || '1';
     const accessCode = searchParams.get('code');
 
-    // CHANGED: Check if analytics is enabled for this domain
     // Some domains might not want analytics tracking
     if (domainData && domainData.analyticsEnabled === false) {
       console.log('[MATOMO] Analytics disabled for this domain');
       return;
     }
 
-    // CHANGED: Check if Matomo URL is configured
     // If no URL is provided, skip analytics initialization
     if (!MATOMO_URL) {
       console.log('[MATOMO] No Matomo URL configured, skipping analytics');
@@ -83,12 +77,11 @@ export default function MatomoTracker() {
     matomoInitialized.current = true;
     console.log('[MATOMO] Initialized');
 
-    // Debug: Check if dimension was set
     if (accessCode) {
       console.log('[MATOMO] Custom dimension should be sent with code:', accessCode);
     }
 
-  }, [searchParams, domainData]); // CHANGED: Added domainData to dependencies
+  }, [searchParams, domainData]);
 
   // Track screen changes (including initial screen)
   useEffect(() => {
@@ -126,7 +119,6 @@ export default function MatomoTracker() {
         Contact: 'Contact Information'
       };
       
-      // CHANGED: Use brandingToken from domainData instead of hardcoded portfolio name
       // This ensures the page title reflects the correct portfolio branding
       const portfolioName = domainData?.brandingToken || '$portfolio';
       return screenTitles[screen] || `${screen} - ${portfolioName}`;
@@ -146,7 +138,7 @@ export default function MatomoTracker() {
       }
     }, 100); // Small delay to ensure Matomo is ready
 
-  }, [currentScreen, searchParams, domainData]); // CHANGED: Added domainData to dependencies
+  }, [currentScreen, searchParams, domainData]);
 
   return null; // This component renders nothing
 }

@@ -1,4 +1,3 @@
-// src/app/screens/CaseDetail.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -9,7 +8,6 @@ import { ArrowLeft, Zap } from 'lucide-react';
 export default function CaseDetail() {
   const { sessionData, theme, navigate, addLog, selectedCase } = useSession();
   
-  // Keep your existing style classes - they work great
   const panelClasses = `p-4 rounded border ${
     theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
   }`;
@@ -26,7 +24,6 @@ export default function CaseDetail() {
     theme === 'dark' ? 'text-dark-success' : 'text-light-success'
   }`;
   
-  // Handle no case selected
   if (!selectedCase) {
     return (
       <div className="p-4 text-center">
@@ -48,7 +45,7 @@ export default function CaseDetail() {
   }
 
   const caseDetails = sessionData?.case_details?.[selectedCase.id] || {};
-  const caseImages = caseDetails.images || {}; // Support for images from content.json
+  const caseImages = caseDetails.images || {};
   
   // Build tabs with content as ARRAYS of objects (not pre-rendered JSX!)
   // This is what Tabs.js expects
@@ -72,7 +69,6 @@ export default function CaseDetail() {
       id: 'approach',
       label: 'approach',
       title: 'methodology',
-      // Keep as array of objects
       content: caseDetails.approach?.map(item => ({ 
         type: 'list_item', 
         value: item 
@@ -84,7 +80,6 @@ export default function CaseDetail() {
       title: 'implementation',
       content: [
         { type: 'text', value: caseDetails.solution || 'No solution description available.' },
-        // Add solution image if exists
         ...(caseImages.solution ? [{
           type: 'image',
           src: caseImages.solution,
@@ -98,18 +93,15 @@ export default function CaseDetail() {
       label: 'results',
       title: 'impact_metrics',
       content: [
-        // Results as list items
         ...(caseDetails.results?.map(item => ({ 
           type: 'list_item', 
           value: item 
         })) || []),
-        // Learnings section
         ...(caseDetails.learnings ? [
           { type: 'divider' },
           { type: 'sub_heading', value: 'key_learnings' },
           { type: 'text', value: caseDetails.learnings }
         ] : []),
-        // Results image if exists
         ...(caseImages.results ? [{
           type: 'image',
           src: caseImages.results,
@@ -122,7 +114,6 @@ export default function CaseDetail() {
   
   return (
     <div className="p-4 space-y-4">
-      {/* Case header panel - keeping your exact structure */}
       <div className={panelClasses}>
         <div className="space-y-2">
           <h2 className={`text-xl ${yellowClasses}`}>{selectedCase.title}</h2>
@@ -145,10 +136,8 @@ export default function CaseDetail() {
         </div>
       </div>
 
-      {/* Tabs component - it will handle rendering based on content array */}
       <Tabs tabs={tabs} defaultTab="challenge" />
 
-      {/* Navigation buttons - keeping your Button component */}
       <div className="mt-4 flex flex-col md:flex-row gap-3">
         <Button
           onClick={() => {

@@ -1,4 +1,3 @@
-// src/app/components/Web3Provider.js
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

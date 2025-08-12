@@ -1,4 +1,3 @@
-// src/app/components/ui/TerminalProgress.js
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -28,17 +27,14 @@ export default function TerminalProgress({
   const [displayProgress, setDisplayProgress] = useState(0);
   const [spinnerFrame, setSpinnerFrame] = useState(0);
   
-  // Spinner animation frames for visual feedback
   const spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   
-  // Animate the progress bar smoothly
   useEffect(() => {
     if (!animateProgress) {
       setDisplayProgress(progress);
       return;
     }
     
-    // Smooth animation towards target progress
     const interval = setInterval(() => {
       setDisplayProgress(prev => {
         const diff = progress - prev;
@@ -51,7 +47,6 @@ export default function TerminalProgress({
     return () => clearInterval(interval);
   }, [progress, animateProgress]);
   
-  // Animate the spinner independently
   useEffect(() => {
     if (!isLoading) return;
     
@@ -62,22 +57,18 @@ export default function TerminalProgress({
     return () => clearInterval(interval);
   }, [isLoading, spinnerFrames.length]);
   
-  // Don't render if not loading
   if (!isLoading) return null;
   
-  // Calculate the number of filled blocks for the progress bar
   const progressBarWidth = 30; // Total width in characters
   const filledBlocks = Math.floor((displayProgress / 100) * progressBarWidth);
   const emptyBlocks = progressBarWidth - filledBlocks;
   
-  // Build the progress bar string
   const progressBar = '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
   
   return (
     <div className={`space-y-2 ${
       theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
     }`}>
-      {/* Label with spinner */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={`${
@@ -92,7 +83,6 @@ export default function TerminalProgress({
           </span>
         </div>
         
-        {/* Percentage display */}
         {showPercentage && (
           <span className={`text-xs ${
             theme === 'dark' ? 'text-dark-success' : 'text-light-success'
@@ -102,11 +92,9 @@ export default function TerminalProgress({
         )}
       </div>
       
-      {/* Progress bar container */}
       <div className={`${height} relative overflow-hidden rounded ${
         theme === 'dark' ? 'bg-dark-hover' : 'bg-light-hover'
       }`}>
-        {/* ASCII-style progress bar */}
         <div className={`absolute inset-0 flex items-center px-1 font-mono text-xs ${
           theme === 'dark' ? 'text-dark-success' : 'text-light-success'
         }`}>
@@ -114,7 +102,6 @@ export default function TerminalProgress({
         </div>
       </div>
       
-      {/* Optional status line */}
       <div className={`text-xs ${
         theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
       }`}>
