@@ -1,4 +1,3 @@
-// src/app/components/ui/Accordion.js
 'use client';
 import { useState } from 'react';
 import { useSession } from '../../context/SessionContext';

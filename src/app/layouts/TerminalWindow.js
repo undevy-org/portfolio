@@ -1,4 +1,3 @@
-// src/app/layouts/TerminalWindow.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -34,7 +33,6 @@ export default function TerminalWindow({ title, children }) {
       }
   }
 
-  // ADDITION: Function to build hierarchical breadcrumb path
   // WHY: We need to traverse up the hierarchy from current screen to build the full path
   const buildBreadcrumbPath = () => {
     const path = [];
@@ -59,7 +57,6 @@ export default function TerminalWindow({ title, children }) {
 
   const breadcrumbPath = buildBreadcrumbPath();
 
-  // ADDITION: Function to get human-readable screen names
   // WHY: Display "Home" instead of "MainHub", and format other screen names nicely
   const getScreenDisplayName = (screen) => {
     if (screen === 'MainHub') return 'Home';
@@ -71,14 +68,12 @@ export default function TerminalWindow({ title, children }) {
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
   }`;
   
-  // CHANGE: Simplified header layout.
   // WHY: Removed `flex-wrap` and `md:flex-nowrap`. The new layout is a single line on all screen sizes,
   // with `justify-between` pushing the title to the left and the controls to the right.
   const headerClasses = `flex items-center justify-between p-4 border-b ${
     theme === 'dark' ? 'border-dark-border' : 'border-light-border'
   }`;
   
-  // CHANGE: Simplified title classes for the new layout.
   // WHY: Removed all responsive `order` and `width` classes. Added `truncate` to ensure the title
   // shortens with '...' on small screens. `min-w-0` is crucial for `truncate` to work correctly in a flex container.
   const titleClasses = `font-normal text-lg truncate min-w-0 ${
@@ -95,17 +90,14 @@ export default function TerminalWindow({ title, children }) {
   return (
     <div className={windowClasses}>
       <div className={headerClasses}>
-        {/* The title is now the first element, ensuring it's always on the left. */}
         <h1 className={titleClasses}>${displayTitle}</h1>
 
         {/* 
-          CHANGE: Consolidated all five control buttons into a single group.
           WHY: This creates a single, consistent block of controls on the right side of the header
           for both mobile and desktop views, as you requested. `flex-shrink-0` ensures this
           group of buttons does not shrink on smaller screens.
         */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* MODIFIED: Updated condition to hide nav buttons on 'ProfileBoot' AND 'Entry' screens. */}
           {/* WHY: These screens are entry points and should not have standard navigation controls */}
           {/* like 'Back', 'Up', or 'Home', providing a cleaner user experience. */}
           {!['ProfileBoot', 'Entry'].includes(currentScreen) && (
@@ -159,7 +151,6 @@ export default function TerminalWindow({ title, children }) {
 
       </div>
 
-      {/* MODIFIED: Updated condition to also hide breadcrumbs on the 'Entry' screen. */}
       {/* WHY: The 'Entry' screen is the main entry point and does not have a navigation path to display. */}
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
         <div className={`px-4 py-2 text-sm border-b ${

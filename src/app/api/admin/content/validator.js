@@ -1,5 +1,3 @@
-// src/app/api/admin/content/validator.js
-
 // Validates the structure of a single profile
 function validateProfile(profile) {
   if (!profile || typeof profile !== 'object') return false;

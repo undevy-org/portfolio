@@ -1,4 +1,3 @@
-// src/app/components/ui/AnimatedAsciiArt.js
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -52,7 +51,7 @@ const AnimatedAsciiArt = () => {
         clearInterval(interval);
         return prevFrame;
       });
-    }, 500); // Change frame every 500ms
+    }, 500);
 
     return () => clearInterval(interval);
   }, [frames.length]);

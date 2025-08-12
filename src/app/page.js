@@ -1,4 +1,3 @@
-// src/app/page.js
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
@@ -32,7 +31,6 @@ function AppContent() {
     }
     
     const authenticateWithCode = async (accessCode) => {
-      // Prevent authentication attempt with an empty code.
       if (!accessCode) {
         setIsLoading(false);
         navigate('Entry', false);

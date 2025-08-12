@@ -1,4 +1,3 @@
-// src/app/components/ScreenRenderer.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -24,10 +23,8 @@ const screens = {
 export default function ScreenRenderer() {
     const { currentScreen, currentDomain } = useSession();
   
-  // Get component for current screen
   const ScreenComponent = screens[currentScreen];
   
-  // Get window title based on screen
   const getWindowTitle = () => {
     if (currentScreen === 'Entry') return `${currentDomain}_portfolio`;
     if (currentScreen === 'MainHub') return `${currentDomain}_portfolio`;
@@ -48,7 +45,6 @@ export default function ScreenRenderer() {
     );
   }
   
-  // Render current screen inside TerminalWindow
   return (
     <TerminalWindow title={getWindowTitle()}>
       <ScreenComponent />

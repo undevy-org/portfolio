@@ -1,4 +1,3 @@
-// src/app/api/config/route.js
 import { NextResponse } from 'next/server';
 import { getDomainConfig } from '../../utils/config';
 

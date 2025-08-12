@@ -1,4 +1,3 @@
-// src/app/components/ProfileDataPanel.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
