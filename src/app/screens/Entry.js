@@ -366,18 +366,18 @@ export default function Entry() {
    * Determines the correct Telegram URL based on domain
    */
   const handleGetCode = () => {
+    // CHANGED: Completely replaced hardcoded telegram URLs with configuration-based approach
+    // The telegram URL now comes entirely from domainData (loaded from domains.json)
     let telegramUrl;
     
-    // Priority: domainData > domain detection > default
+    // CHANGED: Use domainData as the primary source for telegram URL
+    // This ensures the telegram link is always from configuration, not hardcoded
     if (domainData?.telegram) {
       telegramUrl = domainData.telegram;
-    } else if (currentDomain?.includes('undevy')) {
-      telegramUrl = 'https://t.me/undevy';
-    } else if (currentDomain?.includes('foxous')) {
-      telegramUrl = 'https://t.me/foxous';
     } else {
-      // Default fallback
-      telegramUrl = 'https://t.me/undevy';
+      // CHANGED: Fallback to environment variable instead of hardcoded URLs
+      // This ensures no personal data remains in the code
+      telegramUrl = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example';
     }
     
     addLog(`EXTERNAL LINK: Telegram ${telegramUrl}`);

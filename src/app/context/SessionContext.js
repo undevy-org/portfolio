@@ -14,17 +14,9 @@ const getTimestamp = () => {
   });
 };
 
-// Optional: mapping per domain
-const domainConfigs = {
-  'undevy.com': {
-    brandingToken: '$undevy_portfolio',
-    telegram: 'https://t.me/undevy',
-  },
-  'foxous.design': {
-    brandingToken: '$foxous_design',
-    telegram: 'https://t.me/foxous',
-  },
-};
+// CHANGED: Removed hardcoded domainConfigs object
+// Domain configuration is now fetched dynamically from the API
+// This ensures full portability and no personal data in the code
 
 const screenHierarchy = {
   // Deep-level screens 
@@ -45,6 +37,8 @@ export function SessionProvider({ children }) {
   // ========== DOMAIN ==========
   const [currentDomain, setCurrentDomain] = useState(null);
   const [domainData, setDomainData] = useState(null); 
+  // CHANGED: Added loading state for domain configuration
+  const [domainConfigLoading, setDomainConfigLoading] = useState(true);
 
   // ========== SESSION STATE ==========
   const [sessionData, setSessionData] = useState(null);
@@ -82,38 +76,63 @@ export function SessionProvider({ children }) {
   }, []);
   
   // ========== DOMAIN DETECTION ==========
+  // CHANGED: Completely refactored domain detection to fetch configuration from API
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       setCurrentDomain(hostname);
-      if (domainConfigs[hostname]) {
-        setDomainData(domainConfigs[hostname]);
-        addLog(`DOMAIN DETECTED: ${hostname}`);
+      
+      // CHANGED: Fetch domain configuration from the API instead of using hardcoded values
+      const fetchDomainConfig = async () => {
+        try {
+          setDomainConfigLoading(true);
+          
+          // Call the new config API endpoint
+          const response = await fetch('/api/config');
+          
+          if (response.ok) {
+            const data = await response.json();
+            setDomainData(data.config);
+            addLog(`DOMAIN CONFIG LOADED: ${hostname}`);
       } else {
-        // Default config for unknown domains
+            // Fallback to environment variable defaults if API fails
         setDomainData({
-          brandingToken: '$portfolio',
-          telegram: 'https://t.me/undevy',
+              brandingToken: process.env.NEXT_PUBLIC_DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
+              email: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com',
+              telegram: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example',
+              website: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_WEBSITE || 'https://example.com',
         });
-        addLog(`UNKNOWN DOMAIN: ${hostname}`);
-      }
+            addLog(`DOMAIN CONFIG FALLBACK: Using defaults for ${hostname}`);
+          }
+        } catch (error) {
+          console.error('Failed to fetch domain config:', error);
+          // CHANGED: Use environment variable defaults as fallback
+          setDomainData({
+            brandingToken: process.env.NEXT_PUBLIC_DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
+            email: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com',
+            telegram: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example',
+            website: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_WEBSITE || 'https://example.com',
+          });
+          addLog(`DOMAIN CONFIG ERROR: Using defaults`);
+        } finally {
+          setDomainConfigLoading(false);
+        }
+      };
+      
+      fetchDomainConfig();
     }
   }, [addLog]);
 
   // ========== DYNAMIC DOCUMENT TITLE ==========
+  // CHANGED: Updated to use fetched domain configuration
   useEffect(() => {
-    if (currentDomain) {
-      if (currentDomain.includes('foxous')) {
-        document.title = "$foxous_design";
-      } else if (currentDomain.includes('undevy')) {
-        document.title = "$undevy_portfolio";
-      } else {
-        // Fallback for localhost or other domains
-        document.title = "$terminal_portfolio";
-      }
+    // Only update title after domain config is loaded
+    if (domainData && !domainConfigLoading) {
+      // CHANGED: Use brandingToken from fetched configuration
+      document.title = domainData.brandingToken || '$terminal_portfolio';
       addLog(`TITLE SET: ${document.title}`);
     }
-  }, [currentDomain, addLog]);
+  }, [domainData, domainConfigLoading, addLog]);
   
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {
@@ -308,6 +327,8 @@ export function SessionProvider({ children }) {
     // Domain
     currentDomain,
     domainData,
+    // CHANGED: Added domainConfigLoading to allow components to know when config is ready
+    domainConfigLoading,
 
     // Navigation
     currentScreen,
