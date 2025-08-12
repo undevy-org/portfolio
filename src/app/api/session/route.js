@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { getContentFilePath, isDemoModeEnabled, loadContent } from '../../utils/config';
+import { mergeSessionData } from '../../utils/session';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -73,41 +74,4 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Server content file not found' }, { status: 500 });
     }
   }
-}
-
-// Combines user profile with relevant parts of GLOBAL_DATA
-function mergeSessionData(userProfile, globalData) {
-  const sessionData = {
-    ...userProfile,
-    menu: globalData.menu,
-    experience: globalData.experience[userProfile.meta.timeline] || [],
-    role_details: globalData.role_details,
-    case_studies: filterCaseStudies(globalData.case_studies, userProfile.meta.cases),
-    skills: globalData.skills,
-    skill_details: globalData.skill_details || {},
-    case_details: globalData.case_details || {},
-    side_projects: globalData.side_projects || [],
-    public_speaking: globalData.public_speaking || [],
-    contact: globalData.contact || {},
-    total_case_count: Object.keys(globalData.case_studies || {}).length,
-  };
-  
-  return sessionData;
-}
-
-// Filters case studies by user configuration
-function filterCaseStudies(allCases, selectedCaseIds) {
-  if (!selectedCaseIds || selectedCaseIds.length === 0) {
-    return allCases;
-  }
-  
-  const filteredCases = {};
-  
-  selectedCaseIds.forEach(caseId => {
-    if (allCases[caseId]) {
-      filteredCases[caseId] = allCases[caseId];
-    }
-  });
-  
-  return filteredCases;
 }
