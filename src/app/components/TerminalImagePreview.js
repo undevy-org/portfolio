@@ -1,11 +1,9 @@
-// src/app/components/TerminalImagePreview.js
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from '../context/SessionContext';
 import { X } from 'lucide-react';
 import NextImage from 'next/image';
-// NEW IMPORT: Import the new TerminalProgress component to replace inline progress bar
 import TerminalProgress from './ui/TerminalProgress';
 
 // Global cache for loaded images to maintain state across tab switches
@@ -242,23 +240,6 @@ export default function TerminalImagePreview({
           padding: '1rem'
         }}
       >
-        {/* CHANGE: Replaced inline progress bar implementation with TerminalProgress component */}
-        {/* OLD CODE:
-        <div className="text-center z-10 w-full max-w-full px-2">
-          <div className={`mb-2 text-xs sm:text-sm ${
-              theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-            }`}>
-              Rendering image...
-            </div>
-          <div className={`font-mono flex items-center justify-center gap-1 sm:gap-2 ${
-              theme === 'dark' ? 'text-dark-success' : 'text-light-success'
-            }`}>
-            <span className="text-xs sm:text-sm">{getProgressBar()}</span>
-            <span className="text-xs sm:text-sm">{Math.floor(imageState.progress)}%</span>
-            </div>
-          </div>
-        */}
-        {/* NEW CODE: Using TerminalProgress component for consistent visual style */}
         <div className="w-full max-w-xs px-2">
           <TerminalProgress 
             progress={imageState.progress}

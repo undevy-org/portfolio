@@ -1,4 +1,3 @@
-// src/app/screens/SkillsGrid.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -7,7 +6,6 @@ import { ChevronRight } from 'lucide-react';
 export default function SkillsGrid() {
   const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
 
-  // REFACTORED: Centralized theme-based classes
   const panelClasses = `p-4 rounded border ${
     theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
   }`;
@@ -32,7 +30,6 @@ export default function SkillsGrid() {
     navigate('SkillDetail');
   };
   
-  // Function to determine the color based on skill level remains the same
   const getLevelColor = (level) => {
     switch(level) {
       case 'EXPERT':
@@ -60,23 +57,19 @@ export default function SkillsGrid() {
             }`}
           > 
             <div className="space-y-1">
-              {/* Skill Name */}
               <div className={`text-base ${yellowClasses}`}>
                 {skill.name}
               </div>
               
-              {/* Skill Description */}
               <div className={`text-sm ${valueClasses}`}>
                 {skill.desc}
               </div>
               
-              {/* Skill Level */}
               <div className={`text-sm pt-1 ${getLevelColor(skill.level)}`}>
                 [{skill.level}]
               </div>
             </div>
 
-            {/* ADDED: ChevronRight icon */}
             <ChevronRight className={`w-5 h-5 ${valueClasses}`} />
           </button>
         ))}

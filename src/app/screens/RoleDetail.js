@@ -1,4 +1,3 @@
-// src/app/screens/RoleDetail.js
 'use client';
 
 import { useSession } from '../context/SessionContext';

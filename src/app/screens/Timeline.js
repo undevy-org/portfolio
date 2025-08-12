@@ -1,4 +1,3 @@
-// src/app/screens/Timeline.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -32,14 +31,11 @@ export default function Timeline() {
                 : 'border-light-border-lighter hover:bg-light-hover'
             }`}
           >
-            {/* Desktop Layout: visible on medium screens and up */}
             <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
-              {/* Column 1: Index */}
               <span className={`mt-1 ${yellowClasses}`}>
                 [{String(index + 1).padStart(2, '0')}]
               </span>
 
-              {/* Column 2: Main Content */}
               <div>
                 <div className={`text-lg font-normal ${yellowClasses}`}>
                   {role.company}
@@ -55,11 +51,9 @@ export default function Timeline() {
                 </div>
               </div>
 
-              {/* Column 3: Chevron */}
               <ChevronRight className={`w-5 h-5 mt-1 ${secondaryClasses}`} />
             </div>
 
-            {/* Mobile Layout: visible only on small screens */}
             <div className="md:hidden">
               <div className="flex justify-between items-start">
                   <span className={`text-lg ${yellowClasses}`}>
@@ -77,7 +71,6 @@ export default function Timeline() {
                 {role.highlight}
               </div>
               
-              {/* Mobile chevron positioned at bottom right */}
               <ChevronRight className={`w-5 h-5 absolute bottom-4 right-4 ${secondaryClasses}`} />
             </div>
           </button>

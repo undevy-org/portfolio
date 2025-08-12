@@ -1,4 +1,3 @@
-// src/app/utils/config.js
 import fs from 'fs/promises';
 import path from 'path';
 
