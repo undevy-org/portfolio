@@ -1,4 +1,3 @@
-// src/app/lib/web3-config.js
 'use client';
 import { createAppKit } from '@reown/appkit/react';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
@@ -25,8 +24,8 @@ const projectId = 'b75ae0dd3030e568aae32958c74eb59b';
 const metadata = {
   name: 'Interactive Terminal Portfolio',
   description: 'Interactive Terminal Portfolio with Web3 Access',
-  url: 'https://undevy.com', // Will change dynamically
-  icons: ['https://undevy.com/icon.png'] // We can add a real icon later
+  url: 'https://undevy.com',
+  icons: ['https://undevy.com/icon.png']
 };
 
 const networks = [

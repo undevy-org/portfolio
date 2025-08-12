@@ -1,4 +1,3 @@
-// src/app/components/SystemLog.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -23,7 +22,7 @@ export default function SystemLog() {
     theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
   }`;
 
-  const cursorClasses = `inline-block w-2 h-4 ${ // Adjusted size for better visibility
+  const cursorClasses = `inline-block w-2 h-4 ${
     theme === 'dark' ? 'bg-dark-text-secondary' : 'bg-light-text-secondary'
   }`;
 
@@ -32,7 +31,6 @@ export default function SystemLog() {
   return (
     <div className={containerClasses} ref={logContainerRef}>
       {logEntries.map((entry, index) => (
-        // MODIFIED: Wrapped each log entry in a flex container to add a consistent prefix.
         // WHY: This ensures every line in the log, including the final input line, has the same
         // visual structure and alignment, mimicking a real terminal output.
         <div key={index} className="flex">
@@ -43,27 +41,21 @@ export default function SystemLog() {
       
       {/* This check is kept to only show the input prompt after logs appear */}
       {logEntries.length > 0 && (
-      // MODIFIED: Added `items-center` to the flex container to vertically align the input line with the log lines.
       // WHY: This fixes the visual bug where the input line appeared slightly lower than the log entries.
       <div className="flex items-center mt-1">
         <span className="mr-2 select-none">{'>'}</span>
-        {/* REMOVED: The '$' sign is removed as requested for a cleaner prompt. */}
           <div className="relative flex-1">
-          {/* Input field remains functionally the same */}
             <input
               type="text"
               value={inputValue}
-            // MODIFIED: Automatically convert input to uppercase.
             // WHY: This aligns with the terminal aesthetic where commands are often uppercase.
             onChange={(e) => setInputValue(e.target.value.toUpperCase())}
               className={inputClasses}
               placeholder=""
               tabIndex={-1}
-              style={{ caretColor: 'transparent' }} // Hide native cursor
+              style={{ caretColor: 'transparent' }}
             />
-            {/* Custom blinking cursor */}
             <span 
-            // MODIFIED: Centered the cursor vertically using translate-y.
             // WHY: `top-1/2 -translate-y-1/2` is a robust way to vertically center an element regardless of parent height,
             // fixing the issue where the cursor appeared too high.
             className={`absolute top-1/2 -translate-y-1/2 ${cursorClasses} animate-pulse`}

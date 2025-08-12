@@ -1,4 +1,3 @@
-// src/app/screens/Introduction.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -35,7 +34,6 @@ export default function Introduction() {
 return (
   <div className="p-4 font-mono">
       {/* 
-        MODIFICATION: The $profile_data block has been reformatted.
         WHY: To match the key-value grid layout used in other panels for better visual consistency.
         It now uses a responsive grid layout, making it cleaner on both mobile and desktop.
       */}
@@ -71,7 +69,6 @@ return (
     </div>
 
       {/*
-        REMOVED: The $current_status block has been removed from this screen.
         WHY: This information is more relevant in the "Contact" context. Moving it declutters
         the introduction and places the status details where a user would expect to find them
         when considering making contact.

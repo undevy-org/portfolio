@@ -1,4 +1,3 @@
-// src/app/screens/SkillDetail.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
