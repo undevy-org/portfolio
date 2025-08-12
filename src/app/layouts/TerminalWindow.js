@@ -3,6 +3,7 @@
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
 import { ArrowLeft, Sun, Moon, X, Home, ArrowUp } from 'lucide-react';
+import { getScreenDisplayName } from '../utils/formatters';
 
 export default function TerminalWindow({ title, children }) {
    const { 
@@ -56,13 +57,6 @@ export default function TerminalWindow({ title, children }) {
   };
 
   const breadcrumbPath = buildBreadcrumbPath();
-
-  // WHY: Display "Home" instead of "MainHub", and format other screen names nicely
-  const getScreenDisplayName = (screen) => {
-    if (screen === 'MainHub') return 'Home';
-    // Convert CamelCase to space-separated words
-    return screen.replace(/([A-Z])/g, ' $1').trim();
-  };
 
   const windowClasses = `w-full max-w-2xl border rounded ${
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'

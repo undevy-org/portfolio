@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 
@@ -83,26 +84,6 @@ export default function Contact() {
   const handleExternalLink = (label, url) => {
     addLog(`EXTERNAL LINK: ${label}`);
     window.open(url, '_blank');
-  };
-
-  // WHY: To provide an accurate, up-to-date availability date without manual updates.
-  // This function calculates a date two weeks from now and ensures it's a weekday.
-  const getAvailabilityDate = () => {
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 14); // Add 14 days
-
-    const dayOfWeek = futureDate.getDay(); // Sunday = 0, Saturday = 6
-
-    if (dayOfWeek === 6) { // If it's Saturday
-      futureDate.setDate(futureDate.getDate() + 2); // Move to Monday
-    } else if (dayOfWeek === 0) { // If it's Sunday
-      futureDate.setDate(futureDate.getDate() + 1); // Move to Monday
-    }
-
-    // Format the date as "DD Month, YYYY" (e.g., "22 July, 2025")
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    // FIX: Corrected the method name from toLocaleDateDateString to toLocaleDateString.
-    return futureDate.toLocaleDateString('en-US', options);
   };
 
   const availabilityDate = getAvailabilityDate();
