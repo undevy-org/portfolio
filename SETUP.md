@@ -14,6 +14,19 @@ This document provides a comprehensive, step-by-step guide to setting up the Int
 -   A VPS provider account (e.g., [DigitalOcean](https://www.digitalocean.com/)).
 -   A registered domain name.
 
+### 1.3. Required GitHub Secrets
+
+Add these secrets to your repository (Settings → Secrets and variables → Actions):
+
+- `SSH_HOST` - Your server's IP address
+- `SSH_USER` - Your server username  
+- `SSH_PRIVATE_KEY` - Your deployment SSH key
+- `DEPLOY_PATH_PORTFOLIO` - Path to portfolio app (e.g., `/home/username/your-domain.com`)
+- `DEPLOY_PATH_BOT_PARENT` - Parent path for bot (e.g., `/home/username`)
+- `DEPLOY_PATH_BOT` - Full path to bot (e.g., `/home/username/telegram-bot`)
+- `PM2_APP_NAME_PORTFOLIO` - PM2 process name for portfolio
+- `PM2_APP_NAME_BOT` - PM2 process name for bot
+
 ---
 
 ## 2. Local Development Setup
@@ -230,7 +243,7 @@ This project uses Reown (formerly WalletConnect) for Web3 authentication. To ena
     // src/app/lib/web3-config.js
 
     // ... other code
-    export const projectId = 'b75ae0dd3030e509aae32958c74eb59b'; // <-- REPLACE THIS WITH YOUR ID
+    export const projectId = 'YOUR_PROJECT_ID'; // <-- REPLACE THIS WITH YOUR ID
     // ... other code
     ```
 
