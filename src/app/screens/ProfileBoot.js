@@ -1,13 +1,10 @@
-// src/app/screens/ProfileBoot.js
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
-// MODIFICATION: Imported ArrowRight icon from lucide-react.
 // WHY: To add a visual cue to the "VIEW PORTFOLIO" button, indicating progression.
 import { ArrowRight } from 'lucide-react';
-// NEW IMPORT: Import the new TerminalProgress component to replace simple text loader
 import TerminalProgress from '../components/ui/TerminalProgress';
 import AnimatedAsciiArt from '../components/ui/AnimatedAsciiArt';
 
@@ -15,10 +12,9 @@ export default function ProfileBoot() {
   const { sessionData, theme, navigate, addLog, currentDomain } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [loaderFrame, setLoaderFrame] = useState(0); // For ASCII loader animation
-  const logContainerRef = useRef(null); // Reference for auto-scroll functionality
+  const [loaderFrame, setLoaderFrame] = useState(0);
+  const logContainerRef = useRef(null);
   
-  // ASCII loader frames - similar to image loading animation
   const loaderFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   
   // Boot sequence messages - wrapped in useMemo to prevent recreation
@@ -31,7 +27,6 @@ export default function ProfileBoot() {
     { message: 'Access granted.', duration: 500 }
   ], [currentDomain]); // Only recreate when currentDomain changes
   
-  // Animate the ASCII loader - cycles through frames every 80ms
   useEffect(() => {
     if (!isComplete) {
       const interval = setInterval(() => {
@@ -41,14 +36,12 @@ export default function ProfileBoot() {
     }
   }, [isComplete, loaderFrames.length]);
   
-  // Auto-scroll to bottom when new messages appear
   useEffect(() => {
     if (logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [currentStep]);
   
-    // Run through boot sequence
   useEffect(() => {
     if (currentStep < bootSequence.length) {
       const timer = setTimeout(() => {
@@ -73,28 +66,23 @@ export default function ProfileBoot() {
   
   const handleContinue = () => {
     addLog('BOOT COMPLETE: Entering main hub');
-    // Navigate to MainHub without adding to history
     navigate('MainHub', false);
   };
   
-  // Calculate progress percentage for visual feedback
   const progressPercentage = (currentStep / bootSequence.length) * 100;
   
   return (
     <div className="p-8 flex flex-col items-center justify-center min-h-[400px]">
-      {/* ASCII Art Container */}
       <div className="mb-6">
         <AnimatedAsciiArt />
       </div>
       
-      {/* Boot Messages Container - Fixed height with scroll like SystemLog */}
       <div 
         ref={logContainerRef}
         className={`w-full max-w-md h-32 overflow-y-auto border rounded p-2 mb-6 ${
           theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
         }`}
       >
-        {/* Display all messages up to current step */}
         {bootSequence.slice(0, Math.min(currentStep, bootSequence.length)).map((step, index) => (
           <div
             key={index}
@@ -119,16 +107,6 @@ export default function ProfileBoot() {
       <div className="w-full max-w-md h-16 flex flex-col items-center justify-center">
         {!isComplete ? (
           // STATE 1: While loading, show the progress indicator.
-          // CHANGE: Replaced simple text loader with TerminalProgress component
-          // OLD CODE:
-          // <div className={`text-xs ${
-          //   theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-          // }`}>
-          //   <span className="font-mono">{loaderFrames[loaderFrame]}</span>
-          //   {' '}
-          //   {Math.round(progressPercentage)}% complete
-          // </div>
-          // NEW CODE: Using TerminalProgress component for better visual consistency
           <div className="w-full max-w-xs">
             <TerminalProgress 
               progress={progressPercentage}
@@ -142,12 +120,10 @@ export default function ProfileBoot() {
         ) : (
           // STATE 2: When complete, replace the loader with the final content.
           <div className="w-full flex flex-col items-center">
-            {/* MODIFICATION: The "System ready" text and its container span have been removed. */}
             {/* WHY: To ensure the button is the only element that appears after loading is complete, for a cleaner UI. */}
         <Button
           onClick={handleContinue}
           variant="primary"
-              // MODIFICATION: Added an icon prop to display an arrow.
               // WHY: To visually indicate that clicking the button will proceed to the next step.
               icon={() => <ArrowRight size={20} strokeWidth={2} />}
               className="w-full px-6 py-3 font-bold transition-opacity duration-500"

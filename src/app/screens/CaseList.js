@@ -1,4 +1,3 @@
-// src/app/screens/CaseList.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -37,7 +36,6 @@ export default function CaseList() {
     <div className="p-4">
       <div className={`mb-4 ${panelClasses}`}>
         <div className={`text-base mb-2 ${yellowClasses}`}>$loading_cases</div>
-        {/* MODIFIED: Flex container is now responsive */}
         <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm">
           <div className="flex items-center gap-2">
             <span className={labelClasses}>[</span>

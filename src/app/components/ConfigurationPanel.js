@@ -1,4 +1,3 @@
-// src/app/components/ConfigurationPanel.js
 'use client';
 
 import { useSession } from '../context/SessionContext';

@@ -1,4 +1,3 @@
-// src/app/components/ui/Button.js
 'use client';
 
 import { useSession } from '../../context/SessionContext';
@@ -19,7 +18,6 @@ export default function Button({
   const { theme } = useSession();
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Handle click with optional success state
   const handleClick = (e) => {
     if (disabled) return;
     
@@ -32,7 +30,6 @@ export default function Button({
     }
   };
 
-  // Auto-reset success state after duration
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => {
@@ -42,7 +39,6 @@ export default function Button({
     }
   }, [isSuccess, successDuration]);
 
-  // Determine width classes based on variant
   const getVariantClasses = () => {
     switch (variant) {
       case 'full':
@@ -58,7 +54,6 @@ export default function Button({
     }
   };
 
-  // Base button classes
   const baseClasses = `
     p-3 ${variant !== 'icon-only' ? 'border' : ''} rounded font-normal transition-colors
     flex items-center justify-center gap-2
@@ -66,7 +61,6 @@ export default function Button({
     ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
   `;
 
-  // Theme-based classes
   const themeClasses = theme === 'dark'
     ? `
       ${variant !== 'icon-only' ? 'border-dark-border' : ''}
@@ -79,13 +73,10 @@ export default function Button({
       ${isSuccess ? 'text-light-success' : 'text-light-text-primary'}
     `;
 
-  // Combine all classes
   const buttonClasses = `${baseClasses} ${themeClasses} ${className}`.trim();
 
-  // Determine what text to show
   const displayText = isSuccess && successText ? successText : children;
 
-  // Render icon-only button
   if (!children && Icon) {
     return (
       <button
@@ -99,7 +90,6 @@ export default function Button({
     );
   }
 
-  // Render button with text (and optional icon)
   return (
     <button
       onClick={handleClick}

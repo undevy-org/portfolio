@@ -1,4 +1,3 @@
-// src/app/screens/Contact.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -9,7 +8,6 @@ export default function Contact() {
   const { sessionData, theme, addLog, currentDomain, domainData } = useSession();
   const [emailCopied, setEmailCopied] = useState(false);
 
-  // ADDED: Centralized theme classes for cleaner code, mirroring other components.
   // WHY: This makes the code more readable and easier to maintain.
   const yellowClasses = theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command';
   const labelClasses = theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary';
@@ -20,15 +18,11 @@ export default function Contact() {
   const baseContact = sessionData?.contact || {};
   const profileStatus = sessionData?.profile?.status || {};
 
-  // --- Start of logic section ---
-
-  // CHANGED: Completely replaced hardcoded domain-specific logic with dynamic configuration
   // The contact data now comes entirely from domainData (loaded from domains.json)
   // This ensures full portability - no personal data in the code
   const getDomainSpecificContact = () => {
     const contact = { ...baseContact };
     
-    // CHANGED: Use domainData from context instead of hardcoded values
     // domainData is fetched from the API and contains configuration for the current domain
     if (domainData) {
       contact.email = domainData.email || baseContact.email;
@@ -36,7 +30,6 @@ export default function Contact() {
       contact.website = domainData.website || baseContact.website;
     }
     
-    // CHANGED: Fallback to environment variables if domainData is not available
     // These come from .env file, not hardcoded in the source
     if (!contact.email) {
       contact.email = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com';
@@ -55,7 +48,6 @@ export default function Contact() {
 
   // NOTE: Email copy logic remains unchanged.
   const handleCopyEmail = async () => {
-    // ... (logic is identical to the original)
     if (navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(contactData.email);
@@ -93,7 +85,6 @@ export default function Contact() {
     window.open(url, '_blank');
   };
 
-  // ADDITION: Dynamic availability date calculation.
   // WHY: To provide an accurate, up-to-date availability date without manual updates.
   // This function calculates a date two weeks from now and ensures it's a weekday.
   const getAvailabilityDate = () => {
@@ -115,8 +106,6 @@ export default function Contact() {
   };
 
   const availabilityDate = getAvailabilityDate();
-
-  // --- End of logic section ---
 
   return (
     <div className="p-4">
@@ -166,7 +155,6 @@ export default function Contact() {
       </div>
 
       {/* 
-        MODIFICATION: This block replaces the old $availability_status.
         WHY: It centralizes the user's current work status in the most logical place—the contact screen.
         The data is now a mix of hardcoded values, dynamic calculations, and content from content.json for maximum flexibility.
       */}
@@ -175,19 +163,15 @@ export default function Contact() {
           $current_status
           </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          {/* Seeking */}
           <span className={labelClasses}>$seeking:</span>
           <span className={valueClasses}>{profileStatus.seeking || 'Not specified'}</span>
 
-          {/* Location - Now a fixed value */}
           <span className={labelClasses}>$location:</span>
           <span className={valueClasses}>Remote, EMEA</span>
 
-          {/* Target Compensation - Pulled from a different field */}
           <span className={labelClasses}>$target_comp:</span>
           <span className={valueClasses}>{profileStatus.salary || 'Negotiable'}</span>
           
-          {/* Availability - Now dynamically calculated */}
           <span className={labelClasses}>$availability:</span>
           <span className={valueClasses}>{availabilityDate}</span>
         </div>
