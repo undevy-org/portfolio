@@ -12,6 +12,7 @@ After authentication, the application transforms into a seamless Single Page App
 -   **Decoupled Content Architecture:** All portfolio data is stored in a `content.json` file on the server, completely separate from the application code. This allows content updates without redeploying the app.
 -   **Headless CMS via Telegram Bot:** A custom Telegram bot serves as a powerful, on-the-go content management system. You can create, edit, delete, and rollback content versions directly from your phone.
 -   **Privacy-First Analytics:** A self-hosted Matomo instance provides detailed session tracking while ensuring full data ownership and privacy.
+-   **Automated Testing:** The project is covered by a suite of unit and component tests using Jest and React Testing Library to prevent regressions and ensure code quality.
 
 ## Tech Stack
 
@@ -20,6 +21,7 @@ After authentication, the application transforms into a seamless Single Page App
 | **Framework**      | Next.js (React)    | Hybrid architecture: Server-side API for secure data, client-side SPA for UI. |
 | **Styling**        | Tailwind CSS       | Powers a custom, themeable design system emulating a terminal aesthetic. |
 | **State Mngmt**    | React Context      | A single `SessionContext` manages all shared state across the application. |
+| **Testing**        | Jest & RTL         | For unit and component testing, ensuring reliability and preventing regressions. |
 | **Web Server**     | Nginx              | Handles web traffic, SSL termination (Let's Encrypt), and reverse proxying. |
 | **Process Manager**| PM2                | Keeps the Node.js application alive and handles zero-downtime deployments. |
 | **Analytics**      | Matomo (self-hosted) | Runs in Docker, providing privacy-focused analytics with custom tracking. |
@@ -48,11 +50,17 @@ After authentication, the application transforms into a seamless Single Page App
     ```
     Access the local version at `http://localhost:3000/?code=LOCAL_TEST`.
 
+4.  **Run tests:**
+    ```bash
+    npm test
+    ```
+
 ## Project Documentation
 
 This project is thoroughly documented. For more details, please see the following files:
 
 -   **[`SETUP.md`](./SETUP.md):** A comprehensive guide to deploying your own instance from scratch.
+-   **[`TESTING.md`](./TESTING.md):** An overview of our testing philosophy, tools, and practices.
 -   **[`CHANGELOG.md`](./CHANGELOG.md):** A detailed history of all notable changes and project milestones.
 -   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
 -   **[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md):** A detailed overview of the custom terminal-inspired design system, including color palettes, typography, component guidelines, and theming instructions for consistent UI/UX across the portfolio.

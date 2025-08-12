@@ -44,16 +44,7 @@ telegram-bot/.env
 next-env.d.ts
 
 # local files
-SECRETS.md
-STRATEGY.md
-ARCHITECTURE.md
-RUNBOOK.md
-INSTRUCTIONS.md
-ISSUES.md
+/local-docs/
 test-content-local.json
-bug.md
-feature.md
-task.md
-content-instructions.md
 /content-backups
 config/domains.json
