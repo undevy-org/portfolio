@@ -3,24 +3,27 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { validateContentStructure, deepMerge } from './validator';
+// CHANGED: Import config utilities instead of using hardcoded values
+import { getContentFilePath, getBackupDir, getAdminToken } from '../../../utils/config';
 
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
+// CHANGED: Use getAdminToken() from config instead of direct env access
+// This is now retrieved from the config utility
+const ADMIN_TOKEN = getAdminToken();
 
-const CONTENT_FILE_PATH = process.env.NODE_ENV === 'production' 
-  ? '/home/undevy/content.json'
-  : process.env.USE_LOCAL_TEST_CONTENT 
-    ? path.join(process.cwd(), 'test-content-local.json')
-    : path.join(process.cwd(), 'src/app/test-content.json');
+// CHANGED: Use getContentFilePath() from config utility instead of hardcoded paths
+// The config utility handles all the environment detection and path resolution
+const CONTENT_FILE_PATH = getContentFilePath(false); // false = use real content, not demo
 
-const BACKUP_DIR = process.env.NODE_ENV === 'production'
-  ? '/home/undevy/content-backups'
-  : path.join(process.cwd(), 'content-backups');
+// CHANGED: Use getBackupDir() from config utility instead of hardcoded paths
+// This ensures consistency across the application
+const BACKUP_DIR = getBackupDir();
 
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
   if (!authHeader) return false;
   
   const token = authHeader.replace('Bearer ', '');
+  // CHANGED: ADMIN_TOKEN now comes from config utility
   return token === ADMIN_TOKEN;
 }
 
@@ -64,6 +67,7 @@ export async function GET(request) {
   }
   
   try {
+    // CHANGED: CONTENT_FILE_PATH now comes from config utility
     const fileContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
     const content = JSON.parse(fileContent);
 
@@ -109,12 +113,14 @@ export async function PUT(request) {
     
     let backupPath = null;
     try {
+      // CHANGED: CONTENT_FILE_PATH now comes from config utility
       const currentContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
       backupPath = await createBackup(currentContent);
     } catch (error) {
       console.log('[ADMIN API] No existing file to backup');
     }
     
+    // CHANGED: CONTENT_FILE_PATH now comes from config utility
     await fs.writeFile(
       CONTENT_FILE_PATH,
       JSON.stringify(newContent, null, 2)
@@ -153,6 +159,7 @@ export async function PATCH(request) {
       );
     }
     
+    // CHANGED: CONTENT_FILE_PATH now comes from config utility
     const fileContent = await fs.readFile(CONTENT_FILE_PATH, 'utf-8');
     const currentContent = JSON.parse(fileContent);
     
@@ -178,6 +185,7 @@ export async function PATCH(request) {
       );
     }
     
+    // CHANGED: CONTENT_FILE_PATH now comes from config utility
     await fs.writeFile(
       CONTENT_FILE_PATH,
       JSON.stringify(currentContent, null, 2)

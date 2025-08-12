@@ -1,0 +1,23 @@
+{
+  "localhost": {
+    "brandingToken": "$dev_portfolio",
+    "email": "dev@localhost",
+    "telegram": "https://t.me/devtest",
+    "website": "http://localhost:3000",
+    "analyticsEnabled": false
+  },
+  "yourdomain.com": {
+    "brandingToken": "$your_portfolio",
+    "email": "contact@yourdomain.com",
+    "telegram": "https://t.me/yourhandle",
+    "website": "https://yourdomain.com",
+    "analyticsEnabled": true
+  },
+  "anotherdomain.com": {
+    "brandingToken": "$another_portfolio",
+    "email": "hello@anotherdomain.com",
+    "telegram": "https://t.me/anotherhandle",
+    "website": "https://anotherdomain.com",
+    "analyticsEnabled": true
+  }
+}

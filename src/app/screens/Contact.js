@@ -22,22 +22,32 @@ export default function Contact() {
 
   // --- Start of logic section ---
 
-  // NOTE: Domain-specific contact logic remains unchanged.
+  // CHANGED: Completely replaced hardcoded domain-specific logic with dynamic configuration
+  // The contact data now comes entirely from domainData (loaded from domains.json)
+  // This ensures full portability - no personal data in the code
   const getDomainSpecificContact = () => {
     const contact = { ...baseContact };
-    if (currentDomain?.includes('foxous')) {
-    contact.email = 'foxous@proton.me';
-    contact.telegram = '@foxous';
-    contact.website = 'https://foxous.design';
-    } else if (currentDomain?.includes('undevy')) {
-      contact.email = 'undevy@gmail.com';
-      contact.telegram = '@undevy';
-      contact.website = 'https://undevy.com';
-    } else {
-      contact.email = contact.email || 'foxous@proton.me';
-      contact.telegram = contact.telegram || '@foxous';
-      contact.website = contact.website || 'https://foxous.design';
+    
+    // CHANGED: Use domainData from context instead of hardcoded values
+    // domainData is fetched from the API and contains configuration for the current domain
+    if (domainData) {
+      contact.email = domainData.email || baseContact.email;
+      contact.telegram = domainData.telegram || baseContact.telegram;
+      contact.website = domainData.website || baseContact.website;
+    }
+    
+    // CHANGED: Fallback to environment variables if domainData is not available
+    // These come from .env file, not hardcoded in the source
+    if (!contact.email) {
+      contact.email = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com';
+    }
+    if (!contact.telegram) {
+      contact.telegram = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example';
+    }
+    if (!contact.website) {
+      contact.website = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_WEBSITE || 'https://example.com';
   }
+    
   return contact;
   };
 
@@ -136,10 +146,18 @@ export default function Contact() {
             <ExternalLink className={`w-4 h-4 ${valueClasses}`} />
         </button>
         {contactData.telegram && (
-            <button onClick={() => handleExternalLink('Telegram', domainData?.telegram || `https://t.me/${contactData.telegram.replace('@', '')}`)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
+            /* CHANGED: Simplified telegram button to use contactData.telegram directly */
+            /* The telegram URL is now complete (https://t.me/...) from configuration */
+            <button onClick={() => handleExternalLink('Telegram', contactData.telegram)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
             <div className="flex items-center">
                 <MessageCircle className={`w-5 h-5 mr-3 ${yellowClasses}`} />
-                <span className={mainTextClasses}>{contactData.telegram}</span>
+                {/* CHANGED: Extract handle from telegram URL for display */}
+                <span className={mainTextClasses}>
+                  {contactData.telegram.includes('t.me/') 
+                    ? '@' + contactData.telegram.split('t.me/')[1]
+                    : contactData.telegram
+                  }
+                </span>
             </div>
               <ExternalLink className={`w-4 h-4 ${valueClasses}`} />
           </button>
