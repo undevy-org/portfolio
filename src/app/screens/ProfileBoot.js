@@ -9,6 +9,7 @@ import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 // NEW IMPORT: Import the new TerminalProgress component to replace simple text loader
 import TerminalProgress from '../components/ui/TerminalProgress';
+import AnimatedAsciiArt from '../components/ui/AnimatedAsciiArt';
 
 export default function ProfileBoot() {
   const { sessionData, theme, navigate, addLog, currentDomain } = useSession();
@@ -29,16 +30,6 @@ export default function ProfileBoot() {
     { message: 'Preparing interface...', duration: 700 },
     { message: 'Access granted.', duration: 500 }
   ], [currentDomain]); // Only recreate when currentDomain changes
-  
-  // ASCII art for the terminal (static for now, can be animated later)
-  const asciiArt = [
-    '    ╔══════════════════╗',
-    '    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║',
-    '    ║  ▓▓ PORTFOLIO ▓▓  ║',
-    '    ║  ▓▓  SYSTEM   ▓▓  ║',
-    '    ║  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ║',
-    '    ╚══════════════════╝'
-  ];
   
   // Animate the ASCII loader - cycles through frames every 80ms
   useEffect(() => {
@@ -92,14 +83,8 @@ export default function ProfileBoot() {
   return (
     <div className="p-8 flex flex-col items-center justify-center min-h-[400px]">
       {/* ASCII Art Container */}
-      <div className={`mb-6 font-mono text-xs ${
-        theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-      }`}>
-        {asciiArt.map((line, index) => (
-          <div key={index} className="text-center whitespace-pre">
-            {line}
-          </div>
-        ))}
+      <div className="mb-6">
+        <AnimatedAsciiArt />
       </div>
       
       {/* Boot Messages Container - Fixed height with scroll like SystemLog */}
