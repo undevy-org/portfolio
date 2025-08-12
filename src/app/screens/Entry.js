@@ -1,4 +1,3 @@
-// src/app/screens/Entry.js
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -26,7 +25,6 @@ export default function Entry() {
     setSessionData, 
     navigate,
     isTerminating,
-    // ADDED: Direct state communication for Web3 logout
     // These replace the unreliable browser event system
     web3LogoutPending,     // Flag that tells us when to disconnect wallet
     setWeb3LogoutPending   // Function to clear the flag after disconnection
@@ -75,7 +73,6 @@ export default function Entry() {
     console.log('[WEB3 AUTH] Starting authentication for:', walletAddress);
     hasInitialized.current = true; // Mark as initialized immediately
     
-    // Update UI to show processing state
     setWeb3Status('connecting');
     addLog(`WEB3 CONNECTED: ${walletAddress}`);
     
@@ -96,7 +93,6 @@ export default function Entry() {
           // Override meta information with Web3 details
           meta: {
             ...userData.meta,
-            // MODIFIED: Changed to a simpler, non-redundant company name.
             // WHY: The wallet address is already displayed in the analytics panel,
             // so including a truncated version here was redundant.
             company: 'Web3 User',
@@ -110,7 +106,6 @@ export default function Entry() {
             summary: {
               ...userData.profile?.summary,
               title: 'Web3 Authenticated User',
-              // MODIFIED: Changed specialization to be more descriptive and less redundant.
               // WHY: Avoids repeating the wallet address, providing clearer context about the session.
               specialization: 'Authenticated via Web3',
               background: 'Decentralized Access'
@@ -118,14 +113,11 @@ export default function Entry() {
           }
         };
         
-        // Store session data in context
         setSessionData(web3SessionData);
         addLog(`WEB3 ACCESS GRANTED: ${walletAddress}`);
         
-        // Update UI state
         setWeb3Status('connected');
         
-        // Navigate to main hub without adding Entry to history
         navigate('MainHub', false);
         
         // Update URL to reflect Web3 authentication
@@ -133,7 +125,6 @@ export default function Entry() {
         router.push(`/?web3=${walletAddress}`);
         
       } else {
-        // Handle failed authentication
         console.error('[WEB3 AUTH] Server returned error:', response.status);
         addLog('ERROR: Failed to create Web3 session');
         setAuthError('Failed to authenticate with Web3. Please try again.');
@@ -144,11 +135,9 @@ export default function Entry() {
           await disconnectAsync();
         }
         
-        // Reset initialization flag on failure
         hasInitialized.current = false;
       }
     } catch (error) {
-      // Handle network or other errors
       console.error('[WEB3 AUTH] Exception during authentication:', error);
       addLog('ERROR: Web3 session creation failed');
       setAuthError('Network error during Web3 authentication');
@@ -163,7 +152,6 @@ export default function Entry() {
         }
       }
       
-      // Reset initialization flag on error
       hasInitialized.current = false;
     }
   }, [
@@ -179,11 +167,10 @@ export default function Entry() {
   // ========== EFFECT 1: WEB3 AUTHENTICATION WITH TERMINATION CHECK ==========
   useEffect(() => {
 
-    // Debugging output to track Web3 state
     // This helps understand the flow and catch issues early
     console.log('[WEB3 DEBUG]', {
       isTerminating,
-      web3LogoutPending,  // ADDED: Now tracking the direct state flag
+      web3LogoutPending,
       isLoggingOut: isLoggingOut.current,
       hasInitialized: hasInitialized.current,
       intentionalLogout: intentionalLogout.current,
@@ -197,7 +184,6 @@ export default function Entry() {
       return;
     }
     
-    // ADDED: Check the direct logout flag from context
     // This is more reliable than checking isTerminating alone
     if (web3LogoutPending) {
       console.log('[WEB3 MONITOR] Web3 logout is pending - skip authentication');
@@ -236,7 +222,7 @@ export default function Entry() {
       if (hasInitialized.current || intentionalLogout.current) {
         console.log('[WEB3 MONITOR] Wallet disconnected - resetting all flags');
       hasInitialized.current = false;
-        intentionalLogout.current = false; // Reset only after wallet actually disconnects
+        intentionalLogout.current = false;
       setWeb3Status('idle');
       }
     }
@@ -345,10 +331,9 @@ export default function Entry() {
     }
 
     setIsLoading(true);
-    setAuthError(null); // Clear any previous errors
+    setAuthError(null);
     addLog(`AUTHENTICATING: ${code}`);
     
-    // Navigate with the code parameter
     router.push(`/?code=${code}`);
   };
 
@@ -366,16 +351,13 @@ export default function Entry() {
    * Determines the correct Telegram URL based on domain
    */
   const handleGetCode = () => {
-    // CHANGED: Completely replaced hardcoded telegram URLs with configuration-based approach
     // The telegram URL now comes entirely from domainData (loaded from domains.json)
     let telegramUrl;
     
-    // CHANGED: Use domainData as the primary source for telegram URL
     // This ensures the telegram link is always from configuration, not hardcoded
     if (domainData?.telegram) {
       telegramUrl = domainData.telegram;
     } else {
-      // CHANGED: Fallback to environment variable instead of hardcoded URLs
       // This ensures no personal data remains in the code
       telegramUrl = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example';
     }
@@ -421,10 +403,9 @@ export default function Entry() {
         }`}
         placeholder="ENTER ACCESS CODE"
         autoFocus
-        disabled={isLoading || isConnected} // Disable when loading or Web3 connected
+        disabled={isLoading || isConnected}
       />
 
-      {/* Error message display */}
       {authError && (
         <div className={`mb-3 text-sm ${
           theme === 'dark' ? 'text-dark-error' : 'text-light-error'
@@ -433,7 +414,6 @@ export default function Entry() {
         </div>
       )}
 
-      {/* Traditional authentication button */}
       <button
         onClick={handleSubmit}
         disabled={isLoading || isConnected}
@@ -446,9 +426,7 @@ export default function Entry() {
         {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
       </button>
 
-      {/* Two-button row: Get Code and Web3 Login */}
       <div className="flex gap-3">
-        {/* Get Code button with Telegram icon */}
         <button
           onClick={handleGetCode}
           disabled={isConnected}
@@ -462,7 +440,6 @@ export default function Entry() {
           GET CODE
         </button>
 
-        {/* Web3 Login button with Wallet icon */}
         <button
           onClick={handleWeb3Login}
           disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending}
@@ -482,7 +459,6 @@ export default function Entry() {
         </button>
       </div>
       
-      {/* Web3 processing indicator */}
       {isConnected && web3Status === 'connecting' && (
         <div className={`mt-2 text-center text-xs ${
           theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
@@ -491,7 +467,6 @@ export default function Entry() {
         </div>
       )}
       
-      {/* Disconnecting indicator (ENHANCED) */}
       {(web3Status === 'disconnecting' || web3LogoutPending) && (
         <div className={`mt-2 text-center text-xs ${
           theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'

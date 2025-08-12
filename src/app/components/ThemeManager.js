@@ -1,4 +1,3 @@
-// src/app/components/ThemeManager.js
 'use client';
 
 import { useEffect } from 'react';
@@ -9,10 +8,8 @@ export default function ThemeManager() {
   const { theme } = useSession();
 
   useEffect(() => {
-    // This effect runs whenever the `theme` variable changes.
     const body = document.body;
     
-    // Define classes for both themes
     const darkThemeClasses = ['bg-dark-bg', 'text-dark-text-primary'];
     const lightThemeClasses = ['bg-light-bg', 'text-light-text-primary'];
 
@@ -23,7 +20,7 @@ export default function ThemeManager() {
       body.classList.remove(...lightThemeClasses);
       body.classList.add(...darkThemeClasses);
     }
-  }, [theme]); // The dependency array ensures this runs only when `theme` changes.
+  }, [theme]);
 
-  return null; // Render nothing
+  return null;
 }

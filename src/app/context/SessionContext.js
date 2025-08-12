@@ -1,11 +1,9 @@
-// src/app/context/SessionContext.js
 'use client';
 
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 const SessionContext = createContext(null);
 
-// Helper function for timestamp formatting
 const getTimestamp = () => {
   return new Date().toLocaleTimeString('en-GB', {
     hour: '2-digit',
@@ -14,7 +12,6 @@ const getTimestamp = () => {
   });
 };
 
-// CHANGED: Removed hardcoded domainConfigs object
 // Domain configuration is now fetched dynamically from the API
 // This ensures full portability and no personal data in the code
 
@@ -37,7 +34,6 @@ export function SessionProvider({ children }) {
   // ========== DOMAIN ==========
   const [currentDomain, setCurrentDomain] = useState(null);
   const [domainData, setDomainData] = useState(null); 
-  // CHANGED: Added loading state for domain configuration
   const [domainConfigLoading, setDomainConfigLoading] = useState(true);
 
   // ========== SESSION STATE ==========
@@ -76,18 +72,15 @@ export function SessionProvider({ children }) {
   }, []);
   
   // ========== DOMAIN DETECTION ==========
-  // CHANGED: Completely refactored domain detection to fetch configuration from API
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       setCurrentDomain(hostname);
       
-      // CHANGED: Fetch domain configuration from the API instead of using hardcoded values
       const fetchDomainConfig = async () => {
         try {
           setDomainConfigLoading(true);
           
-          // Call the new config API endpoint
           const response = await fetch('/api/config');
           
           if (response.ok) {
@@ -95,7 +88,6 @@ export function SessionProvider({ children }) {
             setDomainData(data.config);
             addLog(`DOMAIN CONFIG LOADED: ${hostname}`);
       } else {
-            // Fallback to environment variable defaults if API fails
         setDomainData({
               brandingToken: process.env.NEXT_PUBLIC_DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
               email: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com',
@@ -106,7 +98,6 @@ export function SessionProvider({ children }) {
           }
         } catch (error) {
           console.error('Failed to fetch domain config:', error);
-          // CHANGED: Use environment variable defaults as fallback
           setDomainData({
             brandingToken: process.env.NEXT_PUBLIC_DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
             email: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com',
@@ -124,11 +115,9 @@ export function SessionProvider({ children }) {
   }, [addLog]);
 
   // ========== DYNAMIC DOCUMENT TITLE ==========
-  // CHANGED: Updated to use fetched domain configuration
   useEffect(() => {
     // Only update title after domain config is loaded
     if (domainData && !domainConfigLoading) {
-      // CHANGED: Use brandingToken from fetched configuration
       document.title = domainData.brandingToken || '$terminal_portfolio';
       addLog(`TITLE SET: ${document.title}`);
     }
@@ -261,7 +250,6 @@ export function SessionProvider({ children }) {
   const endSession = useCallback(() => {
     addLog('SESSION TERMINATING');
 
-    // MODIFICATION: URL clearing logic is moved to the absolute beginning of the function.
     // WHY: This is the core fix. It removes the `?code=` or `?web3=` parameter from the URL
     // instantly. This prevents the authentication logic in `page.js` from triggering a
     // re-login, thus solving the race condition.
@@ -301,8 +289,6 @@ export function SessionProvider({ children }) {
       setScreensVisitedCount(1);
       setAuthError(null);
       
-      // The URL clearing was moved, so it is no longer needed here.
-      
       setTimeout(() => {
         setIsTerminating(false);
         addLog('SESSION TERMINATION COMPLETE');
@@ -327,7 +313,6 @@ export function SessionProvider({ children }) {
     // Domain
     currentDomain,
     domainData,
-    // CHANGED: Added domainConfigLoading to allow components to know when config is ready
     domainConfigLoading,
 
     // Navigation

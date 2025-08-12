@@ -1,8 +1,6 @@
-// src/app/components/ui/Tabs.js
 'use client';
 import { useState } from 'react';
 import { useSession } from '../../context/SessionContext';
-// Import the image component only if we're using images
 import dynamic from 'next/dynamic';
 
 // Lazy load the image component since not all tabs will have images
@@ -60,7 +58,6 @@ export default function Tabs({ tabs, defaultTab = null }) {
         );
       
       case 'image':
-        // New case for handling images
         return (
           <div key={idx} className="my-4">
             <TerminalImagePreview 
@@ -73,7 +70,6 @@ export default function Tabs({ tabs, defaultTab = null }) {
         );
       
       default:
-        // Log unknown types for debugging
         console.warn(`Unknown content type: ${item.type}`);
         return null;
     }
@@ -103,14 +99,12 @@ export default function Tabs({ tabs, defaultTab = null }) {
 
     return (
     <div>
-      {/* MODIFIED: Added overflow-x-auto for horizontal scrolling on small screens */}
       <div className="w-full overflow-x-auto">
         <div className="flex w-full border-b border-dark-border-darker">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id, tab.label)}
-              // MODIFIED: Removed flex-1 and added whitespace-nowrap
               className={`text-center px-4 py-3 text-sm rounded-t transition-colors whitespace-nowrap -mb-px ${
                 activeTab === tab.id
                   ? `${activeBg} ${labelClasses} border-t border-x ${darkerBorder}`
@@ -123,8 +117,6 @@ export default function Tabs({ tabs, defaultTab = null }) {
         </div>
       </div>
 
-      {/* Tab content */}
-      {/* MODIFIED: Added -mt-px to seamlessly connect the border */}
       <div className={`-mt-px p-4 border rounded-b rounded-tr ${darkerBorder}`}>
         {activeTabData && (
           <>
