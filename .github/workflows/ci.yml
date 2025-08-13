@@ -38,9 +38,6 @@ jobs:
       - name: Build project
         run: npm run build
       
-      # Critical: We build here to validate, but don't save the output
-      # The actual deployment build will happen in the next job
-      # This ensures consistency but doubles build time - acceptable tradeoff
       - name: Validate build output
         run: |
           echo "✅ Build validation complete"
@@ -58,7 +55,6 @@ jobs:
     name: Build Deployment Artifact
     runs-on: ubuntu-latest
     needs: validate
-    # Only run on main branch after merge
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -79,7 +75,15 @@ jobs:
           echo "🏗️ Building production version..."
           npm run build
           
-          echo "✅ Build complete, preparing for artifact creation..."
+          # CRITICAL: Verify .next exists after build
+          if [ ! -d ".next" ]; then
+            echo "❌ CRITICAL: .next directory not created by build!"
+            ls -la
+            exit 1
+          fi
+          
+          echo "✅ Build complete, .next directory confirmed"
+          echo "📊 .next size: $(du -sh .next | cut -f1)"
       
       - name: Prepare deployment package
         run: |
@@ -88,74 +92,108 @@ jobs:
           # Create a clean deployment directory
           mkdir -p deployment-package
           
-          # Copy ONLY what's needed for production
-          # Using cp -r to preserve directory structure
-          cp -r .next deployment-package/
-          cp -r public deployment-package/
+          # CRITICAL: Use explicit copy for .next with verification
+          echo "📁 Copying .next directory..."
+          if [ -d ".next" ]; then
+            # Use tar to preserve directory structure for hidden directories
+            tar -cf - .next | (cd deployment-package && tar -xf -)
+            
+            # Verify the copy worked
+            if [ ! -d "deployment-package/.next" ]; then
+              echo "❌ CRITICAL: Failed to copy .next to deployment-package!"
+              echo "Source .next exists: $(ls -la .next | head -5)"
+              echo "Destination contents: $(ls -la deployment-package/)"
+              exit 1
+            fi
+            echo "✅ .next copied successfully"
+          else
+            echo "❌ .next directory not found in workspace!"
+            exit 1
+          fi
+          
+          # Copy other required files
+          echo "📁 Copying other files..."
+          cp -r public deployment-package/ 2>/dev/null || echo "⚠️ public directory not found"
+          cp -r src deployment-package/
           cp package.json deployment-package/
           cp package-lock.json deployment-package/
           cp next.config.mjs deployment-package/
           
-          # Copy source files (needed for API routes in App Router)
-          cp -r src deployment-package/
-          
-          # Remove development artifacts from the package
+          # Remove development artifacts
           echo "🧹 Cleaning development artifacts..."
           rm -rf deployment-package/.next/cache
           find deployment-package -name "*.map" -type f -delete
           
-          # Verify the package structure
-          echo "📋 Deployment package contents:"
+          # CRITICAL VERIFICATION: Check .next exists in package
+          echo "🔍 Final verification of deployment-package..."
+          if [ ! -d "deployment-package/.next" ]; then
+            echo "❌ FATAL: .next missing from deployment-package!"
+            echo "Contents of deployment-package:"
+            ls -la deployment-package/
+            exit 1
+          fi
+          
+          if [ ! -d "deployment-package/.next/static" ]; then
+            echo "❌ FATAL: .next/static missing!"
+            exit 1
+          fi
+          
+          if [ ! -d "deployment-package/.next/server" ]; then
+            echo "❌ FATAL: .next/server missing!"
+            exit 1
+          fi
+          
+          echo "📋 Deployment package contents (including hidden):"
           ls -la deployment-package/
           
           echo "📊 Package sizes:"
-          du -sh deployment-package/.next/
+          du -sh deployment-package/.next/ 2>/dev/null || echo ".next not found"
           du -sh deployment-package/src/
           du -sh deployment-package/
           
-          # Final verification
-          echo "✅ Verifying package integrity..."
-          if [ ! -d "deployment-package/.next/static" ]; then
-            echo "❌ Missing .next/static directory!"
-            exit 1
-          fi
-          if [ ! -d "deployment-package/.next/server" ]; then
-            echo "❌ Missing .next/server directory!"
-            exit 1
-          fi
-          if [ ! -f "deployment-package/package.json" ]; then
-            echo "❌ Missing package.json!"
-            exit 1
-          fi
-          echo "✅ All critical files present"
+          echo "✅ Deployment package verified and ready"
       
-      # Upload as a single artifact with clear structure
+      # Alternative approach: rename .next to avoid hidden directory issues
+      - name: Rename .next to avoid hidden directory issues
+        run: |
+          echo "🔄 Renaming .next to next-build to avoid hidden directory issues..."
+          if [ -d "deployment-package/.next" ]; then
+            mv deployment-package/.next deployment-package/next-build
+            echo "✅ Renamed .next to next-build"
+            
+            # Create a marker file to indicate renaming
+            echo "true" > deployment-package/NEXT_WAS_RENAMED
+            
+            # Verify rename worked
+            if [ ! -d "deployment-package/next-build" ]; then
+              echo "❌ Rename failed!"
+              exit 1
+            fi
+            echo "📁 Final package structure:"
+            ls -la deployment-package/
+          else
+            echo "❌ Cannot rename - .next not found!"
+            exit 1
+          fi
+      
+      # Upload as a single artifact
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
           name: deployment-package-${{ github.sha }}
           path: deployment-package/
           retention-days: 7
-          compression-level: 6  # Balanced compression
+          compression-level: 6
+          include-hidden-files: true  # IMPORTANT: Include hidden files
       
-      - name: Create artifact manifest
+      - name: Post-upload verification
         run: |
-          echo "📄 Creating artifact manifest..."
-          cat > artifact-manifest.json << EOF
-          {
-            "commit": "${{ github.sha }}",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "branch": "main",
-            "artifact_name": "deployment-package-${{ github.sha }}"
-          }
-          EOF
-          
-          echo "Manifest created:"
-          cat artifact-manifest.json
-      
-      - name: Upload manifest
-        uses: actions/upload-artifact@v4
-        with:
-          name: manifest-${{ github.sha }}
-          path: artifact-manifest.json
-          retention-days: 7
+          echo "📄 Artifact upload complete"
+          echo "Package contained:"
+          echo "  - next-build/ (renamed from .next/)"
+          echo "  - src/"
+          echo "  - public/"
+          echo "  - package.json"
+          echo "  - package-lock.json"
+          echo "  - next.config.mjs"
+          echo "  - NEXT_WAS_RENAMED marker file"
