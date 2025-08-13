@@ -4,23 +4,7 @@ import { useSession } from '../context/SessionContext';
 import { ChevronRight } from 'lucide-react';
 
 export default function SkillsGrid() {
-  const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
-
-  const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
-  }`;
-  const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-  }`;
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-  }`;
-  const successClasses = `${
-    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
-  }`;
+  const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
 
   const skills = sessionData?.skills || [];
   
@@ -33,13 +17,13 @@ export default function SkillsGrid() {
   const getLevelColor = (level) => {
     switch(level) {
       case 'EXPERT':
-        return successClasses; // Brightest green for expert
+        return 'text-light-success dark:text-dark-success';
       case 'ADVANCED':
-        return labelClasses; // Standard green
+        return 'value-primary';
       case 'INTERMEDIATE':
-        return valueClasses; // Gray for intermediate
+        return 'key-label';
       default:
-        return valueClasses;
+        return 'key-label';
     }
   };
   
@@ -50,18 +34,14 @@ export default function SkillsGrid() {
           <button
             key={skill.id}
             onClick={() => handleSkillClick(skill)}
-            className={`p-4 border rounded text-left transition-colors flex justify-between items-start ${
-              theme === 'dark'
-                ? 'border-dark-border-darker hover:bg-dark-hover'
-                : 'border-light-border-lighter hover:bg-light-hover'
-            }`}
+            className="p-4 border rounded text-left transition-colors flex justify-between items-start border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover"
           > 
             <div className="space-y-1">
-              <div className={`text-base ${yellowClasses}`}>
+              <div className="title-command">
                 {skill.name}
               </div>
               
-              <div className={`text-sm ${valueClasses}`}>
+              <div className="key-label">
                 {skill.desc}
               </div>
               
@@ -70,7 +50,7 @@ export default function SkillsGrid() {
               </div>
             </div>
 
-            <ChevronRight className={`w-5 h-5 ${valueClasses}`} />
+            <ChevronRight className="w-5 h-5 key-label" />
           </button>
         ))}
       </div>

@@ -6,37 +6,17 @@ import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
 
 export default function CaseDetail() {
-  const { sessionData, theme, navigate, addLog, selectedCase } = useSession();
-  
-  const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
-  }`;
-  
-  const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-  }`;
-  
-  const successClasses = `${
-    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
-  }`;
+  const { sessionData, navigate, addLog, selectedCase } = useSession();
   
   if (!selectedCase) {
     return (
       <div className="p-4 text-center">
-        <p className={valueClasses}>
+        <p className="key-label">
           No case selected. Please go back to Case List.
         </p>
         <button
           onClick={() => navigate('CaseList')}
-          className={`mt-4 px-4 py-2 rounded border transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border text-dark-text-secondary hover:bg-dark-hover'
-              : 'border-light-border text-light-text-secondary hover:bg-light-hover'
-          }`}
+          className="mt-4 px-4 py-2 rounded border transition-colors border-light-border text-light-text-secondary hover:bg-light-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-hover"
         >
           Back to Cases
         </button>
@@ -114,20 +94,16 @@ export default function CaseDetail() {
   
   return (
     <div className="p-4 space-y-4">
-      <div className={panelClasses}>
+      <div className="panel-base panel-theme">
         <div className="space-y-2">
-          <h2 className={`text-xl ${yellowClasses}`}>{selectedCase.title}</h2>
-          <p className={`text-sm ${valueClasses}`}>{selectedCase.desc}</p>
-          <p className={`text-sm pt-1 ${successClasses}`}>{selectedCase.metrics}</p>
+          <h2 className="title-command text-xl">{selectedCase.title}</h2>
+          <p className="key-label">{selectedCase.desc}</p>
+          <p className="text-sm pt-1 text-light-success dark:text-dark-success">{selectedCase.metrics}</p>
           <div className="flex flex-wrap gap-2 pt-2">
             {selectedCase.tags?.map((tag) => (
               <span
                 key={tag}
-                className={`px-2 py-0.5 border rounded text-xs ${
-                  theme === 'dark'
-                    ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
-                    : 'border-light-border-lighter bg-gray-50 text-light-text-secondary'
-                }`}
+                className="tag-badge bg-gray-50 text-light-text-secondary border-light-border-lighter dark:bg-gray-900 dark:text-dark-text-secondary dark:border-dark-border-darker"
               >
                 {tag}
               </span>
