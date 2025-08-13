@@ -1,49 +1,25 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-4bbf7d9966a1d593.js",
-      "static/chunks/4bd1b696-cc729d47eba2cee4.js",
-      "static/chunks/5964-3a0b0fa91f5c9f68.js",
-      "static/chunks/main-app-be1a1979b176c0b3.js",
-      "static/chunks/app/_not-found/page-08b46fade80b60e5.js"
-    ],
-    "/api/config/route": [
-      "static/chunks/webpack-4bbf7d9966a1d593.js",
-      "static/chunks/4bd1b696-cc729d47eba2cee4.js",
-      "static/chunks/5964-3a0b0fa91f5c9f68.js",
-      "static/chunks/main-app-be1a1979b176c0b3.js",
-      "static/chunks/app/api/config/route-fa7c5f2e22ad55f2.js"
-    ],
     "/layout": [
-      "static/chunks/webpack-4bbf7d9966a1d593.js",
-      "static/chunks/4bd1b696-cc729d47eba2cee4.js",
-      "static/chunks/5964-3a0b0fa91f5c9f68.js",
-      "static/chunks/main-app-be1a1979b176c0b3.js",
-      "static/css/b6be539ff9b11363.css",
-      "static/chunks/1005-251592cea3b13d7d.js",
-      "static/chunks/4797-f6d5171dd07126aa.js",
-      "static/chunks/app/layout-48c2f62c5f5e9a66.js"
-    ],
-    "/api/admin/content/route": [
-      "static/chunks/webpack-4bbf7d9966a1d593.js",
-      "static/chunks/4bd1b696-cc729d47eba2cee4.js",
-      "static/chunks/5964-3a0b0fa91f5c9f68.js",
-      "static/chunks/main-app-be1a1979b176c0b3.js",
-      "static/chunks/app/api/admin/content/route-fa7c5f2e22ad55f2.js"
-    ],
-    "/api/session/route": [
-      "static/chunks/webpack-4bbf7d9966a1d593.js",
-      "static/chunks/4bd1b696-cc729d47eba2cee4.js",
-      "static/chunks/5964-3a0b0fa91f5c9f68.js",
-      "static/chunks/main-app-be1a1979b176c0b3.js",
-      "static/chunks/app/api/session/route-fa7c5f2e22ad55f2.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/page": [
-      "static/chunks/webpack-4bbf7d9966a1d593.js",
-      "static/chunks/4bd1b696-cc729d47eba2cee4.js",
-      "static/chunks/5964-3a0b0fa91f5c9f68.js",
-      "static/chunks/main-app-be1a1979b176c0b3.js",
-      "static/chunks/app/page-1d9bd0057ac1c66c.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/api/config/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/config/route.js"
+    ],
+    "/api/session/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/session/route.js"
     ]
   }
 }

@@ -8,17 +8,14 @@ import { getContentFilePath, getDomainConfig } from './config';
 jest.mock('fs/promises');
 
 describe('config utilities', () => {
-  const OLD_ENV = process.env;
+  const OLD_ENV = { ...process.env };
 
   beforeEach(() => {
-    // Clears the cache and resets modules before each test
     jest.resetModules();
-    // Resets the process.env object
     process.env = { ...OLD_ENV };
   });
 
   afterAll(() => {
-    // Restore original environment variables
     process.env = OLD_ENV;
   });
 
@@ -29,22 +26,27 @@ describe('config utilities', () => {
       expect(getContentFilePath(true)).toBe(expectedPath);
     });
 
-    it('should return the path from CONTENT_FILE_PATH env var if set', () => {
-      const testPath = '/test/path/content.json';
-      process.env.CONTENT_FILE_PATH = testPath;
-      expect(getContentFilePath()).toBe(testPath);
-    });
-
-    it('should return the default test content path for non-production environments', () => {
-      process.env.NODE_ENV = 'development';
-      const expectedPath = path.join(process.cwd(), 'src', 'app', 'test-content.json');
+    it('should return the path from CONTENT_FILE_PATH env var when set', () => {
+      const expectedPath = path.join(process.cwd(), 'test-content-local.json');
       expect(getContentFilePath()).toBe(expectedPath);
     });
 
-    it('should return the default content path for production when no env var is set', () => {
-        process.env.NODE_ENV = 'production';
-        const expectedPath = path.join(process.cwd(), 'content.json');
-        expect(getContentFilePath()).toBe(expectedPath);
+    it('should return the correct default path when CONTENT_FILE_PATH is not set', () => {
+      const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+      delete process.env.CONTENT_FILE_PATH;
+
+      process.env.NODE_ENV = 'development';
+      const expectedDevPath = path.join(process.cwd(), 'test-content-local.json');
+      expect(getContentFilePath()).toBe(expectedDevPath);
+
+      process.env.NODE_ENV = 'production';
+      const expectedProdPath = path.join(process.cwd(), 'content.json');
+      expect(getContentFilePath()).toBe(expectedProdPath);
+      
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      spy.mockRestore();
     });
   });
 
@@ -55,7 +57,6 @@ describe('config utilities', () => {
     };
 
     beforeEach(() => {
-        // Mock fs.readFile to return our test domains
         fs.readFile.mockResolvedValue(JSON.stringify(mockDomains));
     });
 
@@ -69,15 +70,15 @@ describe('config utilities', () => {
       expect(config.brandingToken).toBe('local_brand');
     });
 
-    it('should return a default config for a non-existent domain', async () => {
+    it('should return a default config using values from .env.local for a non-existent domain', async () => {
       const config = await getDomainConfig('unknown.com');
-      expect(config.brandingToken).toBe('$terminal_portfolio');
+      expect(config.brandingToken).toBe(process.env.DEFAULT_PORTFOLIO_TITLE); 
     });
 
-    it('should handle file read errors and return a default config', async () => {
+    it('should handle file read errors and return a default config using .env.local', async () => {
         fs.readFile.mockRejectedValue(new Error('File not found'));
         const config = await getDomainConfig('any.com');
-        expect(config.brandingToken).toBe('$terminal_portfolio');
+        expect(config.brandingToken).toBe(process.env.DEFAULT_PORTFOLIO_TITLE);
       });
   });
 });
