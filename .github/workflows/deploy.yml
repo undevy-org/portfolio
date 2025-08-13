@@ -24,8 +24,71 @@ jobs:
       # Step 3: Install dependencies and build the project
       - name: Step 3 - Install dependencies and build
         run: |
-          npm install
-          npm run build
+          echo "📦 Verifying downloaded artifact structure..."
+          
+          echo "📁 Downloaded contents:"
+          ls -la deployment-files/
+          
+          # Check if .next was renamed
+          if [ -f "deployment-files/NEXT_WAS_RENAMED" ]; then
+            echo "🔄 Detected renamed next-build, restoring to .next..."
+            if [ -d "deployment-files/next-build" ]; then
+              mv deployment-files/next-build deployment-files/.next
+              rm deployment-files/NEXT_WAS_RENAMED
+              echo "✅ Restored .next directory"
+            else
+              echo "❌ next-build directory not found!"
+              exit 1
+            fi
+          fi
+          
+          # Final verification
+          if [ ! -d "deployment-files/.next" ]; then
+            echo "❌ ERROR: .next directory not found after restoration!"
+            echo "Current structure:"
+            find deployment-files -type d -maxdepth 2
+            exit 1
+          fi
+          
+          echo "✅ Found .next directory"
+          echo "📊 .next size: $(du -sh deployment-files/.next | cut -f1)"
+          
+          if [ ! -f "deployment-files/package.json" ]; then
+            echo "❌ ERROR: package.json not found!"
+            exit 1
+          fi
+          
+          echo "✅ All required files present"
+          echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
+      
+      - name: Backup environment files and project images
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /tmp/deploy-backup
+            echo "📸 Backing up project images..."
+            
+            # Backup images if directory exists
+            if [ -d "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects" ]; then
+              echo "Found project images, creating backup..."
+              rm -rf /tmp/deploy-backup/projects-images
+              cp -r "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects" /tmp/deploy-backup/projects-images
+              echo "✅ Images backed up: $(find /tmp/deploy-backup/projects-images -type f | wc -l) files"
+            else
+              echo "⚠️ No project images directory found, skipping backup"
+            fi
+            
+            # Backup environment files
+            echo "🔐 Backing up environment files..."
+            ls -la "${{ secrets.DEPLOY_PATH_PORTFOLIO }}" | grep .env || echo "No env files found"
+            for f in .env .env.local .env.production; do
+              if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" ]; then
+                cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" "/tmp/deploy-backup/$f"
+              fi
+            done
 
       # Step 4: Copy build files to the server
       - name: Step 4 - Deploy build files to server
@@ -38,14 +101,46 @@ jobs:
           # CHANGED: Use GitHub secret for deployment path instead of hardcoded path
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
 
-      # Step 5: Install production dependencies and restart the site process
-      - name: Step 5 - Finalize portfolio deployment
+      - name: Restore environment files and project images
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Restore environment files
+            echo "🔐 Restoring environment files..."
+            for f in .env .env.local .env.production; do
+              if [ -f "/tmp/deploy-backup/$f" ]; then
+                cp "/tmp/deploy-backup/$f" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f"
+              fi
+            done
+
+            # Restore project images
+            echo "📸 Restoring project images..."
+            if [ -d "/tmp/deploy-backup/projects-images" ]; then
+              mkdir -p "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images"
+              rm -rf "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
+              cp -r "/tmp/deploy-backup/projects-images" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
+              echo "✅ Images restored: $(find ${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects -type f | wc -l) files"
+            else
+              echo "⚠️ No images backup found, creating empty directory"
+              mkdir -p "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
+            fi
+            
+            # Clean up backup
+            rm -rf /tmp/deploy-backup
+
+      - name: Install dependencies and restart portfolio
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            
+            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             # CHANGED: Use GitHub secret for deployment path
