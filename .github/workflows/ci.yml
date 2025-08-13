@@ -68,32 +68,59 @@ jobs:
       - name: Build project
         run: npm run build
       
-      - name: Prepare artifact
+      - name: Verify build output exists
         run: |
-          # Create artifact directory
-          mkdir -p artifact-bundle
+          echo "🔍 Checking if .next directory was created..."
+          if [ ! -d ".next" ]; then
+            echo "❌ ERROR: .next directory not found after build!"
+            echo "Current directory contents:"
+            ls -la
+            exit 1
+          fi
+          echo "✅ .next directory exists"
+          echo "📊 .next size: $(du -sh .next | cut -f1)"
+      
+      - name: Prepare artifact with correct structure
+        run: |
+          echo "📦 Creating minimal production artifact..."
           
-          # Copy production files
-          cp -r .next artifact-bundle/
-          cp -r public artifact-bundle/
-          cp package.json artifact-bundle/
-          cp package-lock.json artifact-bundle/
+          # Remove source maps to reduce size (they're not needed in production)
+          echo "🗑️ Removing source maps..."
+          find .next -name "*.map" -type f -delete
           
-          # Remove source maps from production build to reduce size
-          find artifact-bundle/.next -name "*.map" -type f -delete
+          # Show what we're including
+          echo "📋 Files to include in artifact:"
+          echo "  - .next/ (build output)"
+          echo "  - public/ (static assets)"
+          echo "  - package.json (for dependencies)"
+          echo "  - package-lock.json (for exact versions)"
           
-          # Show final artifact size
-          echo "Artifact size:"
-          du -sh artifact-bundle/
+          # Check final sizes
+          echo ""
+          echo "📊 Final artifact contents size:"
+          du -sh .next/ || echo ".next not found"
+          du -sh public/ || echo "public not found"
+          du -sh package.json
+          du -sh package-lock.json
+          
+          echo ""
+          echo "📊 Total size before compression:"
+          du -sh -c .next public package.json package-lock.json | grep total
       
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-build-${{ github.sha }}
-          path: artifact-bundle/
-          retention-days: 7
-          compression-level: 9  # Maximum compression
-      
+          # IMPORTANT: Upload files directly, not a wrapper directory
+          path: |
+            .next/**
+            !.next/**/*.map
+            public/**
+            !**/node_modules/**
+            package.json
+            package-lock.json
+          retention-days: 2
+          compression-level: 9  # Maximum compression      
       - name: Output artifact info
         run: |
           echo "✅ Artifact created successfully"
