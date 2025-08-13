@@ -25,7 +25,6 @@
 # misc
 .DS_Store
 *.pem
-jest.env.js
 
 # debug
 npm-debug.log*
