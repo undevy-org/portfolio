@@ -1,4 +1,4 @@
-# CI Pipeline - Validates code quality before merge
+# CI Pipeline - Validates code quality and creates artifacts
 # Location: .github/workflows/ci.yml
 
 name: CI Pipeline
@@ -11,7 +11,8 @@ on:
     branches: [main]
 
 jobs:
-  validate-code:
+  # Job 1: Validate code quality
+  validate:
     name: Validate Code Quality
     runs-on: ubuntu-latest
     
@@ -37,19 +38,61 @@ jobs:
       - name: Build project
         run: npm run build
       
-      - name: Check build output
+      - name: Validate build output
         run: |
-          echo "Build completed successfully"
-          echo "Build size information:"
-          du -sh .next/
-          du -sh .next/static/
-          du -sh .next/server/
+          echo "✅ Build validation complete"
+          if [ ! -d ".next" ]; then
+            echo "❌ Build failed - .next directory not found"
+            exit 1
+          fi
+          echo "📊 Build stats:"
+          echo "  Total size: $(du -sh .next | cut -f1)"
+          echo "  Static assets: $(du -sh .next/static | cut -f1)"
+          echo "  Server bundles: $(du -sh .next/server | cut -f1)"
   
-  create-artifact:
-    name: Create Build Artifact
+      # CHANGE: Add lightweight artifact creation for PRs only
+      # This creates a small verification artifact instead of full deployment package
+      - name: Create PR verification artifact
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "📝 Creating lightweight PR verification artifact..."
+          
+          # Create a verification directory with minimal info
+          mkdir -p pr-verification
+          
+          # Save build success info and statistics
+          echo "Build Verification Report" > pr-verification/build-report.txt
+          echo "=========================" >> pr-verification/build-report.txt
+          echo "" >> pr-verification/build-report.txt
+          echo "PR #${{ github.event.pull_request.number }}" >> pr-verification/build-report.txt
+          echo "Commit: ${{ github.sha }}" >> pr-verification/build-report.txt
+          echo "Branch: ${{ github.head_ref }}" >> pr-verification/build-report.txt
+          echo "Build Time: $(date)" >> pr-verification/build-report.txt
+          echo "" >> pr-verification/build-report.txt
+          echo "Build Statistics:" >> pr-verification/build-report.txt
+          echo "- Total .next size: $(du -sh .next | cut -f1)" >> pr-verification/build-report.txt
+          echo "- Static assets: $(du -sh .next/static | cut -f1)" >> pr-verification/build-report.txt
+          echo "- Server bundles: $(du -sh .next/server | cut -f1)" >> pr-verification/build-report.txt
+          echo "- Source files: $(find src -type f -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' | wc -l)" >> pr-verification/build-report.txt
+          echo "" >> pr-verification/build-report.txt
+          echo "✅ All checks passed successfully" >> pr-verification/build-report.txt
+      
+      # CHANGE: Upload PR verification artifact with 2-day retention
+      - name: Upload PR verification artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-verification-${{ github.event.pull_request.number }}-${{ github.sha }}
+          path: pr-verification/
+          retention-days: 2  # CHANGE: Short retention for PR artifacts (was implicitly 90 days)
+          compression-level: 6
+  
+  # Job 2: Create deployment artifact (only on main branch)
+  build-artifact:
+    name: Build Deployment Artifact
     runs-on: ubuntu-latest
-    needs: validate-code
-    # Only create artifacts for main branch (after merge)
+    needs: validate
+
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -65,37 +108,130 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Build project
-        run: npm run build
-      
-      - name: Prepare artifact
+      - name: Build for production
         run: |
-          # Create artifact directory
-          mkdir -p artifact-bundle
+          echo "🏗️ Building production version..."
+          npm run build
           
-          # Copy production files
-          cp -r .next artifact-bundle/
-          cp -r public artifact-bundle/
-          cp package.json artifact-bundle/
-          cp package-lock.json artifact-bundle/
+          # CRITICAL: Verify .next exists after build
+          if [ ! -d ".next" ]; then
+            echo "❌ CRITICAL: .next directory not created by build!"
+            ls -la
+            exit 1
+          fi
           
-          # Remove source maps from production build to reduce size
-          find artifact-bundle/.next -name "*.map" -type f -delete
-          
-          # Show final artifact size
-          echo "Artifact size:"
-          du -sh artifact-bundle/
+          echo "✅ Build complete, .next directory confirmed"
+          echo "📊 .next size: $(du -sh .next | cut -f1)"
       
-      - name: Upload build artifact
+      - name: Prepare deployment package
+        run: |
+          echo "📦 Creating deployment package..."
+          
+          # Create a clean deployment directory
+          mkdir -p deployment-package
+          
+          # CRITICAL: Use explicit copy for .next with verification
+          echo "📁 Copying .next directory..."
+          if [ -d ".next" ]; then
+            # Use tar to preserve directory structure for hidden directories
+            tar -cf - .next | (cd deployment-package && tar -xf -)
+            
+            # Verify the copy worked
+            if [ ! -d "deployment-package/.next" ]; then
+              echo "❌ CRITICAL: Failed to copy .next to deployment-package!"
+              echo "Source .next exists: $(ls -la .next | head -5)"
+              echo "Destination contents: $(ls -la deployment-package/)"
+              exit 1
+            fi
+            echo "✅ .next copied successfully"
+          else
+            echo "❌ .next directory not found in workspace!"
+            exit 1
+          fi
+          
+          # Copy other required files
+          echo "📁 Copying other files..."
+          cp -r public deployment-package/ 2>/dev/null || echo "⚠️ public directory not found"
+          cp -r src deployment-package/
+          cp package.json deployment-package/
+          cp package-lock.json deployment-package/
+          cp next.config.mjs deployment-package/
+          
+          # Remove development artifacts
+          echo "🧹 Cleaning development artifacts..."
+          rm -rf deployment-package/.next/cache
+          find deployment-package -name "*.map" -type f -delete
+          
+          # CRITICAL VERIFICATION: Check .next exists in package
+          echo "🔍 Final verification of deployment-package..."
+          if [ ! -d "deployment-package/.next" ]; then
+            echo "❌ FATAL: .next missing from deployment-package!"
+            echo "Contents of deployment-package:"
+            ls -la deployment-package/
+            exit 1
+          fi
+          
+          if [ ! -d "deployment-package/.next/static" ]; then
+            echo "❌ FATAL: .next/static missing!"
+            exit 1
+          fi
+          
+          if [ ! -d "deployment-package/.next/server" ]; then
+            echo "❌ FATAL: .next/server missing!"
+            exit 1
+          fi
+          
+          echo "📋 Deployment package contents (including hidden):"
+          ls -la deployment-package/
+          
+          echo "📊 Package sizes:"
+          du -sh deployment-package/.next/ 2>/dev/null || echo ".next not found"
+          du -sh deployment-package/src/
+          du -sh deployment-package/
+          
+          echo "✅ Deployment package verified and ready"
+      
+      # Alternative approach: rename .next to avoid hidden directory issues
+      - name: Rename .next to avoid hidden directory issues
+        run: |
+          echo "🔄 Renaming .next to next-build to avoid hidden directory issues..."
+          if [ -d "deployment-package/.next" ]; then
+            mv deployment-package/.next deployment-package/next-build
+            echo "✅ Renamed .next to next-build"
+            
+            # Create a marker file to indicate renaming
+            echo "true" > deployment-package/NEXT_WAS_RENAMED
+            
+            # Verify rename worked
+            if [ ! -d "deployment-package/next-build" ]; then
+              echo "❌ Rename failed!"
+              exit 1
+            fi
+            echo "📁 Final package structure:"
+            ls -la deployment-package/
+          else
+            echo "❌ Cannot rename - .next not found!"
+            exit 1
+          fi
+      
+      # Upload as a single artifact
+      - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
-          name: portfolio-build-${{ github.sha }}
-          path: artifact-bundle/
-          retention-days: 7
-          compression-level: 9  # Maximum compression
+          name: deployment-package-${{ github.sha }}
+          path: deployment-package/
+          retention-days: 14  # CHANGE: Increased from 7 to 14 days for main branch artifacts (for rollback capability)
+          compression-level: 6
+          include-hidden-files: true  # IMPORTANT: Include hidden files
       
-      - name: Output artifact info
+      - name: Post-upload verification
         run: |
-          echo "✅ Artifact created successfully"
-          echo "Artifact name: portfolio-build-${{ github.sha }}"
-          echo "This artifact will be used for deployment"
+          echo "📄 Artifact upload complete"
+          echo "Package contained:"
+          echo "  - next-build/ (renamed from .next/)"
+          echo "  - src/"
+          echo "  - public/"
+          echo "  - package.json"
+          echo "  - package-lock.json"
+          echo "  - next.config.mjs"
+          echo "  - NEXT_WAS_RENAMED marker file"
