@@ -56,7 +56,10 @@ jobs:
       - name: Step 2 - Extract and prepare build files
         run: |
           echo "📦 Extracting artifact..."
-          unzip -q artifact.zip
+          mkdir extracted
+          unzip -q artifact.zip -d extracted
+          mv extracted/* .
+          rm -rf extracted
           
           echo "📁 Files extracted directly to workspace:"
           ls -la
