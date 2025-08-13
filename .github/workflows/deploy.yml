@@ -69,6 +69,22 @@ jobs:
           echo "✅ All required files present"
           echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
       
+      - name: Backup environment files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /tmp/deploy-backup
+            echo "Backing up environment files..."
+            ls -la "${{ secrets.DEPLOY_PATH_PORTFOLIO }}" | grep .env || echo "No env files found"
+            for f in .env .env.local .env.production; do
+              if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" ]; then
+                cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" "/tmp/deploy-backup/$f"
+              fi
+            done
+
       - name: Deploy portfolio files to server
         uses: appleboy/scp-action@master
         with:
@@ -78,7 +94,20 @@ jobs:
           source: "deployment-files/*"
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
           strip_components: 1
-          rm: true  # Remove old files before copying
+          rm: true
+
+      - name: Restore environment files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            for f in .env .env.local .env.production; do
+              if [ -f "/tmp/deploy-backup/$f" ]; then
+                cp "/tmp/deploy-backup/$f" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f"
+              fi
+            done
 
       - name: Install dependencies and restart portfolio
         uses: appleboy/ssh-action@master
