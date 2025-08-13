@@ -1,4 +1,4 @@
-# CI Pipeline - Validates code quality before merge
+# CI Pipeline - Validates code quality and creates artifacts
 # Location: .github/workflows/ci.yml
 
 name: CI Pipeline
@@ -11,7 +11,8 @@ on:
     branches: [main]
 
 jobs:
-  validate-code:
+  # Job 1: Validate code quality
+  validate:
     name: Validate Code Quality
     runs-on: ubuntu-latest
     
@@ -37,19 +38,27 @@ jobs:
       - name: Build project
         run: npm run build
       
-      - name: Check build output
+      # Critical: We build here to validate, but don't save the output
+      # The actual deployment build will happen in the next job
+      # This ensures consistency but doubles build time - acceptable tradeoff
+      - name: Validate build output
         run: |
-          echo "Build completed successfully"
-          echo "Build size information:"
-          du -sh .next/
-          du -sh .next/static/
-          du -sh .next/server/
+          echo "✅ Build validation complete"
+          if [ ! -d ".next" ]; then
+            echo "❌ Build failed - .next directory not found"
+            exit 1
+          fi
+          echo "📊 Build stats:"
+          echo "  Total size: $(du -sh .next | cut -f1)"
+          echo "  Static assets: $(du -sh .next/static | cut -f1)"
+          echo "  Server bundles: $(du -sh .next/server | cut -f1)"
   
-  create-artifact:
-    name: Create Build Artifact
+  # Job 2: Create deployment artifact (only on main branch)
+  build-artifact:
+    name: Build Deployment Artifact
     runs-on: ubuntu-latest
-    needs: validate-code
-    # Only create artifacts for main branch (after merge)
+    needs: validate
+    # Only run on main branch after merge
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -65,71 +74,88 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Build project
-        run: npm run build
-      
-      - name: Prepare production artifact
+      - name: Build for production
         run: |
-          echo "📦 Preparing production artifact..."
+          echo "🏗️ Building production version..."
+          npm run build
           
-          # CRITICAL: Remove webpack cache - it's not needed for production!
-          echo "🗑️ Removing webpack cache (not needed for production)..."
-          rm -rf .next/cache
-          
-          # Remove source maps to reduce size further
-          echo "🗑️ Removing source maps..."
-          find .next -name "*.map" -type f -delete
-          
-          # Show what we're including
-          echo ""
-          echo "📋 Production artifact will include:"
-          echo "  ✅ .next/static/ - Client-side assets"
-          echo "  ✅ .next/server/ - Server-side bundles"  
-          echo "  ✅ .next/BUILD_ID - Build identifier"
-          echo "  ✅ .next/build-manifest.json - Build metadata"
-          echo "  ✅ public/ - Static files"
-          echo "  ✅ package.json & package-lock.json"
-          echo ""
-          echo "  ❌ .next/cache/ - EXCLUDED (build cache, not needed)"
-          echo "  ❌ *.map files - EXCLUDED (source maps, not needed)"
-          
-          # Check sizes after cleanup
-          echo ""
-          echo "📊 Final production sizes:"
-          echo "  .next directory: $(du -sh .next | cut -f1)"
-          echo "  .next/static: $(du -sh .next/static | cut -f1)"
-          echo "  .next/server: $(du -sh .next/server | cut -f1)"
-          echo "  public: $(du -sh public | cut -f1)"
-          
-          echo ""
-          echo "📊 Total size for deployment:"
-          du -sh -c .next public package.json package-lock.json | grep total
-          
-          # Verify critical files exist
-          echo ""
-          echo "✅ Verifying critical files..."
-          if [ ! -d ".next/static" ]; then
-            echo "❌ ERROR: .next/static not found!"
-            exit 1
-          fi
-          if [ ! -d ".next/server" ]; then
-            echo "❌ ERROR: .next/server not found!"
-            exit 1
-          fi
-          echo "✅ All critical directories present"
-
-      - name: Create zip archive
-        run: zip -r artifact.zip .next public package.json package-lock.json
+          echo "✅ Build complete, preparing for artifact creation..."
       
-      - name: Upload build artifact
+      - name: Prepare deployment package
+        run: |
+          echo "📦 Creating deployment package..."
+          
+          # Create a clean deployment directory
+          mkdir -p deployment-package
+          
+          # Copy ONLY what's needed for production
+          # Using cp -r to preserve directory structure
+          cp -r .next deployment-package/
+          cp -r public deployment-package/
+          cp package.json deployment-package/
+          cp package-lock.json deployment-package/
+          cp next.config.mjs deployment-package/
+          
+          # Copy source files (needed for API routes in App Router)
+          cp -r src deployment-package/
+          
+          # Remove development artifacts from the package
+          echo "🧹 Cleaning development artifacts..."
+          rm -rf deployment-package/.next/cache
+          find deployment-package -name "*.map" -type f -delete
+          
+          # Verify the package structure
+          echo "📋 Deployment package contents:"
+          ls -la deployment-package/
+          
+          echo "📊 Package sizes:"
+          du -sh deployment-package/.next/
+          du -sh deployment-package/src/
+          du -sh deployment-package/
+          
+          # Final verification
+          echo "✅ Verifying package integrity..."
+          if [ ! -d "deployment-package/.next/static" ]; then
+            echo "❌ Missing .next/static directory!"
+            exit 1
+          fi
+          if [ ! -d "deployment-package/.next/server" ]; then
+            echo "❌ Missing .next/server directory!"
+            exit 1
+          fi
+          if [ ! -f "deployment-package/package.json" ]; then
+            echo "❌ Missing package.json!"
+            exit 1
+          fi
+          echo "✅ All critical files present"
+      
+      # Upload as a single artifact with clear structure
+      - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
-          name: portfolio-build-${{ github.sha }}
-          path: artifact.zip
+          name: deployment-package-${{ github.sha }}
+          path: deployment-package/
           retention-days: 7
-          compression-level: 9
+          compression-level: 6  # Balanced compression
       
-      - name: Output artifact info
+      - name: Create artifact manifest
         run: |
-          echo "✅ Artifact created successfully"
-          echo "Artifact name: portfolio-build-${{ github.sha }}"
+          echo "📄 Creating artifact manifest..."
+          cat > artifact-manifest.json << EOF
+          {
+            "commit": "${{ github.sha }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "branch": "main",
+            "artifact_name": "deployment-package-${{ github.sha }}"
+          }
+          EOF
+          
+          echo "Manifest created:"
+          cat artifact-manifest.json
+      
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-${{ github.sha }}
+          path: artifact-manifest.json
+          retention-days: 7
