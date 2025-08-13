@@ -16,7 +16,7 @@ export default function CaseDetail() {
         </p>
         <button
           onClick={() => navigate('CaseList')}
-          className="mt-4 px-4 py-2 rounded border transition-colors border-light-border text-light-text-secondary hover:bg-light-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-hover"
+          className="button-secondary mt-4"
         >
           Back to Cases
         </button>
@@ -103,7 +103,7 @@ export default function CaseDetail() {
             {selectedCase.tags?.map((tag) => (
               <span
                 key={tag}
-                className="tag-badge bg-gray-50 text-light-text-secondary border-light-border-lighter dark:bg-gray-900 dark:text-dark-text-secondary dark:border-dark-border-darker"
+                className="tag-badge tag-badge-theme"
               >
                 {tag}
               </span>
