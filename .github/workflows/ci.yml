@@ -117,16 +117,15 @@ jobs:
             exit 1
           fi
           echo "✅ All critical directories present"
+
+      - name: Create zip archive
+        run: zip -r artifact.zip .next public package.json package-lock.json
       
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-build-${{ github.sha }}
-          path: |
-            .next
-            public
-            package.json
-            package-lock.json
+          path: artifact.zip
           retention-days: 7
           compression-level: 9
       
@@ -134,4 +133,3 @@ jobs:
         run: |
           echo "✅ Artifact created successfully"
           echo "Artifact name: portfolio-build-${{ github.sha }}"
-          echo "This artifact will be used for deployment"
