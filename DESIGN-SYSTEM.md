@@ -112,7 +112,51 @@ A specialized component that provides lazy-loaded image display with terminal ae
 
 ---
 
-## 5. Future Directions
+## 5. Centralized Utility Classes
+
+To enforce consistency and reduce code duplication, the design system uses a set of centralized utility classes defined in `src/app/globals.css`. These classes use Tailwind's `@apply` directive to bundle common styling patterns into reusable, semantic class names. Developers should always prefer using these classes over raw Tailwind utilities for the patterns they cover.
+
+### Core Utility Classes
+
+| Class             | Definition                                                                               | Purpose                                                                                             |
+| :---------------- | :--------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| `.panel-base`     | `@apply border rounded-md p-4;`                                                          | The fundamental structure for all content panels. Provides padding, border, and rounded corners.  |
+| `.panel-theme`    | `@apply bg-light-bg border-light-border dark:bg-dark-bg dark:border-dark-border-darker;`   | The theme-aware color scheme for panels. Provides background and border colors for both light and dark modes. |
+| `.title-command`  | `@apply text-base mb-2 font-mono text-light-text-command dark:text-dark-text-command;`     | For styling panel titles with the prominent "command" color and correct typography.                 |
+| `.key-label`      | `@apply text-sm font-mono text-light-text-secondary dark:text-dark-text-secondary;`       | For secondary text, such as descriptive labels or less important values in a key-value pair.        |
+| `.value-primary`  | `@apply text-xl font-mono text-light-text-primary dark:text-dark-text-primary;`           | For primary, high-importance values. Note the larger font size (`text-xl`).                         |
+| `.tag-badge`      | `@apply text-xs px-2 py-0.5 border rounded-full whitespace-nowrap;`                        | For styling tags or badges, providing a consistent, rounded look.                                   |
+
+### Usage Example
+
+The primary benefit of this system is simplifying component markup.
+
+**Before Refactoring:**
+```html
+<div className="p-4 rounded border mb-4 border-light-border-lighter dark:border-dark-border-darker">
+  <h3 className="text-base mb-2 text-light-text-command dark:text-dark-text-command">$profile_data</h3>
+  <div className="grid">
+    <span className="text-light-text-primary dark:text-dark-text-primary">$title:</span>
+    <span className="text-light-text-secondary dark:text-dark-text-secondary">Senior Developer</span>
+  </div>
+</div>
+```
+
+**After Refactoring:**
+```html
+<div className="panel-base panel-theme mb-4">
+  <h3 className="title-command">$profile_data</h3>
+  <div className="grid">
+    <span className="value-primary text-sm">$title:</span> <!-- Font size override -->
+    <span className="key-label">Senior Developer</span>
+  </div>
+</div>
+```
+*Note: In the example above, `.value-primary` is used for its color, but its `text-xl` font size is overridden with `text-sm` to match the local context. This is an acceptable use case when the primary color is needed for smaller text.*
+
+---
+
+## 6. Future Directions
 
 This design system is a living document. Future iterations may explore:
 -   **Subtle Animations**: Introducing minimalist transitions for screen and panel states to enhance the user experience without breaking the terminal aesthetic.
