@@ -10,9 +10,6 @@ export default function Contact() {
   const [emailCopied, setEmailCopied] = useState(false);
 
   // WHY: This makes the code more readable and easier to maintain.
-  const yellowClasses = theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command';
-  const labelClasses = theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary';
-  const valueClasses = theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
   const mainTextClasses = theme === 'dark' ? 'text-dark-text-white' : 'text-light-text-black';
   const mainBorderClasses = theme === 'dark' ? 'border-dark-border hover:bg-dark-hover' : 'border-light-border hover:bg-light-hover';
 
@@ -139,22 +136,22 @@ export default function Contact() {
         WHY: It centralizes the user's current work status in the most logical place—the contact screen.
         The data is now a mix of hardcoded values, dynamic calculations, and content from content.json for maximum flexibility.
       */}
-      <div className={`p-4 border rounded ${theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'}`}>
-        <h3 className={`text-base mb-2 ${yellowClasses}`}>
+      <div className="panel-base panel-theme">
+        <h3 className="title-command">
           $current_status
           </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={labelClasses}>$seeking:</span>
-          <span className={valueClasses}>{profileStatus.seeking || 'Not specified'}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1">
+          <span className="key-label">$seeking:</span>
+          <span className="key-label">{profileStatus.seeking || 'Not specified'}</span>
 
-          <span className={labelClasses}>$location:</span>
-          <span className={valueClasses}>Remote, EMEA</span>
+          <span className="key-label">$location:</span>
+          <span className="key-label">Remote, EMEA</span>
 
-          <span className={labelClasses}>$target_comp:</span>
-          <span className={valueClasses}>{profileStatus.salary || 'Negotiable'}</span>
+          <span className="key-label">$target_comp:</span>
+          <span className="key-label">{profileStatus.salary || 'Negotiable'}</span>
           
-          <span className={labelClasses}>$availability:</span>
-          <span className={valueClasses}>{availabilityDate}</span>
+          <span className="key-label">$availability:</span>
+          <span className="key-label">{availabilityDate}</span>
         </div>
       </div>
     </div>

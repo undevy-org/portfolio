@@ -5,20 +5,7 @@ import { UserCheck, Mail } from 'lucide-react';
 import Button from '../components/ui/Button';
 
 export default function Introduction() {
-  const { sessionData, theme, navigate, addLog } = useSession();
-
-  const panelClasses = `p-4 rounded border mb-4 ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
-  }`;
-  const yellowClasses = `text-base ${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-  }`;
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-  }`;
+  const { sessionData, navigate, addLog } = useSession();
 
   const profile = sessionData?.profile || {};
     const introText =
@@ -37,32 +24,32 @@ return (
         WHY: To match the key-value grid layout used in other panels for better visual consistency.
         It now uses a responsive grid layout, making it cleaner on both mobile and desktop.
       */}
-      <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$profile_data</h3>
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm`}>
-          <span className={labelClasses}>$title:</span>
-          <span className={valueClasses}>{profile.summary?.title}</span>
+      <div className="panel-base panel-theme mb-4">
+        <h3 className="title-command">$profile_data</h3>
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1`}>
+          <span className="key-label">$title:</span>
+          <span className="key-label">{profile.summary?.title}</span>
           
-          <span className={labelClasses}>$specialization:</span>
-          <span className={valueClasses}>{profile.summary?.specialization}</span>
+          <span className="key-label">$specialization:</span>
+          <span className="key-label">{profile.summary?.specialization}</span>
 
-          <span className={labelClasses}>$background:</span>
-          <span className={valueClasses}>{profile.summary?.background}</span>
+          <span className="key-label">$background:</span>
+          <span className="key-label">{profile.summary?.background}</span>
       </div>
     </div>
 
-      <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$about_me</h3>
-        <p className={`text-sm leading-relaxed ${valueClasses}`}>{introText}</p>
+      <div className="panel-base panel-theme mb-4">
+        <h3 className="title-command">$about_me</h3>
+        <p className="key-label leading-relaxed">{introText}</p>
     </div>
 
-      <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$core_attributes</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <div className="panel-base panel-theme mb-4">
+        <h3 className="title-command">$core_attributes</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
         {profile.attributes?.map((attr, index) => (
           <div key={index}>
-              <span className={labelClasses}>[✓] </span>
-              <span className={valueClasses}>{attr}</span>
+              <span className="key-label">[✓] </span>
+              <span className="key-label">{attr}</span>
           </div>
         ))}
       </div>

@@ -8,16 +8,8 @@ import { ArrowLeft, Zap } from 'lucide-react';
 export default function CaseDetail() {
   const { sessionData, theme, navigate, addLog, selectedCase } = useSession();
   
-  const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
-  }`;
-  
   const yellowClasses = `${
     theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
   }`;
   
   const successClasses = `${
@@ -114,16 +106,16 @@ export default function CaseDetail() {
   
   return (
     <div className="p-4 space-y-4">
-      <div className={panelClasses}>
+      <div className="panel-base panel-theme">
         <div className="space-y-2">
           <h2 className={`text-xl ${yellowClasses}`}>{selectedCase.title}</h2>
-          <p className={`text-sm ${valueClasses}`}>{selectedCase.desc}</p>
+          <p className="text-sm key-label">{selectedCase.desc}</p>
           <p className={`text-sm pt-1 ${successClasses}`}>{selectedCase.metrics}</p>
           <div className="flex flex-wrap gap-2 pt-2">
             {selectedCase.tags?.map((tag) => (
               <span
                 key={tag}
-                className={`px-2 py-0.5 border rounded text-xs ${
+                className={`tag-badge ${
                   theme === 'dark'
                     ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
                     : 'border-light-border-lighter bg-gray-50 text-light-text-secondary'

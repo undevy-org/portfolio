@@ -8,17 +8,8 @@ import { ChevronRight, ArrowLeft } from 'lucide-react';
 export default function RoleDetail() {
   const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
 
-  const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
-  }`;
   const yellowClasses = `${
     theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-  }`;
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
   }`;
 
   if (!selectedRole) {
@@ -52,11 +43,11 @@ export default function RoleDetail() {
 
   return (
     <div className="p-4 space-y-4">
-      <div className={panelClasses}>
+      <div className="panel-base panel-theme">
         <div className="space-y-1">
           <h2 className={`text-xl ${yellowClasses}`}>{selectedRole.company}</h2>
-          <p className={`text-base ${labelClasses}`}>{selectedRole.role}</p>
-          <p className={`text-sm ${valueClasses}`}>{selectedRole.period} • {selectedRole.duration}</p>
+          <p className="value-primary text-base">{selectedRole.role}</p>
+          <p className="key-label">{selectedRole.period} • {selectedRole.duration}</p>
         </div>
       </div>
 
