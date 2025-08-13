@@ -1,45 +1,102 @@
 # .github/workflows/deploy.yml
+# Deployment workflow using pre-built artifacts from CI pipeline
 name: Deploy to DigitalOcean
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   deploy-portfolio:
     name: Deploy Portfolio App
     runs-on: ubuntu-latest
+    # Only deploy if CI was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
-      # Step 1: Checkout repository code
-      - name: Step 1 - Checkout code
-        uses: actions/checkout@v4
-
-      # Step 2: Setup Node.js
-      - name: Step 2 - Setup Node.js
-        uses: actions/setup-node@v4
+      # Step 1: Download artifact from CI pipeline
+      - name: Step 1 - Download build artifact
+        uses: actions/github-script@v7
         with:
-          node-version: '20'
-
-      # Step 3: Install dependencies and build the project
-      - name: Step 3 - Install dependencies and build
+          script: |
+            // Find artifacts from the triggering workflow run
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{ github.event.workflow_run.id }}
+            });
+            
+            // Find our portfolio build artifact
+            const matchArtifact = artifacts.data.artifacts.find((artifact) => {
+              return artifact.name.startsWith('portfolio-build-');
+            });
+            
+            if (!matchArtifact) {
+              throw new Error('Build artifact not found');
+            }
+            
+            // Download the artifact
+            const download = await github.rest.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: matchArtifact.id,
+              archive_format: 'zip'
+            });
+            
+            // Save artifact to file system
+            const fs = require('fs');
+            fs.writeFileSync('${{ github.workspace }}/artifact.zip', Buffer.from(download.data));
+            
+            console.log(`Downloaded artifact: ${matchArtifact.name}`);
+            console.log(`Size: ${matchArtifact.size_in_bytes} bytes`);
+      
+      # Step 2: Extract artifact
+      - name: Step 2 - Extract build artifact
         run: |
-          npm install
-          npm run build
-
-      # Step 4: Copy build files to the server
-      - name: Step 4 - Deploy build files to server
+          echo "Extracting artifact..."
+          unzip -q artifact.zip
+          
+          echo "Artifact contents:"
+          ls -la artifact-bundle/
+          
+          echo "Build directory size:"
+          du -sh artifact-bundle/.next/
+      
+      # Step 3: Deploy files to server
+      - name: Step 3 - Deploy build files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".next, package.json, package-lock.json, public, next.config.mjs, src"
-          # CHANGED: Use GitHub secret for deployment path instead of hardcoded path
+          # Deploy contents of artifact-bundle (already contains .next, public, package.json, etc.)
+          source: "artifact-bundle/.next,artifact-bundle/package.json,artifact-bundle/package-lock.json,artifact-bundle/public"
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-
-      # Step 5: Install production dependencies and restart the site process
-      - name: Step 5 - Finalize portfolio deployment
+          # Strip the artifact-bundle prefix when copying
+          strip_components: 1
+      
+      # Step 4: Copy source files for server-side functionality
+      # Note: We still need src directory for API routes and server components
+      - name: Step 4 - Checkout code for source files
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            src
+            next.config.mjs
+      
+      - name: Step 5 - Deploy source files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "src,next.config.mjs"
+          target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
+      
+      # Step 6: Install production dependencies and restart
+      - name: Step 6 - Finalize portfolio deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -48,22 +105,42 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            # CHANGED: Use GitHub secret for deployment path
+            
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
+            
+            # Install only production dependencies (no build needed!)
+            echo "Installing production dependencies..."
             npm install --production
-            # CHANGED: Use GitHub secret for PM2 process name
+            
+            # Verify deployment
+            echo "Deployment structure:"
+            ls -la
+            
+            # Restart the application
+            echo "Restarting application..."
             pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
-
+            
+            # Show application status
+            pm2 status ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
+            
+            echo "✅ Portfolio deployment completed successfully!"
+  
   deploy-bot:
     name: Deploy Telegram Bot
     runs-on: ubuntu-latest
     needs: deploy-portfolio
+    # Only run if portfolio deployment succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
-      # Step 1: Checkout repository code
+      # Step 1: Checkout repository code for bot files
       - name: Step 1 - Checkout code
         uses: actions/checkout@v4
-
-      # Step 2: Copy bot files to the server
+        with:
+          sparse-checkout: |
+            telegram-bot
+      
+      # Step 2: Deploy bot files to server
       - name: Step 2 - Deploy bot files to server
         uses: appleboy/scp-action@master
         with:
@@ -71,10 +148,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "telegram-bot/*"
-          # CHANGED: Use GitHub secret for deployment path instead of hardcoded path
           target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
-
-      # Step 3: Install production dependencies and restart the bot process
+      
+      # Step 3: Install dependencies and restart bot
       - name: Step 3 - Finalize bot deployment
         uses: appleboy/ssh-action@master
         with:
@@ -84,8 +160,32 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            # CHANGED: Use GitHub secret for deployment path
+            
             cd ${{ secrets.DEPLOY_PATH_BOT }}
+            
+            # Install production dependencies
+            echo "Installing bot dependencies..."
             npm install --production
-            # CHANGED: Use GitHub secret for PM2 process name
+            
+            # Restart the bot
+            echo "Restarting bot..."
             pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}
+            
+            # Show bot status
+            pm2 status ${{ secrets.PM2_APP_NAME_BOT }}
+            
+            echo "✅ Bot deployment completed successfully!"
+  
+  # New job: Handle failed CI
+  notify-failure:
+    name: Notify CI Failure
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+      - name: CI Failed Notification
+        run: |
+          echo "❌ CI Pipeline failed for commit ${{ github.event.workflow_run.head_sha }}"
+          echo "Deployment cancelled. Fix the issues and push again."
+          echo "Check the failed run: ${{ github.event.workflow_run.html_url }}"
+          exit 1
