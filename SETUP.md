@@ -251,7 +251,31 @@ This project uses Reown (formerly WalletConnect) for Web3 authentication. To ena
 
 ---
 
-## 5. CI/CD Automation (GitHub Actions)
+## 5. GitHub Repository Configuration
+
+To enable the automated and secure CI/CD workflow, you must configure branch protection rules for your `main` branch. This prevents direct pushes and ensures all changes are validated via a Pull Request.
+
+**Prerequisites:**
+-   You have already created the workflow files (e.g., `ci.yml` and `deploy.yml`) in your repository's `.github/workflows` directory.
+
+**Steps to Configure Branch Protection:**
+
+1.  Navigate to your repository on GitHub and go to **Settings > Branches**.
+2.  Click **Add branch protection rule**.
+3.  In "Branch name pattern", enter `main`.
+4.  Enable **Require a pull request before merging**.
+    -   This ensures no one can push directly to `main`.
+5.  Enable **Require approvals** and set the number to `1`.
+    -   This enforces a review process, even if you are approving your own PRs.
+6.  Enable **Require status checks to pass before merging**.
+    -   Enable **Require branches to be up to date before merging**. This prevents merging PRs that are based on an old version of `main`.
+    -   From the list of status checks, find and select the validation job from your CI workflow (e.g., `CI Pipeline / Validate Code Quality`).
+
+After saving these rules, your `main` branch will be protected, and all changes will be required to pass the automated checks before they can be merged.
+
+---
+
+## 6. CI/CD Automation (GitHub Actions)
 
 1.  **Generate a new SSH key** on your local machine specifically for GitHub Actions (do not use a passphrase).
     ```bash
