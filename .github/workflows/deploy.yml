@@ -11,43 +11,50 @@ on:
     branches: [main]
 
 jobs:
-  # Main deployment job
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    # Only run if CI was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
     steps:
-      # Step 1: Setup deployment environment
       - name: Setup deployment info
         run: |
           echo "🚀 Starting deployment for commit: ${{ github.event.workflow_run.head_sha }}"
           echo "Triggered by: ${{ github.event.workflow_run.name }}"
           echo "Run ID: ${{ github.event.workflow_run.id }}"
       
-      # Step 2: Download artifact using the official action
-      # This is simpler and more reliable than using github-script
       - name: Download deployment artifact
         uses: dawidd6/action-download-artifact@v6
         with:
-          # Download from the CI workflow run that triggered this deployment
           run_id: ${{ github.event.workflow_run.id }}
           name: deployment-package-${{ github.event.workflow_run.head_sha }}
           path: deployment-files
       
-      # Step 3: Verify downloaded artifact structure
-      - name: Verify artifact contents
+      - name: Verify and restore .next directory
         run: |
           echo "📦 Verifying downloaded artifact structure..."
           
-          echo "📁 Root level contents:"
+          echo "📁 Downloaded contents:"
           ls -la deployment-files/
           
+          # Check if .next was renamed
+          if [ -f "deployment-files/NEXT_WAS_RENAMED" ]; then
+            echo "🔄 Detected renamed next-build, restoring to .next..."
+            if [ -d "deployment-files/next-build" ]; then
+              mv deployment-files/next-build deployment-files/.next
+              rm deployment-files/NEXT_WAS_RENAMED
+              echo "✅ Restored .next directory"
+            else
+              echo "❌ next-build directory not found!"
+              exit 1
+            fi
+          fi
+          
+          # Final verification
           if [ ! -d "deployment-files/.next" ]; then
-            echo "❌ ERROR: .next directory not found in artifact!"
-            echo "Artifact structure:"
-            find deployment-files -type d -maxdepth 3
+            echo "❌ ERROR: .next directory not found after restoration!"
+            echo "Current structure:"
+            find deployment-files -type d -maxdepth 2
             exit 1
           fi
           
@@ -55,36 +62,24 @@ jobs:
           echo "📊 .next size: $(du -sh deployment-files/.next | cut -f1)"
           
           if [ ! -f "deployment-files/package.json" ]; then
-            echo "❌ ERROR: package.json not found in artifact!"
+            echo "❌ ERROR: package.json not found!"
             exit 1
           fi
           
-          echo "✅ Found package.json"
-          
-          if [ ! -d "deployment-files/src" ]; then
-            echo "❌ ERROR: src directory not found in artifact!"
-            exit 1
-          fi
-          
-          echo "✅ Found src directory"
-          
-          echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
           echo "✅ All required files present"
+          echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
       
-      # Step 4: Deploy portfolio application
       - name: Deploy portfolio files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Copy all contents from deployment-files
           source: "deployment-files/*"
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-          # Remove the wrapper directory when copying
           strip_components: 1
-      
-      # Step 5: Finalize portfolio deployment
+          rm: true  # Remove old files before copying
+
       - name: Install dependencies and restart portfolio
         uses: appleboy/ssh-action@master
         with:
@@ -92,7 +87,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e  # Exit on any error
+            set -e
             
             echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
@@ -101,32 +96,22 @@ jobs:
             echo "📁 Navigating to portfolio directory..."
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
             
+            echo "✅ Verifying deployment files..."
+            if [ ! -d ".next" ]; then
+              echo "❌ ERROR: .next directory missing on server!"
+              ls -la
+              exit 1
+            fi
+
             echo "📦 Installing production dependencies..."
             npm install --production
             
-            echo "✅ Verifying deployment structure..."
-            if [ ! -d ".next" ]; then
-              echo "❌ ERROR: .next directory missing after deployment!"
-              ls -la
-              exit 1
-            fi
-            
-            if [ ! -d "src" ]; then
-              echo "❌ ERROR: src directory missing after deployment!"
-              ls -la
-              exit 1
-            fi
-            
-            echo "🔄 Restarting portfolio application..."
+            echo "🔄 Restarting application..."
             pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
             
-            echo "📊 Application status:"
-            pm2 status ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
-            
-            echo "✅ Portfolio deployment completed successfully!"
+            echo "✅ Deployment complete!"
       
-      # Step 6: Deploy Telegram bot
-      # We need to checkout the code for bot files since they're not in the artifact
+      # Deploy bot 
       - name: Checkout code for bot deployment
         uses: actions/checkout@v4
         with:
