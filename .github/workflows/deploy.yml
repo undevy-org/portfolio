@@ -1,179 +1,140 @@
-# .github/workflows/deploy.yml
-# Deployment workflow using pre-built artifacts from CI pipeline
+# Deploy Pipeline - Downloads artifacts and deploys to production
+# Location: .github/workflows/deploy.yml
+
 name: Deploy to DigitalOcean
 
 on:
+  # Triggered when CI Pipeline completes on main branch
   workflow_run:
     workflows: ["CI Pipeline"]
     types: [completed]
     branches: [main]
 
 jobs:
-  deploy-portfolio:
-    name: Deploy Portfolio App
+  # Main deployment job
+  deploy:
+    name: Deploy to Production
     runs-on: ubuntu-latest
-    # Only deploy if CI was successful
+    # Only run if CI was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
     steps:
-      # Step 1: Download artifact from CI pipeline
-      - name: Step 1 - Download build artifact
-        uses: actions/github-script@v7
-        with:
-          script: |
-            // Find artifacts from the triggering workflow run
-            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: ${{ github.event.workflow_run.id }}
-            });
-            
-            // Find our portfolio build artifact
-            const matchArtifact = artifacts.data.artifacts.find((artifact) => {
-              return artifact.name.startsWith('portfolio-build-');
-            });
-            
-            if (!matchArtifact) {
-              throw new Error('Build artifact not found');
-            }
-            
-            // Download the artifact
-            const download = await github.rest.actions.downloadArtifact({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              artifact_id: matchArtifact.id,
-              archive_format: 'zip'
-            });
-            
-            // Save artifact to file system
-            const fs = require('fs');
-            fs.writeFileSync('${{ github.workspace }}/artifact.zip', Buffer.from(download.data));
-            
-            console.log(`Downloaded artifact: ${matchArtifact.name}`);
-            console.log(`Size: ${matchArtifact.size_in_bytes} bytes`);
-      
-      # Step 2: Extract and organize artifact
-      - name: Step 2 - Extract and prepare build files
+      # Step 1: Setup deployment environment
+      - name: Setup deployment info
         run: |
-          echo "📦 Extracting artifact..."
-          mkdir extracted
-          unzip -q artifact.zip -d extracted
-          mv extracted/* .
-          rm -rf extracted
-          
-          echo "📁 Files extracted directly to workspace:"
-          ls -la
-          
-          echo "📊 Build directory structure:"
-          if [ -d ".next" ]; then
-            echo "✅ .next directory found"
-            du -sh .next/
-          else
-            echo "❌ .next directory not found!"
-            exit 1
-          fi
-          
-          if [ -f "package.json" ]; then
-            echo "✅ package.json found"
-          else
-            echo "❌ package.json not found!"
-            exit 1
-          fi
-          
-          # Create deployment bundle directory for cleaner transfer
-          echo "📦 Creating deployment bundle..."
-          mkdir -p deploy-bundle
-          mv .next deploy-bundle/
-          mv public deploy-bundle/ 2>/dev/null || echo "⚠️  public directory not in artifact (might be expected)"
-          mv package.json deploy-bundle/
-          mv package-lock.json deploy-bundle/
-          
-          echo "✅ Deployment bundle ready:"
-          ls -la deploy-bundle/
+          echo "🚀 Starting deployment for commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Triggered by: ${{ github.event.workflow_run.name }}"
+          echo "Run ID: ${{ github.event.workflow_run.id }}"
       
-      # Step 3: Deploy files to server
-      - name: Step 3 - Deploy build files to server
+      # Step 2: Download artifact using the official action
+      # This is simpler and more reliable than using github-script
+      - name: Download deployment artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          # Download from the CI workflow run that triggered this deployment
+          run_id: ${{ github.event.workflow_run.id }}
+          name: deployment-package-${{ github.event.workflow_run.head_sha }}
+          path: deployment-files
+      
+      # Step 3: Verify downloaded artifact structure
+      - name: Verify artifact contents
+        run: |
+          echo "📦 Verifying downloaded artifact structure..."
+          
+          echo "📁 Root level contents:"
+          ls -la deployment-files/
+          
+          if [ ! -d "deployment-files/.next" ]; then
+            echo "❌ ERROR: .next directory not found in artifact!"
+            echo "Artifact structure:"
+            find deployment-files -type d -maxdepth 3
+            exit 1
+          fi
+          
+          echo "✅ Found .next directory"
+          echo "📊 .next size: $(du -sh deployment-files/.next | cut -f1)"
+          
+          if [ ! -f "deployment-files/package.json" ]; then
+            echo "❌ ERROR: package.json not found in artifact!"
+            exit 1
+          fi
+          
+          echo "✅ Found package.json"
+          
+          if [ ! -d "deployment-files/src" ]; then
+            echo "❌ ERROR: src directory not found in artifact!"
+            exit 1
+          fi
+          
+          echo "✅ Found src directory"
+          
+          echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
+          echo "✅ All required files present"
+      
+      # Step 4: Deploy portfolio application
+      - name: Deploy portfolio files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Now deploying from deploy-bundle directory
-          source: "deploy-bundle/*"
+          # Copy all contents from deployment-files
+          source: "deployment-files/*"
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-          # Strip the deploy-bundle prefix when copying
+          # Remove the wrapper directory when copying
           strip_components: 1
       
-      # Step 4: Copy source files for server-side functionality
-      - name: Step 4 - Checkout code for source files
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            src
-            next.config.mjs
-      
-      - name: Step 5 - Deploy source files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "src,next.config.mjs"
-          target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-      
-      # Step 6: Install production dependencies and restart
-      - name: Step 6 - Finalize portfolio deployment
+      # Step 5: Finalize portfolio deployment
+      - name: Install dependencies and restart portfolio
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e  # Exit on any error
+            
+            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
+            echo "📁 Navigating to portfolio directory..."
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
             
-            # Install only production dependencies (no build needed!)
             echo "📦 Installing production dependencies..."
             npm install --production
             
-            # Verify deployment
-            echo "✅ Verifying deployment structure:"
-            if [ -d ".next" ] && [ -f "package.json" ] && [ -d "src" ]; then
-              echo "✅ All critical files present"
-            else
-              echo "❌ Missing critical files!"
+            echo "✅ Verifying deployment structure..."
+            if [ ! -d ".next" ]; then
+              echo "❌ ERROR: .next directory missing after deployment!"
               ls -la
               exit 1
             fi
             
-            # Restart the application
-            echo "🔄 Restarting application..."
+            if [ ! -d "src" ]; then
+              echo "❌ ERROR: src directory missing after deployment!"
+              ls -la
+              exit 1
+            fi
+            
+            echo "🔄 Restarting portfolio application..."
             pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
             
-            # Show application status
+            echo "📊 Application status:"
             pm2 status ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
             
-            echo "🎉 Portfolio deployment completed successfully!"
-  
-  deploy-bot:
-    name: Deploy Telegram Bot
-    runs-on: ubuntu-latest
-    needs: deploy-portfolio
-    # Only run if portfolio deployment succeeded
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
-    steps:
-      # Step 1: Checkout repository code for bot files
-      - name: Step 1 - Checkout code
+            echo "✅ Portfolio deployment completed successfully!"
+      
+      # Step 6: Deploy Telegram bot
+      # We need to checkout the code for bot files since they're not in the artifact
+      - name: Checkout code for bot deployment
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           sparse-checkout: |
             telegram-bot
       
-      # Step 2: Deploy bot files to server
-      - name: Step 2 - Deploy bot files to server
+      - name: Deploy bot files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -182,42 +143,51 @@ jobs:
           source: "telegram-bot/*"
           target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
       
-      # Step 3: Install dependencies and restart bot
-      - name: Step 3 - Finalize bot deployment
+      - name: Install dependencies and restart bot
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e  # Exit on any error
+            
+            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
+            echo "📁 Navigating to bot directory..."
             cd ${{ secrets.DEPLOY_PATH_BOT }}
             
-            # Install production dependencies
             echo "📦 Installing bot dependencies..."
             npm install --production
             
-            # Restart the bot
             echo "🔄 Restarting bot..."
             pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}
             
-            # Show bot status
+            echo "📊 Bot status:"
             pm2 status ${{ secrets.PM2_APP_NAME_BOT }}
             
-            echo "🎉 Bot deployment completed successfully!"
+            echo "✅ Bot deployment completed successfully!"
+      
+      # Final success notification
+      - name: Deployment summary
+        run: |
+          echo "🎉 DEPLOYMENT SUCCESSFUL!"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Portfolio and Bot have been deployed to production."
   
-  # New job: Handle failed CI
-  notify-failure:
-    name: Notify CI Failure
+  # Handle failed CI
+  failure-notification:
+    name: Handle CI Failure
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     
     steps:
-      - name: CI Failed Notification
+      - name: Report CI failure
         run: |
-          echo "❌ CI Pipeline failed for commit ${{ github.event.workflow_run.head_sha }}"
-          echo "Deployment cancelled. Fix the issues and push again."
+          echo "❌ CI Pipeline failed!"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Deployment cancelled due to failed tests or build."
           echo "Check the failed run: ${{ github.event.workflow_run.html_url }}"
           exit 1
