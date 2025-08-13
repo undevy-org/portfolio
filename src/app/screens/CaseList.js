@@ -44,7 +44,7 @@ export default function CaseList() {
             <button
               key={caseId}
               onClick={() => handleCaseClick(caseId, caseData)}
-              className="w-full p-4 border rounded text-left transition-colors flex items-start gap-4 border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover"
+              className="button-panel"
             >
               <div className="flex-1 space-y-1">
                 <div className="title-command text-lg">
@@ -60,7 +60,7 @@ export default function CaseList() {
                 {caseData.tags?.map((tag) => (
                   <span
                     key={tag}
-                    className="tag-badge bg-gray-50 text-light-text-secondary border-light-border-lighter dark:bg-gray-900 dark:text-dark-text-secondary dark:border-dark-border-darker"
+                    className="tag-badge tag-badge-theme"
                   >
                     {tag}
                   </span>
