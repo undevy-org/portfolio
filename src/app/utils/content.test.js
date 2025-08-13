@@ -1,19 +1,25 @@
-/**
- * @fileoverview Content validation test suite.
- * This test acts as a "linter" for the content.json file, ensuring that
- * all profiles adhere to a baseline structure. It warns about missing
- * fields but always passes, to avoid blocking CI/CD pipelines.
- */
+/* eslint-env jest */
 
+import fs from 'fs';
+import path from 'path';
 import { REQUIRED_PROFILE_FIELDS } from './content.schema.js';
-import content from '../../../test-content-local.json' with { type: 'json' };
 
-/**
- * Checks if a nested property exists in an object using a dot-notation string.
- * @param {object} obj - The object to check.
- * @param {string} path - The dot-notation path (e.g., 'profile.summary.title').
- * @returns {boolean} - True if the path exists, false otherwise.
- */
+// This is a function to load test content based on the environment
+const loadTestContent = () => {
+  const localContentPath = path.join(__dirname, '../../../test-content-local.json');
+  const ciContentPath = path.join(__dirname, '../test-content.json');
+
+  if (fs.existsSync(localContentPath)) {
+    console.log('Found local content file, using test-content-local.json for test.');
+    return require('../../../test-content-local.json');
+  } else {
+    console.log('Local content not found, using src/app/test-content.json for test.');
+    return require('../test-content.json');
+  }
+};
+
+const content = loadTestContent();
+
 const hasPath = (obj, path) => {
   const pathParts = path.split('.');
   let current = obj;

@@ -71,14 +71,16 @@ describe('config utilities', () => {
     });
 
     it('should return a default config using values from .env.local for a non-existent domain', async () => {
-      const config = await getDomainConfig('unknown.com');
-      expect(config.brandingToken).toBe(process.env.DEFAULT_PORTFOLIO_TITLE); 
+        delete process.env.DEFAULT_PORTFOLIO_TITLE;
+        const config = await getDomainConfig('unknown.com');
+        expect(config.brandingToken).toBe('$terminal_portfolio');
     });
 
     it('should handle file read errors and return a default config using .env.local', async () => {
+        delete process.env.DEFAULT_PORTFOLIO_TITLE;
         fs.readFile.mockRejectedValue(new Error('File not found'));
         const config = await getDomainConfig('any.com');
-        expect(config.brandingToken).toBe(process.env.DEFAULT_PORTFOLIO_TITLE);
+        expect(config.brandingToken).toBe('$terminal_portfolio');
       });
   });
 });
