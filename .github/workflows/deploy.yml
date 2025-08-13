@@ -4,6 +4,7 @@
 name: Deploy to DigitalOcean
 
 on:
+  # Triggered when CI Pipeline completes on main branch
   workflow_run:
     workflows: ["CI Pipeline"]
     types: [completed]
@@ -78,7 +79,7 @@ jobs:
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
           strip_components: 1
           rm: true  # Remove old files before copying
-      
+
       - name: Install dependencies and restart portfolio
         uses: appleboy/ssh-action@master
         with:
@@ -92,6 +93,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
+            echo "📁 Navigating to portfolio directory..."
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
             
             echo "✅ Verifying deployment files..."
@@ -100,7 +102,7 @@ jobs:
               ls -la
               exit 1
             fi
-            
+
             echo "📦 Installing production dependencies..."
             npm install --production
             
@@ -109,7 +111,7 @@ jobs:
             
             echo "✅ Deployment complete!"
       
-      # Deploy bot (остальная часть без изменений)
+      # Deploy bot 
       - name: Checkout code for bot deployment
         uses: actions/checkout@v4
         with:
@@ -133,17 +135,34 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e
+            set -e  # Exit on any error
             
+            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
+            echo "📁 Navigating to bot directory..."
             cd ${{ secrets.DEPLOY_PATH_BOT }}
+            
+            echo "📦 Installing bot dependencies..."
             npm install --production
+            
+            echo "🔄 Restarting bot..."
             pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}
             
-            echo "✅ Bot deployment complete!"
+            echo "📊 Bot status:"
+            pm2 status ${{ secrets.PM2_APP_NAME_BOT }}
+            
+            echo "✅ Bot deployment completed successfully!"
+      
+      # Final success notification
+      - name: Deployment summary
+        run: |
+          echo "🎉 DEPLOYMENT SUCCESSFUL!"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Portfolio and Bot have been deployed to production."
   
+  # Handle failed CI
   failure-notification:
     name: Handle CI Failure
     runs-on: ubuntu-latest
@@ -153,5 +172,7 @@ jobs:
       - name: Report CI failure
         run: |
           echo "❌ CI Pipeline failed!"
-          echo "Deployment cancelled."
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Deployment cancelled due to failed tests or build."
+          echo "Check the failed run: ${{ github.event.workflow_run.html_url }}"
           exit 1
