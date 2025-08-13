@@ -3,6 +3,8 @@
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
+import Panel from '../components/ui/Panel';
+import PanelTitle from '../components/ui/PanelTitle';
 
 export default function SkillDetail() {
   const { sessionData, navigate, addLog, selectedSkill } = useSession();
@@ -36,16 +38,16 @@ export default function SkillDetail() {
   
   return (
     <div className="p-4 space-y-4">
-      <div className="panel-base panel-theme">
+      <Panel>
         <div className="space-y-1">
-          <h2 className="title-command text-xl">{selectedSkill.name}</h2>
+          <PanelTitle className="text-xl">{selectedSkill.name}</PanelTitle>
           <p className="key-label">{selectedSkill.desc}</p>
         </div>
 
         <div className="my-3 border-t border-light-border-lighter dark:border-dark-border-darker"></div>
         
         <div>
-          <h3 className="title-command">$proficiency_level</h3>
+          <PanelTitle>$proficiency_level</PanelTitle>
           <div className="flex items-center gap-4">
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((level) => (
@@ -62,31 +64,31 @@ export default function SkillDetail() {
             <p className="value-primary text-lg">{selectedSkill.level}</p>
           </div>
         </div>
-      </div>
-      <div className="panel-base panel-theme">
-        <h3 className="title-command">$skill_overview</h3>
+      </Panel>
+      <Panel>
+        <PanelTitle>$skill_overview</PanelTitle>
         <p className="key-label leading-relaxed">
           {skillDetails.description || 'No description available.'}
         </p>
-      </div>
+      </Panel>
 
       {skillDetails.examples?.length > 0 && (
-        <div className="panel-base panel-theme">
-          <h3 className="title-command">$implementations</h3>
+        <Panel>
+          <PanelTitle>$implementations</PanelTitle>
           <div className="space-y-1">
             {skillDetails.examples.map((example, idx) => (
               <div key={idx} className="text-sm flex items-start">
-                <span className="title-command mr-2">[{idx + 1}]</span>
+                <PanelTitle className="mr-2">[{idx + 1}]</PanelTitle>
                 <span className="key-label">{example}</span>
               </div>
             ))}
           </div>
-        </div>
+        </Panel>
       )}
 
       {skillDetails.impact && (
-        <div className="panel-base panel-theme">
-          <h3 className="title-command">$business_impact</h3>
+        <Panel>
+          <PanelTitle>$business_impact</PanelTitle>
           <div className="space-y-2">
             {Array.isArray(skillDetails.impact) ? (
               skillDetails.impact.map((item, idx) => (
@@ -102,12 +104,12 @@ export default function SkillDetail() {
               </div>
             )}
           </div>
-        </div>
+        </Panel>
       )}
 
       {skillDetails.tools?.length > 0 && (
-        <div className="panel-base panel-theme">
-          <h3 className="title-command">$related_tools</h3>
+        <Panel>
+          <PanelTitle>$related_tools</PanelTitle>
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
             {skillDetails.tools.map((tool) => (
               <span key={tool} className="key-label">
@@ -115,7 +117,7 @@ export default function SkillDetail() {
               </span>
             ))}
           </div>
-        </div>
+        </Panel>
       )}
 
       <Button

@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import Panel from './ui/Panel';
 
 export default function ProfileDataPanel() {
   const { sessionData } = useSession();
@@ -12,7 +13,7 @@ export default function ProfileDataPanel() {
   const separator = <span className="text-light-border dark:text-dark-border">|</span>;
 
   return (
-    <div className="panel-base panel-theme p-3 text-sm">
+    <Panel className="p-3 text-sm">
       <div className="flex flex-wrap gap-x-2">
         <span className="font-bold value-primary text-sm">{title}</span>
         {separator}
@@ -20,6 +21,6 @@ export default function ProfileDataPanel() {
         {separator}
         <span className="key-label">{background}</span>
       </div>
-    </div>
+    </Panel>
   );
 }

@@ -1,6 +1,8 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import Panel from './ui/Panel';
+import PanelTitle from './ui/PanelTitle';
 
 export default function AnalyticsPanel() {
   const { 
@@ -25,8 +27,8 @@ export default function AnalyticsPanel() {
   };
 
   return (
-    <div className="panel-base panel-theme w-full max-w-2xl p-3 text-sm bg-opacity-90">
-      <h2 className="title-command">$analytics</h2>
+    <Panel className="w-full max-w-2xl p-3 text-sm bg-opacity-90">
+      <PanelTitle>$analytics</PanelTitle>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
         <div>
           <span className="value-primary text-sm mr-2">$company:</span>
@@ -70,7 +72,7 @@ export default function AnalyticsPanel() {
       
       <div className="mt-4 pt-3 border-t border-light-border-lighter dark:border-dark-border-darker">
 
-        <h3 className="title-command">$session_trace</h3>
+        <PanelTitle>$session_trace</PanelTitle>
         
         <div className="text-sm flex items-center flex-wrap">
           {navigationHistory.length > 0 ? (
@@ -90,17 +92,17 @@ export default function AnalyticsPanel() {
               
               <span className="flex items-center">
                 <span className="key-label mr-1">[{navigationHistory.length}]</span>
-              <span className="title-command">{currentScreen}</span>
+              <PanelTitle>{currentScreen}</PanelTitle>
               </span>
             </>
           ) : (
             <>
               <span className="key-label mr-1">[0]</span>
-            <span className="title-command">{currentScreen}</span>
+            <PanelTitle>{currentScreen}</PanelTitle>
             </>
           )}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

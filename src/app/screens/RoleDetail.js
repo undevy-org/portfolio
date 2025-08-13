@@ -4,6 +4,8 @@ import { useSession } from '../context/SessionContext';
 import Accordion from '../components/ui/Accordion';
 import Button from '../components/ui/Button';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
+import Panel from '../components/ui/Panel';
+import PanelTitle from '../components/ui/PanelTitle';
 
 export default function RoleDetail() {
   const { sessionData, navigate, addLog, selectedRole } = useSession();
@@ -35,13 +37,13 @@ export default function RoleDetail() {
 
   return (
     <div className="p-4 space-y-4">
-      <div className="panel-base panel-theme">
+      <Panel>
         <div className="space-y-1">
-          <h2 className="title-command text-xl">{selectedRole.company}</h2>
+          <PanelTitle className="text-xl">{selectedRole.company}</PanelTitle>
           <p className="value-primary text-base">{selectedRole.role}</p>
           <p className="key-label">{selectedRole.period} • {selectedRole.duration}</p>
         </div>
-      </div>
+      </Panel>
 
       <Accordion sections={sections} defaultExpanded="summary" />
 

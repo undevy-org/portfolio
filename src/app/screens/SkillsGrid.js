@@ -2,6 +2,7 @@
 
 import { useSession } from '../context/SessionContext';
 import { ChevronRight } from 'lucide-react';
+import PanelTitle from '../components/ui/PanelTitle';
 
 export default function SkillsGrid() {
   const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
@@ -37,9 +38,9 @@ export default function SkillsGrid() {
             className="p-4 border rounded text-left transition-colors flex justify-between items-start border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover"
           > 
             <div className="space-y-1">
-              <div className="title-command">
+              <PanelTitle>
                 {skill.name}
-              </div>
+              </PanelTitle>
               
               <div className="key-label">
                 {skill.desc}

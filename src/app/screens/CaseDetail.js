@@ -4,6 +4,8 @@ import { useSession } from '../context/SessionContext';
 import Tabs from '../components/ui/Tabs';
 import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
+import Panel from '../components/ui/Panel';
+import PanelTitle from '../components/ui/PanelTitle';
 
 export default function CaseDetail() {
   const { sessionData, navigate, addLog, selectedCase } = useSession();
@@ -94,9 +96,9 @@ export default function CaseDetail() {
   
   return (
     <div className="p-4 space-y-4">
-      <div className="panel-base panel-theme">
+      <Panel>
         <div className="space-y-2">
-          <h2 className="title-command text-xl">{selectedCase.title}</h2>
+          <PanelTitle className="text-xl">{selectedCase.title}</PanelTitle>
           <p className="key-label">{selectedCase.desc}</p>
           <p className="text-sm pt-1 text-light-success dark:text-dark-success">{selectedCase.metrics}</p>
           <div className="flex flex-wrap gap-2 pt-2">
@@ -110,7 +112,7 @@ export default function CaseDetail() {
             ))}
           </div>
         </div>
-      </div>
+      </Panel>
 
       <Tabs tabs={tabs} defaultTab="challenge" />
 

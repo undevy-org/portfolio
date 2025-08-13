@@ -3,6 +3,7 @@
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
 import { ChevronRight, FolderGit2, Settings2 } from 'lucide-react';
+import PanelTitle from '../components/ui/PanelTitle';
 
 export default function Timeline() {
   const { sessionData, navigate, addLog, setSelectedRole } = useSession();
@@ -25,14 +26,14 @@ export default function Timeline() {
             className="w-full p-4 text-left border rounded transition-colors relative border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover"
           >
             <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
-              <span className="title-command mt-1">
+              <PanelTitle className="mt-1">
                 [{String(index + 1).padStart(2, '0')}]
-              </span>
+              </PanelTitle>
 
               <div>
-                <div className="title-command text-lg font-normal">
+                <PanelTitle className="text-lg font-normal">
                   {role.company}
-                </div>
+                </PanelTitle>
                 <div className="key-label opacity-80">
                   {role.role}
                 </div>
@@ -49,12 +50,12 @@ export default function Timeline() {
 
             <div className="md:hidden">
               <div className="flex justify-between items-start">
-                  <span className="title-command text-lg">
+                  <PanelTitle className="text-lg">
                     {role.company}
-                  </span>
-                  <span className="title-command mt-1 text-sm">
+                  </PanelTitle>
+                  <PanelTitle className="mt-1 text-sm">
                     [{String(index + 1).padStart(2, '0')}]
-                  </span>
+                  </PanelTitle>
               </div>
               <div className="key-label mt-1 text-sm">{role.role}</div>
               <div className="key-label mt-1 text-xs">

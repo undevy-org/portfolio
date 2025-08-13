@@ -2,6 +2,8 @@
 
 import { useSession } from '../context/SessionContext';
 import { ChevronRight } from 'lucide-react';
+import Panel from '../components/ui/Panel';
+import PanelTitle from '../components/ui/PanelTitle';
 
 export default function CaseList() {
   const { sessionData, navigate, addLog, setSelectedCase } = useSession();
@@ -18,8 +20,8 @@ export default function CaseList() {
 
   return (
     <div className="p-4">
-      <div className="mb-4 panel-base panel-theme p-3">
-        <div className="title-command">$loading_cases</div>
+      <Panel className="mb-4 p-3">
+        <PanelTitle>$loading_cases</PanelTitle>
         <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm">
           <div className="flex items-center gap-2">
             <span className="value-primary text-sm">[</span>
@@ -35,7 +37,7 @@ export default function CaseList() {
               {caseIds.length}/{totalCasesCount} loaded for {sessionData?.meta?.company || 'session'}
           </div>
         </div>
-      </div>
+      </Panel>
 
       <div className="space-y-3">
         {caseIds.map((caseId) => {
@@ -47,9 +49,9 @@ export default function CaseList() {
               className="button-panel"
             >
               <div className="flex-1 space-y-1">
-                <div className="title-command text-lg">
+                <PanelTitle className="text-lg">
                 {caseData.title}
-              </div>
+              </PanelTitle>
                 <div className="key-label">
                 {caseData.desc}
               </div>
