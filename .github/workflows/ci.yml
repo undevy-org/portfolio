@@ -74,7 +74,7 @@ jobs:
           
           # CRITICAL: Remove webpack cache - it's not needed for production!
           echo "🗑️ Removing webpack cache (not needed for production)..."
-          rm -rf .next/cache
+          rm -rf .next/cache || true
           
           # Remove source maps to reduce size further
           echo "🗑️ Removing source maps..."
@@ -96,14 +96,26 @@ jobs:
           # Check sizes after cleanup
           echo ""
           echo "📊 Final production sizes:"
-          echo "  .next directory: $(du -sh .next | cut -f1)"
-          echo "  .next/static: $(du -sh .next/static | cut -f1)"
-          echo "  .next/server: $(du -sh .next/server | cut -f1)"
-          echo "  public: $(du -sh public | cut -f1)"
+          echo "  .next directory: $(du -sh .next 2>/dev/null | cut -f1 || echo 'N/A')"
+          echo "  .next/static: $(du -sh .next/static 2>/dev/null | cut -f1 || echo 'N/A')"
+          echo "  .next/server: $(du -sh .next/server 2>/dev/null | cut -f1 || echo 'N/A')"
+          echo "  public: $(du -sh public 2>/dev/null | cut -f1 || echo 'N/A')"
           
           echo ""
           echo "📊 Total size for deployment:"
-          du -sh -c .next public package.json package-lock.json | grep total
+          # Check existence before running du
+          missing=""
+          for item in .next public package.json package-lock.json; do
+            if [ ! -e "$item" ]; then
+              echo "❌ WARNING: $item does not exist and will be skipped."
+              missing="true"
+            fi
+          done
+          if [ "$missing" != "true" ]; then
+            du -sh -c .next public package.json package-lock.json | grep total
+          else
+            echo "⚠️ Skipping size calculation due to missing files/directories."
+          fi
           
           # Verify critical files exist
           echo ""
