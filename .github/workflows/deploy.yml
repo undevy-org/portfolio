@@ -52,17 +52,41 @@ jobs:
             console.log(`Downloaded artifact: ${matchArtifact.name}`);
             console.log(`Size: ${matchArtifact.size_in_bytes} bytes`);
       
-      # Step 2: Extract artifact
-      - name: Step 2 - Extract build artifact
+      # Step 2: Extract and organize artifact
+      - name: Step 2 - Extract and prepare build files
         run: |
-          echo "Extracting artifact..."
+          echo "📦 Extracting artifact..."
           unzip -q artifact.zip
           
-          echo "Artifact contents:"
-          ls -la artifact-bundle/
+          echo "📁 Files extracted directly to workspace:"
+          ls -la
           
-          echo "Build directory size:"
-          du -sh artifact-bundle/.next/
+          echo "📊 Build directory structure:"
+          if [ -d ".next" ]; then
+            echo "✅ .next directory found"
+            du -sh .next/
+          else
+            echo "❌ .next directory not found!"
+            exit 1
+          fi
+          
+          if [ -f "package.json" ]; then
+            echo "✅ package.json found"
+          else
+            echo "❌ package.json not found!"
+            exit 1
+          fi
+          
+          # Create deployment bundle directory for cleaner transfer
+          echo "📦 Creating deployment bundle..."
+          mkdir -p deploy-bundle
+          mv .next deploy-bundle/
+          mv public deploy-bundle/ 2>/dev/null || echo "⚠️  public directory not in artifact (might be expected)"
+          mv package.json deploy-bundle/
+          mv package-lock.json deploy-bundle/
+          
+          echo "✅ Deployment bundle ready:"
+          ls -la deploy-bundle/
       
       # Step 3: Deploy files to server
       - name: Step 3 - Deploy build files to server
@@ -71,14 +95,13 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Deploy contents of artifact-bundle (already contains .next, public, package.json, etc.)
-          source: "artifact-bundle/.next,artifact-bundle/package.json,artifact-bundle/package-lock.json,artifact-bundle/public"
+          # Now deploying from deploy-bundle directory
+          source: "deploy-bundle/*"
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-          # Strip the artifact-bundle prefix when copying
+          # Strip the deploy-bundle prefix when copying
           strip_components: 1
       
       # Step 4: Copy source files for server-side functionality
-      # Note: We still need src directory for API routes and server components
       - name: Step 4 - Checkout code for source files
         uses: actions/checkout@v4
         with:
@@ -109,21 +132,27 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
             
             # Install only production dependencies (no build needed!)
-            echo "Installing production dependencies..."
+            echo "📦 Installing production dependencies..."
             npm install --production
             
             # Verify deployment
-            echo "Deployment structure:"
-            ls -la
+            echo "✅ Verifying deployment structure:"
+            if [ -d ".next" ] && [ -f "package.json" ] && [ -d "src" ]; then
+              echo "✅ All critical files present"
+            else
+              echo "❌ Missing critical files!"
+              ls -la
+              exit 1
+            fi
             
             # Restart the application
-            echo "Restarting application..."
+            echo "🔄 Restarting application..."
             pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
             
             # Show application status
             pm2 status ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
             
-            echo "✅ Portfolio deployment completed successfully!"
+            echo "🎉 Portfolio deployment completed successfully!"
   
   deploy-bot:
     name: Deploy Telegram Bot
@@ -164,17 +193,17 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH_BOT }}
             
             # Install production dependencies
-            echo "Installing bot dependencies..."
+            echo "📦 Installing bot dependencies..."
             npm install --production
             
             # Restart the bot
-            echo "Restarting bot..."
+            echo "🔄 Restarting bot..."
             pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}
             
             # Show bot status
             pm2 status ${{ secrets.PM2_APP_NAME_BOT }}
             
-            echo "✅ Bot deployment completed successfully!"
+            echo "🎉 Bot deployment completed successfully!"
   
   # New job: Handle failed CI
   notify-failure:
