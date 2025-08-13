@@ -50,6 +50,43 @@ jobs:
           echo "  Static assets: $(du -sh .next/static | cut -f1)"
           echo "  Server bundles: $(du -sh .next/server | cut -f1)"
   
+      # CHANGE: Add lightweight artifact creation for PRs only
+      # This creates a small verification artifact instead of full deployment package
+      - name: Create PR verification artifact
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "📝 Creating lightweight PR verification artifact..."
+          
+          # Create a verification directory with minimal info
+          mkdir -p pr-verification
+          
+          # Save build success info and statistics
+          echo "Build Verification Report" > pr-verification/build-report.txt
+          echo "=========================" >> pr-verification/build-report.txt
+          echo "" >> pr-verification/build-report.txt
+          echo "PR #${{ github.event.pull_request.number }}" >> pr-verification/build-report.txt
+          echo "Commit: ${{ github.sha }}" >> pr-verification/build-report.txt
+          echo "Branch: ${{ github.head_ref }}" >> pr-verification/build-report.txt
+          echo "Build Time: $(date)" >> pr-verification/build-report.txt
+          echo "" >> pr-verification/build-report.txt
+          echo "Build Statistics:" >> pr-verification/build-report.txt
+          echo "- Total .next size: $(du -sh .next | cut -f1)" >> pr-verification/build-report.txt
+          echo "- Static assets: $(du -sh .next/static | cut -f1)" >> pr-verification/build-report.txt
+          echo "- Server bundles: $(du -sh .next/server | cut -f1)" >> pr-verification/build-report.txt
+          echo "- Source files: $(find src -type f -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' | wc -l)" >> pr-verification/build-report.txt
+          echo "" >> pr-verification/build-report.txt
+          echo "✅ All checks passed successfully" >> pr-verification/build-report.txt
+      
+      # CHANGE: Upload PR verification artifact with 2-day retention
+      - name: Upload PR verification artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-verification-${{ github.event.pull_request.number }}-${{ github.sha }}
+          path: pr-verification/
+          retention-days: 2  # CHANGE: Short retention for PR artifacts (was implicitly 90 days)
+          compression-level: 6
+  
   # Job 2: Create deployment artifact (only on main branch)
   build-artifact:
     name: Build Deployment Artifact
@@ -183,7 +220,7 @@ jobs:
         with:
           name: deployment-package-${{ github.sha }}
           path: deployment-package/
-          retention-days: 7
+          retention-days: 14  # CHANGE: Increased from 7 to 14 days for main branch artifacts (for rollback capability)
           compression-level: 6
           include-hidden-files: true  # IMPORTANT: Include hidden files
       
