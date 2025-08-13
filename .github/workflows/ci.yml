@@ -68,59 +68,68 @@ jobs:
       - name: Build project
         run: npm run build
       
-      - name: Verify build output exists
+      - name: Prepare production artifact
         run: |
-          echo "🔍 Checking if .next directory was created..."
-          if [ ! -d ".next" ]; then
-            echo "❌ ERROR: .next directory not found after build!"
-            echo "Current directory contents:"
-            ls -la
-            exit 1
-          fi
-          echo "✅ .next directory exists"
-          echo "📊 .next size: $(du -sh .next | cut -f1)"
-      
-      - name: Prepare artifact with correct structure
-        run: |
-          echo "📦 Creating minimal production artifact..."
+          echo "📦 Preparing production artifact..."
           
-          # Remove source maps to reduce size (they're not needed in production)
+          # CRITICAL: Remove webpack cache - it's not needed for production!
+          echo "🗑️ Removing webpack cache (not needed for production)..."
+          rm -rf .next/cache
+          
+          # Remove source maps to reduce size further
           echo "🗑️ Removing source maps..."
           find .next -name "*.map" -type f -delete
           
           # Show what we're including
-          echo "📋 Files to include in artifact:"
-          echo "  - .next/ (build output)"
-          echo "  - public/ (static assets)"
-          echo "  - package.json (for dependencies)"
-          echo "  - package-lock.json (for exact versions)"
-          
-          # Check final sizes
           echo ""
-          echo "📊 Final artifact contents size:"
-          du -sh .next/ || echo ".next not found"
-          du -sh public/ || echo "public not found"
-          du -sh package.json
-          du -sh package-lock.json
+          echo "📋 Production artifact will include:"
+          echo "  ✅ .next/static/ - Client-side assets"
+          echo "  ✅ .next/server/ - Server-side bundles"  
+          echo "  ✅ .next/BUILD_ID - Build identifier"
+          echo "  ✅ .next/build-manifest.json - Build metadata"
+          echo "  ✅ public/ - Static files"
+          echo "  ✅ package.json & package-lock.json"
+          echo ""
+          echo "  ❌ .next/cache/ - EXCLUDED (build cache, not needed)"
+          echo "  ❌ *.map files - EXCLUDED (source maps, not needed)"
+          
+          # Check sizes after cleanup
+          echo ""
+          echo "📊 Final production sizes:"
+          echo "  .next directory: $(du -sh .next | cut -f1)"
+          echo "  .next/static: $(du -sh .next/static | cut -f1)"
+          echo "  .next/server: $(du -sh .next/server | cut -f1)"
+          echo "  public: $(du -sh public | cut -f1)"
           
           echo ""
-          echo "📊 Total size before compression:"
+          echo "📊 Total size for deployment:"
           du -sh -c .next public package.json package-lock.json | grep total
+          
+          # Verify critical files exist
+          echo ""
+          echo "✅ Verifying critical files..."
+          if [ ! -d ".next/static" ]; then
+            echo "❌ ERROR: .next/static not found!"
+            exit 1
+          fi
+          if [ ! -d ".next/server" ]; then
+            echo "❌ ERROR: .next/server not found!"
+            exit 1
+          fi
+          echo "✅ All critical directories present"
       
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-build-${{ github.sha }}
-          # IMPORTANT: Upload files directly, not a wrapper directory
           path: |
-            .next/**
-            !.next/**/*.map
-            public/**
-            !**/node_modules/**
+            .next
+            public
             package.json
             package-lock.json
-          retention-days: 2
-          compression-level: 9  # Maximum compression      
+          retention-days: 7
+          compression-level: 9
+      
       - name: Output artifact info
         run: |
           echo "✅ Artifact created successfully"
