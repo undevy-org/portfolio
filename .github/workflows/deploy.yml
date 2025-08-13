@@ -1,8 +1,13 @@
 # .github/workflows/deploy.yml
 # Deployment workflow using pre-built artifacts from CI pipeline
+# Deployment workflow using pre-built artifacts from CI pipeline
 name: Deploy to DigitalOcean
 
 on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branches: [main]
   workflow_run:
     workflows: ["CI Pipeline"]
     types: [completed]
@@ -15,7 +20,13 @@ jobs:
     # Only deploy if CI was successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
+    # Only deploy if CI was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
+      # Step 1: Download artifact from CI pipeline
+      - name: Step 1 - Download build artifact
+        uses: actions/github-script@v7
       # Step 1: Download artifact from CI pipeline
       - name: Step 1 - Download build artifact
         uses: actions/github-script@v7
@@ -116,7 +127,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "src,next.config.mjs"
+          source: "src,next.config.mjs"
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
+      
+      # Step 6: Install production dependencies and restart
+      - name: Step 6 - Finalize portfolio deployment
       
       # Step 6: Install production dependencies and restart
       - name: Step 6 - Finalize portfolio deployment
@@ -128,6 +143,7 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
             
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
             
@@ -161,10 +177,19 @@ jobs:
     # Only run if portfolio deployment succeeded
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     
+    # Only run if portfolio deployment succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     steps:
+      # Step 1: Checkout repository code for bot files
       # Step 1: Checkout repository code for bot files
       - name: Step 1 - Checkout code
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            telegram-bot
+      
+      # Step 2: Deploy bot files to server
         with:
           sparse-checkout: |
             telegram-bot
@@ -180,6 +205,8 @@ jobs:
           target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
       
       # Step 3: Install dependencies and restart bot
+      
+      # Step 3: Install dependencies and restart bot
       - name: Step 3 - Finalize bot deployment
         uses: appleboy/ssh-action@master
         with:
@@ -189,6 +216,7 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
             
             cd ${{ secrets.DEPLOY_PATH_BOT }}
             
