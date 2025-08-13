@@ -3,3 +3,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .panel-base {
+    @apply border rounded-md p-4;
+  }
+  .panel-theme {
+    @apply bg-light-bg border-light-border dark:bg-dark-bg dark:border-dark-border-darker;
+  }
+  .title-command {
+    @apply text-base mb-2 font-mono text-light-text-command dark:text-dark-text-command;
+  }
+  .key-label {
+    @apply text-sm font-mono text-light-text-secondary dark:text-dark-text-secondary;
+  }
+  .value-primary {
+    @apply text-xl font-mono text-light-text-primary dark:text-dark-text-primary;
+  }
+  .tag-badge {
+    @apply text-xs px-2 py-0.5 border rounded-full whitespace-nowrap;
+  }
+}

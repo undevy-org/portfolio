@@ -5,12 +5,9 @@ import Button from '../components/ui/Button';
 import { ChevronRight, FolderGit2, Settings2 } from 'lucide-react';
 
 export default function Timeline() {
-  const { sessionData, theme, navigate, addLog, setSelectedRole } = useSession();
+  const { sessionData, navigate, addLog, setSelectedRole } = useSession();
 
   const roles = sessionData?.experience || [];
-  const yellowClasses = theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command';
-  const primaryClasses = theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary';
-  const secondaryClasses = theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
 
   const handleRoleClick = (role) => {
     setSelectedRole(role);
@@ -25,53 +22,49 @@ export default function Timeline() {
           <button
             key={`${role.id}-${index}`}
             onClick={() => handleRoleClick(role)}
-            className={`w-full p-4 text-left border rounded transition-colors relative ${
-              theme === 'dark' 
-                ? 'border-dark-border-darker hover:bg-dark-hover' 
-                : 'border-light-border-lighter hover:bg-light-hover'
-            }`}
+            className="w-full p-4 text-left border rounded transition-colors relative border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover"
           >
             <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
-              <span className={`mt-1 ${yellowClasses}`}>
+              <span className="title-command mt-1">
                 [{String(index + 1).padStart(2, '0')}]
               </span>
 
               <div>
-                <div className={`text-lg font-normal ${yellowClasses}`}>
+                <div className="title-command text-lg font-normal">
                   {role.company}
                 </div>
-                <div className={`text-sm opacity-80 ${secondaryClasses}`}>
+                <div className="key-label opacity-80">
                   {role.role}
                 </div>
-                <div className={`text-xs mt-1 ${secondaryClasses}`}>
+                <div className="key-label text-xs mt-1">
                   {role.period} • {role.duration}
                 </div>
-                <div className={`text-sm mt-1 ${primaryClasses}`}>
+                <div className="value-primary text-sm mt-1">
                   {role.highlight}
                 </div>
               </div>
 
-              <ChevronRight className={`w-5 h-5 mt-1 ${secondaryClasses}`} />
+              <ChevronRight className="w-5 h-5 mt-1 key-label" />
             </div>
 
             <div className="md:hidden">
               <div className="flex justify-between items-start">
-                  <span className={`text-lg ${yellowClasses}`}>
+                  <span className="title-command text-lg">
                     {role.company}
                   </span>
-                  <span className={`mt-1 text-sm ${yellowClasses}`}>
+                  <span className="title-command mt-1 text-sm">
                     [{String(index + 1).padStart(2, '0')}]
                   </span>
               </div>
-              <div className={`mt-1 text-sm ${secondaryClasses}`}>{role.role}</div>
-              <div className={`mt-1 text-xs ${secondaryClasses}`}>
+              <div className="key-label mt-1 text-sm">{role.role}</div>
+              <div className="key-label mt-1 text-xs">
                 {role.period} • {role.duration}
               </div>
-              <div className={`mt-2 text-sm text-left ${primaryClasses}`}>
+              <div className="value-primary mt-2 text-sm text-left">
                 {role.highlight}
               </div>
               
-              <ChevronRight className={`w-5 h-5 absolute bottom-4 right-4 ${secondaryClasses}`} />
+              <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 key-label" />
             </div>
           </button>
         ))}
