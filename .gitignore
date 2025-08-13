@@ -48,3 +48,9 @@ next-env.d.ts
 test-content-local.json
 /content-backups
 config/domains.json
+
+# Project images - stored locally and on server only
+/public/images/projects/
+
+# But keep the directory structure
+!public/images/projects/.gitkeep

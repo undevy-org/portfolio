@@ -55,6 +55,64 @@ After authentication, the application transforms into a seamless Single Page App
     npm test
     ```
 
+## Contributing
+
+This project uses a Pull Request workflow with automated CI/CD. All changes must go through a feature branch and pass automated checks before merging to `main`.
+
+### How to Submit Changes
+
+1.  **Always start from an updated main branch:**
+    ```bash
+    git checkout main
+    git pull origin main
+    ```
+
+2.  **Create a feature branch with a descriptive name:**
+    ```bash
+    git checkout -b feat/your-feature-name
+    # Examples: feat/add-contact-form, fix/navigation-bug, docs/update-readme
+    ```
+
+3.  **Make your changes and test locally:**
+    ```bash
+    npm run dev     # Test visually in browser
+    npm test        # Run the test suite
+    npm run lint    # Check for linting issues
+    ```
+
+4.  **Commit your changes with a clear message:**
+    ```bash
+    git add .
+    git commit -m "feat: add contact form with email validation"
+    ```
+
+5.  **Push your branch to GitHub:**
+    ```bash
+    git push -u origin feat/your-feature-name
+    ```
+
+6.  **Create a Pull Request on GitHub:**
+    - Go to the repository on GitHub
+    - Click "Pull requests" → "New pull request"
+    - Select your branch and click "Create pull request"
+    - Add a description of what you changed and why
+
+7.  **Wait for the automated checks:**
+    - The CI pipeline will automatically run linting, tests, and build verification
+    - All checks must pass (green checkmarks) before merging
+    - If any check fails, fix the issues locally and push again
+
+8.  **Merge when ready:**
+    - Once all checks are green, click "Merge pull request"
+    - The changes will automatically deploy to production
+
+### Common CI Check Failures and Solutions
+
+- **Linting errors:** Run `npm run lint` locally to see the issues, then fix them
+- **Test failures:** Run `npm test` to identify failing tests, update your code accordingly
+- **Build errors:** Run `npm run build` locally to reproduce and fix the issue
+- **Package-lock out of sync:** Run `npm install` and commit the updated `package-lock.json`
+
 ## Project Documentation
 
 This project is thoroughly documented. For more details, please see the following files:
