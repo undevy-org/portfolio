@@ -54,3 +54,7 @@ config/domains.json
 
 # But keep the directory structure
 !public/images/projects/.gitkeep
+
+# scripts
+sync-images-down.sh
+sync-images-up.sh
