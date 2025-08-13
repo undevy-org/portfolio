@@ -1,4 +1,3 @@
-// jest.config.mjs
 import nextJest from 'next/jest.js'
 
 const createJestConfig = nextJest({
@@ -7,9 +6,8 @@ const createJestConfig = nextJest({
 
 /** @type {import('jest').Config} */
 const config = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js', '<rootDir>/jest.env.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
 }
-
 
 export default createJestConfig(config)

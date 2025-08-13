@@ -59,7 +59,7 @@ export function getContentFilePath(isDemoMode = false) {
 
   // Fallback to default test content for development
   if (process.env.NODE_ENV !== 'production') {
-    return path.join(process.cwd(), 'test-content-local.json'); 
+    return path.join(process.cwd(), 'src', 'app', 'test-content.json');
   }
 
   // Production without explicit path - return a default

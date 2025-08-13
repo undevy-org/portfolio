@@ -1,207 +1,91 @@
-# Deploy Pipeline - Downloads artifacts and deploys to production
-# Location: .github/workflows/deploy.yml
-
+# .github/workflows/deploy.yml
 name: Deploy to DigitalOcean
 
 on:
-  # Triggered when CI Pipeline completes on main branch
-  workflow_run:
-    workflows: ["CI Pipeline"]
-    types: [completed]
-    branches: [main]
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
-    name: Deploy to Production
+  deploy-portfolio:
+    name: Deploy Portfolio App
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
     steps:
-      - name: Setup deployment info
-        run: |
-          echo "🚀 Starting deployment for commit: ${{ github.event.workflow_run.head_sha }}"
-          echo "Triggered by: ${{ github.event.workflow_run.name }}"
-          echo "Run ID: ${{ github.event.workflow_run.id }}"
-      
-      - name: Download deployment artifact
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          run_id: ${{ github.event.workflow_run.id }}
-          name: deployment-package-${{ github.event.workflow_run.head_sha }}
-          path: deployment-files
-      
-      - name: Verify and restore .next directory
-        run: |
-          echo "📦 Verifying downloaded artifact structure..."
-          
-          echo "📁 Downloaded contents:"
-          ls -la deployment-files/
-          
-          # Check if .next was renamed
-          if [ -f "deployment-files/NEXT_WAS_RENAMED" ]; then
-            echo "🔄 Detected renamed next-build, restoring to .next..."
-            if [ -d "deployment-files/next-build" ]; then
-              mv deployment-files/next-build deployment-files/.next
-              rm deployment-files/NEXT_WAS_RENAMED
-              echo "✅ Restored .next directory"
-            else
-              echo "❌ next-build directory not found!"
-              exit 1
-            fi
-          fi
-          
-          # Final verification
-          if [ ! -d "deployment-files/.next" ]; then
-            echo "❌ ERROR: .next directory not found after restoration!"
-            echo "Current structure:"
-            find deployment-files -type d -maxdepth 2
-            exit 1
-          fi
-          
-          echo "✅ Found .next directory"
-          echo "📊 .next size: $(du -sh deployment-files/.next | cut -f1)"
-          
-          if [ ! -f "deployment-files/package.json" ]; then
-            echo "❌ ERROR: package.json not found!"
-            exit 1
-          fi
-          
-          echo "✅ All required files present"
-          echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
-      
-      - name: Backup environment files
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p /tmp/deploy-backup
-            echo "Backing up environment files..."
-            ls -la "${{ secrets.DEPLOY_PATH_PORTFOLIO }}" | grep .env || echo "No env files found"
-            for f in .env .env.local .env.production; do
-              if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" ]; then
-                cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" "/tmp/deploy-backup/$f"
-              fi
-            done
+      # Step 1: Checkout repository code
+      - name: Step 1 - Checkout code
+        uses: actions/checkout@v4
 
-      - name: Deploy portfolio files to server
+      # Step 2: Setup Node.js
+      - name: Step 2 - Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Install dependencies and build the project
+      - name: Step 3 - Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      # Step 4: Copy build files to the server
+      - name: Step 4 - Deploy build files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deployment-files/*"
+          source: ".next, package.json, package-lock.json, public, next.config.mjs, src"
+          # CHANGED: Use GitHub secret for deployment path instead of hardcoded path
           target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-          strip_components: 1
-          rm: true
 
-      - name: Restore environment files
+      # Step 5: Install production dependencies and restart the site process
+      - name: Step 5 - Finalize portfolio deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            for f in .env .env.local .env.production; do
-              if [ -f "/tmp/deploy-backup/$f" ]; then
-                cp "/tmp/deploy-backup/$f" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f"
-              fi
-            done
-
-      - name: Install dependencies and restart portfolio
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            
-            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-            echo "📁 Navigating to portfolio directory..."
+            # CHANGED: Use GitHub secret for deployment path
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-            
-            echo "✅ Verifying deployment files..."
-            if [ ! -d ".next" ]; then
-              echo "❌ ERROR: .next directory missing on server!"
-              ls -la
-              exit 1
-            fi
-
-            echo "📦 Installing production dependencies..."
             npm install --production
-            
-            echo "🔄 Restarting application..."
+            # CHANGED: Use GitHub secret for PM2 process name
             pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
-            
-            echo "✅ Deployment complete!"
-      
-      # Deploy bot 
-      - name: Checkout code for bot deployment
+
+  deploy-bot:
+    name: Deploy Telegram Bot
+    runs-on: ubuntu-latest
+    needs: deploy-portfolio
+    steps:
+      # Step 1: Checkout repository code
+      - name: Step 1 - Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          sparse-checkout: |
-            telegram-bot
-      
-      - name: Deploy bot files to server
+
+      # Step 2: Copy bot files to the server
+      - name: Step 2 - Deploy bot files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "telegram-bot/*"
+          # CHANGED: Use GitHub secret for deployment path instead of hardcoded path
           target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
-      
-      - name: Install dependencies and restart bot
+
+      # Step 3: Install production dependencies and restart the bot process
+      - name: Step 3 - Finalize bot deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e  # Exit on any error
-            
-            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-            echo "📁 Navigating to bot directory..."
+            # CHANGED: Use GitHub secret for deployment path
             cd ${{ secrets.DEPLOY_PATH_BOT }}
-            
-            echo "📦 Installing bot dependencies..."
             npm install --production
-            
-            echo "🔄 Restarting bot..."
+            # CHANGED: Use GitHub secret for PM2 process name
             pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}
-            
-            echo "📊 Bot status:"
-            pm2 status ${{ secrets.PM2_APP_NAME_BOT }}
-            
-            echo "✅ Bot deployment completed successfully!"
-      
-      # Final success notification
-      - name: Deployment summary
-        run: |
-          echo "🎉 DEPLOYMENT SUCCESSFUL!"
-          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
-          echo "Portfolio and Bot have been deployed to production."
-  
-  # Handle failed CI
-  failure-notification:
-    name: Handle CI Failure
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    
-    steps:
-      - name: Report CI failure
-        run: |
-          echo "❌ CI Pipeline failed!"
-          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
-          echo "Deployment cancelled due to failed tests or build."
-          echo "Check the failed run: ${{ github.event.workflow_run.html_url }}"
-          exit 1
