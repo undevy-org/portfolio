@@ -22,10 +22,10 @@ import {
 const projectId = 'b75ae0dd3030e568aae32958c74eb59b';
 
 const metadata = {
-  name: 'Interactive Terminal Portfolio',
-  description: 'Interactive Terminal Portfolio with Web3 Access',
-  url: 'https://undevy.com',
-  icons: ['https://undevy.com/icon.png']
+  name: process.env.NEXT_PUBLIC_PORTFOLIO_NAME || 'Interactive Terminal Portfolio',
+  description: process.env.NEXT_PUBLIC_PORTFOLIO_DESCRIPTION || 'Interactive Terminal Portfolio with Web3 Access',
+  url: typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_PORTFOLIO_URL || 'https://example.com', // CHANGED: Dynamically use current origin or env variable
+  icons: [typeof window !== 'undefined' ? `${window.location.origin}/icon.png` : `${process.env.NEXT_PUBLIC_PORTFOLIO_URL || 'https://example.com'}/icon.png`] // CHANGED: Dynamic icon URL based on current domain
 };
 
 const networks = [

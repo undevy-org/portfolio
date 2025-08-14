@@ -15,12 +15,10 @@ const MockSessionProvider = ({ children, sessionData, theme = 'dark' }) => (
 
 describe('ProfileDataPanel Component', () => {
   const mockSessionData = {
-    profile: {
-      summary: {
-        title: 'Senior Software Engineer',
-        specialization: 'Frontend & Web3',
-        background: 'Computer Science'
-      }
+    profile_data: {
+      title: 'Senior Software Engineer',
+      specialization: 'Frontend & Web3',
+      background: 'Computer Science'
     }
   };
 
