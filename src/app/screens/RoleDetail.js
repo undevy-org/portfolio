@@ -6,17 +6,34 @@ import Button from '../components/ui/Button';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 
 export default function RoleDetail() {
-  const { sessionData, navigate, addLog, selectedRole } = useSession();
+  const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
+
+  const panelClasses = `p-4 rounded border ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
 
   if (!selectedRole) {
     return (
       <div className="p-4 text-center">
-        <p className="key-label">
+        <p className={valueClasses}>
           No role selected. Please go back to Timeline.
         </p>
         <button
           onClick={() => navigate('Timeline')}
-          className="mt-4 px-4 py-2 rounded border transition-colors border-light-border text-light-text-secondary hover:bg-light-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-hover"
+          className={`mt-4 px-4 py-2 rounded border transition-colors ${
+            theme === 'dark' 
+              ? 'border-dark-border text-dark-text-secondary hover:bg-dark-hover' 
+              : 'border-light-border text-light-text-secondary hover:bg-light-hover'
+          }`}
         >
           Back to Timeline
         </button>
@@ -35,11 +52,11 @@ export default function RoleDetail() {
 
   return (
     <div className="p-4 space-y-4">
-      <div className="panel-base panel-theme">
+      <div className={panelClasses}>
         <div className="space-y-1">
-          <h2 className="title-command text-xl">{selectedRole.company}</h2>
-          <p className="value-primary text-base">{selectedRole.role}</p>
-          <p className="key-label">{selectedRole.period} • {selectedRole.duration}</p>
+          <h2 className={`text-xl ${yellowClasses}`}>{selectedRole.company}</h2>
+          <p className={`text-base ${labelClasses}`}>{selectedRole.role}</p>
+          <p className={`text-sm ${valueClasses}`}>{selectedRole.period} • {selectedRole.duration}</p>
         </div>
       </div>
 

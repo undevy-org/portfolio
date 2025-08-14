@@ -4,7 +4,23 @@ import { useSession } from '../context/SessionContext';
 import { ChevronRight } from 'lucide-react';
 
 export default function SkillsGrid() {
-  const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
+  const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
+
+  const panelClasses = `p-4 rounded border ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+  const successClasses = `${
+    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+  }`;
 
   const skills = sessionData?.skills || [];
   
@@ -17,13 +33,13 @@ export default function SkillsGrid() {
   const getLevelColor = (level) => {
     switch(level) {
       case 'EXPERT':
-        return 'text-light-success dark:text-dark-success';
+        return successClasses; // Brightest green for expert
       case 'ADVANCED':
-        return 'value-primary';
+        return labelClasses; // Standard green
       case 'INTERMEDIATE':
-        return 'key-label';
+        return valueClasses; // Gray for intermediate
       default:
-        return 'key-label';
+        return valueClasses;
     }
   };
   
@@ -34,14 +50,18 @@ export default function SkillsGrid() {
           <button
             key={skill.id}
             onClick={() => handleSkillClick(skill)}
-            className="p-4 border rounded text-left transition-colors flex justify-between items-start border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover"
+            className={`p-4 border rounded text-left transition-colors flex justify-between items-start ${
+              theme === 'dark'
+                ? 'border-dark-border-darker hover:bg-dark-hover'
+                : 'border-light-border-lighter hover:bg-light-hover'
+            }`}
           > 
             <div className="space-y-1">
-              <div className="title-command">
+              <div className={`text-base ${yellowClasses}`}>
                 {skill.name}
               </div>
               
-              <div className="key-label">
+              <div className={`text-sm ${valueClasses}`}>
                 {skill.desc}
               </div>
               
@@ -50,7 +70,7 @@ export default function SkillsGrid() {
               </div>
             </div>
 
-            <ChevronRight className="w-5 h-5 key-label" />
+            <ChevronRight className={`w-5 h-5 ${valueClasses}`} />
           </button>
         ))}
       </div>

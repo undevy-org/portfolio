@@ -3,22 +3,27 @@
 import { useSession } from '../context/SessionContext';
 
 export default function ProfileDataPanel() {
-  const { sessionData } = useSession();
+  const { sessionData, theme } = useSession();
 
-  if (!sessionData?.profile?.summary) return null;
+  if (!sessionData?.profile_data) return null;
 
-  const { title, specialization, background } = sessionData.profile.summary;
+  const { title, specialization, background } = sessionData.profile_data;
+
+  const panelClasses = `border rounded p-3 text-sm ${
+    theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+  }`;
   
-  const separator = <span className="text-light-border dark:text-dark-border">|</span>;
+  const separator = <span className={theme === 'dark' ? 'text-dark-border' : 'text-light-border'}>|</span>;
 
   return (
-    <div className="panel-base panel-theme p-3 text-sm">
+    <div className={panelClasses}>
+      <h2 className="font-bold text-base mb-2 text-dark-text-command">$profile_data</h2>
       <div className="flex flex-wrap gap-x-2">
-        <span className="font-bold value-primary text-sm">{title}</span>
+        <span>{title}</span>
         {separator}
-        <span className="key-label">{specialization}</span>
+        <span>{specialization}</span>
         {separator}
-        <span className="key-label">{background}</span>
+        <span>{background}</span>
       </div>
     </div>
   );

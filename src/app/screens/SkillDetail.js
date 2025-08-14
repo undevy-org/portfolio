@@ -5,17 +5,35 @@ import Button from '../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 
 export default function SkillDetail() {
-  const { sessionData, navigate, addLog, selectedSkill } = useSession();
+  const { sessionData, theme, navigate, addLog, selectedSkill } = useSession();
+
+  const panelClasses = `p-4 rounded border ${
+    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+  }`;
+  const yellowClasses = `${
+    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+  }`;
+  const labelClasses = `${
+    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+  }`;
+  const valueClasses = `${
+    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+  }`;
+  const successClasses = theme === 'dark' ? 'text-dark-success' : 'text-light-success';
 
   if (!selectedSkill) {
     return (
       <div className="p-4 text-center">
-        <p className="key-label">
+        <p className={valueClasses}>
           No skill selected. Please go back to Skills Grid.
         </p>
         <button
           onClick={() => navigate('SkillsGrid')}
-          className="mt-4 px-4 py-2 rounded border transition-colors border-light-border text-light-text-secondary hover:bg-light-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-hover"
+          className={`mt-4 px-4 py-2 rounded border transition-colors ${
+            theme === 'dark' 
+              ? 'border-dark-border text-dark-text-secondary hover:bg-dark-hover' 
+              : 'border-light-border text-light-text-secondary hover:bg-light-hover'
+          }`}
         >
           Back to Skills
         </button>
@@ -36,48 +54,48 @@ export default function SkillDetail() {
   
   return (
     <div className="p-4 space-y-4">
-      <div className="panel-base panel-theme">
+      <div className={panelClasses}>
         <div className="space-y-1">
-          <h2 className="title-command text-xl">{selectedSkill.name}</h2>
-          <p className="key-label">{selectedSkill.desc}</p>
+          <h2 className={`text-xl ${yellowClasses}`}>{selectedSkill.name}</h2>
+          <p className={`text-sm ${valueClasses}`}>{selectedSkill.desc}</p>
         </div>
 
-        <div className="my-3 border-t border-light-border-lighter dark:border-dark-border-darker"></div>
+        <div className={`my-3 border-t ${theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'}`}></div>
         
         <div>
-          <h3 className="title-command">$proficiency_level</h3>
+          <h3 className={`text-base mb-2 ${yellowClasses}`}>$proficiency_level</h3>
           <div className="flex items-center gap-4">
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((level) => (
                 <div
                   key={level}
-                  className={`w-5 h-5 border border-light-border dark:border-dark-border ${
+                  className={`w-5 h-5 border ${theme === 'dark' ? 'border-dark-border' : 'border-light-border'} ${
                     level <= getLevelValue(selectedSkill.level)
-                      ? 'bg-light-text-primary dark:bg-dark-text-primary'
+                      ? (theme === 'dark' ? 'bg-dark-text-primary' : 'bg-light-text-primary')
                       : ''
                   }`}
                 />
               ))}
             </div>
-            <p className="value-primary text-lg">{selectedSkill.level}</p>
+            <p className={`text-lg ${labelClasses}`}>{selectedSkill.level}</p>
           </div>
         </div>
       </div>
-      <div className="panel-base panel-theme">
-        <h3 className="title-command">$skill_overview</h3>
-        <p className="key-label leading-relaxed">
+      <div className={panelClasses}>
+        <h3 className={`text-base mb-2 ${yellowClasses}`}>$skill_overview</h3>
+        <p className={`text-sm leading-relaxed ${valueClasses}`}>
           {skillDetails.description || 'No description available.'}
         </p>
       </div>
 
       {skillDetails.examples?.length > 0 && (
-        <div className="panel-base panel-theme">
-          <h3 className="title-command">$implementations</h3>
+        <div className={panelClasses}>
+          <h3 className={`text-base mb-2 ${yellowClasses}`}>$implementations</h3>
           <div className="space-y-1">
             {skillDetails.examples.map((example, idx) => (
               <div key={idx} className="text-sm flex items-start">
-                <span className="title-command mr-2">[{idx + 1}]</span>
-                <span className="key-label">{example}</span>
+                <span className={`mr-2 ${yellowClasses}`}>[{idx + 1}]</span>
+                <span className={valueClasses}>{example}</span>
               </div>
             ))}
           </div>
@@ -85,20 +103,20 @@ export default function SkillDetail() {
       )}
 
       {skillDetails.impact && (
-        <div className="panel-base panel-theme">
-          <h3 className="title-command">$business_impact</h3>
+        <div className={panelClasses}>
+          <h3 className={`text-base mb-2 ${yellowClasses}`}>$business_impact</h3>
           <div className="space-y-2">
             {Array.isArray(skillDetails.impact) ? (
               skillDetails.impact.map((item, idx) => (
                 <div key={idx} className="text-sm flex items-start">
-                  <span className="mr-2 text-light-success dark:text-dark-success">[✓]</span>
-                  <span className="key-label">{item}</span>
+                  <span className={`mr-2 ${successClasses}`}>[✓]</span>
+                  <span className={valueClasses}>{item}</span>
                 </div>
               ))
             ) : (
               <div className="text-sm flex items-start">
-                <span className="mr-2 text-light-success dark:text-dark-success">[✓]</span>
-                <span className="key-label">{skillDetails.impact}</span>
+                <span className={`mr-2 ${successClasses}`}>[✓]</span>
+                <span className={valueClasses}>{skillDetails.impact}</span>
               </div>
             )}
           </div>
@@ -106,11 +124,11 @@ export default function SkillDetail() {
       )}
 
       {skillDetails.tools?.length > 0 && (
-        <div className="panel-base panel-theme">
-          <h3 className="title-command">$related_tools</h3>
+        <div className={panelClasses}>
+          <h3 className={`text-base mb-2 ${yellowClasses}`}>$related_tools</h3>
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
             {skillDetails.tools.map((tool) => (
-              <span key={tool} className="key-label">
+              <span key={tool} className={valueClasses}>
                 [{tool}]
               </span>
             ))}
