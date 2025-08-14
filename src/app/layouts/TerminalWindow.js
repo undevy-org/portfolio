@@ -17,7 +17,8 @@ export default function TerminalWindow({ title, children }) {
     goHome,
     goUp,
     screenHierarchy,
-    navigate
+    navigate,
+    domainConfig // CHANGED: Added domainConfig from session context to access configuration
   } = useSession();
 
   const isBackDisabled = navigationHistory.length === 0 || currentScreen === 'Entry';
@@ -27,11 +28,9 @@ export default function TerminalWindow({ title, children }) {
     let displayTitle = title; 
 
     if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
-      if (currentDomain?.includes('undevy')) {
-        displayTitle = 'undevy_portfolio'; 
-      } else {
-        displayTitle = 'foxous_design';
-      }
+      // CHANGED: Instead of checking for specific domains, use terminalTitle from domain configuration
+      // This allows any domain to specify its own terminal title in domains.json
+      displayTitle = domainConfig?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
   }
 
   // WHY: We need to traverse up the hierarchy from current screen to build the full path

@@ -9,7 +9,14 @@ import TerminalProgress from '../components/ui/TerminalProgress';
 import AnimatedAsciiArt from '../components/ui/AnimatedAsciiArt';
 
 export default function ProfileBoot() {
-  const { sessionData, theme, navigate, addLog, currentDomain } = useSession();
+  const { 
+    sessionData, 
+    theme, 
+    navigate, 
+    addLog, 
+    currentDomain,
+    domainConfig // CHANGED: Added domainConfig to access terminal title from configuration
+  } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [loaderFrame, setLoaderFrame] = useState(0);
@@ -19,13 +26,15 @@ export default function ProfileBoot() {
   
   // Boot sequence messages - wrapped in useMemo to prevent recreation
   const bootSequence = useMemo(() => [
-    { message: `Loading ${currentDomain === 'foxous.design' ? '$foxous_portfolio' : '$undevy_portfolio'}...`, duration: 1200 },
+    // CHANGED: Use terminalTitle from domain configuration instead of hardcoded domain-specific names
+    // The terminalTitle with $ prefix creates the shell-like appearance
+    { message: `Loading $${domainConfig?.terminalTitle || 'portfolio'}...`, duration: 1200 },
     { message: 'Initializing session...', duration: 800 },
     { message: 'Fetching case studies...', duration: 1000 },
     { message: 'Loading experience data...', duration: 900 },
     { message: 'Preparing interface...', duration: 700 },
     { message: 'Access granted.', duration: 500 }
-  ], [currentDomain]); // Only recreate when currentDomain changes
+  ], [domainConfig?.terminalTitle]); // CHANGED: Dependency is now on terminalTitle instead of currentDomain
   
   useEffect(() => {
     if (!isComplete) {
