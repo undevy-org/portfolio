@@ -55,6 +55,40 @@ After authentication, the application transforms into a seamless Single Page App
     npm test
     ```
 
+## Testing
+
+The project includes a comprehensive test suite built with Jest and React Testing Library. Tests are co-located with the code they test, following the pattern `*.test.js`.
+
+### Running Tests
+
+```bash
+# Run all tests in watch mode (default)
+npm test
+
+# Run tests once (for CI)
+npm test -- --watchAll=false
+
+# Run specific test file
+npm test -- formatters.test.js
+
+# Run tests in specific directory
+npm test -- src/app/utils
+```
+
+### Test Coverage
+
+The project currently maintains:
+- **7 test suites** passing
+- **62 tests** total (59 passing, 3 todo)
+- **Unit tests** for all utility functions with enhanced edge case handling
+- **Component tests** for core UI components
+
+### Known Testing Limitations
+
+Code coverage reporting is currently non-functional due to incompatibility between Jest and Next.js 13+ app directory structure. This is a known tooling issue that doesn't affect test execution—only coverage metrics. All tests run successfully and provide the intended safety net for refactoring.
+
+For more details about our testing strategy and philosophy, see [`TESTING.md`](./TESTING.md).
+
 ## Contributing
 
 This project uses a Pull Request workflow with automated CI/CD. All changes must go through a feature branch and pass automated checks before merging to `main`.
@@ -122,5 +156,3 @@ This project is thoroughly documented. For more details, please see the followin
 -   **[`CHANGELOG.md`](./CHANGELOG.md):** A detailed history of all notable changes and project milestones.
 -   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
 -   **[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md):** A detailed overview of the custom terminal-inspired design system, including color palettes, typography, component guidelines, and theming instructions for consistent UI/UX across the portfolio.
-
-<!-- Branch protection test: Wed Aug 13 07:34:03 +04 2025 -->

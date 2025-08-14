@@ -1,23 +1,60 @@
+// src/app/utils/formatters.js
+
 export const getScreenDisplayName = (screen) => {
+  // Handle null/undefined inputs
+  if (!screen) return '';
+  
+  // Convert to string if not already
+  if (typeof screen !== 'string') {
+    return String(screen);
+  }
+  
+  // Special case mappings
   if (screen === 'MainHub') return 'Home';
-  // Convert CamelCase to space-separated words
-  return screen.replace(/([A-Z])/g, ' $1').trim();
+  
+  // Handle underscores first - replace them with spaces
+  let result = screen.replace(/_/g, ' ');
+  
+  // Handle consecutive capitals (like API, UI, XML)
+  // This regex looks for sequences of 2+ capitals followed by a lowercase letter
+  // or a sequence of capitals at the end of the string
+  result = result.replace(/([A-Z])([A-Z]+)([A-Z][a-z])/g, '$1$2 $3');
+  
+  // Handle normal CamelCase
+  // Add space before capital letters that follow lowercase letters or numbers
+  result = result.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+  
+  // Handle numbers
+  result = result.replace(/([a-zA-Z])(\d)/g, '$1 $2');
+  result = result.replace(/(\d)([a-zA-Z])/g, '$1 $2');
+  
+  // Capitalize first letter of each word
+  result = result.replace(/\b\w/g, char => char.toUpperCase());
+  
+  // Clean up any extra spaces
+  return result.trim();
 };
 
-export const getAvailabilityDate = () => {
-  const futureDate = new Date();
-  futureDate.setDate(futureDate.getDate() + 14); // Add 14 days
-
-  const dayOfWeek = futureDate.getDay(); // Sunday = 0, Saturday = 6
-
-  if (dayOfWeek === 6) { // If it's Saturday
-    futureDate.setDate(futureDate.getDate() + 2); // Move to Monday
-  } else if (dayOfWeek === 0) { // If it's Sunday
-    futureDate.setDate(futureDate.getDate() + 1); // Move to Monday
+export const getAvailabilityDate = (daysOffset = 14) => {
+  const date = new Date();
+  
+  // Add the offset days
+  date.setDate(date.getDate() + daysOffset);
+  
+  // Skip weekends
+  while (date.getDay() === 0 || date.getDay() === 6) {
+    date.setDate(date.getDate() + 1);
   }
-
-  // Format the date as "DD Month, YYYY" (e.g., "22 July, 2025")
-  const options = { day: 'numeric', month: 'long', year: 'numeric' };
-  // FIX: Corrected the method name from toLocaleDateDateString to toLocaleDateString.
-  return futureDate.toLocaleDateString('en-US', options);
+  
+  // Format as "Month DD, YYYY"
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  
+  return `${month} ${day}, ${year}`;
 };

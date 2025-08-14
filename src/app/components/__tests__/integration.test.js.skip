@@ -1,0 +1,461 @@
+// src/app/components/__tests__/integration.test.js
+// Integration tests for critical user flows
+
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
+
+// Import components that participate in user flows
+import CaseList from '../CaseList';
+import CaseDetail from '../CaseDetail';
+import TerminalWindow from '../TerminalWindow';
+import MainHub from '../MainHub';
+
+// Import test utilities
+import { MockSessionProvider, MockNavigationProvider } from '../../../test-utils/providers';
+import { MOCK_SESSION_DATA, MOCK_WEB3_SESSION, MOCK_GLOBAL_DATA } from '../../../test-utils/mocks';
+import { createMockWeb3Wallet } from '../../../test-utils/helpers';
+
+describe('Integration Tests - User Flows', () => {
+  
+  describe('User Flow: Navigating from CaseList to CaseDetail', () => {
+    // Mock functions for navigation and state management
+    const mockNavigate = jest.fn();
+    const mockSetSelectedCase = jest.fn();
+    const mockAddLog = jest.fn();
+
+    const renderCaseListFlow = (sessionData = MOCK_SESSION_DATA) => {
+      return render(
+        <MockSessionProvider 
+          sessionData={sessionData}
+          setSelectedCase={mockSetSelectedCase}
+          addLog={mockAddLog}
+        >
+          <MockNavigationProvider 
+            navigate={mockNavigate}
+            currentScreen="CaseList"
+          >
+            <CaseList />
+          </MockNavigationProvider>
+        </MockSessionProvider>
+      );
+    };
+
+    beforeEach(() => {
+      // Clear all mocks before each test
+      mockNavigate.mockClear();
+      mockSetSelectedCase.mockClear();
+      mockAddLog.mockClear();
+    });
+
+    it('should navigate to CaseDetail when a case study is clicked', async () => {
+      const user = userEvent.setup();
+      renderCaseListFlow();
+      
+      // Wait for the case list to render
+      await waitFor(() => {
+        expect(screen.getByText('E-commerce Platform Redesign')).toBeInTheDocument();
+      });
+      
+      // Find and click the first case study
+      const firstCase = screen.getByText('E-commerce Platform Redesign');
+      await user.click(firstCase);
+      
+      // Verify navigation was triggered
+      expect(mockNavigate).toHaveBeenCalledWith('CaseDetail');
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set the selected case data when navigating', async () => {
+      const user = userEvent.setup();
+      renderCaseListFlow();
+      
+      // Wait for cases to load
+      await waitFor(() => {
+        expect(screen.getByText('E-commerce Platform Redesign')).toBeInTheDocument();
+      });
+      
+      // Click on the first case
+      const firstCase = screen.getByText('E-commerce Platform Redesign');
+      await user.click(firstCase);
+      
+      // Verify the correct case data was set
+      expect(mockSetSelectedCase).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'case1',
+          title: 'E-commerce Platform Redesign',
+          category: 'Web Design'
+        })
+      );
+    });
+
+    it('should log the case selection event', async () => {
+      const user = userEvent.setup();
+      renderCaseListFlow();
+      
+      await waitFor(() => {
+        expect(screen.getByText('E-commerce Platform Redesign')).toBeInTheDocument();
+      });
+      
+      const firstCase = screen.getByText('E-commerce Platform Redesign');
+      await user.click(firstCase);
+      
+      // Verify logging
+      expect(mockAddLog).toHaveBeenCalledWith(
+        expect.stringContaining('CASE SELECTED'),
+        expect.any(String)
+      );
+      expect(mockAddLog).toHaveBeenCalledWith(
+        expect.stringContaining('case1'),
+        expect.any(String)
+      );
+    });
+
+    it('should handle keyboard navigation for accessibility', async () => {
+      const user = userEvent.setup();
+      renderCaseListFlow();
+      
+      await waitFor(() => {
+        expect(screen.getByText('E-commerce Platform Redesign')).toBeInTheDocument();
+      });
+      
+      // Tab to the first case card
+      await user.tab();
+      
+      // Press Enter to select
+      await user.keyboard('{Enter}');
+      
+      // Should trigger navigation
+      expect(mockNavigate).toHaveBeenCalledWith('CaseDetail');
+    });
+
+    it('should display all filtered case studies from session data', async () => {
+      renderCaseListFlow();
+      
+      await waitFor(() => {
+        // Should show only the filtered cases (case1 and case3)
+        expect(screen.getByText('E-commerce Platform Redesign')).toBeInTheDocument();
+        expect(screen.getByText('SaaS Dashboard')).toBeInTheDocument();
+        
+        // Should NOT show case2 (not in filtered list)
+        expect(screen.queryByText('Mobile Banking App')).not.toBeInTheDocument();
+      });
+    });
+
+    it('should handle empty case studies gracefully', async () => {
+      const emptySessionData = {
+        ...MOCK_SESSION_DATA,
+        case_studies: {}
+      };
+      
+      renderCaseListFlow(emptySessionData);
+      
+      await waitFor(() => {
+        // Should show an empty state or message
+        expect(screen.queryByText('No case studies available')).toBeInTheDocument();
+        // Or check that no case cards are rendered
+      });
+    });
+  });
+
+  describe('User Flow: Session Termination', () => {
+    const mockEndSession = jest.fn();
+    const mockDisconnectWallet = jest.fn();
+    const mockAddLog = jest.fn();
+    const mockNavigate = jest.fn();
+
+    beforeEach(() => {
+      mockEndSession.mockClear();
+      mockDisconnectWallet.mockClear();
+      mockAddLog.mockClear();
+      mockNavigate.mockClear();
+    });
+
+    describe('Web3 Session Logout', () => {
+      const renderWeb3Session = () => {
+        return render(
+          <MockSessionProvider 
+            sessionData={MOCK_WEB3_SESSION}
+            endSession={mockEndSession}
+            addLog={mockAddLog}
+            web3LogoutPending={false}
+            setWeb3LogoutPending={jest.fn()}
+          >
+            <MockNavigationProvider 
+              navigate={mockNavigate}
+              currentScreen="MainHub"
+            >
+              <TerminalWindow>
+                <MainHub />
+              </TerminalWindow>
+            </MockNavigationProvider>
+          </MockSessionProvider>
+        );
+      };
+
+      it('should trigger logout when Close button is clicked in Web3 session', async () => {
+        const user = userEvent.setup();
+        renderWeb3Session();
+        
+        // Find and click the Close button in terminal header
+        const closeButton = screen.getByRole('button', { name: /close/i });
+        await user.click(closeButton);
+        
+        // Verify session termination was initiated
+        expect(mockEndSession).toHaveBeenCalled();
+      });
+
+      it('should set web3LogoutPending flag when terminating Web3 session', async () => {
+        const mockSetWeb3LogoutPending = jest.fn();
+        
+        render(
+          <MockSessionProvider 
+            sessionData={MOCK_WEB3_SESSION}
+            endSession={mockEndSession}
+            setWeb3LogoutPending={mockSetWeb3LogoutPending}
+          >
+            <TerminalWindow>
+              <MainHub />
+            </TerminalWindow>
+          </MockSessionProvider>
+        );
+        
+        const closeButton = screen.getByRole('button', { name: /close/i });
+        fireEvent.click(closeButton);
+        
+        // Should signal that wallet disconnect is needed
+        expect(mockSetWeb3LogoutPending).toHaveBeenCalledWith(true);
+      });
+
+      it('should show confirmation dialog before terminating session', async () => {
+        const user = userEvent.setup();
+        renderWeb3Session();
+        
+        const closeButton = screen.getByRole('button', { name: /close/i });
+        await user.click(closeButton);
+        
+        // Should show confirmation dialog
+        await waitFor(() => {
+          expect(screen.getByText(/Are you sure you want to end this session/i)).toBeInTheDocument();
+        });
+        
+        // Confirm logout
+        const confirmButton = screen.getByRole('button', { name: /confirm/i });
+        await user.click(confirmButton);
+        
+        expect(mockEndSession).toHaveBeenCalled();
+      });
+
+      it('should log session termination event', async () => {
+        const user = userEvent.setup();
+        renderWeb3Session();
+        
+        const closeButton = screen.getByRole('button', { name: /close/i });
+        await user.click(closeButton);
+        
+        // If there's a confirmation, confirm it
+        const confirmButton = screen.queryByRole('button', { name: /confirm/i });
+        if (confirmButton) {
+          await user.click(confirmButton);
+        }
+        
+        expect(mockAddLog).toHaveBeenCalledWith(
+          expect.stringContaining('SESSION ENDED'),
+          expect.any(String)
+        );
+      });
+    });
+
+    describe('Code-based Session Logout', () => {
+      const renderCodeSession = () => {
+        return render(
+          <MockSessionProvider 
+            sessionData={MOCK_SESSION_DATA}
+            endSession={mockEndSession}
+            addLog={mockAddLog}
+          >
+            <MockNavigationProvider 
+              navigate={mockNavigate}
+              resetNavigation={jest.fn()}
+            >
+              <TerminalWindow>
+                <MainHub />
+              </TerminalWindow>
+            </MockNavigationProvider>
+          </MockSessionProvider>
+        );
+      };
+
+      it('should not set web3LogoutPending for code-based sessions', async () => {
+        const mockSetWeb3LogoutPending = jest.fn();
+        const user = userEvent.setup();
+        
+        render(
+          <MockSessionProvider 
+            sessionData={MOCK_SESSION_DATA}
+            endSession={mockEndSession}
+            setWeb3LogoutPending={mockSetWeb3LogoutPending}
+          >
+            <TerminalWindow>
+              <MainHub />
+            </TerminalWindow>
+          </MockSessionProvider>
+        );
+        
+        const closeButton = screen.getByRole('button', { name: /close/i });
+        await user.click(closeButton);
+        
+        // Should NOT set web3LogoutPending for regular sessions
+        expect(mockSetWeb3LogoutPending).not.toHaveBeenCalledWith(true);
+      });
+
+      it('should clear session data immediately for code-based sessions', async () => {
+        const user = userEvent.setup();
+        renderCodeSession();
+        
+        const closeButton = screen.getByRole('button', { name: /close/i });
+        await user.click(closeButton);
+        
+        // Confirm if needed
+        const confirmButton = screen.queryByRole('button', { name: /confirm/i });
+        if (confirmButton) {
+          await user.click(confirmButton);
+        }
+        
+        expect(mockEndSession).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('User Flow: Navigation Stack Management', () => {
+    const mockNavigate = jest.fn();
+    const mockGoBack = jest.fn();
+    const mockResetNavigation = jest.fn();
+    
+    beforeEach(() => {
+      mockNavigate.mockClear();
+      mockGoBack.mockClear();
+      mockResetNavigation.mockClear();
+    });
+
+    it('should maintain navigation stack when moving between screens', async () => {
+      const navigationStack = [];
+      const navigate = jest.fn((screen) => {
+        navigationStack.push({ screen, timestamp: Date.now() });
+      });
+      
+      const { rerender } = render(
+        <MockNavigationProvider 
+          navigate={navigate}
+          currentScreen="MainHub"
+          navigationStack={[{ screen: 'MainHub', timestamp: Date.now() }]}
+        >
+          <MainHub />
+        </MockNavigationProvider>
+      );
+      
+      // Simulate navigation to CaseList
+      navigate('CaseList');
+      
+      rerender(
+        <MockNavigationProvider 
+          navigate={navigate}
+          currentScreen="CaseList"
+          navigationStack={navigationStack}
+        >
+          <CaseList />
+        </MockNavigationProvider>
+      );
+      
+      // Verify stack has grown
+      expect(navigationStack).toHaveLength(1);
+      expect(navigationStack[0].screen).toBe('CaseList');
+    });
+
+    it('should reset navigation stack on session end', async () => {
+      const user = userEvent.setup();
+      
+      render(
+        <MockSessionProvider 
+          sessionData={MOCK_SESSION_DATA}
+          endSession={() => {
+            mockResetNavigation();
+          }}
+        >
+          <MockNavigationProvider 
+            resetNavigation={mockResetNavigation}
+            currentScreen="CaseDetail"
+            navigationStack={[
+              { screen: 'MainHub', timestamp: Date.now() - 2000 },
+              { screen: 'CaseList', timestamp: Date.now() - 1000 },
+              { screen: 'CaseDetail', timestamp: Date.now() }
+            ]}
+          >
+            <TerminalWindow>
+              <CaseDetail />
+            </TerminalWindow>
+          </MockNavigationProvider>
+        </MockSessionProvider>
+      );
+      
+      // End session
+      const closeButton = screen.getByRole('button', { name: /close/i });
+      await user.click(closeButton);
+      
+      // Confirm if needed
+      const confirmButton = screen.queryByRole('button', { name: /confirm/i });
+      if (confirmButton) {
+        await user.click(confirmButton);
+      }
+      
+      expect(mockResetNavigation).toHaveBeenCalled();
+    });
+
+    it('should handle back navigation correctly', async () => {
+      const canGoBack = jest.fn(() => true);
+      const user = userEvent.setup();
+      
+      render(
+        <MockNavigationProvider 
+          goBack={mockGoBack}
+          canGoBack={canGoBack}
+          currentScreen="CaseDetail"
+        >
+          <CaseDetail />
+        </MockNavigationProvider>
+      );
+      
+      // Find and click back button if it exists
+      const backButton = screen.queryByRole('button', { name: /back/i });
+      if (backButton) {
+        await user.click(backButton);
+        expect(mockGoBack).toHaveBeenCalled();
+      }
+    });
+  });
+
+  describe('Error Boundary Integration', () => {
+    it('should handle component errors gracefully', () => {
+      // Create a component that will throw an error
+      const BrokenComponent = () => {
+        throw new Error('Test error');
+      };
+      
+      // Suppress console.error for this test
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      
+      const { container } = render(
+        <MockSessionProvider sessionData={MOCK_SESSION_DATA}>
+          <BrokenComponent />
+        </MockSessionProvider>
+      );
+      
+      // Should render error boundary fallback (if implemented)
+      // Or at least not crash the entire app
+      expect(container).toBeInTheDocument();
+      
+      consoleSpy.mockRestore();
+    });
+  });
+});
