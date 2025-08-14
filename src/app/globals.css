@@ -3,33 +3,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer components {
-  .panel-base {
-    @apply border rounded-md p-4;
-  }
-  .panel-theme {
-    @apply bg-light-bg border-light-border dark:bg-dark-bg dark:border-dark-border-darker;
-  }
-  .title-command {
-    @apply text-base mb-2 font-mono text-light-text-command dark:text-dark-text-command;
-  }
-  .key-label {
-    @apply text-sm font-mono text-light-text-secondary dark:text-dark-text-secondary;
-  }
-  .value-primary {
-    @apply text-xl font-mono text-light-text-primary dark:text-dark-text-primary;
-  }
-  .tag-badge {
-    @apply text-xs px-2 py-0.5 border rounded-full whitespace-nowrap;
-  }
-  .button-secondary {
-    @apply px-4 py-2 rounded border transition-colors border-light-border text-light-text-secondary hover:bg-light-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-hover;
-  }
-  .button-panel {
-    @apply w-full p-4 border rounded text-left transition-colors flex items-start gap-4 border-light-border-lighter hover:bg-light-hover dark:border-dark-border-darker dark:hover:bg-dark-hover;
-  }
-  .tag-badge-theme {
-    @apply bg-gray-50 text-light-text-secondary border-light-border-lighter dark:bg-gray-900 dark:text-dark-text-secondary dark:border-dark-border-darker;
-  }
-}
