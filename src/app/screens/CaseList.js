@@ -1,7 +1,9 @@
+// src/app/screens/CaseList.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
 import { ChevronRight } from 'lucide-react';
+import TerminalProgress from '../components/ui/TerminalProgress'; // Import the progress component
 
 export default function CaseList() {
   const { sessionData, theme, navigate, addLog, setSelectedCase } = useSession();
@@ -26,6 +28,39 @@ export default function CaseList() {
   const caseIds = Object.keys(cases);
   const totalCasesCount = sessionData?.total_case_count || caseIds.length;
 
+  // Calculate access level and progress percentage
+  const accessPercentage = totalCasesCount > 0 
+    ? Math.round((caseIds.length / totalCasesCount) * 100) 
+    : 0;
+  
+  // Determine access level based on percentage
+  const getAccessLevel = (percentage) => {
+    if (percentage >= 90) return { level: 'Enterprise', next: null };
+    if (percentage >= 70) return { level: 'Professional', next: 'Enterprise' };
+    if (percentage >= 40) return { level: 'Standard', next: 'Professional' };
+    return { level: 'Basic', next: 'Standard' };
+  };
+  
+  const accessInfo = getAccessLevel(accessPercentage);
+  
+  // Calculate how many more cases needed for next level
+  const getNextLevelRequirement = () => {
+    if (accessInfo.next === null) return null;
+    
+    const thresholds = {
+      'Standard': 40,
+      'Professional': 70,
+      'Enterprise': 90
+    };
+    
+    const nextThreshold = thresholds[accessInfo.next];
+    const casesNeededForNext = Math.ceil((nextThreshold / 100) * totalCasesCount) - caseIds.length;
+    
+    return Math.max(casesNeededForNext, 0);
+  };
+  
+  const casesForNextLevel = getNextLevelRequirement();
+
   const handleCaseClick = (caseId, caseData) => {
     setSelectedCase({ id: caseId, ...caseData });
     addLog(`CASE SELECTED: ${caseData.title}`);
@@ -34,23 +69,45 @@ export default function CaseList() {
 
   return (
     <div className="p-4">
+      {/* Replaced square visualization with level-based progress system */}
       <div className={`mb-4 ${panelClasses}`}>
-        <div className={`text-base mb-2 ${yellowClasses}`}>$loading_cases</div>
-        <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm">
-          <div className="flex items-center gap-2">
-            <span className={labelClasses}>[</span>
-            {Array.from({ length: caseIds.length }, (_, i) => (
-              <span key={`loaded-${i}`} className={successClasses}>■</span>
-            ))}
-            {Array.from({ length: totalCasesCount - caseIds.length }, (_, i) => (
-              <span key={`empty-${i}`} className={valueClasses}>□</span>
-            ))}
-            <span className={labelClasses}>]</span>
-          </div>
-          <div className={`${valueClasses} whitespace-nowrap`}>
-              {caseIds.length}/{totalCasesCount} loaded for {sessionData?.meta?.company || 'session'}
-          </div>
+        {/* Access level indicator with company name */}
+        <div className={`mb-3 ${labelClasses}`}>
+          <span className={`text-sm ${yellowClasses}`}>Access Level: </span>
+          <span className={`text-sm ${successClasses}`}>{accessInfo.level}</span>
+          <span className={`text-sm ml-2 ${valueClasses}`}>
+            for {sessionData?.meta?.company || 'current session'}
+          </span>
         </div>
+        
+        {/* Progress bar using TerminalProgress component */}
+        <div className="mb-2">
+          <TerminalProgress 
+            progress={accessPercentage}
+            isLoading={true}
+            label={`${caseIds.length} of ${totalCasesCount} cases available`}
+            showPercentage={true}
+            animateProgress={true}
+            height="h-3" // Slightly smaller height for compact view
+          />
+        </div>
+        
+        {/* Next level hint - only show if not at max level */}
+        {accessInfo.next && casesForNextLevel > 0 && (
+          <div className={`text-xs mt-2 ${valueClasses}`}>
+            <span className="opacity-75">
+              Unlock {casesForNextLevel} more {casesForNextLevel === 1 ? 'case ' : 'cases '} 
+              to reach <span className={labelClasses}>{accessInfo.next}</span> level
+            </span>
+          </div>
+        )}
+        
+        {/* Max level achievement message */}
+        {!accessInfo.next && (
+          <div className={`text-xs mt-2 ${successClasses}`}>
+            <span>✓ Maximum access level achieved</span>
+          </div>
+        )}
       </div>
 
       <div className="space-y-3">
