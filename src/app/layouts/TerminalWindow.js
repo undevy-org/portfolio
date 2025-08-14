@@ -13,12 +13,11 @@ export default function TerminalWindow({ title, children }) {
     endSession, 
     currentScreen,
     navigationHistory,
-    currentDomain,
     goHome,
     goUp,
     screenHierarchy,
     navigate,
-    domainConfig // CHANGED: Added domainConfig from session context to access configuration
+    domainData
   } = useSession();
 
   const isBackDisabled = navigationHistory.length === 0 || currentScreen === 'Entry';
@@ -28,9 +27,7 @@ export default function TerminalWindow({ title, children }) {
     let displayTitle = title; 
 
     if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
-      // CHANGED: Instead of checking for specific domains, use terminalTitle from domain configuration
-      // This allows any domain to specify its own terminal title in domains.json
-      displayTitle = domainConfig?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
+      displayTitle = domainData?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
   }
 
   // WHY: We need to traverse up the hierarchy from current screen to build the full path

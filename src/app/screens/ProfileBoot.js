@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
-// WHY: To add a visual cue to the "VIEW PORTFOLIO" button, indicating progression.
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
 import AnimatedAsciiArt from '../components/ui/AnimatedAsciiArt';
@@ -15,7 +14,7 @@ export default function ProfileBoot() {
     navigate, 
     addLog, 
     currentDomain,
-    domainConfig // CHANGED: Added domainConfig to access terminal title from configuration
+    domainData
   } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -26,15 +25,14 @@ export default function ProfileBoot() {
   
   // Boot sequence messages - wrapped in useMemo to prevent recreation
   const bootSequence = useMemo(() => [
-    // CHANGED: Use terminalTitle from domain configuration instead of hardcoded domain-specific names
     // The terminalTitle with $ prefix creates the shell-like appearance
-    { message: `Loading $${domainConfig?.terminalTitle || 'portfolio'}...`, duration: 1200 },
+    { message: `Loading $${domainData?.terminalTitle || 'portfolio'}...`, duration: 1200 },
     { message: 'Initializing session...', duration: 800 },
     { message: 'Fetching case studies...', duration: 1000 },
     { message: 'Loading experience data...', duration: 900 },
     { message: 'Preparing interface...', duration: 700 },
     { message: 'Access granted.', duration: 500 }
-  ], [domainConfig?.terminalTitle]); // CHANGED: Dependency is now on terminalTitle instead of currentDomain
+  ], [domainData?.terminalTitle]);
   
   useEffect(() => {
     if (!isComplete) {
