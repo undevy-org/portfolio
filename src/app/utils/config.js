@@ -97,10 +97,16 @@ async function loadDomainConfig() {
   }
 
   try {
-    // Get path from environment or use default
-    const configPath = process.env.DOMAIN_CONFIG_PATH 
-      ? path.join(process.cwd(), process.env.DOMAIN_CONFIG_PATH)
-      : path.join(process.cwd(), 'config', 'domains.json');
+    let configPath;
+    if (process.env.DOMAIN_CONFIG_PATH) {
+      if (path.isAbsolute(process.env.DOMAIN_CONFIG_PATH)) {
+        configPath = process.env.DOMAIN_CONFIG_PATH;
+      } else {
+        configPath = path.join(process.cwd(), process.env.DOMAIN_CONFIG_PATH);
+      }
+    } else {
+      configPath = path.join(process.cwd(), 'config', 'domains.json');
+    }
 
     const configContent = await fs.readFile(configPath, 'utf-8');
     const config = JSON.parse(configContent);
