@@ -902,9 +902,6 @@ video {
      ANIMATIONS
      For smooth transitions
      =================================== */
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
 /* ===================================
      LAYOUT UTILITIES
      Frequently used layout patterns
@@ -925,9 +922,6 @@ video {
 }
 .collapse {
   visibility: collapse;
-}
-.static {
-  position: static;
 }
 .fixed {
   position: fixed;
@@ -1074,11 +1068,11 @@ video {
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
-.min-h-screen {
-  min-height: 100vh;
-}
 .min-h-\[400px\] {
   min-height: 400px;
+}
+.min-h-screen {
+  min-height: 100vh;
 }
 .w-2 {
   width: 0.5rem;
@@ -1233,11 +1227,6 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
-}
-.space-y-6 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 .overflow-hidden {
   overflow: hidden;
@@ -1624,6 +1613,9 @@ video {
 .opacity-0 {
   opacity: 0;
 }
+.opacity-100 {
+  opacity: 1;
+}
 .opacity-50 {
   opacity: 0.5;
 }
@@ -1635,9 +1627,6 @@ video {
 }
 .opacity-80 {
   opacity: 0.8;
-}
-.opacity-100 {
-  opacity: 1;
 }
 .outline-none {
   outline: 2px solid transparent;
@@ -1653,11 +1642,6 @@ video {
 }
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-.transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
 }
 .transition-all {
   transition-property: all;
