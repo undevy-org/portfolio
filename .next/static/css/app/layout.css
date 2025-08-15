@@ -864,11 +864,70 @@ video {
     max-width: 1536px;
   }
 }
+/* ===================================
+     TEXT STYLES
+     Semantic classes for all types of text
+     =================================== */
+/* Basic text styles */
+/* ===================================
+     BACKGROUND STYLES
+     For various containers and surfaces
+     =================================== */
+/* ===================================
+     BORDER STYLES
+     For all types of outlines
+     =================================== */
+/* ===================================
+     COMPOSITE COMPONENTS
+     Ready-made patterns for UI elements
+     =================================== */
+/* Base panel (structure without colors) */
+/* Themed panel (full-fledged container) */
+/* Full panel (structure + theme) */
+/* Panel title in command style */
+/* Label for keys in key-value pairs */
+/* Value in key-value pairs */
+/* Badge/tag */
+/* Command button (main button style) */
+/* Active button/tab */
+/* ===================================
+     INTERACTIVE STATES
+     For hover, focus, active effects
+     =================================== */
+/* ===================================
+     FORMS AND INPUTS
+     Styles for form elements
+     =================================== */
+/* ===================================
+     ANIMATIONS
+     For smooth transitions
+     =================================== */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+/* ===================================
+     LAYOUT UTILITIES
+     Frequently used layout patterns
+     =================================== */
+/* ===================================
+     SPECIAL COMPONENTS
+     Unique to terminal-style
+     =================================== */
+/* Terminal output line */
+/* System log */
+/* ASCII frame for image previews */
+/* ===================================
+     ADAPTIVE MODIFIERS
+     For mobile devices
+     =================================== */
 .visible {
   visibility: visible;
 }
 .collapse {
   visibility: collapse;
+}
+.static {
+  position: static;
 }
 .fixed {
   position: fixed;
@@ -1015,11 +1074,11 @@ video {
 .max-h-\[90vh\] {
   max-height: 90vh;
 }
-.min-h-\[400px\] {
-  min-height: 400px;
-}
 .min-h-screen {
   min-height: 100vh;
+}
+.min-h-\[400px\] {
+  min-height: 400px;
 }
 .w-2 {
   width: 0.5rem;
@@ -1174,6 +1233,11 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 .overflow-hidden {
   overflow: hidden;
@@ -1465,9 +1529,6 @@ video {
 .font-normal {
   font-weight: 400;
 }
-.font-semibold {
-  font-weight: 600;
-}
 .uppercase {
   text-transform: uppercase;
 }
@@ -1563,9 +1624,6 @@ video {
 .opacity-0 {
   opacity: 0;
 }
-.opacity-100 {
-  opacity: 1;
-}
 .opacity-50 {
   opacity: 0.5;
 }
@@ -1577,6 +1635,9 @@ video {
 }
 .opacity-80 {
   opacity: 0.8;
+}
+.opacity-100 {
+  opacity: 1;
 }
 .outline-none {
   outline: 2px solid transparent;
@@ -1592,6 +1653,11 @@ video {
 }
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
 .transition-all {
   transition-property: all;
@@ -1616,32 +1682,72 @@ video {
 .duration-500 {
   transition-duration: 500ms;
 }
+/* Remove default button styles in Web3 modals */
+
+/* ===================================
+   CUSTOM ANIMATIONS
+   Definitions for @keyframes
+   =================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===================================
+   OVERRIDES FOR THIRD-PARTY LIBRARIES
+   For example, for Reown/WalletConnect modals
+   =================================== */
+
 .hover\:bg-dark-hover:hover {
   background-color: rgba(34, 197, 94, 0.1);
 }
+
 .hover\:bg-light-hover:hover {
   background-color: rgba(5, 150, 105, 0.1);
 }
+
 .hover\:text-dark-text-primary:hover {
   --tw-text-opacity: 1;
   color: rgb(134 239 172 / var(--tw-text-opacity, 1));
 }
+
 .hover\:text-light-text-primary:hover {
   --tw-text-opacity: 1;
   color: rgb(6 95 70 / var(--tw-text-opacity, 1));
 }
+
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
+
 .group:hover .group-hover\:underline {
   text-decoration-line: underline;
 }
+
 .group:hover .group-hover\:opacity-100 {
   opacity: 1;
 }
+
 .group:hover .group-hover\:opacity-90 {
   opacity: 0.9;
 }
+
 @media (min-width: 640px) {
 
   .sm\:px-4 {
@@ -1653,6 +1759,7 @@ video {
     font-size: 14px;
   }
 }
+
 @media (min-width: 768px) {
 
   .md\:grid {
