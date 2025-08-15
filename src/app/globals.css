@@ -3,3 +3,296 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /* ===================================
+     TEXT STYLES
+     Semantic classes for all types of text
+     =================================== */
+  
+  /* Basic text styles */
+  .text-primary {
+    @apply text-light-text-primary dark:text-dark-text-primary;
+  }
+  
+  .text-secondary {
+    @apply text-light-text-secondary dark:text-dark-text-secondary;
+  }
+  
+  .text-command {
+    @apply text-light-text-command dark:text-dark-text-command;
+  }
+  
+  .text-white-black {
+    /* White in dark theme, black in light theme */
+    @apply text-light-text-black dark:text-dark-text-white;
+  }
+  
+  .text-tertiary {
+    /* For even less important text */
+    @apply text-gray-500 dark:text-dark-text-tertiary;
+  }
+  
+  .text-error {
+    @apply text-light-error dark:text-dark-error;
+  }
+  
+  .text-success {
+    @apply text-light-success dark:text-dark-success;
+  }
+  
+  .text-accent {
+    @apply text-light-accent dark:text-dark-accent;
+  }
+  
+  /* ===================================
+     BACKGROUND STYLES
+     For various containers and surfaces
+     =================================== */
+  
+  .bg-main {
+    @apply bg-light-bg dark:bg-dark-bg;
+  }
+  
+  .bg-input {
+    @apply bg-light-input-bg dark:bg-dark-input-bg;
+  }
+  
+  .bg-active {
+    @apply bg-light-active dark:bg-dark-active;
+  }
+  
+  .bg-hover {
+    @apply hover:bg-light-hover dark:hover:bg-dark-hover;
+  }
+  
+  /* ===================================
+     BORDER STYLES
+     For all types of outlines
+     =================================== */
+  
+  .border-primary {
+    @apply border-light-border dark:border-dark-border;
+  }
+  
+  .border-secondary {
+    @apply border-light-border-lighter dark:border-dark-border-darker;
+  }
+  
+  .border-active {
+    @apply border-light-border dark:border-dark-active;
+  }
+  
+  .border-error {
+    @apply border-light-error dark:border-dark-error;
+  }
+  
+  .border-success {
+    @apply border-light-success dark:border-dark-success;
+  }
+  
+  /* ===================================
+     COMPOSITE COMPONENTS
+     Ready-made patterns for UI elements
+     =================================== */
+  
+  /* Base panel (structure without colors) */
+  .panel-base {
+    @apply border rounded-md p-4;
+  }
+  
+  /* Themed panel (full-fledged container) */
+  .panel-theme {
+    @apply bg-main border-secondary;
+  }
+  
+  /* Full panel (structure + theme) */
+  .panel-full {
+    @apply panel-base panel-theme;
+  }
+  
+  /* Panel title in command style */
+  .title-command {
+    @apply text-base mb-2 font-mono text-command;
+  }
+  
+  /* Label for keys in key-value pairs */
+  .key-label {
+    @apply text-sm font-mono text-secondary;
+  }
+  
+  /* Value in key-value pairs */
+  .value-primary {
+    @apply text-xl font-mono text-primary;
+  }
+  
+  /* Badge/tag */
+  .tag-badge {
+    @apply text-xs px-2 py-0.5 border rounded-full whitespace-nowrap;
+  }
+  
+  /* Command button (main button style) */
+  .btn-command {
+    @apply px-4 py-2 font-mono text-sm border rounded
+           border-primary text-primary
+           bg-hover transition-colors;
+  }
+  
+  /* Active button/tab */
+  .btn-active {
+    @apply bg-active border-active;
+  }
+  
+  /* ===================================
+     INTERACTIVE STATES
+     For hover, focus, active effects
+     =================================== */
+  
+  .interactive-base {
+    @apply transition-all duration-200 cursor-pointer;
+  }
+  
+  .interactive-hover {
+    @apply hover:opacity-80 hover:scale-[1.02];
+  }
+  
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 
+           focus:ring-light-border dark:focus:ring-dark-border;
+  }
+  
+  /* ===================================
+     FORMS AND INPUTS
+     Styles for form elements
+     =================================== */
+  
+  .input-base {
+    @apply w-full px-3 py-2 rounded border font-mono text-sm
+           bg-input border-primary text-primary
+           focus-ring;
+  }
+  
+  .input-error {
+    @apply border-error text-error;
+  }
+  
+  .label-base {
+    @apply block text-sm font-mono text-secondary mb-1;
+  }
+  
+  /* ===================================
+     ANIMATIONS
+     For smooth transitions
+     =================================== */
+  
+  .animate-fade-in {
+    @apply animate-[fadeIn_0.3s_ease-in-out];
+  }
+  
+  .animate-slide-up {
+    @apply animate-[slideUp_0.3s_ease-out];
+  }
+  
+  /* ===================================
+     LAYOUT UTILITIES
+     Frequently used layout patterns
+     =================================== */
+  
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+  
+  .flex-col-center {
+    @apply flex flex-col items-center justify-center;
+  }
+  
+  .grid-responsive {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  /* ===================================
+     SPECIAL COMPONENTS
+     Unique to terminal-style
+     =================================== */
+  
+  /* Terminal output line */
+  .terminal-line {
+    @apply font-mono text-sm text-secondary;
+  }
+  
+  .terminal-prompt {
+    @apply font-mono text-sm text-command;
+  }
+  
+  /* System log */
+  .log-entry {
+    @apply text-xs font-mono text-tertiary;
+  }
+  
+  .log-timestamp {
+    @apply text-xs font-mono text-tertiary opacity-60;
+  }
+  
+  /* ASCII frame for image previews */
+  .ascii-frame {
+    @apply font-mono text-xs text-secondary leading-none;
+  }
+  
+  /* ===================================
+     ADAPTIVE MODIFIERS
+     For mobile devices
+     =================================== */
+  
+  .mobile-full {
+    @apply w-full sm:w-auto;
+  }
+  
+  .hide-mobile {
+    @apply hidden sm:block;
+  }
+  
+  .show-mobile {
+    @apply block sm:hidden;
+  }
+}
+
+/* ===================================
+   CUSTOM ANIMATIONS
+   Definitions for @keyframes
+   =================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===================================
+   OVERRIDES FOR THIRD-PARTY LIBRARIES
+   For example, for Reown/WalletConnect modals
+   =================================== */
+
+@layer utilities {
+  /* Remove default button styles in Web3 modals */
+  .wallet-modal-override {
+    @apply !bg-transparent !text-primary;
+  }
+}
