@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'; 
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
-import AnimatedAsciiArt from '../components/ui/AnimatedAsciiArt';
+import MorphingTerminal from '../components/ui/MorphingTerminal'; 
 
 export default function ProfileBoot() {
   const { 
@@ -23,16 +23,18 @@ export default function ProfileBoot() {
   
   const loaderFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   
-  // Boot sequence messages - wrapped in useMemo to prevent recreation
-  const bootSequence = useMemo(() => [
-    // The terminalTitle with $ prefix creates the shell-like appearance
-    { message: `Loading $${domainData?.terminalTitle || 'portfolio'}...`, duration: 1200 },
-    { message: 'Initializing session...', duration: 800 },
-    { message: 'Fetching case studies...', duration: 1000 },
-    { message: 'Loading experience data...', duration: 900 },
-    { message: 'Preparing interface...', duration: 700 },
-    { message: 'Access granted.', duration: 500 }
-  ], [domainData?.terminalTitle]);
+  const bootSequence = useMemo(() => {
+    const terminalTitle = domainData?.terminalTitle || 'portfolio';
+    return [
+      // The terminalTitle with $ prefix creates the shell-like appearance
+      { message: `Loading $${terminalTitle}...`, duration: 1200 },
+      { message: 'Initializing session...', duration: 800 },
+      { message: 'Fetching case studies...', duration: 1000 },
+      { message: 'Loading experience data...', duration: 900 },
+      { message: 'Preparing interface...', duration: 700 },
+      { message: 'Access granted.', duration: 500 }
+    ];
+  }, [domainData?.terminalTitle]);
   
   useEffect(() => {
     if (!isComplete) {
@@ -52,18 +54,13 @@ export default function ProfileBoot() {
   useEffect(() => {
     if (currentStep < bootSequence.length) {
       const timer = setTimeout(() => {
-        // Only proceed if we haven't reached the end
-        if (currentStep < bootSequence.length) {
-          // Log the current message (not the next one)
-        addLog(bootSequence[currentStep].message.replace('...', ''));
+        const step = bootSequence[currentStep];
+        addLog(step.message.replace(/\.\.\.$/, ''));
         
-          // Move to next step
-          setCurrentStep(prev => prev + 1);
-          
-          // Check if this was the last message
+        setCurrentStep(prev => prev + 1);
+        
         if (currentStep === bootSequence.length - 1) {
           setTimeout(() => setIsComplete(true), 500);
-          }
         }
       }, bootSequence[currentStep].duration);
       
@@ -71,21 +68,23 @@ export default function ProfileBoot() {
     }
   }, [currentStep, bootSequence, addLog]);
   
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     addLog('BOOT COMPLETE: Entering main hub');
     navigate('MainHub', false);
-  };
+  }, [addLog, navigate]);
   
   const progressPercentage = (currentStep / bootSequence.length) * 100;
   
   return (
     <div className="p-8 flex flex-col items-center justify-center min-h-[400px]">
       <div className="mb-6">
-        <AnimatedAsciiArt />
+        <MorphingTerminal autoPlay={true} loopAnimation={false} frameDelay={600} />
       </div>
       
       <div 
         ref={logContainerRef}
+        role="log"
+        aria-live="polite"
         className={`w-full max-w-md h-32 overflow-y-auto border rounded p-2 mb-6 ${
           theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
         }`}

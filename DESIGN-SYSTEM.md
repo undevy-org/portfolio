@@ -58,7 +58,7 @@ The palette is inspired by classic monochrome monitors (green-on-black) but mode
 
 A strict typographic scale ensures consistency and readability.
 
--   **Font Family**: `font-mono` (`Roboto Mono`) is used exclusively to maintain the terminal aesthetic.
+-   **Font Family**: `font-mono` (`IBM Plex Mono`) is used exclusively to maintain the terminal aesthetic.
 -   **Font Sizes**: A limited set of sizes creates a clean, predictable rhythm.
     -   `text-xs`: The smallest size, for tertiary details like tags and log timestamps.
     -   `text-sm`: The workhorse for all body copy and descriptions.
