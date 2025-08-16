@@ -401,16 +401,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
-/***/ "(ssr)/./node_modules/@wagmi/core/dist/esm/query/disconnect.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/@wagmi/core/dist/esm/query/disconnect.js ***!
-  \***************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   disconnectMutationOptions: () => (/* binding */ disconnectMutationOptions)\n/* harmony export */ });\n/* harmony import */ var _actions_disconnect_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions/disconnect.js */ \"(ssr)/./node_modules/@wagmi/core/dist/esm/actions/disconnect.js\");\n\nfunction disconnectMutationOptions(config) {\n    return {\n        mutationFn(variables) {\n            return (0,_actions_disconnect_js__WEBPACK_IMPORTED_MODULE_0__.disconnect)(config, variables);\n        },\n        mutationKey: ['disconnect'],\n    };\n}\n//# sourceMappingURL=disconnect.js.map//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvQHdhZ21pL2NvcmUvZGlzdC9lc20vcXVlcnkvZGlzY29ubmVjdC5qcyIsIm1hcHBpbmdzIjoiOzs7OztBQUF1RDtBQUNoRDtBQUNQO0FBQ0E7QUFDQSxtQkFBbUIsa0VBQVU7QUFDN0IsU0FBUztBQUNUO0FBQ0E7QUFDQTtBQUNBIiwic291cmNlcyI6WyIvVXNlcnMvdW5kZXZ5L3BvcnRmb2xpby1wcm9qZWN0L25vZGVfbW9kdWxlcy9Ad2FnbWkvY29yZS9kaXN0L2VzbS9xdWVyeS9kaXNjb25uZWN0LmpzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGRpc2Nvbm5lY3QsIH0gZnJvbSAnLi4vYWN0aW9ucy9kaXNjb25uZWN0LmpzJztcbmV4cG9ydCBmdW5jdGlvbiBkaXNjb25uZWN0TXV0YXRpb25PcHRpb25zKGNvbmZpZykge1xuICAgIHJldHVybiB7XG4gICAgICAgIG11dGF0aW9uRm4odmFyaWFibGVzKSB7XG4gICAgICAgICAgICByZXR1cm4gZGlzY29ubmVjdChjb25maWcsIHZhcmlhYmxlcyk7XG4gICAgICAgIH0sXG4gICAgICAgIG11dGF0aW9uS2V5OiBbJ2Rpc2Nvbm5lY3QnXSxcbiAgICB9O1xufVxuLy8jIHNvdXJjZU1hcHBpbmdVUkw9ZGlzY29ubmVjdC5qcy5tYXAiXSwibmFtZXMiOltdLCJpZ25vcmVMaXN0IjpbMF0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/@wagmi/core/dist/esm/query/disconnect.js\n");
-
-/***/ }),
-
 /***/ "(ssr)/./node_modules/@wagmi/core/dist/esm/utils/deepEqual.js":
 /*!**************************************************************!*\
   !*** ./node_modules/@wagmi/core/dist/esm/utils/deepEqual.js ***!

@@ -1,6 +1,4 @@
 {
-  "/api/config/route": "app/api/config/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/session/route": "app/api/session/route.js",
-  "/page": "app/page.js"
+  "/test-theme/page": "app/test-theme/page.js"
 }
