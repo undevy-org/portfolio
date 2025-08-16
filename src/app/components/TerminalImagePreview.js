@@ -213,7 +213,7 @@ export default function TerminalImagePreview({
       return (
         <div 
         className={`${frameClasses} cursor-pointer border-2 ${
-            theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+            "border-primary"
           }`}
           style={{ 
             height: `${height}px`,
@@ -232,7 +232,7 @@ export default function TerminalImagePreview({
       return (
         <div 
         className={`${frameClasses} border-2 ${
-          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+          "border-primary"
         }`}
         style={{ 
           height: `${height}px`,
@@ -258,7 +258,7 @@ export default function TerminalImagePreview({
       return (
         <div 
         className={`${frameClasses} border ${
-          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+          "border-primary"
         }`}
         style={{ 
           height: `${height}px`,
@@ -266,7 +266,7 @@ export default function TerminalImagePreview({
         }}
         >
           <div className={`text-center ${
-            theme === 'dark' ? 'text-dark-error' : 'text-light-error'
+            "text-error"
           }`}>
             [ ERROR ]<br/>
             <span className="text-xs">Failed to load image</span>
@@ -284,7 +284,7 @@ export default function TerminalImagePreview({
           style={{ aspectRatio }}
         >
           <div className={`relative w-full h-full rounded border overflow-hidden ${
-            theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+            "border-primary"
           }`}>
             <NextImage 
               src={src} 

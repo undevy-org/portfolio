@@ -9,19 +9,19 @@ export default function CaseDetail() {
   const { sessionData, theme, navigate, addLog, selectedCase } = useSession();
   
   const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+    "border-secondary"
   }`;
   
   const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+    "text-command"
   }`;
   
   const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+    "text-secondary"
   }`;
   
   const successClasses = `${
-    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+    "text-success"
   }`;
   
   if (!selectedCase) {
@@ -47,8 +47,6 @@ export default function CaseDetail() {
   const caseDetails = sessionData?.case_details?.[selectedCase.id] || {};
   const caseImages = caseDetails.images || {};
   
-  // Build tabs with content as ARRAYS of objects (not pre-rendered JSX!)
-  // This is what Tabs.js expects
   const tabs = [
     {
       id: 'challenge',
@@ -116,9 +114,9 @@ export default function CaseDetail() {
     <div className="p-4 space-y-4">
       <div className={panelClasses}>
         <div className="space-y-2">
-          <h2 className={`text-xl ${yellowClasses}`}>{selectedCase.title}</h2>
-          <p className={`text-sm ${valueClasses}`}>{selectedCase.desc}</p>
-          <p className={`text-sm pt-1 ${successClasses}`}>{selectedCase.metrics}</p>
+          <h2 className={`text-xl text-command`}>{selectedCase.title}</h2>
+          <p className={`text-sm text-secondary`}>{selectedCase.desc}</p>
+          <p className={`text-sm pt-1 text-success`}>{selectedCase.metrics}</p>
           <div className="flex flex-wrap gap-2 pt-2">
             {selectedCase.tags?.map((tag) => (
               <span

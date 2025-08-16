@@ -10,14 +10,14 @@ export default function ConfigurationPanel() {
   const { timeline, depth, tone } = sessionData.config;
 
   const panelClasses = `border rounded p-3 text-sm ${
-    theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+    "border-primary"
   }`;
   
   const labelClasses = `text-dark-text-command`;
 
   return (
     <div className={panelClasses}>
-      <h2 className={`font-bold text-base mb-2 ${labelClasses}`}>$configuration</h2>
+      <h2 className={`font-bold text-base mb-2 text-primary`}>$configuration</h2>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         <span className={labelClasses}>$timeline:</span>
         <span>{timeline}</span>

@@ -396,8 +396,8 @@ export default function Entry() {
             : 'bg-light-input-bg text-light-text-primary'
         } border ${
           authError
-            ? (theme === 'dark' ? 'border-dark-error' : 'border-light-error')
-            : (theme === 'dark' ? 'border-dark-border' : 'border-light-border')
+            ? 'border-error'
+            : "border-primary" 
         } ${
           authError ? 'animate-pulse' : ''
         }`}
@@ -408,7 +408,7 @@ export default function Entry() {
 
       {authError && (
         <div className={`mb-3 text-sm ${
-          theme === 'dark' ? 'text-dark-error' : 'text-light-error'
+          "text-error"
         }`}>
           {authError}
         </div>
@@ -461,7 +461,7 @@ export default function Entry() {
       
       {isConnected && web3Status === 'connecting' && (
         <div className={`mt-2 text-center text-xs ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+          "text-secondary"
         }`}>
           Processing Web3 authentication...
         </div>
@@ -469,7 +469,7 @@ export default function Entry() {
       
       {(web3Status === 'disconnecting' || web3LogoutPending) && (
         <div className={`mt-2 text-center text-xs ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+          "text-secondary"
         }`}>
           Disconnecting wallet...
         </div>

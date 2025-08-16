@@ -10,10 +10,10 @@ export default function Contact() {
   const [emailCopied, setEmailCopied] = useState(false);
 
   // WHY: This makes the code more readable and easier to maintain.
-  const yellowClasses = theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command';
-  const labelClasses = theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary';
-  const valueClasses = theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
-  const mainTextClasses = theme === 'dark' ? 'text-dark-text-white' : 'text-light-text-black';
+  const yellowClasses = "text-command";
+  const labelClasses = "text-primary";
+  const valueClasses = "text-secondary";
+  const mainTextClasses = "text-white-black";
   const mainBorderClasses = theme === 'dark' ? 'border-dark-border hover:bg-dark-hover' : 'border-light-border hover:bg-light-hover';
 
   const baseContact = sessionData?.contact || {};
@@ -97,12 +97,12 @@ export default function Contact() {
           className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}
         >
           <div className="flex items-center">
-            <Mail className={`w-5 h-5 mr-3 ${yellowClasses}`} />
+            <Mail className={`w-5 h-5 mr-3 text-command`} />
             <span className={mainTextClasses}>{contactData.email}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Copy className={`w-4 h-4 ${valueClasses}`} />
-            <span className={`text-xs ${emailCopied ? (theme === 'dark' ? 'text-dark-success' : 'text-light-success') : valueClasses}`}>
+            <Copy className={`w-4 h-4 text-secondary`} />
+            <span className={`text-xs ${emailCopied ? ("text-success") : valueClasses}`}>
               {emailCopied ? 'COPIED!' : 'COPY'}
             </span>
           </div>
@@ -110,17 +110,17 @@ export default function Contact() {
         <div className="flex flex-col md:flex-row gap-3">
           <button onClick={() => handleExternalLink('Portfolio website', contactData.website)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
           <div className="flex items-center">
-              <Globe className={`w-5 h-5 mr-3 ${yellowClasses}`} />
+              <Globe className={`w-5 h-5 mr-3 text-command`} />
               <span className={mainTextClasses}>{contactData.website?.replace('https://', '')}</span>
           </div>
-            <ExternalLink className={`w-4 h-4 ${valueClasses}`} />
+            <ExternalLink className={`w-4 h-4 text-secondary`} />
         </button>
         {contactData.telegram && (
             /* CHANGED: Simplified telegram button to use contactData.telegram directly */
             /* The telegram URL is now complete (https://t.me/...) from configuration */
             <button onClick={() => handleExternalLink('Telegram', contactData.telegram)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
             <div className="flex items-center">
-                <MessageCircle className={`w-5 h-5 mr-3 ${yellowClasses}`} />
+                <MessageCircle className={`w-5 h-5 mr-3 text-command`} />
                 {/* CHANGED: Extract handle from telegram URL for display */}
                 <span className={mainTextClasses}>
                   {contactData.telegram.includes('t.me/') 
@@ -129,7 +129,7 @@ export default function Contact() {
                   }
                 </span>
             </div>
-              <ExternalLink className={`w-4 h-4 ${valueClasses}`} />
+              <ExternalLink className={`w-4 h-4 text-secondary`} />
           </button>
         )}
         </div>
@@ -139,8 +139,8 @@ export default function Contact() {
         WHY: It centralizes the user's current work status in the most logical place—the contact screen.
         The data is now a mix of hardcoded values, dynamic calculations, and content from content.json for maximum flexibility.
       */}
-      <div className={`p-4 border rounded ${theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'}`}>
-        <h3 className={`text-base mb-2 ${yellowClasses}`}>
+      <div className="p-4 border rounded border-secondary">
+        <h3 className={`text-base mb-2 text-command`}>
           $current_status
           </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">

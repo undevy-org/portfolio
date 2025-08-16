@@ -1170,5 +1170,83 @@
     "files": [
       "static/chunks/_app-pages-browser_node_modules_viem_node_modules_noble_curves_esm_secp256k1_js.js"
     ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/CaseDetail": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/CaseDetail",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_CaseDetail_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/CaseList": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/CaseList",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_CaseList_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/Contact": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/Contact",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_Contact_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/Entry": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/Entry",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_Entry_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/Introduction": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/Introduction",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_Introduction_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/MainHub": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/MainHub",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_MainHub_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/ProfileBoot": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/ProfileBoot",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_ProfileBoot_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/RoleDetail": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/RoleDetail",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_RoleDetail_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/SideProjects": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/SideProjects",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_SideProjects_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/SkillDetail": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/SkillDetail",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_SkillDetail_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/SkillsGrid": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/SkillsGrid",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_SkillsGrid_js.js"
+    ]
+  },
+  "app/components/ScreenRenderer.js -> ../screens/Timeline": {
+    "id": "app/components/ScreenRenderer.js -> ../screens/Timeline",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_screens_Timeline_js.js"
+    ]
+  },
+  "app/components/ui/Tabs.js -> ../TerminalImagePreview": {
+    "id": "app/components/ui/Tabs.js -> ../TerminalImagePreview",
+    "files": [
+      "static/chunks/_app-pages-browser_src_app_components_TerminalImagePreview_js.js"
+    ]
   }
 }

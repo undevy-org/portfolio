@@ -7,19 +7,19 @@ export default function SideProjects() {
   const { sessionData, theme, addLog } = useSession();
   
   const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+    "border-secondary"
   }`;
   const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+    "text-command"
   }`;
   const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+    "text-primary"
   }`;
   const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+    "text-secondary"
   }`;
   const primaryTextClasses = `${
-    theme === 'dark' ? 'text-dark-text-white' : 'text-light-text-black'
+    "text-white-black"
   }`;
 
   const projects = sessionData?.side_projects || [];
@@ -49,15 +49,15 @@ export default function SideProjects() {
           // WHY: This aligns with the request to make the project name the primary header and remove the redundant project ID.
           <div key={project.id} className={panelClasses}>
             <div className="flex items-start justify-between mb-2">
-              <h3 className={`text-base ${yellowClasses}`}>{project.name}</h3>
+              <h3 className={`text-base text-command`}>{project.name}</h3>
               <span className={`text-xs px-2 py-0.5 border rounded-full ml-4 whitespace-nowrap ${getStatusColorClasses(project.status)}`}>
                 {project.status}
               </span>
             </div>
             
-            <p className={`text-sm mb-2 ${valueClasses}`}>{project.desc}</p>
+            <p className={`text-sm mb-2 text-secondary`}>{project.desc}</p>
             
-            <div className={`flex flex-wrap gap-x-2 text-sm ${labelClasses}`}>
+            <div className={`flex flex-wrap gap-x-2 text-sm text-primary`}>
               {project.tech?.map((tech) => (
                 <span key={tech}>[{tech}]</span>
               ))}
@@ -68,7 +68,7 @@ export default function SideProjects() {
 
             {speaking.length > 0 && (
         <div className={panelClasses}>
-          <h3 className={`text-base mb-3 ${yellowClasses}`}>$public_speaking</h3>
+          <h3 className={`text-base mb-3 text-command`}>$public_speaking</h3>
           <div className="space-y-2">
             {speaking.map((item, index) => (
               <a
@@ -84,11 +84,11 @@ export default function SideProjects() {
                 }`}
               >
                 {/* WHY: This simplifies the layout and makes the text the primary focus, improving clarity. */}
-                <div className={`text-sm ${primaryTextClasses} group-hover:underline`}>
+                <div className={`text-sm text-white-black group-hover:underline`}>
                   {item.title}
                 </div>
                 {/* WHY: Unifies the visual language for external links across the component. */}
-                <ExternalLink className={`w-4 h-4 transition-colors ${yellowClasses}`} />
+                <ExternalLink className={`w-4 h-4 transition-colors text-command`} />
               </a>
             ))}
           </div>

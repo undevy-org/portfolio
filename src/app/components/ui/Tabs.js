@@ -19,21 +19,21 @@ export default function Tabs({ tabs, defaultTab = null }) {
 
   const activeTabData = tabs.find(tab => tab.id === activeTab);
 
-  const labelClasses = theme === 'dark' ? 'text-dark-text-white' : 'text-light-text-black';
-  const valueClasses = theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
-  const yellowClasses = theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command';
-  const successClasses = theme === 'dark' ? 'text-dark-success' : 'text-light-success';
-  const darkerBorder = theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter';
+  const labelClasses = "text-white-black";
+  const valueClasses = "text-secondary";
+  const yellowClasses = "text-command";
+  const successClasses = "text-success";
+  const darkerBorder = "border-secondary";
   const activeBg = theme === 'dark'
   ? 'bg-[rgba(21,128,61,0.3)]'
   : 'bg-[rgba(220,252,231,0.3)]';
-  const hoverBg = theme === 'dark' ? 'hover:bg-dark-hover' : 'hover:bg-light-hover';
+  const hoverBg = "bg-hover";
 
   const renderContentItem = (item, idx) => {
     switch (item.type) {
       case 'text':
         return (
-          <p key={idx} className={`text-sm leading-relaxed ${valueClasses}`}>
+          <p key={idx} className={`text-sm leading-relaxed text-secondary`}>
             {item.value}
           </p>
         );
@@ -41,13 +41,13 @@ export default function Tabs({ tabs, defaultTab = null }) {
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
-            <span className={`mr-2 ${successClasses}`}>[✓]</span>
+            <span className={`mr-2 text-success`}>[✓]</span>
             <span className={valueClasses}>{item.value}</span>
           </div>
         );
       case 'sub_heading':
         return (
-          <div key={idx} className={`mb-2 mt-4 ${yellowClasses}`}>
+          <div key={idx} className={`mb-2 mt-4 text-command`}>
             ${item.value}
           </div>
         );
@@ -107,8 +107,8 @@ export default function Tabs({ tabs, defaultTab = null }) {
               onClick={() => handleTabClick(tab.id, tab.label)}
               className={`text-center px-4 py-3 text-sm rounded-t transition-colors whitespace-nowrap -mb-px ${
                 activeTab === tab.id
-                  ? `${activeBg} ${labelClasses} border-t border-x ${darkerBorder}`
-                  : `${valueClasses} ${hoverBg} border-b-0` // Inactive tabs no longer need a bottom border here
+                  ? `${activeBg} text-primary border-t border-x ${darkerBorder}`
+                  : `text-secondary ${hoverBg} border-b-0` // Inactive tabs no longer need a bottom border here
               }`}
             >
               ${tab.label}
@@ -120,7 +120,7 @@ export default function Tabs({ tabs, defaultTab = null }) {
       <div className={`-mt-px p-4 border rounded-b rounded-tr ${darkerBorder}`}>
         {activeTabData && (
           <>
-            <h3 className={`mb-3 ${yellowClasses}`}>
+            <h3 className={`mb-3 text-command`}>
               ${activeTabData.title || activeTabData.label}
             </h3>
             {renderTabContent()}

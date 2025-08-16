@@ -9,19 +9,19 @@ export default function CaseList() {
   const { sessionData, theme, navigate, addLog, setSelectedCase } = useSession();
 
   const panelClasses = `p-3 border rounded ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+    "border-secondary"
   }`;
   const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+    "text-command"
   }`;
   const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+    "text-primary"
   }`;
   const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+    "text-secondary"
   }`;
   const successClasses = `${
-    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+    "text-success"
   }`;
 
   const cases = sessionData?.case_studies || {};
@@ -69,13 +69,12 @@ export default function CaseList() {
 
   return (
     <div className="p-4">
-      {/* Replaced square visualization with level-based progress system */}
-      <div className={`mb-4 ${panelClasses}`}>
+      <div className={`mb-4 p-4 rounded border border-secondary`}>
         {/* Access level indicator with company name */}
-        <div className={`mb-3 ${labelClasses}`}>
-          <span className={`text-sm ${yellowClasses}`}>Access Level: </span>
-          <span className={`text-sm ${successClasses}`}>{accessInfo.level}</span>
-          <span className={`text-sm ml-2 ${valueClasses}`}>
+        <div className={`mb-3 text-primary`}>
+          <span className={`text-sm text-command`}>Access Level: </span>
+          <span className={`text-sm text-success`}>{accessInfo.level}</span>
+          <span className={`text-sm ml-2 text-secondary`}>
             for {sessionData?.meta?.company || 'current session'}
           </span>
         </div>
@@ -94,7 +93,7 @@ export default function CaseList() {
         
         {/* Next level hint - only show if not at max level */}
         {accessInfo.next && casesForNextLevel > 0 && (
-          <div className={`text-xs mt-2 ${valueClasses}`}>
+          <div className={`text-xs mt-2 text-secondary`}>
             <span className="opacity-75">
               Unlock {casesForNextLevel} more {casesForNextLevel === 1 ? 'case ' : 'cases '} 
               to reach <span className={labelClasses}>{accessInfo.next}</span> level
@@ -104,7 +103,7 @@ export default function CaseList() {
         
         {/* Max level achievement message */}
         {!accessInfo.next && (
-          <div className={`text-xs mt-2 ${successClasses}`}>
+          <div className={`text-xs mt-2 text-success`}>
             <span>✓ Maximum access level achieved</span>
           </div>
         )}
@@ -118,19 +117,17 @@ export default function CaseList() {
               key={caseId}
               onClick={() => handleCaseClick(caseId, caseData)}
               className={`w-full p-4 border rounded text-left transition-colors flex items-start gap-4 ${
-                theme === 'dark'
-                  ? 'border-dark-border-darker hover:bg-dark-hover'
-                  : 'border-light-border-lighter hover:bg-light-hover'
+                "border-secondary bg-hover"
               }`}
             >
               <div className="flex-1 space-y-1">
-                <div className={`text-lg ${yellowClasses}`}>
+                <div className={`text-lg text-command`}>
                 {caseData.title}
               </div>
-                <div className={`text-sm ${valueClasses}`}>
+                <div className={`text-sm text-secondary`}>
                 {caseData.desc}
               </div>
-                <div className={`text-sm pt-1 ${labelClasses}`}>
+                <div className={`text-sm pt-1 text-primary`}>
                 {caseData.metrics}
               </div>
                 <div className="flex flex-wrap gap-2 pt-2">
@@ -148,7 +145,7 @@ export default function CaseList() {
                 ))}
               </div>
               </div>
-              <ChevronRight className={`w-5 h-5 mt-1 ${valueClasses}`} />
+              <ChevronRight className={`w-5 h-5 mt-1 text-secondary`} />
             </button>
           );
         })}

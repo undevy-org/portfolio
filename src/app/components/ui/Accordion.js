@@ -13,23 +13,23 @@ export default function Accordion({ sections, defaultExpanded = null }) {
     addLog(`SECTION ${newState ? 'EXPANDED' : 'COLLAPSED'}: ${sectionId}`);
   };
 
-  const labelClasses = theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary';
-  const valueClasses = theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary';
-  const yellowClasses = theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command';
-  const successClasses = theme === 'dark' ? 'text-dark-success' : 'text-light-success';
-  const darkerBorder = theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter';
-  const hoverBg = theme === 'dark' ? 'hover:bg-dark-hover' : 'hover:bg-light-hover';
+  const labelClasses = "text-primary";
+  const valueClasses = "text-secondary";
+  const yellowClasses = "text-command";
+  const successClasses = "text-success";
+  const darkerBorder = "border-secondary";
+  const hoverBg = "bg-hover";
 
   const renderContentItem = (item, idx) => {
     if (typeof item !== 'object' || item === null) {
-      return <p key={idx} className={`text-sm leading-relaxed ${valueClasses}`}>{String(item)}</p>;
+      return <p key={idx} className={`text-sm leading-relaxed text-secondary`}>{String(item)}</p>;
     }
     
     switch (item.type) {
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
-            <span className={`mr-2 ${successClasses}`}>[✓]</span>
+            <span className={`mr-2 text-success`}>[✓]</span>
             <span className={valueClasses}>{item.value}</span>
           </div>
         );
@@ -47,7 +47,7 @@ export default function Accordion({ sections, defaultExpanded = null }) {
         );
       case 'text':
       default:
-        return <p key={idx} className={`text-sm leading-relaxed ${valueClasses}`}>{item.value}</p>;
+        return <p key={idx} className={`text-sm leading-relaxed text-secondary`}>{item.value}</p>;
     }
   };
 

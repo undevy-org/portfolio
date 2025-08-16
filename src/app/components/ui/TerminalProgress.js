@@ -67,17 +67,17 @@ export default function TerminalProgress({
   
   return (
     <div className={`space-y-2 ${
-      theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+      "text-primary"
     }`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={`${
-            theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+            "text-command"
           }`}>
             {spinnerFrames[spinnerFrame]}
           </span>
           <span className={`text-xs uppercase tracking-wider ${
-            theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+            "text-secondary"
           }`}>
             {label}
           </span>
@@ -85,7 +85,7 @@ export default function TerminalProgress({
         
         {showPercentage && (
           <span className={`text-xs ${
-            theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+            "text-success"
           }`}>
             {Math.round(displayProgress)}%
           </span>
@@ -96,14 +96,14 @@ export default function TerminalProgress({
         theme === 'dark' ? 'bg-dark-hover' : 'bg-light-hover'
       }`}>
         <div className={`absolute inset-0 flex items-center px-1 font-mono text-xs ${
-          theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+          "text-success"
         }`}>
           {progressBar}
         </div>
       </div>
       
       <div className={`text-xs ${
-        theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+        "text-secondary"
       }`}>
         <span className="opacity-60">
           [{Math.round(displayProgress)}% complete]

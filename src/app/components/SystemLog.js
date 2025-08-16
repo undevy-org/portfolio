@@ -19,7 +19,7 @@ export default function SystemLog() {
   }`;
   
   const textClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+    "text-secondary"
   }`;
 
   const cursorClasses = `inline-block w-2 h-4 ${

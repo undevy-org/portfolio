@@ -30,7 +30,6 @@ export default function TerminalWindow({ title, children }) {
       displayTitle = domainData?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
   }
 
-  // WHY: We need to traverse up the hierarchy from current screen to build the full path
   const buildBreadcrumbPath = () => {
     const path = [];
     let current = currentScreen;
@@ -57,17 +56,13 @@ export default function TerminalWindow({ title, children }) {
   const windowClasses = `w-full max-w-2xl border rounded ${
     theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
   }`;
-  
-  // WHY: Removed `flex-wrap` and `md:flex-nowrap`. The new layout is a single line on all screen sizes,
-  // with `justify-between` pushing the title to the left and the controls to the right.
+
   const headerClasses = `flex items-center justify-between p-4 border-b ${
-    theme === 'dark' ? 'border-dark-border' : 'border-light-border'
+    "border-primary"
   }`;
-  
-  // WHY: Removed all responsive `order` and `width` classes. Added `truncate` to ensure the title
-  // shortens with '...' on small screens. `min-w-0` is crucial for `truncate` to work correctly in a flex container.
+
   const titleClasses = `font-normal text-lg truncate min-w-0 ${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+    "text-command"
   }`;
 
   const handleClose = () => {
@@ -81,15 +76,7 @@ export default function TerminalWindow({ title, children }) {
     <div className={windowClasses}>
       <div className={headerClasses}>
         <h1 className={titleClasses}>${displayTitle}</h1>
-
-        {/* 
-          WHY: This creates a single, consistent block of controls on the right side of the header
-          for both mobile and desktop views, as you requested. `flex-shrink-0` ensures this
-          group of buttons does not shrink on smaller screens.
-        */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          {/* WHY: These screens are entry points and should not have standard navigation controls */}
-          {/* like 'Back', 'Up', or 'Home', providing a cleaner user experience. */}
           {!['ProfileBoot', 'Entry'].includes(currentScreen) && (
             <>
           <Button
@@ -141,7 +128,6 @@ export default function TerminalWindow({ title, children }) {
 
       </div>
 
-      {/* WHY: The 'Entry' screen is the main entry point and does not have a navigation path to display. */}
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
         <div className={`px-4 py-2 text-sm border-b ${
           theme === 'dark' ? 'border-dark-border bg-dark-bg/50' : 'border-light-border bg-light-bg/50'
@@ -151,7 +137,7 @@ export default function TerminalWindow({ title, children }) {
               <span key={screen} className="flex items-center">
                 {index > 0 && (
                   <span className={`mx-2 ${
-                    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                    "text-secondary"
                   }`}>
                     &gt;
                   </span>
@@ -159,7 +145,7 @@ export default function TerminalWindow({ title, children }) {
                 {index === breadcrumbPath.length - 1 ? (
                   // Current screen - not clickable, highlighted
                   <span className={
-                    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+                    "text-primary"
                   }>
                     {getScreenDisplayName(screen)}
                   </span>
