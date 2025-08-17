@@ -1,3 +1,4 @@
+// src/app/components/TerminalImagePreview.js
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -17,7 +18,8 @@ export default function TerminalImagePreview({
   aspectRatio = '16/9', // Default aspect ratio
   resetOnTabChange = false // Option to reset state when tab changes
 }) {
-  const { theme, addLog } = useSession();
+  // REMOVED: The 'theme' variable is no longer used for styling.
+  const { addLog } = useSession();
   
   // Use src as unique identifier for this image's state
   const cacheKey = src;
@@ -193,35 +195,18 @@ export default function TerminalImagePreview({
     addLog('LIGHTBOX: Closed');
   };
 
-  // Frame styles
-    const frameClasses = `
-      relative font-mono text-sm flex items-center justify-center overflow-hidden
-      ${theme === 'dark' 
-      ? 'bg-dark-bg text-dark-text-primary' 
-      : 'bg-light-bg text-light-text-primary'}
-    `;
-
-    const buttonClasses = `
-    px-3 sm:px-4 py-2 border rounded cursor-pointer transition-colors z-10 text-xs sm:text-sm
-      ${theme === 'dark'
-        ? 'border-dark-border hover:bg-dark-hover text-dark-text-command'
-        : 'border-light-border hover:bg-light-hover text-light-text-command'}
-    `;
-
   // Render based on state
   if (imageState.state === 'idle') {
       return (
+      // CHANGE: Replaced theme-dependent classes with semantic ones.
+      // '.bg-main', '.text-primary', and '.border-primary' now control the appearance.
         <div 
-        className={`${frameClasses} cursor-pointer border-2 ${
-            theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-          }`}
-          style={{ 
-            height: `${height}px`,
-            borderStyle: 'dashed'
-          }}
+        className="relative font-mono text-sm flex items-center justify-center overflow-hidden cursor-pointer border-2 bg-main text-primary border-primary"
+        style={{ height: `${height}px`, borderStyle: 'dashed' }}
           onClick={handleShowImage}
         >
-          <button className={buttonClasses}>
+        {/* CHANGE: The button now uses the semantic '.btn-command' class for consistent styling. */}
+        <button className="btn-command px-3 sm:px-4 py-2 z-10 text-xs sm:text-sm">
             [ SHOW IMAGE ]
           </button>
         </div>
@@ -230,17 +215,13 @@ export default function TerminalImagePreview({
 
   if (imageState.state === 'loading') {
       return (
+      // CHANGE: Replaced theme-dependent classes with semantic '.bg-main' and '.border-primary'.
         <div 
-        className={`${frameClasses} border-2 ${
-          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-        }`}
-        style={{ 
-          height: `${height}px`,
-          borderStyle: 'dashed',
-          padding: '1rem'
-        }}
+        className="relative font-mono text-sm flex items-center justify-center overflow-hidden border-2 bg-main border-primary"
+        style={{ height: `${height}px`, borderStyle: 'dashed', padding: '1rem' }}
       >
         <div className="w-full max-w-xs px-2">
+          {/* COMMENT: TerminalProgress is already refactored and theme-agnostic. */}
           <TerminalProgress 
             progress={imageState.progress}
             isLoading={true}
@@ -256,18 +237,13 @@ export default function TerminalImagePreview({
 
   if (imageState.state === 'error') {
       return (
+      // CHANGE: Replaced theme-dependent classes with semantic ones.
         <div 
-        className={`${frameClasses} border ${
-          theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-        }`}
-        style={{ 
-          height: `${height}px`,
-          borderStyle: 'dashed'
-        }}
+        className="relative font-mono text-sm flex items-center justify-center overflow-hidden border bg-main border-primary"
+        style={{ height: `${height}px`, borderStyle: 'dashed' }}
         >
-          <div className={`text-center ${
-            theme === 'dark' ? 'text-dark-error' : 'text-light-error'
-          }`}>
+        {/* CHANGE: Directly applied the '.text-error' semantic class for the error message. */}
+        <div className="text-center text-error">
             [ ERROR ]<br/>
             <span className="text-xs">Failed to load image</span>
           </div>
@@ -283,9 +259,8 @@ export default function TerminalImagePreview({
           onClick={handleImageClick}
           style={{ aspectRatio }}
         >
-          <div className={`relative w-full h-full rounded border overflow-hidden ${
-            theme === 'dark' ? 'border-dark-border' : 'border-light-border'
-          }`}>
+          {/* CHANGE: Directly applied the '.border-primary' semantic class. */}
+          <div className="relative w-full h-full rounded border overflow-hidden border-primary">
             <NextImage 
               src={src} 
               alt={alt}
@@ -295,11 +270,11 @@ export default function TerminalImagePreview({
               className="transition-all group-hover:opacity-90"
             />
           </div>
-          <div className={`absolute top-2 right-2 px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity ${
-            theme === 'dark' 
-              ? 'bg-dark-bg/80 text-dark-text-command border border-dark-border' 
-              : 'bg-light-bg/80 text-light-text-command border border-light-border'
-          }`}>
+          {/* CHANGE: Replaced theme-dependent logic with semantic classes.
+          '.bg-main' with opacity, '.text-command', and '.border-primary' create the theme-aware hint. */}
+          <div 
+            className="absolute top-2 right-2 px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-main/80 text-command border border-primary"
+          >
             [ CLICK TO EXPAND ]
           </div>
         </div>
@@ -310,24 +285,18 @@ export default function TerminalImagePreview({
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={closeLightbox}
         >
-          {/* Backdrop */}
-          <div className={`absolute inset-0 ${
-            theme === 'dark' ? 'bg-black/80' : 'bg-black/60'
-          }`} />
+            {/* CHANGE: Replaced theme-dependent classes with a simple black background with opacity. */}
+            <div className="absolute inset-0 bg-black/80" />
           
           {/* Modal Content */}
           <div 
             className="relative max-w-[90vw] max-h-[90vh] w-full h-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
+              {/* CHANGE: Replaced complex theme-dependent classes with semantic ones for the close button. */}
             <button
               onClick={closeLightbox}
-              className={`absolute top-2 right-2 z-10 p-2 rounded-full transition-colors ${
-                theme === 'dark'
-                  ? 'bg-dark-bg/90 text-dark-text-primary hover:bg-dark-hover border border-dark-border'
-                  : 'bg-light-bg/90 text-light-text-primary hover:bg-light-hover border border-light-border'
-              }`}
+                className="absolute top-2 right-2 z-10 p-2 rounded-full transition-colors bg-main/90 text-primary bg-hover border border-primary"
               aria-label="Close lightbox"
             >
               <X size={20} />
@@ -342,19 +311,15 @@ export default function TerminalImagePreview({
                 sizes="90vw"
                 style={{ objectFit: 'contain' }}
                 quality={100}
-                className={`rounded ${
-                  theme === 'dark' ? 'drop-shadow-2xl' : 'drop-shadow-xl'
-                }`}
+                  // COMMENT: Drop shadow is a visual effect that can be simplified for now.
+                  className="rounded"
               />
             </div>
             
             {/* Caption */}
             {alt && (
-              <div className={`absolute bottom-2 left-1/2 transform -translate-x-1/2 px-4 py-2 text-center text-sm font-mono ${
-                theme === 'dark' 
-                  ? 'text-dark-text-secondary bg-dark-bg/90 border border-dark-border' 
-                  : 'text-light-text-secondary bg-light-bg/90 border border-light-border'
-              } rounded`}>
+                // CHANGE: Replaced complex theme-dependent classes with semantic ones for the caption.
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 px-4 py-2 text-center text-sm font-mono text-secondary bg-main/90 border border-secondary rounded">
                 {alt}
               </div>
             )}
