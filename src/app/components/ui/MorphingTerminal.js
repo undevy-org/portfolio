@@ -225,7 +225,7 @@ const MorphingTerminal = ({ autoPlay = false, loopAnimation = true, frameDelay =
 
   return (
     <div className={`font-mono text-xs ${
-      theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+      "text-command"
     }`}>
       {frames[currentFrame].map((line, index) => (
         <div key={index} className="text-center whitespace-pre">

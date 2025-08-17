@@ -6,21 +6,6 @@ import { ChevronRight } from 'lucide-react';
 export default function MainHub() {
   const { sessionData, theme, navigate, addLog } = useSession();
 
-  const buttonPanelClasses = `p-4 rounded border ${
-    theme === 'dark' 
-      ? 'border-dark-border-darker hover:bg-dark-hover' 
-      : 'border-light-border-lighter hover:bg-light-hover'
-  }`;
-  const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-  }`;
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-  }`;
-
   const menuItems = sessionData?.menu || [];
 
   return (
@@ -33,22 +18,21 @@ export default function MainHub() {
               addLog(`MENU SELECT: ${item.label}`);
               navigate(item.screen);
             }}
-            className={`w-full text-left transition-colors flex items-center gap-4 ${buttonPanelClasses}`}
+            className="w-full text-left transition-colors flex items-center gap-4 p-4 rounded border border-secondary bg-hover"
           >
-            <span className={`text-base ${yellowClasses}`}>
+            <span className="text-base text-command">
               {item.icon}
             </span>
             
             <div className="flex-1">
-              <div className={`text-base ${labelClasses}`}>
+              <div className="text-base text-primary">
                 {item.label}
               </div>
-              <div className={`text-xs mt-1 ${valueClasses}`}>
+              <div className="text-xs mt-1 text-secondary">
                 {item.desc}
               </div>
             </div>
-            
-            <ChevronRight className={`w-5 h-5 ${valueClasses}`} />
+            <ChevronRight className="w-5 h-5 text-secondary" />
           </button>
         ))}
       </div>

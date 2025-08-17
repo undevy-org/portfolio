@@ -7,19 +7,19 @@ export default function SkillsGrid() {
   const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
 
   const panelClasses = `p-4 rounded border ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+    "border-secondary"
   }`;
   const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+    "text-command"
   }`;
   const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+    "text-primary"
   }`;
   const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+    "text-secondary"
   }`;
   const successClasses = `${
-    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
+    "text-success"
   }`;
 
   const skills = sessionData?.skills || [];
@@ -51,17 +51,15 @@ export default function SkillsGrid() {
             key={skill.id}
             onClick={() => handleSkillClick(skill)}
             className={`p-4 border rounded text-left transition-colors flex justify-between items-start ${
-              theme === 'dark'
-                ? 'border-dark-border-darker hover:bg-dark-hover'
-                : 'border-light-border-lighter hover:bg-light-hover'
+              "border-secondary bg-hover"
             }`}
           > 
             <div className="space-y-1">
-              <div className={`text-base ${yellowClasses}`}>
+              <div className={`text-base text-command`}>
                 {skill.name}
               </div>
               
-              <div className={`text-sm ${valueClasses}`}>
+              <div className={`text-sm text-secondary`}>
                 {skill.desc}
               </div>
               
@@ -70,7 +68,7 @@ export default function SkillsGrid() {
               </div>
             </div>
 
-            <ChevronRight className={`w-5 h-5 ${valueClasses}`} />
+            <ChevronRight className={`w-5 h-5 text-secondary`} />
           </button>
         ))}
       </div>

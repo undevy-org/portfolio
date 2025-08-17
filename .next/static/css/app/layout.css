@@ -323,7 +323,7 @@
 /*!*****************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./src/app/globals.css ***!
   \*****************************************************************************************************************************************************************************************************************************************************************/
-/* src/app/globals.css */
+/* src/app/globals.css - Alternative approach with CSS variables */
 
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
@@ -831,6 +831,81 @@ video {
 [hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
+
+/* Define CSS variables for each theme */
+
+:root,
+  [data-theme='dark'] {
+    /* Dark theme (default) */
+    --color-bg: #000000;
+    --color-text-primary: #86efac;
+    --color-text-secondary: #9ca3af;
+    --color-text-tertiary: #6b7280;
+    --color-text-command: #eab308;
+    --color-text-white: #ffffff;
+    --color-border: #22c55e;
+    --color-border-darker: #166534;
+    --color-active: #053516;
+    --color-error: #dc2626;
+    --color-success: #4ade80;
+    --color-input-bg: #111827;
+    --color-hover: rgba(34, 197, 94, 0.1);
+    --color-accent: #22d3ee;
+  }
+
+[data-theme='light'] {
+    /* Light theme */
+    --color-bg: #ffffff;
+    --color-text-primary: #065f46;
+    --color-text-secondary: #4b5563;
+    --color-text-tertiary: #9ca3af;
+    --color-text-command: #b45309;
+    --color-text-white: #0a0a0a; /* inverted for light theme */
+    --color-border: #10b981;
+    --color-border-darker: #059669;
+    --color-active: #d1fae5;
+    --color-error: #dc2626;
+    --color-success: #059669;
+    --color-input-bg: #ffffff;
+    --color-hover: rgba(5, 150, 105, 0.1);
+    --color-accent: #0284c7;
+  }
+
+[data-theme='amber'] {
+    /* Amber theme */
+    --color-bg: #1C140D;
+    --color-text-primary: #FFB86C;
+    --color-text-secondary: #D9A15D;
+    --color-text-tertiary: #B08953;
+    --color-text-command: #FFD173;
+    --color-text-white: #FFB86C; /* using amber for primary surface */
+    --color-border: #FF9F1C;
+    --color-border-darker: #8B5A00;
+    --color-active: #4d2e08;
+    --color-error: #FF6B6B;
+    --color-success: #4ADE80;
+    --color-input-bg: #1B1210;
+    --color-hover: rgba(255, 184, 108, 0.08);
+    --color-accent: #FFDDAA;
+  }
+
+[data-theme='bsod'] {
+    /* BSOD theme */
+    --color-bg: #0B4DA8;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #CFE9FF;
+    --color-text-tertiary: #9EC7FF;
+    --color-text-command: #E1F0FF;
+    --color-text-white: #FFFFFF;
+    --color-border: #E6F3FF;
+    --color-border-darker: #7FB3FF;
+    --color-active: #0066FF;
+    --color-error: #FF6B6B;
+    --color-success: #00D084;
+    --color-input-bg: #073A93;
+    --color-hover: rgba(230, 243, 255, 0.06);
+    --color-accent: #88B8FF;
+  }
 .container {
   width: 100%;
 }
@@ -864,59 +939,114 @@ video {
     max-width: 1536px;
   }
 }
-/* ===================================
-     TEXT STYLES
-     Semantic classes for all types of text
-     =================================== */
-/* Basic text styles */
-/* ===================================
-     BACKGROUND STYLES
-     For various containers and surfaces
-     =================================== */
-/* ===================================
-     BORDER STYLES
-     For all types of outlines
-     =================================== */
-/* ===================================
-     COMPOSITE COMPONENTS
-     Ready-made patterns for UI elements
-     =================================== */
-/* Base panel (structure without colors) */
-/* Themed panel (full-fledged container) */
-/* Full panel (structure + theme) */
-/* Panel title in command style */
-/* Label for keys in key-value pairs */
-/* Value in key-value pairs */
-/* Badge/tag */
-/* Command button (main button style) */
-/* Active button/tab */
-/* ===================================
-     INTERACTIVE STATES
-     For hover, focus, active effects
-     =================================== */
-/* ===================================
-     FORMS AND INPUTS
-     Styles for form elements
-     =================================== */
-/* ===================================
-     ANIMATIONS
-     For smooth transitions
-     =================================== */
-/* ===================================
-     LAYOUT UTILITIES
-     Frequently used layout patterns
-     =================================== */
-/* ===================================
-     SPECIAL COMPONENTS
-     Unique to terminal-style
-     =================================== */
-/* Terminal output line */
-/* System log */
-/* ASCII frame for image previews */
-/* ===================================
-     ADAPTIVE MODIFIERS
-     For mobile devices
-     =================================== */
+/* Now all classes use CSS variables - no need for theme overrides! */
+/* Text styles */
+.text-primary {
+    color: var(--color-text-primary);
+  }
+.text-secondary {
+    color: var(--color-text-secondary);
+  }
+.text-command {
+    color: var(--color-text-command);
+  }
+.text-white-black {
+    color: var(--color-text-white);
+  }
+.text-error {
+    color: var(--color-error);
+  }
+.text-success {
+    color: var(--color-success);
+  }
+/* Background styles */
+.bg-main {
+    background-color: var(--color-bg);
+  }
+.bg-active {
+    background-color: var(--color-active);
+  }
+.bg-hover:hover {
+    background-color: var(--color-hover);
+  }
+/* Border styles */
+.border-primary {
+    border-color: var(--color-border);
+  }
+.border-secondary {
+    border-color: var(--color-border-darker);
+  }
+.border-success {
+    border-color: var(--color-success);
+  }
+/* Composite components - now they automatically adapt to theme! */
+.input-base {
+  width: 100%;
+  border-radius: 0.25rem;
+  border-width: 1px;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+    background-color: var(--color-input-bg);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+}
+.input-base:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    --tw-ring-color: var(--color-border);
+}
+.input-error {
+    border-color: var(--color-error);
+    color: var(--color-error);
+  }
+.btn-command {
+  border-radius: 0.25rem;
+  border-width: 1px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 14px;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+}
+.btn-command:hover {
+    background-color: var(--color-hover);
+  }
+.tag-badge {
+  white-space: nowrap;
+  border-radius: 0.25rem;
+  border-width: 1px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  font-size: 12px;
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+}
+/* All other utility classes remain the same... */
+.panel-full {
+  border-radius: 0.375rem;
+  border-width: 1px;
+  padding: 1rem;
+    background-color: var(--color-bg);
+    border-color: var(--color-border-darker);
+}
+/* Layout utilities */
+/* Mobile modifiers */
+/* Animations */
 .visible {
   visibility: visible;
 }
@@ -1095,9 +1225,6 @@ video {
 .max-w-\[90vw\] {
   max-width: 90vw;
 }
-.max-w-md {
-  max-width: 28rem;
-}
 .max-w-xs {
   max-width: 20rem;
 }
@@ -1106,9 +1233,6 @@ video {
 }
 .flex-shrink-0 {
   flex-shrink: 0;
-}
-.shrink {
-  flex-shrink: 1;
 }
 .-translate-x-1\/2 {
   --tw-translate-x: -50%;
@@ -1292,10 +1416,6 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(22 101 52 / var(--tw-border-opacity, 1));
 }
-.border-dark-error {
-  --tw-border-opacity: 1;
-  border-color: rgb(220 38 38 / var(--tw-border-opacity, 1));
-}
 .border-gray-400 {
   --tw-border-opacity: 1;
   border-color: rgb(156 163 175 / var(--tw-border-opacity, 1));
@@ -1316,14 +1436,6 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(16 185 129 / var(--tw-border-opacity, 1));
 }
-.border-light-border-lighter {
-  --tw-border-opacity: 1;
-  border-color: rgb(110 231 183 / var(--tw-border-opacity, 1));
-}
-.border-light-error {
-  --tw-border-opacity: 1;
-  border-color: rgb(220 38 38 / var(--tw-border-opacity, 1));
-}
 .border-yellow-500 {
   --tw-border-opacity: 1;
   border-color: rgb(234 179 8 / var(--tw-border-opacity, 1));
@@ -1332,11 +1444,9 @@ video {
   --tw-border-opacity: 1;
   border-color: rgb(202 138 4 / var(--tw-border-opacity, 1));
 }
-.bg-\[rgba\(21\2c 128\2c 61\2c 0\.3\)\] {
-  background-color: rgba(21,128,61,0.3);
-}
-.bg-\[rgba\(220\2c 252\2c 231\2c 0\.3\)\] {
-  background-color: rgba(220,252,231,0.3);
+.bg-amber-bg {
+  --tw-bg-opacity: 1;
+  background-color: rgb(28 28 28 / var(--tw-bg-opacity, 1));
 }
 .bg-black\/60 {
   background-color: rgb(0 0 0 / 0.6);
@@ -1344,12 +1454,13 @@ video {
 .bg-black\/80 {
   background-color: rgb(0 0 0 / 0.8);
 }
+.bg-bsod-bg {
+  --tw-bg-opacity: 1;
+  background-color: rgb(11 77 168 / var(--tw-bg-opacity, 1));
+}
 .bg-dark-bg {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
-}
-.bg-dark-bg\/50 {
-  background-color: rgb(0 0 0 / 0.5);
 }
 .bg-dark-bg\/80 {
   background-color: rgb(0 0 0 / 0.8);
@@ -1357,28 +1468,13 @@ video {
 .bg-dark-bg\/90 {
   background-color: rgb(0 0 0 / 0.9);
 }
-.bg-dark-hover {
-  background-color: rgba(34, 197, 94, 0.1);
-}
-.bg-dark-input-bg {
-  --tw-bg-opacity: 1;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
-}
 .bg-dark-text-primary {
   --tw-bg-opacity: 1;
   background-color: rgb(134 239 172 / var(--tw-bg-opacity, 1));
 }
-.bg-dark-text-secondary {
-  --tw-bg-opacity: 1;
-  background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
-}
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
-}
-.bg-gray-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 .bg-gray-900\/30 {
   background-color: rgb(17 24 39 / 0.3);
@@ -1394,29 +1490,15 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
-.bg-light-bg\/50 {
-  background-color: rgb(255 255 255 / 0.5);
-}
 .bg-light-bg\/80 {
   background-color: rgb(255 255 255 / 0.8);
 }
 .bg-light-bg\/90 {
   background-color: rgb(255 255 255 / 0.9);
 }
-.bg-light-hover {
-  background-color: rgba(5, 150, 105, 0.1);
-}
-.bg-light-input-bg {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
 .bg-light-text-primary {
   --tw-bg-opacity: 1;
   background-color: rgb(6 95 70 / var(--tw-bg-opacity, 1));
-}
-.bg-light-text-secondary {
-  --tw-bg-opacity: 1;
-  background-color: rgb(75 85 99 / var(--tw-bg-opacity, 1));
 }
 .bg-transparent {
   background-color: transparent;
@@ -1530,6 +1612,14 @@ video {
 .tracking-wider {
   letter-spacing: 0.05em;
 }
+.text-amber-text-primary {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+.text-bsod-text-primary {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
 .text-dark-border {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity, 1));
@@ -1537,10 +1627,6 @@ video {
 .text-dark-error {
   --tw-text-opacity: 1;
   color: rgb(220 38 38 / var(--tw-text-opacity, 1));
-}
-.text-dark-success {
-  --tw-text-opacity: 1;
-  color: rgb(74 222 128 / var(--tw-text-opacity, 1));
 }
 .text-dark-text-command {
   --tw-text-opacity: 1;
@@ -1553,10 +1639,6 @@ video {
 .text-dark-text-secondary {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity, 1));
-}
-.text-dark-text-white {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 .text-gray-400 {
   --tw-text-opacity: 1;
@@ -1577,18 +1659,6 @@ video {
 .text-light-border {
   --tw-text-opacity: 1;
   color: rgb(16 185 129 / var(--tw-text-opacity, 1));
-}
-.text-light-error {
-  --tw-text-opacity: 1;
-  color: rgb(220 38 38 / var(--tw-text-opacity, 1));
-}
-.text-light-success {
-  --tw-text-opacity: 1;
-  color: rgb(5 150 105 / var(--tw-text-opacity, 1));
-}
-.text-light-text-black {
-  --tw-text-opacity: 1;
-  color: rgb(10 10 10 / var(--tw-text-opacity, 1));
 }
 .text-light-text-command {
   --tw-text-opacity: 1;
@@ -1628,6 +1698,11 @@ video {
 .opacity-80 {
   opacity: 0.8;
 }
+.shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1666,13 +1741,8 @@ video {
 .duration-500 {
   transition-duration: 500ms;
 }
-/* Remove default button styles in Web3 modals */
 
-/* ===================================
-   CUSTOM ANIMATIONS
-   Definitions for @keyframes
-   =================================== */
-
+/* Keyframes */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1693,45 +1763,28 @@ video {
   }
 }
 
-/* ===================================
-   OVERRIDES FOR THIRD-PARTY LIBRARIES
-   For example, for Reown/WalletConnect modals
-   =================================== */
-
+/* Third-party overrides */
+.hover\:text-primary:hover {
+    color: var(--color-text-primary);
+  }
 .hover\:bg-dark-hover:hover {
   background-color: rgba(34, 197, 94, 0.1);
 }
-
 .hover\:bg-light-hover:hover {
   background-color: rgba(5, 150, 105, 0.1);
 }
-
-.hover\:text-dark-text-primary:hover {
-  --tw-text-opacity: 1;
-  color: rgb(134 239 172 / var(--tw-text-opacity, 1));
-}
-
-.hover\:text-light-text-primary:hover {
-  --tw-text-opacity: 1;
-  color: rgb(6 95 70 / var(--tw-text-opacity, 1));
-}
-
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
-
 .group:hover .group-hover\:underline {
   text-decoration-line: underline;
 }
-
 .group:hover .group-hover\:opacity-100 {
   opacity: 1;
 }
-
 .group:hover .group-hover\:opacity-90 {
   opacity: 0.9;
 }
-
 @media (min-width: 640px) {
 
   .sm\:px-4 {
@@ -1743,7 +1796,6 @@ video {
     font-size: 14px;
   }
 }
-
 @media (min-width: 768px) {
 
   .md\:grid {
@@ -1760,10 +1812,6 @@ video {
 
   .md\:flex-row {
     flex-direction: row;
-  }
-
-  .md\:flex-nowrap {
-    flex-wrap: nowrap;
   }
 
   .md\:justify-center {

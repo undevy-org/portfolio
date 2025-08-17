@@ -4,54 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Phase 8] - Testing Infrastructure & Code Quality [IN PROGRESS]
+##  Current Development Focus [IN PROGRESS]
 
-This phase established a comprehensive testing infrastructure to support the UI refactoring initiative, creating a robust safety net for future development while addressing tooling challenges with modern Next.js architecture.
+This section outlines the major initiatives that are currently under active development.
 
-### Testing Infrastructure Creation
+### Initiative 1: Testing Infrastructure & Code Quality
+-   Goal: To build a comprehensive testing suite that ensures code quality, prevents regressions, and enables confident refactoring.
+-   Current Status: A foundational testing architecture using Jest and React Testing Library is in place. Unit tests for all critical utility functions and component tests for core UI elements have been created.
+-   Next Steps: Resolve known incompatibilities with Next.js 13+ code coverage reporting. Enable and complete integration tests for full user flows.
 
-The project now features a three-tier testing architecture designed to catch issues at different levels of abstraction. At the foundation, unit tests verify the correctness of pure utility functions in isolation, providing immediate feedback during development. The middle layer consists of component tests that validate UI elements' rendering and interaction behavior using React Testing Library's user-centric approach. The top tier includes integration tests that verify complete user flows, though these are currently pending full implementation due to component dependencies.
-
-A centralized test utilities system was established in the `test-utils` directory, providing reusable mock data, context providers, and helper functions. This infrastructure eliminates duplication across test files and ensures consistency in testing patterns. The mock data structure mirrors the actual application data, allowing tests to work with realistic scenarios while remaining predictable and controllable.
-
-### Enhanced Error Handling
-
-Critical utility functions received defensive programming enhancements to handle edge cases gracefully. The `formatters.js` module now properly handles null and undefined inputs, correctly parses complex CamelCase patterns including consecutive capitals, and supports underscore-separated strings. Similarly, `session.js` functions now include comprehensive null checking and safe property access using optional chaining, preventing runtime errors when dealing with incomplete or malformed data.
-
-### Testing Coverage & Limitations
-
-The testing suite currently includes seven passing test suites with 62 total tests, covering all critical utility functions and core UI components. However, code coverage reporting remains non-functional due to fundamental incompatibilities between Jest's instrumentation system and Next.js 13's app directory structure using the SWC compiler. When Jest attempts to add coverage instrumentation, it conflicts with Next.js-specific syntax like 'use client' directives, resulting in "The 'original' argument must be of type function" errors.
-
-Multiple alternative coverage solutions were explored, including the c8 coverage tool, nyc (Istanbul), and custom babel configurations, but all encountered similar incompatibilities with the Next.js 13 architecture. As a workaround, a manual coverage checking script was developed to provide visibility into test coverage without relying on automatic instrumentation. This limitation affects only coverage metrics; the tests themselves execute successfully and provide the intended safety net for refactoring.
-
-### Documentation & Best Practices
-
-Comprehensive testing documentation was created in `TESTING.md`, outlining the testing philosophy, available tools, and practical guidelines for writing new tests. The documentation emphasizes testing behavior over implementation details, maintaining fast and reliable tests, and following a consistent structure across the codebase. Test templates and examples were provided to help maintain consistency as the test suite grows.
+### Initiative 2: Enhanced User Experience & Navigation
+-   Goal: To refine the user journey by creating more immersive interactive experiences and improving navigation clarity.
+-   Current Status: A stable navigation system with hierarchical breadcrumbs and a temporal session trace is implemented. The `ProfileBoot` sequence and `TerminalImagePreview` component provide rich, animated user feedback.
+-   Next Steps: Continue to optimize component rendering to eliminate any remaining UI flicker during navigation. Further refine the navigation control logic for edge cases.
 
 ---
 
-## [Phase 7] - Enhanced User Experience & Navigation Refinements [IN PROGRESS]
+## [Phase 7] - UI Architecture & Theming System Refactor [COMPLETED]
 
-This major phase focused on creating immersive interactive experiences and implementing a comprehensive overhaul of the navigation system, while ensuring UI stability and consistency across all components.
+This was a foundational overhaul of the entire styling system, moving from a rigid two-theme setup to a highly scalable, multi-theme architecture. This refactoring eliminated critical hydration errors, improved performance, and dramatically simplified future UI development.
 
-### Profile Boot Sequence
-- Animated Loading Experience: Introduced ProfileBoot screen that appears after authentication, featuring a 4.6-second boot sequence with ASCII art, progressive message loading, and system initialization messages that adapt to the current domain
-- Fixed-Height Message Display: Boot messages render in a scrollable container matching SystemLog component design, preventing layout shifts during the loading sequence
-- Unified Loading Animation: Implemented consistent ASCII spinner animation (`⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`) matching the existing image loading pattern, replacing redundant dual-loader approach
+### Multi-Theme Architecture via CSS Variables
+-   Architectural Shift: Migrated the entire color system from Tailwind's `dark:` variant to a modern, robust architecture based on CSS variables and a `data-theme` attribute on the root HTML element.
+-   Expanded Palette: Introduced two new creative themes, "Amber" (a retro phosphor look) and "BSOD" (a classic blue-screen style), in addition to the existing Dark and Light modes. The system now supports four distinct themes.
+-   Instant, Flicker-Free Switching: Implemented a theme management system (`ThemeManager.js` and `SessionContext.js`) that allows for instantaneous, client-side theme changes with zero page reloads or layout shifts.
 
-### Interactive Media System
-- TerminalImagePreview Component: Custom component for displaying images within ASCII-style frames, featuring lazy loading with animated progress indicators and full-size lightbox modals for detailed viewing
-- Extended Content Model: Added support for `images` field in case_details, enabling rich media content within case study tabs with automatic logging of all interactions
+### Semantic CSS Class Library
+-   Centralized Styling: Created a comprehensive library of semantic, theme-agnostic utility classes in `globals.css` (e.g., `.text-primary`, `.border-secondary`, `.btn-command`).
+-   Component Refactoring: Refactored all UI components (`Button`, `Accordion`, `Tabs`, `TerminalWindow`, etc.) to use this new semantic library, completely decoupling them from theme-specific logic. This resolved numerous React hydration errors caused by server/client HTML mismatches.
 
-### Navigation Architecture Improvements
-- Header Control Stabilization: Reorganized navigation controls with permanent visibility and disabled states to prevent layout jumping during transitions
-- Hierarchical Breadcrumb System: Implemented true structural breadcrumbs showing site hierarchy with clickable parent navigation, distinct from temporal session tracking
-- Session Trace Enhancement: Renamed analytics "navigation_path" to "session_trace" with indexed sequential display to clarify the difference between navigation history and site structure
-
-### System Reliability Updates
-- Component Consistency: Unified all screens to use shared UI components (Button, SystemLog patterns) ensuring consistent behavior and theme application
-- Navigation Flow Fixes: Resolved session termination issues where multiple attempts were required to return to Entry screen
-- Performance Optimizations: Implemented useMemo hooks to prevent unnecessary re-renders and stabilize component dependencies
+### System & Documentation Updates
+-   Theme Persistence: Added functionality to save the user's selected theme to `localStorage`, ensuring their choice is remembered across sessions.
+-   Updated Design System: Completely rewrote the `DESIGN-SYSTEM.md` document to reflect the new architecture, providing a clear guide for developers on how to use and extend the theming system.
 
 ---
 

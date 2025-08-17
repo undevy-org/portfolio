@@ -1,155 +1,179 @@
-# Terminal UI Design System
+# **Terminal UI Design System**
 
-This document outlines the design philosophy, visual specifications, and component guidelines for the Interactive Terminal Portfolio. Its purpose is twofold: to serve as the single source of truth for development, ensuring consistency, and to demonstrate the systematic, principle-driven approach behind the user interface.
+This document outlines the design philosophy, architectural principles, and component guidelines for the Interactive Terminal Portfolio. It serves as the single source of truth for the project's UI/UX, ensuring consistency, maintainability, and a systematic, principle-driven approach to development. This version reflects the shift to a flexible, multi-theme architecture powered by CSS variables.
 
-## 1. Design Philosophy
+## **1. Design Philosophy**
 
 The Terminal UI system is built not just on aesthetics, but on a core philosophy of clarity, control, and character. Every design decision is guided by four key principles.
 
-1.  **Command-Line Aesthetics**: The interface intentionally mimics classic terminal commands and layouts.
+-   **1.1. Command-Line Aesthetics**: The interface intentionally mimics classic terminal commands and layouts.
     *   **Why?** To create a unique, memorable experience that speaks to technical competence and honors the legacy of computing. It's an interface for builders, thinkers, and problem-solvers.
 
-2.  **Segmented Information Architecture**: Content is strictly compartmentalized into clearly bordered panels.
+-   **1.2. Segmented Information Architecture**: Content is strictly compartmentalized into clearly bordered panels.
     *   **Why?** In complex domains like Web3/DeFi, clarity builds trust. Each panel acts as a single "thought block," isolating a piece of information to reduce cognitive load and guide the user through a structured narrative.
 
-3.  **Intentional Hierarchy**: The system uses a strict color and typography hierarchy to direct user attention.
+-   **1.3. Intentional Hierarchy**: The system uses a strict color and typography hierarchy to direct user attention.
     *   **Why?** To make the interface scannable and intuitive. The user should instinctively know what is a title, what is a key piece of data, and what is descriptive text, allowing them to consume information at their own pace.
 
-4.  **System Feedback Transparency**: All significant user actions and system responses are explicitly logged in a prominent, real-time `SystemLog`.
+-   **1.4. System Feedback Transparency**: All significant user actions and system responses are explicitly logged in a prominent, real-time `SystemLog`.
     *   **Why?** To give the user a sense of complete control and predictability, much like a developer using a well-designed tool. The application's state is never a mystery.
 
----
+## **2. Theming Architecture: How It Works**
 
-## 2. Color System
+Our theming system is designed for instant, client-side theme switching without page reloads or hydration errors. It is built on a modern, scalable foundation of CSS variables.
 
-The palette is inspired by classic monochrome monitors (green-on-black) but modernized for the web with an accent command color (yellow). This creates a balance between nostalgia and functionality. The system supports both a dark (default) and a light theme.
+### **2.1. The Core Idea: CSS Variables & `data-theme`**
 
-### Dark Theme (Default)
+Instead of relying on Tailwind's `dark:` variant, we control the theme via a `data-theme` attribute on the root `<html>` element. This attribute acts as a switch that instantly changes the values of all our CSS color variables, causing the entire UI to re-render with the new palette.
 
-| Role                | Tailwind Class             | Hex Code  | Usage                                                  |
-| :------------------ | :------------------------- | :-------- | :----------------------------------------------------- |
-| Background          | `bg-dark-bg`               | `#000000` | Main page background.                                  |
-| **Command Text**    | `text-dark-text-command`   | `#facc15` | **Level 1 Hierarchy**: Panel titles, commands (`$`).     |
-| **Primary Text**    | `text-dark-text-primary`   | `#4ade80` | **Level 2 Hierarchy**: Key labels, important values.     |
-| **Secondary Text**  | `text-dark-text-secondary` | `#9ca3af` | **Level 3 Hierarchy**: Descriptions, body copy.          |
-| Primary Border      | `border-dark-border`       | `#22c55e` | Main window and primary component borders.             |
-| Secondary Border    | `border-dark-border-darker`| `#166534` | Nested panels, creating visual depth.                  |
-| Active Element      | `bg-dark-active`           | `#15803d` | Active tab background.                                 |
-| Hover State         | `hover:bg-dark-hover`      | `rgba(34, 197, 94, 0.1)` | Subtle feedback for interactive elements. |
-| Success State       | `text-dark-success`        | `#4ade80` | Success indicators, metrics.                           |
+### **2.2. The Three Layers of Styling**
 
-### Light Theme
+Our system is organized into three distinct layers, ensuring a clear separation of concerns.
 
-| Role                | Tailwind Class              | Hex Code  | Usage                                                  |
-| :------------------ | :-------------------------- | :-------- | :----------------------------------------------------- |
-| Background          | `bg-light-bg`               | `#f3f4f6` | Main page background.                                  |
-| **Command Text**    | `text-light-text-command`   | `#ca8a04` | **Level 1 Hierarchy**: Panel titles, commands (`$`).     |
-| **Primary Text**    | `text-light-text-primary`   | `#166534` | **Level 2 Hierarchy**: Key labels, important values.     |
-| **Secondary Text**  | `text-light-text-secondary` | `#4b5563` | **Level 3 Hierarchy**: Descriptions, body copy.          |
-| Primary Border      | `border-light-border`       | `#15803d` | Main window and primary component borders.             |
-| Secondary Border    | `border-light-border-lighter`| `#4ade80`| Nested panels, creating visual depth.                  |
-| Active Element      | `bg-light-active`           | `#dcfce7` | Active tab background.                                 |
-| Hover State         | `hover:bg-light-hover`      | `rgba(22, 163, 74, 0.1)` | Subtle feedback for interactive elements. |
-| Success State       | `text-light-success`        | `#16a34a` | Success indicators, metrics.                           |
+1.  **Layer 1: Tailwind Config (`tailwind.config.mjs`)**: This is where we define all our raw color values as named "tokens" (e.g., `'dark-bg'`, `'amber-text-primary'`). This file is our master color library.
 
----
+2.  **Layer 2: Global CSS (`globals.css`)**: Here, we define semantic CSS variables (e.g., `--color-bg`, `--color-text-primary`). For each supported theme (e.g., `[data-theme='light']`), we assign the appropriate color tokens from Tailwind to these variables.
 
-## 3. Typography
+3.  **Layer 3: Semantic Classes (`globals.css`)**: We create a library of reusable, semantic utility classes (e.g., `.bg-main`, `.text-primary`). These classes use the CSS variables, making them automatically theme-aware. **Components should only use these classes.**
+
+### **2.3. How a Theme is Applied (The Flow)**
+
+The theme-switching process is a clean, predictable flow:
+
+1.  A user clicks the theme toggle button in the `TerminalWindow`.
+2.  The `toggleTheme` function in `SessionContext.js` updates the `theme` state (e.g., from `'dark'` to `'light'`).
+3.  The `ThemeManager.js` component, subscribed to this state, updates the root `<html>` element's attribute: `<html data-theme="light">`.
+4.  The browser immediately applies the new set of CSS variables defined in `globals.css` under the `[data-theme='light']` selector.
+5.  All components styled with our semantic classes (e.g., `.bg-main`) instantly re-render with the new colors, with zero flicker.
+
+## **3. Color Palettes**
+
+The following tables define the color palette for each supported theme.
+
+### **3.1. How to Read These Tables**
+
+-   **Role:** The semantic purpose of the color in the UI.
+-   **CSS Variable:** The variable name to be used in `globals.css`.
+-   **Hex/RGBA Value:** The raw color value.
+
+### **3.2. Dark Theme (Default)**
+
+| Role             | CSS Variable               | Value                  |
+| :--------------- | :------------------------- | :--------------------- |
+| Background       | `--color-bg`               | `#000000`              |
+| Primary Text     | `--color-text-primary`     | `#86efac`              |
+| Secondary Text   | `--color-text-secondary`   | `#9ca3af`              |
+| Command Text     | `--color-text-command`     | `#eab308`              |
+| Primary Border   | `--color-border`           | `#22c55e`              |
+| Secondary Border | `--color-border-darker`    | `#166534`              |
+| Active Element   | `--color-active`           | `#15803d`              |
+| Hover State      | `--color-hover`            | `rgba(34, 197, 94, 0.1)` |
+
+### **3.3. Light Theme**
+
+| Role             | CSS Variable               | Value                  |
+| :--------------- | :------------------------- | :--------------------- |
+| Background       | `--color-bg`               | `#ffffff`              |
+| Primary Text     | `--color-text-primary`     | `#065f46`              |
+| Secondary Text   | `--color-text-secondary`   | `#4b5563`              |
+| Command Text     | `--color-text-command`     | `#b45309`              |
+| Primary Border   | `--color-border`           | `#10b981`              |
+| Secondary Border | `--color-border-darker`    | `#059669`              |
+| Active Element   | `--color-active`           | `#d1fae5`              |
+| Hover State      | `--color-hover`            | `rgba(5, 150, 105, 0.1)` |
+
+### **3.4. Amber Theme**
+
+| Role             | CSS Variable               | Value                   |
+| :--------------- | :------------------------- | :---------------------- |
+| Background       | `--color-bg`               | `#1C140D`               |
+| Primary Text     | `--color-text-primary`     | `#FFB86C`               |
+| Secondary Text   | `--color-text-secondary`   | `#D9A15D`               |
+| Command Text     | `--color-text-command`     | `#FFD173`               |
+| Primary Border   | `--color-border`           | `#FF9F1C`               |
+| Secondary Border | `--color-border-darker`    | `#8B5A00`               |
+| Active Element   | `--color-active`           | `#FF8C00`               |
+| Hover State      | `--color-hover`            | `rgba(255, 184, 108, 0.08)` |
+
+### **3.5. BSOD Theme**
+
+| Role             | CSS Variable               | Value                   |
+| :--------------- | :------------------------- | :---------------------- |
+| Background       | `--color-bg`               | `#0B4DA8`               |
+| Primary Text     | `--color-text-primary`     | `#FFFFFF`               |
+| Secondary Text   | `--color-text-secondary`   | `#CFE9FF`               |
+| Command Text     | `--color-text-command`     | `#E1F0FF`               |
+| Primary Border   | `--color-border`           | `#E6F3FF`               |
+| Secondary Border | `--color-border-darker`    | `#7FB3FF`               |
+| Active Element   | `--color-active`           | `#0066FF`               |
+| Hover State      | `--color-hover`            | `rgba(230, 243, 255, 0.06)` |
+
+## **4. Semantic Class Library**
+
+This is the library of approved, theme-aware classes defined in `globals.css`. Components should **only** use these classes for styling.
+
+### **4.1. Text & Color Classes**
+-   `.text-primary`: For primary labels and important values.
+-   `.text-secondary`: For body copy, descriptions, and less important text.
+-   `.text-command`: For titles, prompts (`$`), and key commands.
+-   `.text-white-black`: For text that needs high contrast against a solid background (white on dark themes, black on light).
+-   `.text-success` / `.text-error`: For status indicators.
+
+### **4.2. Background & Border Classes**
+-   `.bg-main`: For the main background of panels and windows.
+-   `.bg-hover`: To be used with the `:hover` pseudo-class for subtle feedback.
+-   `.bg-active`: For active UI elements like tabs.
+-   `.border-primary`: For primary borders (main window, buttons).
+-   `.border-secondary`: For secondary, less prominent borders (internal panels, dividers).
+
+### **4.3. Composite Component Classes**
+-   `.panel-full`: A complete panel with border, padding, and theme-aware colors.
+-   `.btn-command`: The standard button style, including border, color, and hover effects.
+-   `.input-base`: The standard input field style.
+-   `.tag-badge`: The standard style for tags.
+
+### **4.4. Usage Example: Building a Panel**
+
+This system dramatically simplifies component markup.
+
+```jsx
+// A panel built using semantic classes. It will automatically adapt to any theme.
+<div className="panel-full mb-4">
+  <h3 className="title-command">$profile_data</h3>
+  <div className="grid">
+    <span className="text-primary">$title:</span>
+    <span className="text-secondary">Senior Developer</span>
+  </div>
+</div>
+```
+
+## **5. Typography**
 
 A strict typographic scale ensures consistency and readability.
 
 -   **Font Family**: `font-mono` (`IBM Plex Mono`) is used exclusively to maintain the terminal aesthetic.
--   **Font Sizes**: A limited set of sizes creates a clean, predictable rhythm.
-    -   `text-xs`: The smallest size, for tertiary details like tags and log timestamps.
-    -   `text-sm`: The workhorse for all body copy and descriptions.
-    -   `text-base`: Used for commands and panel titles to give them prominence.
-    -   `text-lg` / `text-xl`: Reserved for key headers to establish a clear screen hierarchy.
--   **Text Styles**: The system avoids `italic` or complex `font-weight` changes. Emphasis is achieved through the color hierarchy or minimal `font-bold` usage.
+-   **Font Sizes**: A limited set of sizes creates a clean, predictable rhythm: `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`.
+-   **Text Styles**: Emphasis is achieved through the color hierarchy, not font weight or style.
 
----
+## **6. Component Guidelines**
 
-## 4. Component Library
+-   **Panels:** The fundamental "atom" of the interface, built using the `.panel-full` class. They isolate information.
+-   **Buttons:** Interactive elements styled with `.btn-command`. They must be theme-agnostic and receive their icon as a component reference prop (`icon={IconComponent}`).
+-   **Tabs & Accordions:** These components use `.bg-active` and `.border-secondary` to feel integrated with the panels they belong to.
 
-Components are designed as reusable, self-contained modules that follow the core design principles.
+## **7. Developer's Guide: How to Extend the System**
 
-### 4.1. Panels
-The Panel is the fundamental "atom" of the interface. It is a container with a `1px` border that isolates a single piece of information or a group of related controls. This modularity makes complex information easy to digest. Panels use secondary (darker/lighter) borders to signify that they are content blocks within the main application window.
+### **7.1. How to Style a New Component**
 
-### 4.2. Progressive Disclosure Components (`Tabs` & `Accordion`)
-Instead of overwhelming the user, the system reveals complexity on demand.
--   **Role**: To present a clean summary upfront while providing access to deeper information.
--   **Styling**: These components are styled to appear seamlessly integrated with the content panels they control, using shared borders and active states to create a cohesive feel.
+1.  **Use Semantic Classes First:** Always start by using the classes from our library (`.panel-full`, `.text-primary`, etc.).
+2.  **Use Tailwind for Layout:** Use standard Tailwind utilities for layout (`flex`, `grid`, `p-4`, `gap-2`, etc.).
+3.  **Avoid Direct Color/Theme Logic:** **NEVER** use theme-dependent logic (`theme === 'dark'`) or direct color classes (`bg-green-500`, `dark:bg-black`) in a component. If a required style is missing, extend the semantic library.
 
-### 4.3. Navigation Elements (`Buttons`, Links)
-All interactive elements are designed for clarity and function.
--   **Structure**: Elements are clearly defined interactive targets with `hover` states.
--   **Styling**: Navigation buttons use the primary border color and often include an icon to hint at the action's outcome (e.g., `ArrowLeft` for "Back").
+### **7.2. How to Add a New Theme**
 
-### 4.4. Terminal Image Preview Component
+Adding a fifth theme is a simple, four-step process:
 
-A specialized component that provides lazy-loaded image display with terminal aesthetics:
-
-- Structure: Three-state component (idle → loading → ready)
-- Idle State:
-  - ASCII-style frame using box-drawing characters
-  - Centered `[ SHOW IMAGE ]` button
-  - No image preloading for performance
-- Loading State:
-  - Animated progress bar using █ and ░ characters
-  - Percentage counter with simulated progression
-  - Logs events to SystemLog
-- Ready State:
-  - Full image display with hover hint
-  - Click to open lightbox modal
-- Lightbox:
-  - Centered modal with backdrop dimming
-  - Close button and click-outside-to-close
-  - Image caption display when available
-- Technical Notes:
-  - Uses Next.js Image component for optimization
-  - Supports custom heights and aspect ratios
-  - Integrates with theme system for consistent styling
-
----
-
-## 5. Centralized Utility Classes
-
-To enforce consistency and reduce code duplication, the design system uses a set of centralized utility classes defined in `src/app/globals.css`. These classes use Tailwind's `@apply` directive to bundle common styling patterns into reusable, semantic class names. Developers should always prefer using these classes over raw Tailwind utilities for the patterns they cover.
-
-### Core Utility Classes
-
-| Class             | Definition                                                                               | Purpose                                                                                             |
-| :---------------- | :--------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------- |
-| `.panel-base`     | `@apply border rounded-md p-4;`                                                          | The fundamental structure for all content panels. Provides padding, border, and rounded corners.  |
-| `.panel-theme`    | `@apply bg-light-bg border-light-border dark:bg-dark-bg dark:border-dark-border-darker;`   | The theme-aware color scheme for panels. Provides background and border colors for both light and dark modes. |
-| `.title-command`  | `@apply text-base mb-2 font-mono text-light-text-command dark:text-dark-text-command;`     | For styling panel titles with the prominent "command" color and correct typography.                 |
-| `.key-label`      | `@apply text-sm font-mono text-light-text-secondary dark:text-dark-text-secondary;`       | For secondary text, such as descriptive labels or less important values in a key-value pair.        |
-| `.value-primary`  | `@apply text-xl font-mono text-light-text-primary dark:text-dark-text-primary;`           | For primary, high-importance values. Note the larger font size (`text-xl`).                         |
-| `.tag-badge`      | `@apply text-xs px-2 py-0.5 border rounded-full whitespace-nowrap;`                        | For styling tags or badges, providing a consistent, rounded look.                                   |
-
-### Usage Example
-
-The primary benefit of this system is simplifying component markup.
-
-**Before Refactoring:**
-```html
-<div className="p-4 rounded border mb-4 border-light-border-lighter dark:border-dark-border-darker">
-  <h3 className="text-base mb-2 text-light-text-command dark:text-dark-text-command">$profile_data</h3>
-  <div className="grid">
-    <span className="text-light-text-primary dark:text-dark-text-primary">$title:</span>
-    <span className="text-light-text-secondary dark:text-dark-text-secondary">Senior Developer</span>
-  </div>
-</div>
-```
-
-**After Refactoring:**
-```html
-<div className="panel-base panel-theme mb-4">
-  <h3 className="title-command">$profile_data</h3>
-  <div className="grid">
-    <span className="value-primary text-sm">$title:</span> <!-- Font size override -->
-    <span className="key-label">Senior Developer</span>
-  </div>
-</div>
-```
-*Note: In the example above, `.value-primary` is used for its color, but its `text-xl` font size is overridden with `text-sm` to match the local context. This is an acceptable use case when the primary color is needed for smaller text.*
+1.  **Add Color Tokens:** Define the new theme's color palette in `tailwind.config.mjs` (e.g., `'matrix-bg': '#0D2B0D'`).
+2.  **Define CSS Variables:** Add a new `[data-theme='matrix']` block in `globals.css` and map your new tokens to the CSS variables (`--color-bg: theme('colors.matrix-bg');`).
+3.  **Update Theme Array:** Add the new theme's name (`'matrix'`) to the `themes` array in `src/app/context/SessionContext.js`.
+4.  **Add Theme Icon:** Add an icon for the new theme to the `themeIcons` dictionary in `src/app/layouts/TerminalWindow.js`.

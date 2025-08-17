@@ -6,23 +6,10 @@ import { ChevronRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress'; // Import the progress component
 
 export default function CaseList() {
-  const { sessionData, theme, navigate, addLog, setSelectedCase } = useSession();
-
-  const panelClasses = `p-3 border rounded ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
-  }`;
-  const yellowClasses = `${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
-  }`;
-  const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
-  }`;
-  const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-  }`;
-  const successClasses = `${
-    theme === 'dark' ? 'text-dark-success' : 'text-light-success'
-  }`;
+  // REMOVED: The 'theme' variable and all intermediate class name variables
+  // (panelClasses, yellowClasses, etc.) are no longer needed. The component now exclusively
+  // uses semantic CSS classes that adapt to the theme automatically.
+  const { sessionData, navigate, addLog, setSelectedCase } = useSession();
 
   const cases = sessionData?.case_studies || {};
   const caseIds = Object.keys(cases);
@@ -69,13 +56,12 @@ export default function CaseList() {
 
   return (
     <div className="p-4">
-      {/* Replaced square visualization with level-based progress system */}
-      <div className={`mb-4 ${panelClasses}`}>
-        {/* Access level indicator with company name */}
-        <div className={`mb-3 ${labelClasses}`}>
-          <span className={`text-sm ${yellowClasses}`}>Access Level: </span>
-          <span className={`text-sm ${successClasses}`}>{accessInfo.level}</span>
-          <span className={`text-sm ml-2 ${valueClasses}`}>
+      {/* COMMENT: All class names in this block are already semantic and theme-agnostic. No changes needed. */}
+      <div className="mb-4 p-4 rounded border border-secondary">
+        <div className="mb-3 text-primary">
+          <span className="text-sm text-command">Access Level: </span>
+          <span className="text-sm text-success">{accessInfo.level}</span>
+          <span className="text-sm ml-2 text-secondary">
             for {sessionData?.meta?.company || 'current session'}
           </span>
         </div>
@@ -88,23 +74,23 @@ export default function CaseList() {
             label={`${caseIds.length} of ${totalCasesCount} cases available`}
             showPercentage={true}
             animateProgress={true}
-            height="h-3" // Slightly smaller height for compact view
+            height="h-3"
           />
         </div>
         
         {/* Next level hint - only show if not at max level */}
         {accessInfo.next && casesForNextLevel > 0 && (
-          <div className={`text-xs mt-2 ${valueClasses}`}>
+          <div className="text-xs mt-2 text-secondary">
             <span className="opacity-75">
               Unlock {casesForNextLevel} more {casesForNextLevel === 1 ? 'case ' : 'cases '} 
-              to reach <span className={labelClasses}>{accessInfo.next}</span> level
+              to reach <span className="text-primary">{accessInfo.next}</span> level
             </span>
           </div>
         )}
         
         {/* Max level achievement message */}
         {!accessInfo.next && (
-          <div className={`text-xs mt-2 ${successClasses}`}>
+          <div className="text-xs mt-2 text-success">
             <span>✓ Maximum access level achieved</span>
           </div>
         )}
@@ -117,38 +103,33 @@ export default function CaseList() {
             <button
               key={caseId}
               onClick={() => handleCaseClick(caseId, caseData)}
-              className={`w-full p-4 border rounded text-left transition-colors flex items-start gap-4 ${
-                theme === 'dark'
-                  ? 'border-dark-border-darker hover:bg-dark-hover'
-                  : 'border-light-border-lighter hover:bg-light-hover'
-              }`}
+              className="w-full p-4 border rounded text-left transition-colors flex items-start gap-4 border-secondary bg-hover"
             >
               <div className="flex-1 space-y-1">
-                <div className={`text-lg ${yellowClasses}`}>
+                <div className="text-lg text-command">
                 {caseData.title}
               </div>
-                <div className={`text-sm ${valueClasses}`}>
+                <div className="text-sm text-secondary">
                 {caseData.desc}
               </div>
-                <div className={`text-sm pt-1 ${labelClasses}`}>
+                <div className="text-sm pt-1 text-primary">
                 {caseData.metrics}
               </div>
                 <div className="flex flex-wrap gap-2 pt-2">
                 {caseData.tags?.map((tag) => (
                   <span
                     key={tag}
-                      className={`px-2 py-0.5 border rounded text-xs ${
-                      theme === 'dark'
-                          ? 'border-dark-border-darker bg-gray-900 text-dark-text-secondary'
-                          : 'border-light-border-lighter bg-gray-50 text-light-text-secondary'
-                    }`}
+                      // CHANGE: Replaced the final piece of theme-dependent logic with semantic classes.
+                      // This completes the refactoring for this component and resolves potential hydration errors.
+                      // We use the same pattern as in the Accordion for consistency.
+                      className="tag-badge border-secondary text-secondary bg-main"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
               </div>
-              <ChevronRight className={`w-5 h-5 mt-1 ${valueClasses}`} />
+              <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
             </button>
           );
         })}
