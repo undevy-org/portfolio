@@ -69,7 +69,7 @@ jobs:
           echo "✅ All required files present"
           echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
       
-      - name: Backup environment files and project images
+      - name: Backup environment files, PM2 ecosystem, and project images
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -98,6 +98,15 @@ jobs:
               fi
             done
 
+            # Backup PM2 ecosystem config if exists (protect from scp rm)
+            echo "🧩 Backing up PM2 ecosystem file..."
+            for ec in ecosystem.config.cjs ecosystem.config.js; do
+              if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec" ]; then
+                cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec" "/tmp/deploy-backup/$ec"
+                echo "✅ Backed up $ec"
+              fi
+            done
+
       - name: Deploy portfolio files to server
         uses: appleboy/scp-action@master
         with:
@@ -109,7 +118,7 @@ jobs:
           strip_components: 1
           rm: true
 
-      - name: Restore environment files and project images
+      - name: Restore environment files, PM2 ecosystem, and project images
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -121,6 +130,16 @@ jobs:
             for f in .env .env.local .env.production; do
               if [ -f "/tmp/deploy-backup/$f" ]; then
                 cp "/tmp/deploy-backup/$f" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f"
+                echo "✅ Restored $f"
+              fi
+            done
+
+            # Restore PM2 ecosystem file if backup exists
+            echo "🧩 Restoring PM2 ecosystem file..."
+            for ec in ecosystem.config.cjs ecosystem.config.js; do
+              if [ -f "/tmp/deploy-backup/$ec" ]; then
+                cp "/tmp/deploy-backup/$ec" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec"
+                echo "✅ Restored $ec"
               fi
             done
 
@@ -139,7 +158,7 @@ jobs:
             # Clean up backup
             rm -rf /tmp/deploy-backup
 
-      - name: Install dependencies and restart portfolio
+      - name: Install dependencies and restart portfolio (idempotent)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -154,6 +173,11 @@ jobs:
             
             echo "📁 Navigating to portfolio directory..."
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
+            echo "PWD: $(pwd)"
+            echo "Node: $(node -v 2>/dev/null || echo 'not found')"
+            echo "NPM:  $(npm -v 2>/dev/null || echo 'not found')"
+            echo "PM2:  $(pm2 -v 2>/dev/null || echo 'not found')"
+            echo "PATH: $PATH"
             
             echo "✅ Verifying deployment files..."
             if [ ! -d ".next" ]; then
@@ -163,10 +187,31 @@ jobs:
             fi
 
             echo "📦 Installing production dependencies..."
-            npm install --production
-            
-            echo "🔄 Restarting application..."
-            pm2 restart ${{ secrets.PM2_APP_NAME_PORTFOLIO }}
+            npm ci --omit=dev || npm install --production
+
+            echo "📋 PM2 process list (before):"
+            pm2 list || true
+
+            APP="${{ secrets.PM2_APP_NAME_PORTFOLIO }}"
+            echo "🔄 Ensuring PM2 app: $APP"
+            if pm2 describe "$APP" >/dev/null 2>&1; then
+              pm2 restart "$APP" --update-env
+            else
+              echo "ℹ️ PM2 app '$APP' not found. Starting it..."
+              if [ -f ecosystem.config.cjs ]; then
+                pm2 start ecosystem.config.cjs --only "$APP" --env production
+              elif [ -f ecosystem.config.js ]; then
+                pm2 start ecosystem.config.js --only "$APP" --env production
+              else
+                # Fallback: Next.js production run from package.json "start"
+                pm2 start npm --name "$APP" -- start
+              fi
+            fi
+
+            pm2 save || true
+
+            echo "📋 PM2 process list (after):"
+            pm2 list || true
             
             echo "✅ Deployment complete!"
       
@@ -187,7 +232,7 @@ jobs:
           source: "telegram-bot/*"
           target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
       
-      - name: Install dependencies and restart bot
+      - name: Install dependencies and restart bot (idempotent)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -202,15 +247,33 @@ jobs:
             
             echo "📁 Navigating to bot directory..."
             cd ${{ secrets.DEPLOY_PATH_BOT }}
+            echo "PWD: $(pwd)"
+            echo "Node: $(node -v 2>/dev/null || echo 'not found')"
+            echo "NPM:  $(npm -v 2>/dev/null || echo 'not found')"
+            echo "PM2:  $(pm2 -v 2>/dev/null || echo 'not found')"
+            echo "PATH: $PATH"
             
             echo "📦 Installing bot dependencies..."
-            npm install --production
+            npm ci --omit=dev || npm install --production
             
-            echo "🔄 Restarting bot..."
-            pm2 restart ${{ secrets.PM2_APP_NAME_BOT }}
-            
+            APP="${{ secrets.PM2_APP_NAME_BOT }}"
+            echo "🔄 Ensuring bot PM2 app: $APP"
+            if pm2 describe "$APP" >/dev/null 2>&1; then
+              pm2 restart "$APP" --update-env
+            else
+              if [ -f ecosystem.config.cjs ]; then
+                pm2 start ecosystem.config.cjs --only "$APP" --env production
+              elif [ -f ecosystem.config.js ]; then
+                pm2 start ecosystem.config.js --only "$APP" --env production
+              else
+                pm2 start npm --name "$APP" -- start
+              fi
+            fi
+
+            pm2 save || true
+
             echo "📊 Bot status:"
-            pm2 status ${{ secrets.PM2_APP_NAME_BOT }}
+            pm2 status "$APP" || true
             
             echo "✅ Bot deployment completed successfully!"
       
