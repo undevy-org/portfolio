@@ -1,9 +1,22 @@
+// src/app/context/SessionContext.js
 'use client';
 
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
+/**
+ * SessionContext
+ *
+ * Centralized app session / navigation / UI state management.
+ * This file contains theme management logic that is compatible with
+ * the unified `data-theme` approach used in globals.css.
+ */
+
+/* Export the list of supported themes so other modules (ThemeManager, UI) can reuse it. */
+export const themes = ['dark', 'light', 'amber', 'bsod'];
+
 export const SessionContext = createContext(null);
 
+/* Utility: readable timestamp for log entries */
 const getTimestamp = () => {
   return new Date().toLocaleTimeString('en-GB', {
     hour: '2-digit',
@@ -57,8 +70,28 @@ export function SessionProvider({ children }) {
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedSkill, setSelectedSkill] = useState(null);
   
-  // ========== UI STATE ==========
-  const [theme, setTheme] = useState('dark');
+  // ========== UI: THEME ==========
+  /**
+   * Theme initialization:
+   * - Read stored theme from localStorage if available and valid.
+   * - Fallback to 'dark' if nothing is stored or the value is invalid.
+   *
+   * Note: Theme values must match the tokens and CSS selectors in globals.css.
+   */
+  const [theme, setTheme] = useState(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = window.localStorage.getItem('theme');
+        if (saved && themes.includes(saved)) {
+          return saved;
+        }
+      }
+    } catch (e) {
+      // ignore storage errors and fallback to default
+    }
+    return 'dark';
+  });
+
   const [expandedSections, setExpandedSections] = useState({});
   const [activeTab, setActiveTab] = useState({});
   
@@ -223,13 +256,49 @@ export function SessionProvider({ children }) {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [sessionData, currentScreen, addLog]);
 
-  // ========== UI FUNCTIONS ==========
+  // ========== THEME MANAGEMENT ==========
+  /**
+   * toggleTheme:
+   *  - Cyclically advances theme through the `themes` array.
+   *  - Uses setState updater to avoid needing `theme` as a dependency.
+   *
+   * setThemeExplicit:
+   *  - Directly set a specific theme (if supported).
+   *
+   * Persisting & logging of theme changes happens in the effect below,
+   * which keeps side-effects outside of the state updater.
+   */
   const toggleTheme = useCallback(() => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    addLog(`THEME CHANGED: ${newTheme.toUpperCase()}`);
+    setTheme(prevTheme => {
+      const currentIndex = themes.indexOf(prevTheme);
+      const safeIndex = currentIndex === -1 ? 0 : currentIndex;
+      const nextIndex = (safeIndex + 1) % themes.length;
+      return themes[nextIndex];
+    });
+  }, []);
+
+  const setThemeExplicit = useCallback((newTheme) => {
+    if (themes.includes(newTheme)) {
+      setTheme(newTheme);
+    } else {
+      console.warn(`SessionProvider: attempt to set unknown theme "${newTheme}"`);
+    }
+  }, []);
+
+  // Side-effects when theme changes: persist to localStorage and log the change.
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('theme', theme);
+      }
+    } catch (e) {
+      // ignore storage write errors
+    }
+
+    addLog(`THEME CHANGED: ${String(theme).toUpperCase()}`);
   }, [theme, addLog]);
 
+  // ========== UI small helpers ==========
   const toggleSection = useCallback((sectionId) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -335,7 +404,9 @@ export function SessionProvider({ children }) {
 
     // UI state
     theme,
+    themes,
     toggleTheme,
+    setThemeExplicit,
     expandedSections,
     toggleSection,
     activeTab,

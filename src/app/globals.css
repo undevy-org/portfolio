@@ -1,270 +1,302 @@
-/* src/app/globals.css */
+/* src/app/globals.css - Alternative approach with CSS variables */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* Define CSS variables for each theme */
+  :root,
+  [data-theme='dark'] {
+    /* Dark theme (default) */
+    --color-bg: #000000;
+    --color-text-primary: #86efac;
+    --color-text-secondary: #9ca3af;
+    --color-text-tertiary: #6b7280;
+    --color-text-command: #eab308;
+    --color-text-white: #ffffff;
+    --color-border: #22c55e;
+    --color-border-darker: #166534;
+    --color-active: #053516;
+    --color-error: #dc2626;
+    --color-success: #4ade80;
+    --color-input-bg: #111827;
+    --color-hover: rgba(34, 197, 94, 0.1);
+    --color-accent: #22d3ee;
+  }
+
+  [data-theme='light'] {
+    /* Light theme */
+    --color-bg: #ffffff;
+    --color-text-primary: #065f46;
+    --color-text-secondary: #4b5563;
+    --color-text-tertiary: #9ca3af;
+    --color-text-command: #b45309;
+    --color-text-white: #0a0a0a; /* inverted for light theme */
+    --color-border: #10b981;
+    --color-border-darker: #059669;
+    --color-active: #d1fae5;
+    --color-error: #dc2626;
+    --color-success: #059669;
+    --color-input-bg: #ffffff;
+    --color-hover: rgba(5, 150, 105, 0.1);
+    --color-accent: #0284c7;
+  }
+
+  [data-theme='amber'] {
+    /* Amber theme */
+    --color-bg: #1C140D;
+    --color-text-primary: #FFB86C;
+    --color-text-secondary: #D9A15D;
+    --color-text-tertiary: #B08953;
+    --color-text-command: #FFD173;
+    --color-text-white: #FFB86C; /* using amber for primary surface */
+    --color-border: #FF9F1C;
+    --color-border-darker: #8B5A00;
+    --color-active: #4d2e08;
+    --color-error: #FF6B6B;
+    --color-success: #4ADE80;
+    --color-input-bg: #1B1210;
+    --color-hover: rgba(255, 184, 108, 0.08);
+    --color-accent: #FFDDAA;
+  }
+
+  [data-theme='bsod'] {
+    /* BSOD theme */
+    --color-bg: #0B4DA8;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #CFE9FF;
+    --color-text-tertiary: #9EC7FF;
+    --color-text-command: #E1F0FF;
+    --color-text-white: #FFFFFF;
+    --color-border: #E6F3FF;
+    --color-border-darker: #7FB3FF;
+    --color-active: #0066FF;
+    --color-error: #FF6B6B;
+    --color-success: #00D084;
+    --color-input-bg: #073A93;
+    --color-hover: rgba(230, 243, 255, 0.06);
+    --color-accent: #88B8FF;
+  }
+}
+
 @layer components {
-  /* ===================================
-     TEXT STYLES
-     Semantic classes for all types of text
-     =================================== */
+  /* Now all classes use CSS variables - no need for theme overrides! */
   
-  /* Basic text styles */
+  /* Text styles */
   .text-primary {
-    @apply text-light-text-primary dark:text-dark-text-primary;
+    color: var(--color-text-primary);
   }
   
   .text-secondary {
-    @apply text-light-text-secondary dark:text-dark-text-secondary;
+    color: var(--color-text-secondary);
   }
   
   .text-command {
-    @apply text-light-text-command dark:text-dark-text-command;
+    color: var(--color-text-command);
   }
   
   .text-white-black {
-    /* White in dark theme, black in light theme */
-    @apply text-light-text-black dark:text-dark-text-white;
+    color: var(--color-text-white);
   }
   
   .text-tertiary {
-    /* For even less important text */
-    @apply text-gray-500 dark:text-dark-text-tertiary;
+    color: var(--color-text-tertiary);
   }
   
   .text-error {
-    @apply text-light-error dark:text-dark-error;
+    color: var(--color-error);
   }
   
   .text-success {
-    @apply text-light-success dark:text-dark-success;
+    color: var(--color-success);
   }
   
   .text-accent {
-    @apply text-light-accent dark:text-dark-accent;
+    color: var(--color-accent);
   }
   
-  /* ===================================
-     BACKGROUND STYLES
-     For various containers and surfaces
-     =================================== */
-  
+  /* Background styles */
   .bg-main {
-    @apply bg-light-bg dark:bg-dark-bg;
+    background-color: var(--color-bg);
   }
   
   .bg-input {
-    @apply bg-light-input-bg dark:bg-dark-input-bg;
+    background-color: var(--color-input-bg);
   }
   
   .bg-active {
-    @apply bg-light-active dark:bg-dark-active;
+    background-color: var(--color-active);
   }
   
-  .bg-hover {
-    @apply hover:bg-light-hover dark:hover:bg-dark-hover;
+  .bg-hover:hover {
+    background-color: var(--color-hover);
   }
   
-  /* ===================================
-     BORDER STYLES
-     For all types of outlines
-     =================================== */
-  
+  /* Border styles */
   .border-primary {
-    @apply border-light-border dark:border-dark-border;
+    border-color: var(--color-border);
   }
   
   .border-secondary {
-    @apply border-light-border-lighter dark:border-dark-border-darker;
+    border-color: var(--color-border-darker);
   }
   
   .border-active {
-    @apply border-light-border dark:border-dark-active;
+    border-color: var(--color-active);
   }
   
   .border-error {
-    @apply border-light-error dark:border-dark-error;
+    border-color: var(--color-error);
   }
   
   .border-success {
-    @apply border-light-success dark:border-dark-success;
+    border-color: var(--color-success);
   }
   
-  /* ===================================
-     COMPOSITE COMPONENTS
-     Ready-made patterns for UI elements
-     =================================== */
+  /* Composite components - now they automatically adapt to theme! */
+  .input-base {
+    @apply w-full px-3 py-2 rounded border font-mono text-sm;
+    background-color: var(--color-input-bg);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
   
-  /* Base panel (structure without colors) */
+  .input-base:focus {
+    @apply outline-none ring-2;
+    --tw-ring-color: var(--color-border);
+  }
+  
+  .input-error {
+    border-color: var(--color-error);
+    color: var(--color-error);
+  }
+  
+  .btn-command {
+    @apply px-4 py-2 font-mono text-sm border rounded transition-colors;
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+  
+  .btn-command:hover {
+    background-color: var(--color-hover);
+  }
+  
+  .btn-active {
+    background-color: var(--color-active);
+    border-color: var(--color-active);
+  }
+  
+  .tag-badge {
+    @apply text-xs px-2 py-0.5 border rounded whitespace-nowrap;
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+  
+  .label-base {
+    @apply block text-sm font-mono mb-1;
+    color: var(--color-text-secondary);
+  }
+  
+  /* All other utility classes remain the same... */
   .panel-base {
     @apply border rounded-md p-4;
   }
-  
-  /* Themed panel (full-fledged container) */
+
   .panel-theme {
     @apply bg-main border-secondary;
   }
-  
-  /* Full panel (structure + theme) */
+
   .panel-full {
     @apply panel-base panel-theme;
   }
-  
-  /* Panel title in command style */
+
   .title-command {
     @apply text-base mb-2 font-mono text-command;
   }
-  
-  /* Label for keys in key-value pairs */
+
   .key-label {
     @apply text-sm font-mono text-secondary;
   }
-  
-  /* Value in key-value pairs */
+
   .value-primary {
     @apply text-xl font-mono text-primary;
   }
   
-  /* Badge/tag */
-  .tag-badge {
-    @apply text-xs px-2 py-0.5 border rounded-full whitespace-nowrap;
-  }
-  
-  /* Command button (main button style) */
-  .btn-command {
-    @apply px-4 py-2 font-mono text-sm border rounded
-           border-primary text-primary
-           bg-hover transition-colors;
-  }
-  
-  /* Active button/tab */
-  .btn-active {
-    @apply bg-active border-active;
-  }
-  
-  /* ===================================
-     INTERACTIVE STATES
-     For hover, focus, active effects
-     =================================== */
-  
   .interactive-base {
     @apply transition-all duration-200 cursor-pointer;
   }
-  
+
   .interactive-hover {
     @apply hover:opacity-80 hover:scale-[1.02];
   }
-  
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 
-           focus:ring-light-border dark:focus:ring-dark-border;
+
+  .terminal-line {
+    @apply font-mono text-sm;
+    color: var(--color-text-secondary);
+  }
+
+  .terminal-prompt {
+    @apply font-mono text-sm;
+    color: var(--color-text-command);
+  }
+
+  .log-entry {
+    @apply text-xs font-mono;
+    color: var(--color-text-tertiary);
+  }
+
+  .log-timestamp {
+    @apply text-xs font-mono opacity-60;
+    color: var(--color-text-tertiary);
+  }
+
+  .ascii-frame {
+    @apply font-mono text-xs leading-none;
+    color: var(--color-text-secondary);
   }
   
-  /* ===================================
-     FORMS AND INPUTS
-     Styles for form elements
-     =================================== */
-  
-  .input-base {
-    @apply w-full px-3 py-2 rounded border font-mono text-sm
-           bg-input border-primary text-primary
-           focus-ring;
-  }
-  
-  .input-error {
-    @apply border-error text-error;
-  }
-  
-  .label-base {
-    @apply block text-sm font-mono text-secondary mb-1;
-  }
-  
-  /* ===================================
-     ANIMATIONS
-     For smooth transitions
-     =================================== */
-  
-  .animate-fade-in {
-    @apply animate-[fadeIn_0.3s_ease-in-out];
-  }
-  
-  .animate-slide-up {
-    @apply animate-[slideUp_0.3s_ease-out];
-  }
-  
-  /* ===================================
-     LAYOUT UTILITIES
-     Frequently used layout patterns
-     =================================== */
-  
+  /* Layout utilities */
   .flex-center {
     @apply flex items-center justify-center;
   }
-  
+
   .flex-between {
     @apply flex items-center justify-between;
   }
-  
+
   .flex-col-center {
     @apply flex flex-col items-center justify-center;
   }
-  
+
   .grid-responsive {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
   }
   
-  /* ===================================
-     SPECIAL COMPONENTS
-     Unique to terminal-style
-     =================================== */
-  
-  /* Terminal output line */
-  .terminal-line {
-    @apply font-mono text-sm text-secondary;
-  }
-  
-  .terminal-prompt {
-    @apply font-mono text-sm text-command;
-  }
-  
-  /* System log */
-  .log-entry {
-    @apply text-xs font-mono text-tertiary;
-  }
-  
-  .log-timestamp {
-    @apply text-xs font-mono text-tertiary opacity-60;
-  }
-  
-  /* ASCII frame for image previews */
-  .ascii-frame {
-    @apply font-mono text-xs text-secondary leading-none;
-  }
-  
-  /* ===================================
-     ADAPTIVE MODIFIERS
-     For mobile devices
-     =================================== */
-  
+  /* Mobile modifiers */
   .mobile-full {
     @apply w-full sm:w-auto;
   }
-  
+
   .hide-mobile {
     @apply hidden sm:block;
   }
-  
+
   .show-mobile {
     @apply block sm:hidden;
   }
+  
+  /* Animations */
+  .animate-fade-in {
+    @apply animate-[fadeIn_0.3s_ease-in-out];
+  }
+
+  .animate-slide-up {
+    @apply animate-[slideUp_0.3s_ease-out];
+  }
 }
 
-/* ===================================
-   CUSTOM ANIMATIONS
-   Definitions for @keyframes
-   =================================== */
-
+/* Keyframes */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -285,14 +317,10 @@
   }
 }
 
-/* ===================================
-   OVERRIDES FOR THIRD-PARTY LIBRARIES
-   For example, for Reown/WalletConnect modals
-   =================================== */
-
+/* Third-party overrides */
 @layer utilities {
-  /* Remove default button styles in Web3 modals */
   .wallet-modal-override {
-    @apply !bg-transparent !text-primary;
+    background-color: transparent !important;
+    color: var(--color-text-primary) !important;
   }
 }
