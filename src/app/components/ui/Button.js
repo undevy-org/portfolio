@@ -1,3 +1,4 @@
+// src/app/components/ui/Button.js
 'use client';
 
 import { useSession } from '../../context/SessionContext';
@@ -6,6 +7,8 @@ import { useState, useEffect } from 'react';
 export default function Button({
   children,
   onClick,
+  // CHANGE: The 'icon' prop is now correctly destructured as 'Icon' with a capital letter.
+  // This standard practice signals that it's a React component, not a simple value.
   icon: Icon,
   iconPosition = 'left',
   variant = 'full',
@@ -15,7 +18,9 @@ export default function Button({
   successText = null,
   successDuration = 2000
 }) {
-  const { theme } = useSession();
+  // REMOVED: The 'theme' variable is no longer needed here.
+  // All theme logic is now handled by the semantic CSS classes.
+  const {} = useSession();
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleClick = (e) => {
@@ -39,6 +44,7 @@ export default function Button({
     }
   }, [isSuccess, successDuration]);
 
+  // COMMENT: getVariantClasses remains unchanged as it controls layout, not theme.
   const getVariantClasses = () => {
     switch (variant) {
       case 'full':
@@ -54,30 +60,39 @@ export default function Button({
     }
   };
 
-  const baseClasses = `
-    p-3 ${variant !== 'icon-only' ? 'border' : ''} rounded font-normal transition-colors
-    flex items-center justify-center gap-2
-    ${getVariantClasses()}
-    ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-  `;
+  // CHANGE: The 'baseClasses' and 'themeClasses' logic has been completely replaced.
+  // We now construct the final className by combining a few base structural classes
+  // with the new, powerful semantic classes from globals.css.
+  const buttonClasses = [
+    'p-3',
+    'rounded',
+    'font-normal',
+    'transition-colors',
+    'flex',
+    'items-center',
+    'justify-center',
+    'gap-2',
+    // COMMENT: Add semantic classes for theming. These adapt automatically.
+    'btn-command', // This class from globals.css now handles border, color, and hover.
+    isSuccess ? 'text-success' : 'text-primary', // Dynamically switch to success color if needed.
+    // COMMENT: Layout and state classes are added conditionally.
+    getVariantClasses(),
+    disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+    variant !== 'icon-only' ? 'border' : '',
+    className, // Append any custom classes passed in props.
+  ].join(' '); // Join all classes into a single string.
 
-  const themeClasses = theme === 'dark'
-    ? `
-      ${variant !== 'icon-only' ? 'border-dark-border' : ''}
-      ${disabled ? '' : 'hover:bg-dark-hover'}
-      ${isSuccess ? 'text-dark-success' : 'text-dark-text-primary'}
-    `
-  : `
-      ${variant !== 'icon-only' ? 'border-light-border' : ''}
-      ${disabled ? '' : 'hover:bg-light-hover'}
-      ${isSuccess ? 'text-light-success' : 'text-light-text-primary'}
-    `;
-
-  const buttonClasses = `${baseClasses} ${themeClasses} ${className}`.trim();
 
   const displayText = isSuccess && successText ? successText : children;
 
-  if (!children && Icon) {
+  const renderIcon = () => {
+    if (!Icon) return null;
+    return <Icon className="w-5 h-5" />;
+  };
+
+  const finalIcon = renderIcon();
+
+  if (!children && finalIcon) {
     return (
       <button
         onClick={handleClick}
@@ -85,7 +100,7 @@ export default function Button({
         className={buttonClasses}
         aria-label="Icon button"
       >
-        <Icon className="w-5 h-5" />
+        {finalIcon}
       </button>
     );
   }
@@ -96,9 +111,9 @@ export default function Button({
       disabled={disabled}
       className={buttonClasses}
     >
-      {Icon && iconPosition === 'left' && <Icon className="w-5 h-5" />}
+      {finalIcon && iconPosition === 'left' && finalIcon}
       {displayText}
-      {Icon && iconPosition === 'right' && <Icon className="w-5 h-5" />}
+      {finalIcon && iconPosition === 'right' && finalIcon}
     </button>
   );
 }

@@ -1,3 +1,4 @@
+// src/app/screens/Contact.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -6,16 +7,14 @@ import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Contact() {
-  const { sessionData, theme, addLog, currentDomain, domainData } = useSession();
+  // REMOVED: The 'theme' variable is no longer needed for styling this component.
+  const { sessionData, addLog, domainData } = useSession();
   const [emailCopied, setEmailCopied] = useState(false);
 
-  // WHY: This makes the code more readable and easier to maintain.
-  const yellowClasses = "text-command";
-  const labelClasses = "text-primary";
-  const valueClasses = "text-secondary";
-  const mainTextClasses = "text-white-black";
-  const mainBorderClasses = theme === 'dark' ? 'border-dark-border hover:bg-dark-hover' : 'border-light-border hover:bg-light-hover';
-
+  // REMOVED: All intermediate class variables (yellowClasses, labelClasses, etc.) are now obsolete.
+  // We apply our semantic CSS classes from globals.css directly in the JSX.
+  
+  // COMMENT: The logic for sourcing contact data remains the same, as it's not theme-related.
   const baseContact = sessionData?.contact || {};
   const profileStatus = sessionData?.profile?.status || {};
 
@@ -47,7 +46,6 @@ export default function Contact() {
 
   const contactData = getDomainSpecificContact();
 
-  // NOTE: Email copy logic remains unchanged.
   const handleCopyEmail = async () => {
     if (navigator.clipboard) {
       try {
@@ -80,7 +78,6 @@ export default function Contact() {
     setTimeout(() => setEmailCopied(false), 2000);
   };
 
-  // NOTE: External link logic remains unchanged.
   const handleExternalLink = (label, url) => {
     addLog(`EXTERNAL LINK: ${label}`);
     window.open(url, '_blank');
@@ -90,71 +87,69 @@ export default function Contact() {
 
   return (
     <div className="p-4">
-      {/* NOTE: Top contact buttons section remains unchanged. */}
       <div className="flex flex-col gap-3 mb-4">
+        {/* CHANGE: Replaced 'mainBorderClasses' with '.border-primary' and '.bg-hover' semantic classes. */}
+        {/* This makes the button fully theme-agnostic and fixes the final hydration error source. */}
         <button
           onClick={handleCopyEmail}
-          className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}
+          className="w-full p-3 border rounded flex items-center justify-between transition-colors border-primary bg-hover"
         >
           <div className="flex items-center">
-            <Mail className={`w-5 h-5 mr-3 text-command`} />
-            <span className={mainTextClasses}>{contactData.email}</span>
+            <Mail className="w-5 h-5 mr-3 text-command" />
+            <span className="text-white-black">{contactData.email}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Copy className={`w-4 h-4 text-secondary`} />
-            <span className={`text-xs ${emailCopied ? ("text-success") : valueClasses}`}>
+            <Copy className="w-4 h-4 text-secondary" />
+            {/* CHANGE: Replaced variable with direct semantic classes for consistency. */}
+            <span className={`text-xs ${emailCopied ? "text-success" : "text-secondary"}`}>
               {emailCopied ? 'COPIED!' : 'COPY'}
             </span>
           </div>
         </button>
         <div className="flex flex-col md:flex-row gap-3">
-          <button onClick={() => handleExternalLink('Portfolio website', contactData.website)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
+          {/* CHANGE: Applied the same semantic classes to the website button. */}
+          <button onClick={() => handleExternalLink('Portfolio website', contactData.website)} className="w-full p-3 border rounded flex items-center justify-between transition-colors border-primary bg-hover">
           <div className="flex items-center">
-              <Globe className={`w-5 h-5 mr-3 text-command`} />
-              <span className={mainTextClasses}>{contactData.website?.replace('https://', '')}</span>
+              <Globe className="w-5 h-5 mr-3 text-command" />
+              <span className="text-white-black">{contactData.website?.replace('https://', '')}</span>
           </div>
-            <ExternalLink className={`w-4 h-4 text-secondary`} />
+            <ExternalLink className="w-4 h-4 text-secondary" />
         </button>
         {contactData.telegram && (
-            /* CHANGED: Simplified telegram button to use contactData.telegram directly */
-            /* The telegram URL is now complete (https://t.me/...) from configuration */
-            <button onClick={() => handleExternalLink('Telegram', contactData.telegram)} className={`w-full p-3 border rounded flex items-center justify-between transition-colors ${mainBorderClasses}`}>
+            // CHANGE: Applied the same semantic classes to the Telegram button.
+            <button onClick={() => handleExternalLink('Telegram', contactData.telegram)} className="w-full p-3 border rounded flex items-center justify-between transition-colors border-primary bg-hover">
             <div className="flex items-center">
-                <MessageCircle className={`w-5 h-5 mr-3 text-command`} />
-                {/* CHANGED: Extract handle from telegram URL for display */}
-                <span className={mainTextClasses}>
+                <MessageCircle className="w-5 h-5 mr-3 text-command" />
+                <span className="text-white-black">
                   {contactData.telegram.includes('t.me/') 
                     ? '@' + contactData.telegram.split('t.me/')[1]
                     : contactData.telegram
                   }
                 </span>
             </div>
-              <ExternalLink className={`w-4 h-4 text-secondary`} />
+              <ExternalLink className="w-4 h-4 text-secondary" />
           </button>
         )}
         </div>
       </div>
 
-      {/* 
-        WHY: It centralizes the user's current work status in the most logical place—the contact screen.
-        The data is now a mix of hardcoded values, dynamic calculations, and content from content.json for maximum flexibility.
-      */}
+      {/* COMMENT: The status panel already uses semantic classes correctly. No changes needed. */}
       <div className="p-4 border rounded border-secondary">
-        <h3 className={`text-base mb-2 text-command`}>
+        <h3 className="text-base mb-2 text-command">
           $current_status
           </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className={labelClasses}>$seeking:</span>
-          <span className={valueClasses}>{profileStatus.seeking || 'Not specified'}</span>
+          <span className="text-primary">$seeking:</span>
+          <span className="text-secondary">{profileStatus.seeking || 'Not specified'}</span>
 
-          <span className={labelClasses}>$location:</span>
-          <span className={valueClasses}>Remote, EMEA</span>
+          <span className="text-primary">$location:</span>
+          <span className="text-secondary">Remote, EMEA</span>
 
-          <span className={labelClasses}>$target_comp:</span>
-          <span className={valueClasses}>{profileStatus.salary || 'Negotiable'}</span>
+          <span className="text-primary">$target_comp:</span>
+          <span className="text-secondary">{profileStatus.salary || 'Negotiable'}</span>
           
-          <span className={labelClasses}>$availability:</span>
-          <span className={valueClasses}>{availabilityDate}</span>
+          <span className="text-primary">$availability:</span>
+          <span className="text-secondary">{availabilityDate}</span>
         </div>
       </div>
     </div>

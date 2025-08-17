@@ -1,7 +1,9 @@
+// src/app/components/ui/TerminalProgress.js
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from '../../context/SessionContext';
+// REMOVED: useSession is no longer needed because all theme logic has been
+// offloaded to semantic CSS classes. This simplifies the component's dependencies.
 
 /**
  * Universal terminal-style progress loader component
@@ -23,7 +25,7 @@ export default function TerminalProgress({
   animateProgress = true,
   height = 'h-4'
 }) {
-  const { theme } = useSession();
+  // REMOVED: The 'theme' variable is no longer used.
   const [displayProgress, setDisplayProgress] = useState(0);
   const [spinnerFrame, setSpinnerFrame] = useState(0);
   
@@ -66,45 +68,34 @@ export default function TerminalProgress({
   const progressBar = '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
   
   return (
-    <div className={`space-y-2 ${
-      "text-primary"
-    }`}>
+    <div className="space-y-2 text-primary">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className={`${
-            "text-command"
-          }`}>
+          <span className="text-command">
             {spinnerFrames[spinnerFrame]}
           </span>
-          <span className={`text-xs uppercase tracking-wider ${
-            "text-secondary"
-          }`}>
+          <span className="text-xs uppercase tracking-wider text-secondary">
             {label}
           </span>
         </div>
         
         {showPercentage && (
-          <span className={`text-xs ${
-            "text-success"
-          }`}>
+          <span className="text-xs text-success">
             {Math.round(displayProgress)}%
           </span>
         )}
       </div>
       
-      <div className={`${height} relative overflow-hidden rounded ${
-        theme === 'dark' ? 'bg-dark-hover' : 'bg-light-hover'
-      }`}>
-        <div className={`absolute inset-0 flex items-center px-1 font-mono text-xs ${
-          "text-success"
-        }`}>
+      {/* CHANGE: Replaced the final piece of theme-dependent logic. */}
+      {/* The progress bar's background track now uses the '.bg-hover' semantic class, */}
+      {/* which provides the correct subtle background color for any active theme. */}
+      <div className={`${height} relative overflow-hidden rounded bg-hover`}>
+        <div className="absolute inset-0 flex items-center px-1 font-mono text-xs text-success">
           {progressBar}
         </div>
       </div>
       
-      <div className={`text-xs ${
-        "text-secondary"
-      }`}>
+      <div className="text-xs text-secondary">
         <span className="opacity-60">
           [{Math.round(displayProgress)}% complete]
         </span>

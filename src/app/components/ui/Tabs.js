@@ -1,3 +1,4 @@
+// src/app/components/ui/Tabs.js
 'use client';
 import { useState } from 'react';
 import { useSession } from '../../context/SessionContext';
@@ -9,7 +10,8 @@ const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
 });
 
 export default function Tabs({ tabs, defaultTab = null }) {
-  const { theme, addLog } = useSession();
+  // REMOVED: The 'theme' variable is no longer needed. Styling is handled by semantic CSS.
+  const { addLog } = useSession();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
 
   const handleTabClick = (tabId, tabLabel) => {
@@ -19,21 +21,14 @@ export default function Tabs({ tabs, defaultTab = null }) {
 
   const activeTabData = tabs.find(tab => tab.id === activeTab);
 
-  const labelClasses = "text-white-black";
-  const valueClasses = "text-secondary";
-  const yellowClasses = "text-command";
-  const successClasses = "text-success";
-  const darkerBorder = "border-secondary";
-  const activeBg = theme === 'dark'
-  ? 'bg-[rgba(21,128,61,0.3)]'
-  : 'bg-[rgba(220,252,231,0.3)]';
-  const hoverBg = "bg-hover";
+  // REMOVED: All intermediate class variables are obsolete with the new theming system.
 
   const renderContentItem = (item, idx) => {
+    // COMMENT: All classes within this function are already semantic, so no changes are needed here.
     switch (item.type) {
       case 'text':
         return (
-          <p key={idx} className={`text-sm leading-relaxed text-secondary`}>
+          <p key={idx} className="text-sm leading-relaxed text-secondary">
             {item.value}
           </p>
         );
@@ -41,20 +36,20 @@ export default function Tabs({ tabs, defaultTab = null }) {
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
-            <span className={`mr-2 text-success`}>[✓]</span>
-            <span className={valueClasses}>{item.value}</span>
+            <span className="mr-2 text-success">[✓]</span>
+            <span className="text-secondary">{item.value}</span>
           </div>
         );
       case 'sub_heading':
         return (
-          <div key={idx} className={`mb-2 mt-4 text-command`}>
+          <div key={idx} className="mb-2 mt-4 text-command">
             ${item.value}
           </div>
         );
       
       case 'divider':
         return (
-          <div key={idx} className={`border-t my-3 ${darkerBorder}`}></div>
+          <div key={idx} className="border-t my-3 border-secondary"></div>
         );
       
       case 'image':
@@ -92,23 +87,26 @@ export default function Tabs({ tabs, defaultTab = null }) {
         </div>
       );
     }
-    
-    // Fallback for non-array content
-    return <div className={valueClasses}>No content available</div>;
+    return <div className="text-secondary">No content available</div>;
   };
 
     return (
     <div>
       <div className="w-full overflow-x-auto">
-        <div className="flex w-full border-b border-dark-border-darker">
+        {/* CHANGE: Replaced 'border-dark-border-darker' with the semantic '.border-secondary' class. */}
+        <div className="flex w-full border-b border-secondary">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id, tab.label)}
+              // CHANGE: Replaced the complex, theme-dependent className logic with simpler semantic classes.
+              // - The active state now uses '.bg-active', '.text-primary', and '.border-secondary'.
+              // - The inactive state uses '.text-secondary' and '.bg-hover'.
+              // This fixes hydration errors and makes the component theme-agnostic.
               className={`text-center px-4 py-3 text-sm rounded-t transition-colors whitespace-nowrap -mb-px ${
                 activeTab === tab.id
-                  ? `${activeBg} text-primary border-t border-x ${darkerBorder}`
-                  : `text-secondary ${hoverBg} border-b-0` // Inactive tabs no longer need a bottom border here
+                  ? 'bg-active text-primary border-t border-x border-secondary'
+                  : 'text-secondary bg-hover border-b-0'
               }`}
             >
               ${tab.label}
@@ -117,10 +115,12 @@ export default function Tabs({ tabs, defaultTab = null }) {
         </div>
       </div>
 
-      <div className={`-mt-px p-4 border rounded-b rounded-tr ${darkerBorder}`}>
+      {/* CHANGE: Replaced 'darkerBorder' with the semantic '.border-secondary' class. */}
+      <div className="-mt-px p-4 border rounded-b rounded-tr border-secondary">
         {activeTabData && (
           <>
-            <h3 className={`mb-3 text-command`}>
+            {/* CHANGE: Directly used the '.text-command' semantic class. */}
+            <h3 className="mb-3 text-command">
               ${activeTabData.title || activeTabData.label}
             </h3>
             {renderTabContent()}

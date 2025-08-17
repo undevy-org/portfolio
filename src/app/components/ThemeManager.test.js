@@ -4,9 +4,9 @@ import { render, waitFor, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ThemeManager from './ThemeManager';
 
-// Мокаем useSession
 jest.mock('../context/SessionContext', () => ({
-  useSession: jest.fn()
+  useSession: jest.fn(),
+  themes: ['dark', 'light', 'amber', 'bsod']
 }));
 import { useSession } from '../context/SessionContext';
 
@@ -20,11 +20,10 @@ afterEach(() => {
 describe('ThemeManager', () => {
   test('applies dark class to html element when theme is dark', async () => {
     useSession.mockReturnValue({ theme: 'dark' });
-
     render(<ThemeManager />);
-
     await waitFor(() => {
-      expect(document.documentElement.classList.contains('dark')).toBe(true);
+      expect(document.documentElement.classList.contains('theme-dark')).toBe(true);
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
       expect(document.body.classList.contains('bg-dark-bg')).toBe(true);
       expect(document.body.classList.contains('text-dark-text-primary')).toBe(true);
     });
@@ -32,9 +31,7 @@ describe('ThemeManager', () => {
 
   test('removes dark class and applies light classes when theme is light', async () => {
     useSession.mockReturnValue({ theme: 'light' });
-
     render(<ThemeManager />);
-
     await waitFor(() => {
       expect(document.documentElement.classList.contains('dark')).toBe(false);
       expect(document.body.classList.contains('bg-light-bg')).toBe(true);
@@ -44,15 +41,18 @@ describe('ThemeManager', () => {
   });
 
   test('logs theme change to console for debugging', async () => {
-    const consoleSpy = jest.spyOn(console, 'log');
+    // Silence console output during test and spy
+    const consoleSpy = jest.spyOn(console, 'debug').mockImplementation(() => {});
     useSession.mockReturnValue({ theme: 'dark' });
 
     render(<ThemeManager />);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[ThemeManager] Theme applied: dark')
-      );
+      // Ensure it was called at least once
+      expect(consoleSpy).toHaveBeenCalled();
+      // Check the first argument (the message string) contains the expected substring
+      const firstArg = consoleSpy.mock.calls[0][0];
+      expect(firstArg).toEqual(expect.stringContaining('[ThemeManager] Theme applied: dark'));
     });
 
     consoleSpy.mockRestore();

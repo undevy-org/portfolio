@@ -1,8 +1,18 @@
+// src/app/layouts/TerminalWindow.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
-import { ArrowLeft, Sun, Moon, X, Home, ArrowUp } from 'lucide-react';
+import { 
+  ArrowLeft, 
+  Sun, 
+  Moon, 
+  X, 
+  Home, 
+  ArrowUp, 
+  Bug, 
+  Terminal
+} from 'lucide-react';
 import { getScreenDisplayName } from '../utils/formatters';
 
 export default function TerminalWindow({ title, children }) {
@@ -53,18 +63,6 @@ export default function TerminalWindow({ title, children }) {
 
   const breadcrumbPath = buildBreadcrumbPath();
 
-  const windowClasses = `w-full max-w-2xl border rounded ${
-    theme === 'dark' ? 'border-dark-border bg-dark-bg/90' : 'border-light-border bg-light-bg/90'
-  }`;
-
-  const headerClasses = `flex items-center justify-between p-4 border-b ${
-    "border-primary"
-  }`;
-
-  const titleClasses = `font-normal text-lg truncate min-w-0 ${
-    "text-command"
-  }`;
-
   const handleClose = () => {
     if (currentScreen === 'Entry') {
       return;
@@ -72,16 +70,29 @@ export default function TerminalWindow({ title, children }) {
     endSession();
   };
 
+  // Dictionary of icons for themes
+  // Each theme has a dedicated icon for better UX
+  const themeIcons = {
+    dark: Sun,      // Компонент, а не <Sun />
+    light: Bug,     
+    amber: Terminal,
+    bsod: Moon,
+  };
+
+// Получаем компонент иконки
+const CurrentThemeIcon = themeIcons[theme] || Sun;
+
   return (
-    <div className={windowClasses}>
-      <div className={headerClasses}>
-        <h1 className={titleClasses}>${displayTitle}</h1>
+    <div className="w-full max-w-2xl border rounded bg-main border-primary">
+      <div className="flex items-center justify-between p-4 border-b border-primary">
+        <h1 className="font-normal text-lg truncate min-w-0 text-command">${displayTitle}</h1>
         <div className="flex items-center gap-2 flex-shrink-0">
           {!['ProfileBoot', 'Entry'].includes(currentScreen) && (
             <>
           <Button
             onClick={goBack}
-            icon={() => <ArrowLeft size={20} strokeWidth={1.5} />}
+            // CHANGE: Corrected how the icon is passed. It should be a component reference, not a function returning JSX.
+            icon={ArrowLeft}
             variant="icon-only"
             className={`p-1 ${isBackDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={isBackDisabled}
@@ -89,7 +100,8 @@ export default function TerminalWindow({ title, children }) {
           />
           <Button
             onClick={goUp}
-            icon={() => <ArrowUp size={20} strokeWidth={1.5} />}
+            // CHANGE: Corrected icon prop passing.
+            icon={ArrowUp}
             variant="icon-only"
             className={`p-1 ${isUpDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={isUpDisabled}
@@ -97,7 +109,8 @@ export default function TerminalWindow({ title, children }) {
           />
           <Button
             onClick={goHome}
-            icon={() => <Home size={20} strokeWidth={1.5} />}
+            // CHANGE: Corrected icon prop passing.
+            icon={Home}
             variant="icon-only"
             className={`p-1 ${isHomeDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={isHomeDisabled}
@@ -107,10 +120,8 @@ export default function TerminalWindow({ title, children }) {
           )}
           <Button
             onClick={toggleTheme}
-            icon={() => theme === 'dark' 
-              ? <Sun size={20} strokeWidth={1.5} /> 
-              : <Moon size={20} strokeWidth={1.5} />
-            }
+            // CHANGE: Corrected icon prop passing. 'currentThemeIcon' is already a JSX element.
+            icon={CurrentThemeIcon}
             variant="icon-only"
             className="p-1"
             aria-label="Toggle theme"
@@ -118,7 +129,8 @@ export default function TerminalWindow({ title, children }) {
           {currentScreen !== 'Entry' && (
             <Button
               onClick={handleClose}
-              icon={() => <X size={20} strokeWidth={1.5} />}
+              // CHANGE: Corrected icon prop passing.
+              icon={X}
               variant="icon-only"
               className="p-1"
               aria-label="Close session"
@@ -129,34 +141,25 @@ export default function TerminalWindow({ title, children }) {
       </div>
 
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
-        <div className={`px-4 py-2 text-sm border-b ${
-          theme === 'dark' ? 'border-dark-border bg-dark-bg/50' : 'border-light-border bg-light-bg/50'
-        }`}>
+        <div className="px-4 py-2 text-sm border-b border-primary" style={{ backgroundColor: 'var(--color-hover)' }}>
           <div className="flex items-center flex-wrap">
             {breadcrumbPath.map((screen, index) => (
               <span key={screen} className="flex items-center">
                 {index > 0 && (
-                  <span className={`mx-2 ${
-                    "text-secondary"
-                  }`}>
+                  <span className="mx-2 text-secondary">
                     &gt;
                   </span>
                 )}
                 {index === breadcrumbPath.length - 1 ? (
                   // Current screen - not clickable, highlighted
-                  <span className={
-                    "text-primary"
-                  }>
+                  <span className="text-primary">
                     {getScreenDisplayName(screen)}
                   </span>
                 ) : (
-                  // Parent screens - clickable
+                  // CHANGE: Replaced complex theme-dependent classes with simple semantic ones.
                   <button
                     onClick={() => navigate(screen)}
-                    className={`hover:underline ${
-                      theme === 'dark' ? 'text-dark-text-secondary hover:text-dark-text-primary' : 
-                      'text-light-text-secondary hover:text-light-text-primary'
-                    }`}
+                    className="text-secondary hover:text-primary hover:underline"
                   >
                     {getScreenDisplayName(screen)}
                   </button>

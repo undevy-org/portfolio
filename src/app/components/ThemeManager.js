@@ -2,43 +2,74 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSession } from '../context/SessionContext';
+import { useSession, themes } from '../context/SessionContext';
 
 /**
  * ThemeManager Component
- * 
- * This component manages the application theme by:
- * 1. Applying the 'dark' class to <html> for Tailwind's dark mode
- * 2. Managing body background and text color classes
- * 
- * The component has no visual output - it only manages DOM classes
+ *
+ * Responsible for applying the proper HTML/body classes for the active theme.
+ * - Sets data-theme attribute on <html> for ALL themes (including light and dark)
+ * - Also adds theme-<id> class for backward compatibility
+ * - Manages body background and text color classes
  */
+
 export default function ThemeManager() {
   const { theme } = useSession();
 
+  /**
+   * Mapping of theme id -> body classes that should be applied for that theme.
+   * Keep these in sync with your Tailwind color tokens (tailwind.config) and
+   * utility selectors in globals.css.
+   */
   useEffect(() => {
-    // Get references to both html and body elements
+    const themeBodyClassMap = {
+      dark: ['bg-dark-bg', 'text-dark-text-primary'],
+      light: ['bg-light-bg', 'text-light-text-primary'],
+      amber: ['bg-amber-bg', 'text-amber-text-primary'],
+      bsod: ['bg-bsod-bg', 'text-bsod-text-primary'],
+    };
+
+    if (typeof document === 'undefined') return;
+
     const html = document.documentElement;
     const body = document.body;
-    
-    // Define theme-specific classes for the body
-    const darkThemeClasses = ['bg-dark-bg', 'text-dark-text-primary'];
-    const lightThemeClasses = ['bg-light-bg', 'text-light-text-primary'];
 
-    if (theme === 'light') {
-      // Light theme: remove dark class from html and dark classes from body
-      html.classList.remove('dark');
-      body.classList.remove(...darkThemeClasses);
-      body.classList.add(...lightThemeClasses);
-    } else {
-      // Dark theme: add dark class to html and dark classes to body
-      html.classList.add('dark');
-      body.classList.remove(...lightThemeClasses);
-      body.classList.add(...darkThemeClasses);
+    // Remove any body classes that belong to any theme
+    const allBodyClasses = Object.values(themeBodyClassMap).flat();
+    if (allBodyClasses.length > 0) {
+      body.classList.remove(...allBodyClasses);
     }
 
-    // Log theme change for debugging (can be removed in production)
-    console.log(`[ThemeManager] Theme applied: ${theme}, HTML classes: ${html.className}`);
+    // Remove all theme-<id> classes from <html> to avoid leftover state
+    themes.forEach((t) => {
+      html.classList.remove(`theme-${t}`);
+    });
+
+    // Remove old data-theme attribute
+    html.removeAttribute('data-theme');
+
+    // Remove Tailwind dark class
+    html.classList.remove('dark');
+
+    // IMPORTANT: Set data-theme for ALL themes (including dark and light)
+    // This ensures CSS selectors work consistently
+      html.setAttribute('data-theme', theme);
+
+    // Also add theme-<id> class for backward compatibility
+    html.classList.add(`theme-${theme}`);
+
+    // Add the body classes for the selected theme
+    const bodyClasses = themeBodyClassMap[theme] || themeBodyClassMap.dark;
+    if (bodyClasses && bodyClasses.length > 0) {
+      body.classList.add(...bodyClasses);
+    }
+
+    // Debug info
+    console.debug(`[ThemeManager] Theme applied: ${theme}`, {
+      htmlClassName: html.className,
+      dataTheme: html.getAttribute('data-theme'),
+      bodyClassList: body.className,
+    });
   }, [theme]);
 
   return null;

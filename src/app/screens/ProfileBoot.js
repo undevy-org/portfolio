@@ -77,7 +77,6 @@ export default function ProfileBoot() {
 
   return (
     <div className="p-8 min-h-[400px] flex flex-col items-center justify-center text-primary">
-      {/* Decorative terminal animation (unchanged) */}
       <div className="mb-6">
         <MorphingTerminal autoPlay={true} loopAnimation={false} frameDelay={600} />
       </div>
@@ -86,7 +85,7 @@ export default function ProfileBoot() {
         ref={logContainerRef}
         role="log"
         aria-live="polite"
-        className="w-full max-w-md h-32 overflow-y-auto panel-full p-2 mb-6"
+        className="w-full h-32 overflow-y-auto panel-full p-2 mb-6"
       >
         {bootSequence
           .slice(0, Math.min(currentStep, bootSequence.length))
@@ -106,9 +105,9 @@ export default function ProfileBoot() {
           })}
       </div>
 
-      <div className="w-full max-w-md h-16 flex flex-col items-center justify-center">
+      <div className="w-full h-16 flex flex-col items-center justify-center">
         {!isComplete ? (
-          <div className="w-full max-w-xs">
+          <div className="w-full">
             <TerminalProgress
               progress={progressPercentage}
               isLoading={true}
