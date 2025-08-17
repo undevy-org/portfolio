@@ -1,3 +1,4 @@
+// src/app/screens/Entry.js
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -6,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount, useDisconnect } from 'wagmi';
+import Button from '../components/ui/Button';
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
@@ -77,8 +79,6 @@ export default function Entry() {
     addLog(`WEB3 CONNECTED: ${walletAddress}`);
     
     try {
-      // Fetch session data using the dedicated Web3 access code
-      // 0XDEFI2311 is a special code in content.json for Web3 users
       const response = await fetch(`/api/session?code=0XDEFI2311`);
       
       if (response.ok) {
@@ -93,8 +93,6 @@ export default function Entry() {
           // Override meta information with Web3 details
           meta: {
             ...userData.meta,
-            // WHY: The wallet address is already displayed in the analytics panel,
-            // so including a truncated version here was redundant.
             company: 'Web3 User',
             accessMethod: 'web3'
           },
@@ -106,7 +104,6 @@ export default function Entry() {
             summary: {
               ...userData.profile?.summary,
               title: 'Web3 Authenticated User',
-              // WHY: Avoids repeating the wallet address, providing clearer context about the session.
               specialization: 'Authenticated via Web3',
               background: 'Decentralized Access'
             }
@@ -384,93 +381,65 @@ export default function Entry() {
   // ========== RENDER ==========
   return (
     <div className="p-4">
-      {/* Traditional authentication input */}
       <input
         type="text"
         value={code}
         onChange={(e) => setCode(e.target.value.toUpperCase())}
         onKeyPress={handleKeyPress}
-        className={`w-full p-3 mb-3 rounded font-mono text-lg tracking-wider ${
-          theme === 'dark' 
-            ? 'bg-dark-input-bg text-dark-text-primary' 
-            : 'bg-light-input-bg text-light-text-primary'
-        } border ${
-          authError
-            ? (theme === 'dark' ? 'border-dark-error' : 'border-light-error')
-            : (theme === 'dark' ? 'border-dark-border' : 'border-light-border')
-        } ${
-          authError ? 'animate-pulse' : ''
-        }`}
+        className={`input-base mb-3 text-lg tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
         placeholder="ENTER ACCESS CODE"
         autoFocus
         disabled={isLoading || isConnected}
       />
 
       {authError && (
-        <div className={`mb-3 text-sm ${
-          theme === 'dark' ? 'text-dark-error' : 'text-light-error'
-        }`}>
+        <div className="mb-3 text-sm text-error">
           {authError}
         </div>
       )}
 
-      <button
+      <Button
         onClick={handleSubmit}
         disabled={isLoading || isConnected}
-        className={`w-full p-3 mb-3 border rounded transition-colors ${
-          theme === 'dark'
-            ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-            : 'border-light-border hover:bg-light-hover text-light-text-primary'
-        } ${(isLoading || isConnected) ? 'opacity-50 cursor-not-allowed' : ''}`}
+        fullWidth
+        className="mb-3"
       >
         {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
-      </button>
+      </Button>
 
       <div className="flex gap-3">
-        <button
+        <Button
           onClick={handleGetCode}
           disabled={isConnected}
-          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          } ${isConnected ? 'opacity-50 cursor-not-allowed' : ''}`}
+          icon={MessageSquare}
+          className="flex-1"
         >
-          <MessageSquare className="w-4 h-4" />
           GET CODE
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleWeb3Login}
           disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending}
-          className={`flex-1 p-3 border rounded flex items-center justify-center gap-2 transition-colors ${
-            theme === 'dark'
-              ? 'border-dark-border hover:bg-dark-hover text-dark-text-primary'
-              : 'border-light-border hover:bg-light-hover text-light-text-primary'
-          } ${(isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          icon={Wallet}
+          className="flex-1"
         >
-          <Wallet className="w-4 h-4" />
           {isConnected 
             ? `${address.slice(0, 6)}...${address.slice(-4)}` 
             : web3Status === 'connecting' 
               ? 'CONNECTING...' 
               : 'WEB3 LOGIN'
           }
-        </button>
+        </Button>
       </div>
       
       {isConnected && web3Status === 'connecting' && (
-        <div className={`mt-2 text-center text-xs ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
+        <div className="mt-2 text-center text-xs text-secondary">
           Processing Web3 authentication...
         </div>
       )}
       
       {(web3Status === 'disconnecting' || web3LogoutPending) && (
-        <div className={`mt-2 text-center text-xs ${
-          theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
+        <div className="mt-2 text-center text-xs text-secondary">
           Disconnecting wallet...
         </div>
       )}

@@ -8,16 +8,16 @@ export default function Introduction() {
   const { sessionData, theme, navigate, addLog } = useSession();
 
   const panelClasses = `p-4 rounded border mb-4 ${
-    theme === 'dark' ? 'border-dark-border-darker' : 'border-light-border-lighter'
+    "border-secondary"
   }`;
   const yellowClasses = `text-base ${
-    theme === 'dark' ? 'text-dark-text-command' : 'text-light-text-command'
+    "text-command"
   }`;
   const labelClasses = `${
-    theme === 'dark' ? 'text-dark-text-primary' : 'text-light-text-primary'
+    "text-primary"
   }`;
   const valueClasses = `${
-    theme === 'dark' ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+    "text-secondary"
   }`;
 
   const profile = sessionData?.profile || {};
@@ -38,7 +38,7 @@ return (
         It now uses a responsive grid layout, making it cleaner on both mobile and desktop.
       */}
       <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$profile_data</h3>
+        <h3 className={`mb-2 text-command`}>$profile_data</h3>
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm`}>
           <span className={labelClasses}>$title:</span>
           <span className={valueClasses}>{profile.summary?.title}</span>
@@ -52,12 +52,12 @@ return (
     </div>
 
       <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$about_me</h3>
-        <p className={`text-sm leading-relaxed ${valueClasses}`}>{introText}</p>
+        <h3 className={`mb-2 text-command`}>$about_me</h3>
+        <p className={`text-sm leading-relaxed text-secondary`}>{introText}</p>
     </div>
 
       <div className={panelClasses}>
-        <h3 className={`mb-2 ${yellowClasses}`}>$core_attributes</h3>
+        <h3 className={`mb-2 text-command`}>$core_attributes</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
         {profile.attributes?.map((attr, index) => (
           <div key={index}>
