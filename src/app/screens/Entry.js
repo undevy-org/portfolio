@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
 import { useRouter } from 'next/navigation';
-import { MessageSquare, Wallet } from 'lucide-react';
+import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount, useDisconnect } from 'wagmi';
 import Button from '../components/ui/Button';
@@ -378,42 +378,72 @@ export default function Entry() {
     open(); // Opens the Reown modal
   };
 
+  /**
+   * Opens GitHub repository
+   * This links to the project's public repository
+   */
+  const handleGitHub = () => {
+    addLog('EXTERNAL LINK: GitHub');
+    window.open('https://github.com/undevy-org/portfolio', '_blank');
+  };
+
+  /**
+   * Handles Demo Mode button click
+   * Currently shows a "coming soon" message, will be implemented in future
+   */
+  const handleDemoMode = () => {
+    addLog('DEMO MODE: Coming soon');
+    setAuthError('Demo mode coming soon! For now, get a code via Telegram.');
+  };
+
   // ========== RENDER ==========
   return (
     <div className="p-4">
+      {/* Main authentication section */}
+      <div className="flex flex-col md:flex-row gap-3 mb-3">
+        {/* Input field - now same size text as buttons */}
       <input
         type="text"
         value={code}
         onChange={(e) => setCode(e.target.value.toUpperCase())}
         onKeyPress={handleKeyPress}
-        className={`input-base mb-3 text-lg tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
+          className={`input-base flex-1 text-sm tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
         placeholder="ENTER ACCESS CODE"
         autoFocus
         disabled={isLoading || isConnected}
       />
 
+        {/* Authenticate button - now on same line as input on desktop */}
+        <Button
+          onClick={handleSubmit}
+          disabled={isLoading || isConnected}
+          icon={LockOpen}
+          variant="inline"
+          className="md:w-auto w-full"
+        >
+          {/* Icon color handled by button component */}
+          <span className="flex items-center gap-2">
+            {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
+          </span>
+        </Button>
+      </div>
+
+      {/* Error message display */}
       {authError && (
         <div className="mb-3 text-sm text-error">
           {authError}
         </div>
       )}
 
-      <Button
-        onClick={handleSubmit}
-        disabled={isLoading || isConnected}
-        fullWidth
-        className="mb-3"
-      >
-        {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
-      </Button>
-
-      <div className="flex gap-3">
+      {/* Primary action buttons */}
+      <div className="flex gap-3 mb-4">
         <Button
           onClick={handleGetCode}
           disabled={isConnected}
           icon={MessageSquare}
           className="flex-1"
         >
+          {/* Icon automatically gets text-command class from Button component */}
           GET CODE
         </Button>
 
@@ -432,6 +462,29 @@ export default function Entry() {
         </Button>
       </div>
       
+      {/* Divider - subtle border like in AnalyticsPanel */}
+      <div className="border-t border-secondary opacity-50 my-4"></div>
+
+      {/* Secondary action buttons - GitHub and Demo Mode */}
+      <div className="flex gap-3">
+        <Button
+          onClick={handleGitHub}
+          icon={Github}
+          className="flex-1"
+        >
+          GITHUB
+        </Button>
+
+        <Button
+          onClick={handleDemoMode}
+          icon={Sparkles}
+          className="flex-1"
+        >
+          DEMO MODE
+        </Button>
+      </div>
+      
+      {/* Status messages for Web3 connection */}
       {isConnected && web3Status === 'connecting' && (
         <div className="mt-2 text-center text-xs text-secondary">
           Processing Web3 authentication...
