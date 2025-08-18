@@ -8,6 +8,7 @@ import { Suspense } from 'react';
 import { SessionProvider } from "./context/SessionContext";
 import ThemeManager from "./components/ThemeManager";
 import { Web3Provider } from "./components/Web3Provider";
+import ThemeSwitcher from "./components/ui/ThemeSwitcher";
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['100', '200', '300', '400', '500', '600', '700'],
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
             <main className="flex flex-col items-center justify-start md:justify-center min-h-screen p-2 gap-2">
               {children}
               <AnalyticsPanel />
+              <ThemeSwitcher />
               <SystemLog />
             </main>
             <Suspense fallback={null}>

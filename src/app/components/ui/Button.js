@@ -87,7 +87,7 @@ export default function Button({
 
   const renderIcon = () => {
     if (!Icon) return null;
-    return <Icon className="w-5 h-5" />;
+    return <Icon className="w-5 h-5 text-command" />;
   };
 
   const finalIcon = renderIcon();
