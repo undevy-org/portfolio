@@ -7,6 +7,8 @@ After authentication, the application transforms into a seamless Single Page App
 ## Core Features
 
 -   **Gated & Personalized Access:** The site is accessible only via a unique code (`?code=...`). Based on this code, all content—from greetings to project case studies—is dynamically tailored for the visitor.
+-   **Multi-Domain Support:** A single codebase can power multiple, distinctly branded portfolio instances based on the domain name, serving different content and styling.
+-   **Multi-Theme System:** Includes four distinct, built-in themes (Dark, Light, Amber, BSOD) with instant, flicker-free switching. The architecture is built on CSS variables, making it easily extensible.
 -   **Single Page Application (SPA) Experience:** After a single data load during authentication, all navigation is instantaneous and handled client-side, with bookmarkable URLs for each screen (`#Timeline`, `#CaseDetail`, etc.).
 -   **Dual Authentication System:** Supports both traditional access codes and Web3 wallet login. Users can connect via MetaMask, WalletConnect, etc., using the Reown protocol for a seamless Web3 experience.
 -   **Decoupled Content Architecture:** All portfolio data is stored in a `content.json` file on the server, completely separate from the application code. This allows content updates without redeploying the app.
@@ -19,7 +21,7 @@ After authentication, the application transforms into a seamless Single Page App
 | Category           | Technology         | Purpose & Implementation Details                                       |
 | :----------------- | :----------------- | :--------------------------------------------------------------------- |
 | **Framework**      | Next.js (React)    | Hybrid architecture: Server-side API for secure data, client-side SPA for UI. |
-| **Styling**        | Tailwind CSS       | Powers a custom, themeable design system emulating a terminal aesthetic. |
+| **Styling**        | Tailwind CSS       | Powers a highly scalable design system using CSS variables for multi-theme support. |
 | **State Mngmt**    | React Context      | A single `SessionContext` manages all shared state across the application. |
 | **Testing**        | Jest & RTL         | For unit and component testing, ensuring reliability and preventing regressions. |
 | **Web Server**     | Nginx              | Handles web traffic, SSL termination (Let's Encrypt), and reverse proxying. |
@@ -48,7 +50,7 @@ After authentication, the application transforms into a seamless Single Page App
     ```bash
     npm run dev
     ```
-    Access the local version at `http://localhost:3000/?code=LOCAL_TEST`.
+    Access the local version at `http://localhost:3000`. The development server uses fallback test content by default.
 
 4.  **Run tests:**
     ```bash
