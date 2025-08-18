@@ -1,4 +1,3 @@
-// File: /Users/undevy/portfolio-project/src/app/api/config/route.js
 import * as entry from '../../../../../src/app/api/config/route.js'
 import type { NextRequest } from 'next/server.js'
 

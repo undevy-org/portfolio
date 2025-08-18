@@ -317,10 +317,26 @@
   }
 }
 
-/* Third-party overrides */
+@keyframes pulseProgress {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
 @layer utilities {
+  /* Existing utility */
   .wallet-modal-override {
     background-color: transparent !important;
     color: var(--color-text-primary) !important;
+  }
+  
+  .animate-pulse-progress {
+    animation: pulseProgress 1.5s ease-in-out infinite;
   }
 }

@@ -1,237 +1,188 @@
 // src/app/components/ui/MorphingTerminal.js
 'use client';
-
 import { useState, useEffect } from 'react';
 import { useSession } from '../../context/SessionContext';
 
-const MorphingTerminal = ({ autoPlay = false, loopAnimation = true, frameDelay = 600 }) => {
+const MorphingTerminal = ({ autoPlay = true, frameDelay = 150 }) => {
   const { theme } = useSession();
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
-  
-  // Define all animation frames
+
+  // Define breathing animation frames
+  // Each frame is exactly 19 characters wide and 9 lines tall
+  // Using symbols with increasing visual density: ' ' -> '·' -> '○' -> '●' -> '█'
   const frames = [
-    // Frame 0: Empty canvas
+    // Frame 0: Minimal core
     [
-      "                              ",
-      "                              ",
-      "                              ",
-      "                              ",
-      "                              ",
-      "                              ",
-      "                              ",
-      "                              "
+      "                   ",  // 19 spaces
+      "                   ",
+      "                   ",
+      "        ·●·        ",  // Center point
+      "                   ",
+      "                   ",
+      "                   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 1: Sparse dots appear
+    // Frame 1: First expansion
     [
-      "         .        .           ",
-      "   .               .     .    ",
-      "                .             ",
-      "      .     .          .      ",
-      "   .                .         ",
-      "                .        .    ",
-      "        .                .    ",
-      "                              "
+      "                   ",
+      "                   ",
+      "       · · ·       ",
+      "       · ● ·       ",
+      "       · · ·       ",
+      "                   ",
+      "                   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 2: More dots, light noise
+    // Frame 2: Growing ring
     [
-      "     .     o     .      o     ",
-      "  o     .       o    .        ",
-      "     .     o        .     o   ",
-      "  .     o     .   o      .    ",
-      "     .       o     .      o   ",
-      "  o     .        o    .       ",
-      "     .     o        .     o   ",
-      "                              "
+      "                   ",
+      "      · · · ·      ",
+      "     · ○ ○ ○ ·     ",
+      "     · ○ ● ○ ·     ",
+      "     · ○ ○ ○ ·     ",
+      "      · · · ·      ",
+      "                   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 3: Dots begin clustering
+    // Frame 3: Expanding presence
     [
-      "     o  .  o  .  o  .  o      ",
-      "  .  o  .  o  .  o  .  o   .  ",
-      "     o  .  o  .  o  .  o      ",
-      "  .  o  .  o  .  o  .  o   .  ",
-      "     o  .  o  .  o  .  o      ",
-      "  .  o  .  o  .  o  .  o   .  ",
-      "     o  .  o  .  o  .  o      ",
-      "                              "
+      "                   ",
+      "    · · · · · ·    ",
+      "   · ○ ○ ○ ○ ○ ·   ",
+      "   · ○ ● ● ● ○ ·   ",
+      "   · ○ ○ ○ ○ ○ ·   ",
+      "    · · · · · ·    ",
+      "                   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 4: Ordered grid emerges
+    // Frame 4: Near maximum
     [
-      "  o  .  o  .  o  .  o  .  o   ",
-      "  .  o  .  o  .  o  .  o  .   ",
-      "  o  .  o  .  o  .  o  .  o   ",
-      "  .  o  .  o  .  o  .  o  .   ",
-      "  o  .  o  .  o  .  o  .  o   ",
-      "  .  o  .  o  .  o  .  o  .   ",
-      "  o  .  o  .  o  .  o  .  o   ",
-      "                              "
+      "   · · · · · · ·   ",
+      "  · ○ ○ ○ ○ ○ ○ ·  ",
+      " · ○ ● ● ● ● ● ○ · ",
+      " · ○ ● █ █ █ ● ○ · ",
+      " · ○ ● ● ● ● ● ○ · ",
+      "  · ○ ○ ○ ○ ○ ○ ·  ",
+      "   · · · · · · ·   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 5: Grid sharpens (O)
+    // Frame 5: Maximum expansion
     [
-      "  O  .  O  .  O  .  O  .  O   ",
-      "  .  O  .  O  .  O  .  O  .   ",
-      "  O  .  O  .  O  .  O  .  O   ",
-      "  .  O  .  O  .  O  .  O  .   ",
-      "  O  .  O  .  O  .  O  .  O   ",
-      "  .  O  .  O  .  O  .  O  .   ",
-      "  O  .  O  .  O  .  O  .  O   ",
-      "                              "
+      "  · · · · · · · ·  ",
+      " · ○ ○ ○ ○ ○ ○ ○ · ",
+      "· ○ ● ● ● ● ● ● ○ ·",
+      "· ○ ● █ █ █ █ ● ○ ·",
+      "· ○ ● ● ● ● ● ● ○ ·",
+      " · ○ ○ ○ ○ ○ ○ ○ · ",
+      "  · · · · · · · ·  ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 6: Introducing # pattern
+    // Frame 6: Beginning contraction
     [
-      "  O  .  O  #  O  #  O  .  O   ",
-      "  .  O  #  O  #  O  #  O  .   ",
-      "  O  #  O  #  O  #  O  #  O   ",
-      "  #  O  #  O  #  O  #  O  #   ",
-      "  O  #  O  #  O  #  O  #  O   ",
-      "  .  O  #  O  #  O  #  O  .   ",
-      "  O  .  O  #  O  #  O  .  O   ",
-      "                              "
+      "   · · · · · · ·   ",
+      "  · ○ ○ ○ ○ ○ ○ ·  ",
+      " · ○ ● ● ● ● ● ○ · ",
+      " · ○ ● █ █ █ ● ○ · ",
+      " · ○ ● ● ● ● ● ○ · ",
+      "  · ○ ○ ○ ○ ○ ○ ·  ",
+      "   · · · · · · ·   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 7: Central motif starts
+    // Frame 7: Contracting
     [
-      "  O  .  O  #  O  #  O  .  O   ",
-      "  .  #  #  O  O  O  #  #  .   ",
-      "  O  #  O  O  #  O  O  #  O   ",
-      "  #  O  O  #  #  #  O  O  #   ",
-      "  O  #  O  O  #  O  O  #  O   ",
-      "  .  #  #  O  O  O  #  #  .   ",
-      "  O  .  O  #  O  #  O  .  O   ",
-      "                              "
+      "                   ",
+      "    · · · · · ·    ",
+      "   · ○ ○ ○ ○ ○ ·   ",
+      "   · ○ ● ● ● ○ ·   ",
+      "   · ○ ○ ○ ○ ○ ·   ",
+      "    · · · · · ·    ",
+      "                   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 8: Pattern intensifies
+    // Frame 8: Almost back to core
     [
-      "  #  O  #  O  #  O  #  O  #   ",
-      "  O  #  O  #  O  #  O  #  O   ",
-      "  #  O  #  O  #  O  #  O  #   ",
-      "  O  #  O  #  O  #  O  #  O   ",
-      "  #  O  #  O  #  O  #  O  #   ",
-      "  O  #  O  #  O  #  O  #  O   ",
-      "  #  O  #  O  #  O  #  O  #   ",
-      "                              "
+      "                   ",
+      "      · · · ·      ",
+      "     · ○ ○ ○ ·     ",
+      "     · ○ ● ○ ·     ",
+      "     · ○ ○ ○ ·     ",
+      "      · · · ·      ",
+      "                   ",
+      "                   ",
+      "                   "
     ],
-
-    // Frame 9: Solid abstract blocks
+    // Frame 9: Return to near-minimal
     [
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "                              ",
-      "                              ",
-      "                              "
-    ],
-
-    // Frame 10: Highlight pass 1
-    [
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "        Building details...   ",
-      "                              ",
-      "                              "
-    ],
-
-    // Frame 11: Highlight pass 2
-    [
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "        Finalizing pattern... ",
-      "                              ",
-      "                              "
-    ],
-
-    // Frame 12: Finale title appears
-    [
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "       * Pixel artifact *     ",
-      "            compiled          ",
-      "                              "
-    ],
-
-    // Frame 13: Atmospheric ending (stop here)
-    [
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "  #  #   #  #   #  #   #  #   ",
-      "  ####   ####   ####   ####   ",
-      "       * Pixel artifact *     ",
-      "        Ready for launch...   ",
-      "                              "
+      "                   ",
+      "                   ",
+      "       · · ·       ",
+      "       · ● ·       ",
+      "       · · ·       ",
+      "                   ",
+      "                   ",
+      "                   ",
+      "                   "
     ]
   ];
 
   useEffect(() => {
-    if (!isPlaying) return;
+    // Only animate if autoPlay is enabled
+    if (!autoPlay) return;
 
+    // Set up interval for frame changes
     const interval = setInterval(() => {
       setCurrentFrame(prevFrame => {
-        const nextFrame = prevFrame + 1;
-        
-        // If we reached the end
-        if (nextFrame >= frames.length) {
-          // If looping is enabled, restart
-          if (loopAnimation) {
-            return 0;
-          } else {
-            // Otherwise stop playing
-            setIsPlaying(false);
-            return prevFrame;
-          }
-        }
-        
-        return nextFrame;
+        // Loop back to beginning after last frame
+        return (prevFrame + 1) % frames.length;
       });
     }, frameDelay);
 
+    // Cleanup interval on unmount or when dependencies change
     return () => clearInterval(interval);
-  }, [isPlaying, frames.length, loopAnimation, frameDelay]);
+  }, [autoPlay, frames.length, frameDelay]);
 
-  // Function to start animation (can be called from parent component)
-  const startAnimation = () => {
-    setCurrentFrame(0);
-    setIsPlaying(true);
-  };
-
-  // Function to stop animation
-  const stopAnimation = () => {
-    setIsPlaying(false);
-  };
-
-  // Function to reset animation
-  const resetAnimation = () => {
-    setCurrentFrame(0);
-    setIsPlaying(false);
+  /* Glow is minimal at frames 0,1,8,9 and maximal at frames 4,5 */
+  const glowIntensity = () => {
+    const intensityMap = [0.2, 0.3, 0.5, 0.7, 0.9, 1.0, 0.9, 0.7, 0.5, 0.3];
+    return intensityMap[currentFrame] || 0.5;
   };
 
   return (
-    <div className={`font-mono text-xs ${
-      "text-command"
-    }`}>
-      {frames[currentFrame].map((line, index) => (
-        <div key={index} className="text-center whitespace-pre">
-          {line}
-        </div>
-      ))}
+    <div className="flex items-center justify-center w-full">
+      <pre 
+        className="text-command font-mono text-sm leading-tight select-none"
+        style={{
+          /* Multiple shadows create a layered glow that adapts to theme */
+          textShadow: `
+            0 0 ${10 * glowIntensity()}px var(--color-text-command),
+            0 0 ${20 * glowIntensity()}px var(--color-accent),
+            0 0 ${30 * glowIntensity()}px var(--color-success)
+          `,
+          transition: 'text-shadow 0.3s ease-in-out',
+          willChange: 'text-shadow'
+        }}
+      >
+        {frames[currentFrame].map((line, index) => (
+          <div 
+            key={index} 
+            className="whitespace-pre"
+            style={{
+              /* Existing opacity variation for depth */
+              opacity: 0.8 + (Math.sin((currentFrame + index) * 0.5) * 0.2)
+            }}
+          >
+            {line}
+          </div>
+        ))}
+      </pre>
     </div>
   );
 };
