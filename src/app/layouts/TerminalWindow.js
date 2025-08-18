@@ -84,6 +84,7 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
 
   return (
     <div className="w-full max-w-2xl border rounded bg-main border-primary">
+      {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
       <div className="flex items-center justify-between p-4 border-b border-primary">
         <h1 className="font-normal text-lg truncate min-w-0 text-command">${displayTitle}</h1>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -126,7 +127,7 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
             className="p-1"
             aria-label="Toggle theme"
           />
-          {currentScreen !== 'Entry' && (
+          {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
             <Button
               onClick={handleClose}
               // CHANGE: Corrected icon prop passing.
@@ -139,6 +140,7 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
         </div>
 
       </div>
+      )}
 
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
         <div className="px-4 py-2 text-sm border-b border-primary" style={{ backgroundColor: 'var(--color-hover)' }}>
