@@ -12,7 +12,19 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
  */
 
 /* Export the list of supported themes so other modules (ThemeManager, UI) can reuse it. */
-export const themes = ['dark', 'light', 'amber', 'bsod'];
+export const themes = ['dark', 'light', 'amber', 'bsod', 'synthwave', 'operator', 'kyoto', 'radar'];
+
+/* NEW: Theme intent configuration - defines the fundamental nature of each theme */
+export const themeConfig = {
+  dark: { intent: 'dark' },   // Dark background, bright elements
+  light: { intent: 'light' }, // Light background, dark elements
+  amber: { intent: 'dark' },  // Amber is dark-based despite warm colors
+  bsod: { intent: 'light' },  // BSOD has bright blue background, treated as light
+  synthwave: { intent: 'dark' }, // Synthwave is dark-based with neon colors
+  operator: { intent: 'dark' },  // Operator is dark-based with a tech feel
+  kyoto: { intent: 'light' },     // Kyoto has a light background with soft colors
+  radar: { intent: 'dark' }       // Radar is dark-based with a focus on depth
+};
 
 export const SessionContext = createContext(null);
 
@@ -259,7 +271,7 @@ export function SessionProvider({ children }) {
   // ========== THEME MANAGEMENT ==========
   /**
    * toggleTheme:
-   *  - Cyclically advances theme through the `themes` array.
+   *  - Cycles through all supported themes in order.
    *  - Uses setState updater to avoid needing `theme` as a dependency.
    *
    * setThemeExplicit:
@@ -284,6 +296,11 @@ export function SessionProvider({ children }) {
       console.warn(`SessionProvider: attempt to set unknown theme "${newTheme}"`);
     }
   }, []);
+
+  /* NEW: Helper function to get the intent for the current theme */
+  const getThemeIntent = useCallback(() => {
+    return themeConfig[theme]?.intent || 'dark';
+  }, [theme]);
 
   // Side-effects when theme changes: persist to localStorage and log the change.
   useEffect(() => {
@@ -407,6 +424,7 @@ export function SessionProvider({ children }) {
     themes,
     toggleTheme,
     setThemeExplicit,
+    getThemeIntent, // NEW: Export the helper function
     expandedSections,
     toggleSection,
     activeTab,
