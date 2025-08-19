@@ -1,65 +1,249 @@
 {
   "DEMO_USER": {
     "meta": {
-      "company": "Demo Company",
+      "company": "Portfolio Demo",
       "timeline": "scenario_a",
-      "depth": "standard",
       "tone": "casual",
-      "cases": ["project_alpha", "project_beta"]
+      "cases": [
+        "project_phoenix",
+        "project_chimera"
+      ]
     },
     "profile": {
-      "greeting_name": "Demo User",
+      "greeting_name": "Guest",
       "summary": {
-        "title": "Senior Developer",
-        "specialization": "Full-Stack Development",
-        "background": "Computer Science"
+        "title": "Senior Product Designer",
+        "specialization": "Complex Systems & User Experience",
+        "background": "Engineering & Design"
       },
       "attributes": [
-        "Full-Stack Development",
-        "Cloud Architecture",
-        "DevOps Practices",
-        "Technical Leadership"
+        "User-Centric Design",
+        "Data Visualization",
+        "Scalable Design Systems",
+        "Technical Product Strategy"
       ],
       "status": {
-        "seeking": "Senior Developer Roles",
-        "location": "Remote",
-        "availability": "Available Now"
+        "seeking": "Product Design Opportunities",
+        "location": "Remote, EMEA",
+        "availability": "Immediate",
+        "salary": "Negotiable"
       }
     },
     "introduction": {
-      "casual": "Hey! This is a demo portfolio. You're seeing example data that shows how the system works. Pretty cool, right?",
-      "technical": "This demonstration showcases the portfolio's capability to deliver personalized, configuration-driven content.",
-      "formal": "Welcome to the demonstration version of the Terminal Portfolio system."
+      "casual": "Hey there! This is a live demonstration of my interactive portfolio. You're seeing example data that shows how the system can be personalized for different viewers. Feel free to explore!",
+      "technical": "This demonstration showcases the portfolio's capability to deliver personalized, configuration-driven content based on a headless JSON architecture.",
+      "formal": "Welcome to the demonstration of the Terminal Portfolio system. The content presented here is for illustrative purposes."
     }
   },
   "GLOBAL_DATA": {
     "menu": [
       {
-        "label": "overview",
+        "label": "about_me",
         "screen": "Introduction",
-        "icon": "[INF]",
-        "desc": "Demo introduction"
+        "icon": "[USR]",
+        "desc": "Background & approach"
+      },
+      {
+        "label": "experience",
+        "screen": "Timeline",
+        "icon": "[EXP]",
+        "desc": "Professional timeline"
+      },
+      {
+        "label": "case_studies",
+        "screen": "CaseList",
+        "icon": "[PRJ]",
+        "desc": "Featured projects"
+      },
+      {
+        "label": "skills",
+        "screen": "SkillsGrid",
+        "icon": "[SKL]",
+        "desc": "Technical expertise"
+      },
+      {
+        "label": "contact",
+        "screen": "Contact",
+        "icon": "[MSG]",
+        "desc": "Get in touch"
       }
     ],
     "experience": {
       "scenario_a": [
         {
-          "id": "demo_role",
-          "company": "Demo Corp",
-          "role": "Senior Developer",
-          "period": "2020 - 2024",
-          "duration": "4 years",
-          "highlight": "Led demonstration projects"
+          "id": "stark_industries",
+          "company": "Stark Industries",
+          "role": "Senior Product Designer",
+          "period": "2022 - Present",
+          "duration": "2+ years",
+          "highlight": "Led redesign of flagship SaaS platform"
+        },
+        {
+          "id": "cyberdyne_systems",
+          "company": "Cyberdyne Systems",
+          "role": "Product Designer",
+          "period": "2020 - 2022",
+          "duration": "2 years",
+          "highlight": "Built consumer mobile app from scratch"
         }
       ]
     },
-    "case_studies": {
-      "project_alpha": {
-        "title": "Project Alpha",
-        "desc": "A demonstration project",
-        "metrics": "+100% demo success",
-        "tags": ["Demo", "Example"]
+    "role_details": {
+      "stark_industries": {
+        "summary": "Led design for a complex B2B SaaS platform, focusing on data visualization and enterprise workflows.",
+        "responsibilities": [
+          "End-to-end design ownership",
+          "User research and data analysis",
+          "Design system architecture",
+          "Mentoring junior designers"
+        ],
+        "achievements": [
+          "Increased user task completion by 40%",
+          "Reduced onboarding time by 25%",
+          "Built a design system that accelerated development by 30%"
+        ],
+        "tech": ["Figma", "React", "Data Studio", "Jira"]
+      },
+      "cyberdyne_systems": {
+        "summary": "Joined as an early designer to build a new consumer-facing mobile application from the ground up.",
+        "responsibilities": [
+          "Mobile app design (iOS & Android)",
+          "Prototyping and usability testing",
+          "Creating initial UI kit",
+          "Collaborating with a small, agile team"
+        ],
+        "achievements": [
+          "Grew user base from 0 to 50,000 MAU",
+          "Achieved a 4.7-star App Store rating",
+          "Increased conversion by 60% through simplified onboarding"
+        ],
+        "tech": ["Figma", "Swift", "Kotlin", "Firebase"]
       }
+    },
+    "case_studies": {
+      "project_phoenix": {
+        "title": "Project Phoenix - Mobile App Launch",
+        "desc": "Launched a consumer mobile application from zero to 50,000 monthly active users.",
+        "metrics": "0 to 50K MAU",
+        "tags": ["Mobile", "0-to-1", "Consumer"]
+      },
+      "project_chimera": {
+        "title": "Project Chimera - Enterprise Dashboard Redesign",
+        "desc": "Complete redesign of a data-heavy enterprise SaaS dashboard to improve usability.",
+        "metrics": "+40% Task Completion",
+        "tags": ["B2B SaaS", "Data Visualization", "Enterprise"]
+      }
+    },
+    "case_details": {
+      "project_phoenix": {
+        "challenge": "The company needed to enter the consumer market but had no existing mobile presence. The challenge was to design, build, and launch a new application from scratch that could find product-market fit in a competitive space.",
+        "approach": [
+          "Conducted market research and user interviews to define the core value proposition.",
+          "Developed low-fidelity wireframes and ran rapid usability tests to validate key user flows.",
+          "Created a scalable, multi-platform design system for both iOS and Android.",
+          "Worked in a tight loop with the development team in an agile environment."
+        ],
+        "solution": "Designed and shipped a native mobile application with a focus on a frictionless onboarding experience and a delightful core feature set. The app was built with a product-led growth strategy, including a viral referral system.",
+        "results": [
+          "Grew the user base from zero to 50,000 monthly active users within 6 months.",
+          "Increased onboarding conversion by 60% after three iterations.",
+          "Achieved a 4.7-star rating in the App Store with over 1,000 reviews."
+        ],
+        "learnings": "Launching a product from scratch requires a relentless focus on solving a single, critical user problem well. Simplicity and speed of iteration are more valuable than a large feature set in the early stages."
+      },
+      "project_chimera": {
+        "challenge": "The existing enterprise dashboard was powerful but incredibly complex. Users were overwhelmed by data, leading to high error rates and long training times for new employees. The goal was to redesign the interface to be intuitive without sacrificing functionality.",
+        "approach": [
+          "Audited the existing platform and conducted contextual inquiries with power users.",
+          "Created user personas for different roles (analyst, manager, admin) to understand their unique needs.",
+          "Designed a new information architecture based on a modular, widget-based system.",
+          "Built a comprehensive, interactive prototype in Figma to test with users and stakeholders."
+        ],
+        "solution": "Delivered a complete redesign of the dashboard, focusing on progressive disclosure. The new interface provided a high-level overview by default, with powerful filtering and deep-dive capabilities available on demand. We introduced customizable layouts and role-based views.",
+        "results": [
+          "Increased user task completion rates by 40%.",
+          "Reduced onboarding time for new users by 25%.",
+          "Received a 90% user satisfaction score in a post-launch survey.",
+          "The new design system accelerated the development of new features by 30%."
+        ],
+        "learnings": "Complexity for enterprise users can be managed by giving them control. A flexible, customizable interface that adapts to a user's specific workflow is more effective than a one-size-fits-all solution."
+      }
+    },
+    "skills": [
+      {
+        "name": "Design Systems",
+        "id": "design_systems",
+        "level": "EXPERT",
+        "desc": "Token-based, scalable systems"
+      },
+      {
+        "name": "User Research",
+        "id": "user_research",
+        "level": "ADVANCED",
+        "desc": "Qualitative & quantitative insights"
+      }
+    ],
+    "skill_details": {
+      "Design Systems": {
+        "description": "Building comprehensive design systems from the ground up, focusing on scalability, developer handoff, and brand consistency.",
+        "examples": [
+          "Created a token-based system with Figma variables and automated JSON export.",
+          "Built a component library with over 150 production-ready components.",
+          "Wrote extensive documentation and usage guidelines for developers and designers."
+        ],
+        "tools": ["Figma", "Storybook", "Style Dictionary", "Zeroheight"],
+        "impact": [
+          "Accelerated development velocity by 30%",
+          "Reduced UI-related bugs by 40%"
+        ]
+      },
+      "User Research": {
+        "description": "Employing a mixed-methods approach to uncover deep user insights and validate design decisions with data.",
+        "examples": [
+          "Conducted 50+ semi-structured user interviews for a major platform redesign.",
+          "Designed and analyzed A/B tests that resulted in a 60% conversion lift.",
+          "Used session recording and heatmap analysis to identify critical friction points."
+        ],
+        "tools": ["Maze", "Hotjar", "Mixpanel", "UserTesting.com"],
+        "impact": [
+          "Identified insights that led to a 150% reduction in negative user feedback",
+          "Validated designs that increased user satisfaction scores by 90%"
+        ]
+      }
+    },
+    "side_projects": [
+      {
+        "id": "coffee_app",
+        "name": "Artisan Coffee Brewing App",
+        "desc": "A mobile app to help users perfect their pour-over coffee technique.",
+        "status": "COMPLETED",
+        "tech": ["Figma", "SwiftUI", "Personal Project"]
+      },
+      {
+        "id": "smart_home_dashboard",
+        "name": "Smart Home Dashboard",
+        "desc": "A personal project to design a unified interface for various smart home devices.",
+        "status": "IN_PROGRESS",
+        "tech": ["Figma", "Home Assistant", "React"]
+      }
+    ],
+    "public_speaking": [
+      {
+        "title": "Design Systems Meetup - 'Tokens for Everyone'",
+        "url": "#"
+      },
+      {
+        "title": "UX Conference - 'Research on a Budget'",
+        "url": "#"
+      }
+    ],
+    "contact": {
+      "email": "demo.user@example.com",
+      "website": "https://example.com",
+      "location": "Remote, EMEA",
+      "work_type": "Fully Remote Only",
+      "target_comp": "Negotiable",
+      "start_date": "IMMEDIATE"
     }
   }
 }
