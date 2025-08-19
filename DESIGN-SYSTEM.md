@@ -46,9 +46,26 @@ The theme-switching process is a clean, predictable flow:
 4.  The browser immediately applies the new set of CSS variables defined in `globals.css` under the `[data-theme='light']` selector.
 5.  All components styled with our semantic classes (e.g., `.bg-main`) instantly re-render with the new colors, with zero flicker.
 
+### **2.4. Theme Intent**
+
+To support components with complex visual effects that differ fundamentally between light and dark backgrounds (e.g., glows vs. shadows), we've introduced the concept of a theme "intent". Each theme is categorized as either `'dark'` or `'light'` in a configuration object within `SessionContext.js`.
+
+**Why?** This allows components like `MorphingTerminal` to apply different sets of CSS rules based on the theme's nature without needing to know about specific theme names like 'amber' or 'bsod'. For example, dark-intent themes might use a `text-shadow` to create a glow effect, while light-intent themes use a subtle shadow to mimic printed text.
+
+```javascript
+// Example from SessionContext.js
+export const themeConfig = {
+  dark: { intent: 'dark' },
+  light: { intent: 'light' },
+  // ...
+  kyoto: { intent: 'light' },
+  radar: { intent: 'dark' }
+};
+```
+
 ## **3. Color Palettes**
 
-The following tables define the color palette for each supported theme.
+The following tables define the color palette for each supported theme. Each theme provides a full spectrum of 15 semantic color variables.
 
 ### **3.1. How to Read These Tables**
 
@@ -58,55 +75,159 @@ The following tables define the color palette for each supported theme.
 
 ### **3.2. Dark Theme (Default)**
 
-| Role             | CSS Variable               | Value                  |
-| :--------------- | :------------------------- | :--------------------- |
-| Background       | `--color-bg`               | `#000000`              |
-| Primary Text     | `--color-text-primary`     | `#86efac`              |
-| Secondary Text   | `--color-text-secondary`   | `#9ca3af`              |
-| Command Text     | `--color-text-command`     | `#eab308`              |
-| Primary Border   | `--color-border`           | `#22c55e`              |
-| Secondary Border | `--color-border-darker`    | `#166534`              |
-| Active Element   | `--color-active`           | `#15803d`              |
-| Hover State      | `--color-hover`            | `rgba(34, 197, 94, 0.1)` |
+| CSS Variable             | Value                  |
+| :----------------------- | :--------------------- |
+| `--color-bg`             | `#000000`              |
+| `--color-text-white`     | `#ffffff`              |
+| `--color-text-primary`   | `#86efac`              |
+| `--color-text-secondary` | `#9ca3af`              |
+| `--color-text-tertiary`  | `#6b7280`              |
+| `--color-text-command`   | `#eab308`              |
+| `--color-border`         | `#22c55e`              |
+| `--color-border-darker`  | `#166534`              |
+| `--color-active`         | `#15803d`              |
+| `--color-error`          | `#dc2626`              |
+| `--color-success`        | `#4ade80`              |
+| `--color-input-bg`       | `#111827`              |
+| `--color-hover`          | `rgba(34, 197, 94, 0.1)` |
+| `--color-accent`         | `#22d3ee`              |
 
 ### **3.3. Light Theme**
 
-| Role             | CSS Variable               | Value                  |
-| :--------------- | :------------------------- | :--------------------- |
-| Background       | `--color-bg`               | `#ffffff`              |
-| Primary Text     | `--color-text-primary`     | `#065f46`              |
-| Secondary Text   | `--color-text-secondary`   | `#4b5563`              |
-| Command Text     | `--color-text-command`     | `#b45309`              |
-| Primary Border   | `--color-border`           | `#10b981`              |
-| Secondary Border | `--color-border-darker`    | `#059669`              |
-| Active Element   | `--color-active`           | `#d1fae5`              |
-| Hover State      | `--color-hover`            | `rgba(5, 150, 105, 0.1)` |
+| CSS Variable             | Value                   |
+| :----------------------- | :---------------------- |
+| `--color-bg`             | `#ffffff`               |
+| `--color-text-white`     | `#0a0a0a`               |
+| `--color-text-primary`   | `#065f46`               |
+| `--color-text-secondary` | `#4b5563`               |
+| `--color-text-tertiary`  | `#6b7280`               |
+| `--color-text-command`   | `#b45309`               |
+| `--color-border`         | `#10b981`               |
+| `--color-border-darker`  | `#059669`               |
+| `--color-active`         | `#d1fae5`               |
+| `--color-error`          | `#ef4444`               |
+| `--color-success`        | `#22c55e`               |
+| `--color-input-bg`       | `#f9fafb`               |
+| `--color-hover`          | `rgba(5, 150, 105, 0.1)` |
+| `--color-accent`         | `#0891b2`               |
 
 ### **3.4. Amber Theme**
 
-| Role             | CSS Variable               | Value                   |
-| :--------------- | :------------------------- | :---------------------- |
-| Background       | `--color-bg`               | `#1C140D`               |
-| Primary Text     | `--color-text-primary`     | `#FFB86C`               |
-| Secondary Text   | `--color-text-secondary`   | `#D9A15D`               |
-| Command Text     | `--color-text-command`     | `#FFD173`               |
-| Primary Border   | `--color-border`           | `#FF9F1C`               |
-| Secondary Border | `--color-border-darker`    | `#8B5A00`               |
-| Active Element   | `--color-active`           | `#FF8C00`               |
-| Hover State      | `--color-hover`            | `rgba(255, 184, 108, 0.08)` |
+| CSS Variable             | Value                    |
+| :----------------------- | :----------------------- |
+| `--color-bg`             | `#1C140D`                |
+| `--color-text-white`     | `#FFB86C`                |
+| `--color-text-primary`   | `#FFB86C`                |
+| `--color-text-secondary` | `#D9A15D`                |
+| `--color-text-tertiary`  | `#B38A4D`                |
+| `--color-text-command`   | `#FFD173`                |
+| `--color-border`         | `#FF9F1C`                |
+| `--color-border-darker`  | `#8B5A00`                |
+| `--color-active`         | `#FF8C00`                |
+| `--color-error`          | `#FF6B6B`                |
+| `--color-success`        | `#50FA7B`                |
+| `--color-input-bg`       | `#261A12`                |
+| `--color-hover`          | `rgba(255, 184, 108, 0.08)` |
+| `--color-accent`         | `#8BE9FD`                |
 
 ### **3.5. BSOD Theme**
 
-| Role             | CSS Variable               | Value                   |
-| :--------------- | :------------------------- | :---------------------- |
-| Background       | `--color-bg`               | `#0B4DA8`               |
-| Primary Text     | `--color-text-primary`     | `#FFFFFF`               |
-| Secondary Text   | `--color-text-secondary`   | `#CFE9FF`               |
-| Command Text     | `--color-text-command`     | `#E1F0FF`               |
-| Primary Border   | `--color-border`           | `#E6F3FF`               |
-| Secondary Border | `--color-border-darker`    | `#7FB3FF`               |
-| Active Element   | `--color-active`           | `#0066FF`               |
-| Hover State      | `--color-hover`            | `rgba(230, 243, 255, 0.06)` |
+| CSS Variable             | Value                    |
+| :----------------------- | :----------------------- |
+| `--color-bg`             | `#0B4DA8`                |
+| `--color-text-white`     | `#FFFFFF`                |
+| `--color-text-primary`   | `#FFFFFF`                |
+| `--color-text-secondary` | `#CFE9FF`                |
+| `--color-text-tertiary`  | `#9EC7FF`                |
+| `--color-text-command`   | `#E1F0FF`                |
+| `--color-border`         | `#E6F3FF`                |
+| `--color-border-darker`  | `#7FB3FF`                |
+| `--color-active`         | `#0066FF`                |
+| `--color-error`          | `#FF6B6B`                |
+| `--color-success`        | `#00D084`                |
+| `--color-input-bg`       | `#073A93`                |
+| `--color-hover`          | `rgba(230, 243, 255, 0.06)` |
+| `--color-accent`         | `#88B8FF`                |
+
+### **3.6. Synthwave Theme**
+Inspired by 80s retro-futurism, this theme uses a deep indigo background with high-contrast neon magenta and cyan.
+
+| CSS Variable             | Value                    |
+| :----------------------- | :----------------------- |
+| `--color-bg`             | `#1A103C`                |
+| `--color-text-white`     | `#FF00E5`                |
+| `--color-text-primary`   | `#FF00E5`                |
+| `--color-text-secondary` | `#00BFFF`                |
+| `--color-text-tertiary`  | `#7B61FF`                |
+| `--color-text-command`   | `#F7B801`                |
+| `--color-border`         | `#FF00E5`                |
+| `--color-border-darker`  | `#00BFFF`                |
+| `--color-active`         | `#4C00A4`                |
+| `--color-error`          | `#FF1B1B`                |
+| `--color-success`        | `#39FF14`                |
+| `--color-input-bg`       | `#2C1E5C`                |
+| `--color-hover`          | `rgba(255, 0, 229, 0.1)` |
+| `--color-accent`         | `#00F6FF`                |
+
+### **3.7. Operator Theme**
+Evokes early monochrome CRT monitors with a functional, utilitarian feel. Sharp, legible text on a near-black background.
+
+| CSS Variable             | Value                  |
+| :----------------------- | :--------------------- |
+| `--color-bg`             | `#1E0000`              |
+| `--color-text-white`     | `#FF4100`              |
+| `--color-text-primary`   | `#FF4100`              |
+| `--color-text-secondary` | `#FFA500`              |
+| `--color-text-tertiary`  | `#B37400`              |
+| `--color-text-command`   | `#FF4100`              |
+| `--color-border`         | `#FF4100`              |
+| `--color-border-darker`  | `#FFA500`              |
+| `--color-active`         | `#5D1800`              |
+| `--color-error`          | `#FFFF00`              |
+| `--color-success`        | `#A8FF00`              |
+| `--color-input-bg`       | `#1A1A1A`              |
+| `--color-hover`          | `rgba(255, 65, 0, 0.1)` |
+| `--color-accent`         | `#FFA500`              |
+
+### **3.8. Kyoto Theme**
+An industrial, cyberpunk aesthetic with a unique split background: an orange page surrounding grey "concrete" panels.
+
+| CSS Variable             | Value                  |
+| :----------------------- | :--------------------- |
+| `--color-bg`             | `#B0B0B0`              |
+| `--color-text-white`     | `#1A1A1A`              |
+| `--color-text-primary`   | `#1A1A1A`              |
+| `--color-text-secondary` | `#4A4A4A`              |
+| `--color-text-tertiary`  | `#7A7A7A`              |
+| `--color-text-command`   | `#D95D39`              |
+| `--color-border`         | `#1A1A1A`              |
+| `--color-border-darker`  | `#4A4A4A`              |
+| `--color-active`         | `#8E8E8E`              |
+| `--color-error`          | `#A80000`              |
+| `--color-success`        | `#0A6D0A`              |
+| `--color-input-bg`       | `#8E8E8E`              |
+| `--color-hover`          | `rgba(74, 74, 74, 0.1)` |
+| `--color-accent`         | `#39D9D9`              |
+
+### **3.9. Radar Theme**
+Mimics analog military hardware with a tactile feel. A khaki "chassis" surrounds an olive-green "screen".
+
+| CSS Variable             | Value                     |
+| :----------------------- | :------------------------ |
+| `--color-bg`             | `#3C4D3A`                 |
+| `--color-text-white`     | `#B3E2A7`                 |
+| `--color-text-primary`   | `#B3E2A7`                 |
+| `--color-text-secondary` | `#8BAA85`                 |
+| `--color-text-tertiary`  | `#5A5A5A`                 |
+| `--color-text-command`   | `#D98E39`                 |
+| `--color-border`         | `#2A2A2A`                 |
+| `--color-border-darker`  | `#2A2A2A`                 |
+| `--color-active`         | `#2F3D2D`                 |
+| `--color-error`          | `#D94639`                 |
+| `--color-success`        | `#65B354`                 |
+| `--color-input-bg`       | `#32402F`                 |
+| `--color-hover`          | `rgba(179, 226, 167, 0.1)` |
+| `--color-accent`         | `#54B3B3`                 |
 
 ## **4. Semantic Class Library**
 
@@ -171,9 +292,9 @@ A strict typographic scale ensures consistency and readability.
 
 ### **7.2. How to Add a New Theme**
 
-Adding a fifth theme is a simple, four-step process:
+Adding a new theme is a simple, four-step process:
 
 1.  **Add Color Tokens:** Define the new theme's color palette in `tailwind.config.mjs` (e.g., `'matrix-bg': '#0D2B0D'`).
-2.  **Define CSS Variables:** Add a new `[data-theme='matrix']` block in `globals.css` and map your new tokens to the CSS variables (`--color-bg: theme('colors.matrix-bg');`).
-3.  **Update Theme Array:** Add the new theme's name (`'matrix'`) to the `themes` array in `src/app/context/SessionContext.js`.
-4.  **Add Theme Icon:** Add an icon for the new theme to the `themeIcons` dictionary in `src/app/layouts/TerminalWindow.js`.
+2.  **Define CSS Variables:** Add a new `[data-theme='matrix']` block in `globals.css` and assign your new tokens to the semantic CSS variables.
+3.  **Update Theme Configuration:** In `src/app/context/SessionContext.js`, add the new theme's name to the `themes` array and add an entry for it in the `themeConfig` object, defining its `intent` as either `'dark'` or `'light'`.
+4.  **Add Theme Icon:** Add an icon for the new theme to the `themeIcons` dictionary in `src/app/components/ui/ThemeSwitcher.js` and `src/app/layouts/TerminalWindow.js`.
