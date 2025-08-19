@@ -9,7 +9,7 @@ export default function MainHub() {
   const menuItems = sessionData?.menu || [];
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="p-4">
       <div className="space-y-3">
         {menuItems.map((item) => (
           <button
