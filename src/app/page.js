@@ -1,35 +1,65 @@
+// src/app/page.js
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from './context/SessionContext';
 import ScreenRenderer from './components/ScreenRenderer';
+import TerminalWindow from './layouts/TerminalWindow';
 
 function AppContent() {
   const searchParams = useSearchParams();
-  const { sessionData, setSessionData, navigate, addLog, endSession, setAuthError } = useSession();
+  const { 
+    sessionData, 
+    setSessionData, 
+    navigate, 
+    addLog, 
+    endSession, 
+    setAuthError,
+    currentScreen,
+    currentDomain,
+    domainData
+  } = useSession();
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  // Calculate window title based on current screen
+  // This logic was previously in ScreenRenderer
+  const windowTitle = useMemo(() => {
+    // For Entry and MainHub, use domain-specific title
+    if (currentScreen === 'Entry' || currentScreen === 'MainHub') {
+      // Priority: domainData > currentDomain > fallback
+      if (domainData?.terminalTitle) {
+        return domainData.terminalTitle;
+      }
+      if (currentDomain) {
+        return `${currentDomain}_portfolio`;
+      }
+      return 'portfolio';
+    }
+    
+    // For other screens, convert CamelCase to snake_case
+    return currentScreen.replace(/([A-Z])/g, (match, p1, offset) => 
+      offset > 0 ? '_' + p1.toLowerCase() : p1.toLowerCase()
+    );
+  }, [currentScreen, currentDomain, domainData]);
   
   useEffect(() => {
     const code = searchParams.get('code');
 
+    // Handle session switching
     if (sessionData && code && code !== sessionData.accessCode) {
       addLog(`SESSION SWITCH: New code detected. Old: ${sessionData.accessCode}, New: ${code}. Terminating old session.`);
-      // Terminate the current session completely before starting a new one.
-      // This is a critical step to ensure a clean state for the new authentication.
       endSession(); 
-      // By calling endSession(), we trigger a re-render where sessionData becomes null,
-      // which then allows the authentication logic below to run for the new code.
       return; 
     }
 
-    // If we are already authenticated and the code hasn't changed, do nothing.
+    // If already authenticated, stop loading
     if (sessionData) {
       setIsLoading(false);
       return;
     }
     
+    // Authentication logic
     const authenticateWithCode = async (accessCode) => {
       if (!accessCode) {
         setIsLoading(false);
@@ -62,31 +92,37 @@ function AppContent() {
       setIsLoading(false);
     };
     
-    // We only need to run authentication if a code is present and there's no active session.
+    // Trigger authentication if code is present
     if (code) {
       authenticateWithCode(code);
     } else {
-      // No code in URL, and no session, so just show the entry screen.
       setIsLoading(false);
       navigate('Entry', false);
     }
 
   }, [searchParams, sessionData, setSessionData, navigate, addLog, setAuthError, endSession]);
   
+  // Loading state
   if (isLoading) {
     return (
       <div className="w-full max-w-2xl mx-auto text-center p-8">
-        <div className="text-dark-text-primary">AUTHENTICATING...</div>
+        <div className="text-primary">AUTHENTICATING...</div>
       </div>
     );
   }
   
-  return <ScreenRenderer />;
+  // CRITICAL: TerminalWindow is ALWAYS rendered here
+  // It provides the stable container that doesn't get recreated
+  // The existing TerminalWindow logic already handles hiding the header for Entry/ProfileBoot
+  return (
+    <TerminalWindow title={windowTitle}>
+      <ScreenRenderer />
+    </TerminalWindow>
+  );
 }
 
 export default function Home() {
   return (
-    // Suspense is necessary because useSearchParams is a client-side hook.
     <Suspense fallback={null}>
       <AppContent />
     </Suspense>
