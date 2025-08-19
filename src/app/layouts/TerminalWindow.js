@@ -31,7 +31,8 @@ export default function TerminalWindow({ title, children }) {
     goUp,
     screenHierarchy,
     navigate,
-    domainData
+    domainData,
+    sessionData  // ADDED: Import sessionData to check for demo mode
   } = useSession();
 
   const isBackDisabled = navigationHistory.length === 0 || currentScreen === 'Entry';
@@ -169,6 +170,16 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
                 )}
               </span>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* ADDED: Demo Mode Indicator Banner */}
+      {/* Shows only when user is in demo mode and not on Entry or ProfileBoot screens */}
+      {sessionData?.isDemoMode && !['Entry', 'ProfileBoot'].includes(currentScreen) && (
+        <div className="px-4 py-2 bg-hover border-b border-secondary">
+          <div className="text-xs text-command">
+            DEMO MODE - This is example content. Get your personalized access code via Telegram.
           </div>
         </div>
       )}

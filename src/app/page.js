@@ -45,6 +45,8 @@ function AppContent() {
   
   useEffect(() => {
     const code = searchParams.get('code');
+    // ADDED: Check for demo parameter in URL
+    const demoMode = searchParams.get('demo');
 
     // Handle session switching
     if (sessionData && code && code !== sessionData.accessCode) {
@@ -58,6 +60,40 @@ function AppContent() {
       setIsLoading(false);
       return;
     }
+    
+    // ADDED: New function to handle demo mode authentication
+    const authenticateDemoMode = async () => {
+      addLog('DEMO MODE: Initializing from URL parameter');
+      
+      try {
+        // Make API request without code to trigger demo mode
+        const response = await fetch('/api/session');
+        
+        if (response.ok) {
+          const demoData = await response.json();
+          
+          // Enrich data with demo mode flags
+          const enrichedData = {
+            ...demoData,
+            isDemoMode: true,
+            accessCode: 'DEMO'
+          };
+          
+          setSessionData(enrichedData);
+          addLog('DEMO MODE: Session initialized via URL');
+          navigate('ProfileBoot', false);
+        } else {
+          addLog('DEMO MODE: Not available');
+          setAuthError('Demo mode is not available at this time');
+          navigate('Entry', false);
+        }
+      } catch (error) {
+        addLog(`DEMO MODE ERROR: ${error.message}`);
+        setAuthError('Failed to start demo mode');
+        navigate('Entry', false);
+      }
+      setIsLoading(false);
+    };
     
     // Authentication logic
     const authenticateWithCode = async (accessCode) => {
@@ -92,10 +128,16 @@ function AppContent() {
       setIsLoading(false);
     };
     
-    // Trigger authentication if code is present
-    if (code) {
+    // CHANGED: Modified authentication flow to check for demo mode first
+    // Priority: demo mode > code-based auth > show Entry screen
+    if (demoMode === 'true') {
+      // ADDED: If demo=true in URL, authenticate with demo mode
+      authenticateDemoMode();
+    } else if (code) {
+      // Original code-based authentication
       authenticateWithCode(code);
     } else {
+      // No authentication parameters, show Entry screen
       setIsLoading(false);
       navigate('Entry', false);
     }
