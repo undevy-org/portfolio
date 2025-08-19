@@ -11,7 +11,11 @@ import {
   Home, 
   ArrowUp, 
   Bug, 
-  Terminal
+  Terminal, 
+  Waves, 
+  HardDrive, 
+  LayoutDashboard, 
+  SlidersHorizontal
 } from 'lucide-react';
 import { getScreenDisplayName } from '../utils/formatters';
 
@@ -73,13 +77,16 @@ export default function TerminalWindow({ title, children }) {
   // Dictionary of icons for themes
   // Each theme has a dedicated icon for better UX
   const themeIcons = {
-    dark: Sun,      // Компонент, а не <Sun />
+    dark: Sun,     
     light: Bug,     
     amber: Terminal,
-    bsod: Moon,
+    bsod: Waves,
+    synthwave: HardDrive,
+    operator: LayoutDashboard,
+    kyoto: SlidersHorizontal,
+    radar: Moon,
   };
 
-// Получаем компонент иконки
 const CurrentThemeIcon = themeIcons[theme] || Sun;
 
   return (
@@ -92,7 +99,6 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
             <>
           <Button
             onClick={goBack}
-            // CHANGE: Corrected how the icon is passed. It should be a component reference, not a function returning JSX.
             icon={ArrowLeft}
             variant="icon-only"
             className={`p-1 ${isBackDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -101,7 +107,6 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
           />
           <Button
             onClick={goUp}
-            // CHANGE: Corrected icon prop passing.
             icon={ArrowUp}
             variant="icon-only"
             className={`p-1 ${isUpDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -110,7 +115,6 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
           />
           <Button
             onClick={goHome}
-            // CHANGE: Corrected icon prop passing.
             icon={Home}
             variant="icon-only"
             className={`p-1 ${isHomeDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -121,7 +125,6 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
           )}
           <Button
             onClick={toggleTheme}
-            // CHANGE: Corrected icon prop passing. 'currentThemeIcon' is already a JSX element.
             icon={CurrentThemeIcon}
             variant="icon-only"
             className="p-1"
@@ -130,7 +133,6 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
           {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
             <Button
               onClick={handleClose}
-              // CHANGE: Corrected icon prop passing.
               icon={X}
               variant="icon-only"
               className="p-1"
@@ -158,7 +160,6 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
                     {getScreenDisplayName(screen)}
                   </span>
                 ) : (
-                  // CHANGE: Replaced complex theme-dependent classes with simple semantic ones.
                   <button
                     onClick={() => navigate(screen)}
                     className="text-secondary hover:text-primary hover:underline"
