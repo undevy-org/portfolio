@@ -3,7 +3,7 @@
 
 import { useSession, themes } from '../../context/SessionContext';
 import { useEffect, useState } from 'react';
-import { Sun, Moon, Terminal, Bug } from 'lucide-react';
+import { Sun, Moon, Terminal, Bug, Waves, HardDrive, LayoutDashboard, SlidersHorizontal } from 'lucide-react';
 
 /**
  * ThemeSwitcher Component
@@ -32,6 +32,10 @@ export default function ThemeSwitcher() {
     light: Sun,      // Sun icon for light theme (daylight association)  
     amber: Terminal, // Terminal icon for amber theme (retro phosphor terminal feel)
     bsod: Bug,       // Bug icon for BSOD theme (system error association)
+    synthwave: Waves, // Waves icon for synthwave theme (retro wave association)
+    operator: HardDrive, // HardDrive icon for operator theme (system drive association)
+    kyoto: LayoutDashboard, // LayoutDashboard icon for kyoto theme (dashboard association)
+    radar: SlidersHorizontal, // SlidersHorizontal icon for radar theme (radar association)
   };
   
   // Theme display names for better UX
@@ -41,6 +45,10 @@ export default function ThemeSwitcher() {
     light: 'LIGHT',
     amber: 'AMBER',
     bsod: 'BSOD',
+    synthwave: 'SYNTHWAVE',
+    operator: 'OPERATOR',
+    kyoto: 'KYOTO',
+    radar: 'RADAR',
   };
   
   // Ensure component only renders on client side to prevent hydration mismatches
@@ -80,8 +88,8 @@ export default function ThemeSwitcher() {
     <div className="w-full max-w-2xl">
       {/* Main container with terminal-style border */}
       <div className="border rounded bg-main border-primary p-2">
-        {/* Flex container for horizontal button layout */}
-        <div className="flex gap-2">
+        {/* CHANGE: Replaced flexbox with a responsive grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {themes.map((themeName) => {
             // Get the icon component for this theme
             const IconComponent = themeIcons[themeName] || Terminal;
@@ -97,7 +105,6 @@ export default function ThemeSwitcher() {
                 // Active theme gets prominent border and background (similar to Tabs component)
                 // Inactive themes are more subtle but still clickable
                 className={`
-                  flex-1
                   flex items-center justify-center gap-2
                   px-3 py-2
                   rounded

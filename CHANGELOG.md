@@ -26,7 +26,7 @@ This was a foundational overhaul of the entire styling system, moving from a rig
 
 ### Multi-Theme Architecture via CSS Variables
 -   Architectural Shift: Migrated the entire color system from Tailwind's `dark:` variant to a modern, robust architecture based on CSS variables and a `data-theme` attribute on the root HTML element.
--   Expanded Palette: Introduced two new creative themes, "Amber" (a retro phosphor look) and "BSOD" (a classic blue-screen style), in addition to the existing Dark and Light modes. The system now supports four distinct themes.
+-   Expanded Palette: Introduced six new creative themes ("Amber", "BSOD", "Synthwave", "Operator", "Kyoto", and "Radar") in addition to the existing Dark and Light modes. The system now supports eight distinct themes.
 -   Instant, Flicker-Free Switching: Implemented a theme management system (`ThemeManager.js` and `SessionContext.js`) that allows for instantaneous, client-side theme changes with zero page reloads or layout shifts.
 
 ### Semantic CSS Class Library
