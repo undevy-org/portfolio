@@ -1,7 +1,7 @@
+// src/app/components/ScreenRenderer.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import TerminalWindow from '../layouts/TerminalWindow';
 import dynamic from 'next/dynamic';
 
 // Dynamic imports for optimization
@@ -21,33 +21,19 @@ const screens = {
 };
 
 export default function ScreenRenderer() {
-    const { currentScreen, currentDomain } = useSession();
+  const { currentScreen } = useSession();
   
   const ScreenComponent = screens[currentScreen];
   
-  const getWindowTitle = () => {
-    if (currentScreen === 'Entry') return `${currentDomain}_portfolio`;
-    if (currentScreen === 'MainHub') return `${currentDomain}_portfolio`;
-    
-    // Convert CamelCase to snake_case correctly
-    return currentScreen.replace(/([A-Z])/g, (match, p1, offset) => 
-      offset > 0 ? '_' + p1.toLowerCase() : p1.toLowerCase()
-    );
-  };
-  
   if (!ScreenComponent) {
     return (
-      <TerminalWindow title="error">
-        <div className="p-4 text-center">
-          <h2 className="text-xl text-dark-error">Screen not found: {currentScreen}</h2>
-        </div>
-      </TerminalWindow>
+      <div className="p-4 text-center">
+        <h2 className="text-xl text-error">Screen not found: {currentScreen}</h2>
+      </div>
     );
   }
   
-  return (
-    <TerminalWindow title={getWindowTitle()}>
-      <ScreenComponent />
-    </TerminalWindow>
-  );
+  // Just return the screen component directly
+  // TerminalWindow will be handled at the page.js level
+  return <ScreenComponent />;
 }
