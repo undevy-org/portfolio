@@ -61,7 +61,7 @@ const config = {
         'light-accent': '#0284c7',
 
         // -------------------------
-        // AMBER THEME TOKENS (retro / phosphor)
+        // AMBER THEME TOKENS
         // -------------------------
         'amber-bg': '#1C1C1C',
         'amber-surface': '#2A2A2A',
@@ -80,7 +80,7 @@ const config = {
         'amber-tag-border': '#D6D6D6',
 
         // -------------------------
-        // BSOD THEME TOKENS (blue & white)
+        // BSOD THEME TOKENS
         // -------------------------
         'bsod-bg': '#0B4DA8',
         'bsod-surface': '#08429A',
@@ -97,6 +97,78 @@ const config = {
         'bsod-hover': 'rgba(230, 243, 255, 0.06)',
         'bsod-accent': '#88B8FF',
         'bsod-tag-border': '#C7E1FF',
+
+        // -------------------------
+        // SYNTHWAVE THEME TOKENS
+        // -------------------------
+        'synthwave-bg': '#1A103C',
+        'synthwave-text-white': '#FF00E5',
+        'synthwave-text-primary': '#FF00E5',
+        'synthwave-text-secondary': '#00BFFF',
+        'synthwave-text-tertiary': '#7B61FF',
+        'synthwave-text-command': '#F7B801',
+        'synthwave-border': '#FF00E5',
+        'synthwave-border-darker': '#00BFFF',
+        'synthwave-active': '#4C00A4',
+        'synthwave-error': '#FF1B1B',
+        'synthwave-success': '#39FF14',
+        'synthwave-input-bg': '#2C1E5C',
+        'synthwave-hover': 'rgba(255, 0, 229, 0.1)',
+        'synthwave-accent': '#00F6FF',
+
+        /// -------------------------
+        // OPERATOR THEME TOKENS
+        // --------------------------
+        'operator-bg': '#1E0000',
+        'operator-text-white': '#FF4100',
+        'operator-text-primary': '#FF4100',
+        'operator-text-secondary': '#FFA500',
+        'operator-text-tertiary': '#B37400',
+        'operator-text-command': '#FF4100',
+        'operator-border': '#FF4100',
+        'operator-border-darker': '#FFA500',
+        'operator-active': '#5D1800',
+        'operator-error': '#FFFF00',
+        'operator-success': '#A8FF00',
+        'operator-input-bg': '#1A1A1A',
+        'operator-hover': 'rgba(255, 65, 0, 0.1)',
+        'operator-accent': '#FFA500',
+
+        /// -------------------------
+        // KYOTO THEME TOKENS
+        // --------------------------
+        'kyoto-bg': '#B0B0B0',
+        'kyoto-text-white': '#1A1A1A',
+        'kyoto-text-primary': '#1A1A1A',
+        'kyoto-text-secondary': '#4A4A4A',
+        'kyoto-text-tertiary': '#7A7A7A',
+        'kyoto-text-command': '#D95D39',
+        'kyoto-border': '#1A1A1A',
+        'kyoto-border-darker': '#4A4A4A',
+        'kyoto-active': '#8E8E8E',
+        'kyoto-error': '#A80000',
+        'kyoto-success': '#0A6D0A',
+        'kyoto-input-bg': '#A0A0A0',
+        'kyoto-hover': 'rgba(74, 74, 74, 0.1)',
+        'kyoto-accent': '#39D9D9',
+
+        /// -------------------------
+        // RADAR THEME TOKENS
+        // --------------------------
+        'radar-bg': '#3C4D3A',
+        'radar-text-white': '#B3E2A7',
+        'radar-text-primary': '#B3E2A7',
+        'radar-text-secondary': '#8BAA85',
+        'radar-text-tertiary': '#5A5A5A',
+        'radar-text-command': '#D98E39',
+        'radar-border': '#2A2A2A',
+        'radar-border-darker': '#2A2A2A',
+        'radar-active': '#2F3D2D',
+        'radar-error': '#D94639',
+        'radar-success': '#65B354',
+        'radar-input-bg': '#32402F',
+        'radar-hover': 'rgba(179, 226, 167, 0.1)',
+        'radar-accent': '#54B3B3',
       },
 
       // Font sizes intentionally set to fixed pixel values for terminal-like UI

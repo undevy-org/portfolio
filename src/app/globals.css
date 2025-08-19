@@ -78,6 +78,83 @@
     --color-hover: rgba(230, 243, 255, 0.06);
     --color-accent: #88B8FF;
   }
+
+    [data-theme='synthwave'] {
+    /* Synthwave theme */
+    --color-bg: #1A103C;
+    --color-text-white: #FF00E5;
+    --color-text-primary: #FF00E5;
+    --color-text-secondary: #00BFFF;
+    --color-text-tertiary: #7B61FF;
+    --color-text-command: #F7B801;
+    --color-border: #FF00E5;
+    --color-border-darker: #00BFFF;
+    --color-active: #4C00A4;
+    --color-error: #FF1B1B;
+    --color-success: #39FF14;
+    --color-input-bg: #2C1E5C;
+    --color-hover: rgba(255, 0, 229, 0.1);
+    --color-accent: #00F6FF;
+  }
+
+  [data-theme='operator'] {
+    /* Operator theme */
+    --color-bg: #1E0000;
+    --color-text-white: #FF4100;
+    --color-text-primary: #FF4100;
+    --color-text-secondary: #FFA500;
+    --color-text-tertiary: #B37400;
+    --color-text-command: #FF4100;
+    --color-border: #FF4100;
+    --color-border-darker: #FFA500;
+    --color-active: #5D1800;
+    --color-error: #FFFF00;
+    --color-success: #A8FF00;
+    --color-input-bg: #1A1A1A;
+    --color-hover: rgba(255, 65, 0, 0.1);
+    --color-accent: #FFA500;
+  }
+
+  [data-theme='kyoto'] {
+    /* Kyoto theme */
+    --color-bg: #B0B0B0;
+    --color-text-white: #1A1A1A;
+    --color-text-primary: #1A1A1A;
+    --color-text-secondary: #4A4A4A;
+    --color-text-tertiary: #7A7A7A;
+    --color-text-command: #D95D39;
+    --color-border: #1A1A1A;
+    --color-border-darker: #4A4A4A;
+    --color-active: #8E8E8E;
+    --color-error: #A80000;
+    --color-success: #0A6D0A;
+    --color-input-bg: #8E8E8E;
+    --color-hover: rgba(74, 74, 74, 0.1);
+    --color-accent: #39D9D9;
+  }
+
+  /* Specific body background for Kyoto theme */
+  [data-theme='kyoto'] body {
+    background-color: #D95D39;
+  }
+
+  [data-theme='radar'] {
+    /* Radar theme */
+    --color-bg: #3C4D3A;
+    --color-text-white: #B3E2A7;
+    --color-text-primary: #B3E2A7;
+    --color-text-secondary: #8BAA85;
+    --color-text-tertiary: #5A5A5A;
+    --color-text-command: #D98E39;
+    --color-border: #2A2A2A;
+    --color-border-darker: #2A2A2A;
+    --color-active: #2F3D2D;
+    --color-error: #D94639;
+    --color-success: #65B354;
+    --color-input-bg: #32402F;
+    --color-hover: rgba(179, 226, 167, 0.1);
+    --color-accent: #54B3B3;
+  }
 }
 
 @layer components {

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from '../../context/SessionContext';
 
 const MorphingTerminal = ({ autoPlay = true, frameDelay = 150 }) => {
-  const { theme } = useSession();
+  const { getThemeIntent } = useSession();
   const [currentFrame, setCurrentFrame] = useState(0);
 
   // Define breathing animation frames
@@ -155,17 +155,34 @@ const MorphingTerminal = ({ autoPlay = true, frameDelay = 150 }) => {
     return intensityMap[currentFrame] || 0.5;
   };
 
+  /**
+   * Get dynamic text shadow based on theme intent
+   * Dark themes: Multi-layered colorful glow effect
+   * Light themes: Subtle single shadow for depth
+   */
+  const getDynamicTextShadow = () => {
+    const themeIntent = getThemeIntent();
+    
+    if (themeIntent === 'dark') {
+      // For dark themes: original multi-layered glow effect
+      return `
+        0 0 ${10 * glowIntensity()}px var(--color-text-command),
+        0 0 ${20 * glowIntensity()}px var(--color-accent),
+        0 0 ${30 * glowIntensity()}px var(--color-success)
+      `;
+    } else {
+      // For light themes: subtle shadow effect (like printed text)
+      // Using a darker shade with minimal blur for clean look
+      return `1px 1px 2px rgba(0, 0, 0, ${0.2 + (glowIntensity() * 0.2)})`;
+    }
+  };
+
   return (
     <div className="flex items-center justify-center w-full">
       <pre 
         className="text-command font-mono text-sm leading-tight select-none"
         style={{
-          /* Multiple shadows create a layered glow that adapts to theme */
-          textShadow: `
-            0 0 ${10 * glowIntensity()}px var(--color-text-command),
-            0 0 ${20 * glowIntensity()}px var(--color-accent),
-            0 0 ${30 * glowIntensity()}px var(--color-success)
-          `,
+          textShadow: getDynamicTextShadow(),
           transition: 'text-shadow 0.3s ease-in-out',
           willChange: 'text-shadow'
         }}
