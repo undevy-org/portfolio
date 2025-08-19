@@ -77,9 +77,6 @@ export default function ThemeSwitcher() {
       return;
     }
     
-    // Log the theme change for system transparency
-    addLog(`THEME CHANGED: ${themeName.toUpperCase()}`);
-    
     // Update the theme through SessionContext
     setThemeExplicit(themeName);
   };

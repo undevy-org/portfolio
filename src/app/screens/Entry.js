@@ -389,11 +389,57 @@ export default function Entry() {
 
   /**
    * Handles Demo Mode button click
-   * Currently shows a "coming soon" message, will be implemented in future
+   * CHANGED: Now actually initiates a demo session instead of showing an error message
+   * This function makes an API request without an access code, which triggers demo mode
    */
-  const handleDemoMode = () => {
-    addLog('DEMO MODE: Coming soon');
-    setAuthError('Demo mode coming soon! For now, get a code via Telegram.');
+  const handleDemoMode = async () => {
+    // CHANGED: Log the start of demo mode initialization
+    addLog('DEMO MODE: Initializing demo session');
+    
+    // CHANGED: Set loading state to show user that something is happening
+    setIsLoading(true);
+    setAuthError(null);
+    
+    try {
+      // CHANGED: Make API request without code parameter to trigger demo mode
+      // The API recognizes this as a demo mode request when ENABLE_DEMO_MODE=true
+      const response = await fetch('/api/session');
+      
+      if (response.ok) {
+        // CHANGED: Parse the demo data from the response
+        const demoData = await response.json();
+        
+        // CHANGED: Enrich the session data with demo mode flags
+        // This helps the application identify this as a demo session throughout
+        const enrichedData = {
+          ...demoData,
+          isDemoMode: true,        // Flag to identify demo sessions
+          accessCode: 'DEMO'       // Special code for demo mode
+        };
+        
+        // CHANGED: Set the session data in context
+        setSessionData(enrichedData);
+        
+        // CHANGED: Log successful demo mode initialization
+        addLog('DEMO MODE: Session initialized');
+        
+        // CHANGED: Navigate to ProfileBoot to start the demo experience
+        // The second parameter 'false' prevents adding to navigation history
+        navigate('ProfileBoot', false);
+        
+      } else {
+        // CHANGED: Handle case where demo mode is not available (e.g., ENABLE_DEMO_MODE=false)
+        addLog('DEMO MODE: Failed to initialize');
+        setAuthError('Demo mode is not available at this time');
+      }
+    } catch (error) {
+      // CHANGED: Handle network errors or other exceptions
+      addLog(`DEMO MODE ERROR: ${error.message}`);
+      setAuthError('Failed to start demo mode. Please try again.');
+    } finally {
+      // CHANGED: Always reset loading state when done
+      setIsLoading(false);
+    }
   };
 
   // ========== RENDER ==========
