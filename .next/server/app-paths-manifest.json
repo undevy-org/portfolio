@@ -1,4 +1,8 @@
 {
+  "/api/admin/content/route": "app/api/admin/content/route.js",
+  "/api/config/route": "app/api/config/route.js",
   "/api/session/route": "app/api/session/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js"
 }
