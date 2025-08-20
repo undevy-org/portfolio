@@ -150,6 +150,45 @@ This project uses a Pull Request workflow with automated CI/CD. All changes must
 - **Build errors:** Run `npm run build` locally to reproduce and fix the issue
 - **Package-lock out of sync:** Run `npm install` and commit the updated `package-lock.json`
 
+## Versioning & Releases
+
+This project follows [Semantic Versioning](https://semver.org/) (SemVer) and uses automated release management.
+
+### Version Format
+
+We use the standard `MAJOR.MINOR.PATCH` format:
+- **MAJOR**: Breaking changes that require user action
+- **MINOR**: New features that are backward compatible
+- **PATCH**: Bug fixes and minor improvements
+
+### Creating a Release
+
+After merging changes to `main`, create a release using:
+
+```bash
+# Automatically determine version based on commits
+npm run release
+
+# Or specify version type explicitly
+npm run release -- --release-as patch
+npm run release -- --release-as minor
+npm run release -- --release-as major
+
+# Push the release
+git push --follow-tags origin main
+```
+
+This will:
+1. Update version in `package.json`
+2. Update `CHANGELOG.md` automatically
+3. Create a git commit and tag
+4. Trigger GitHub Actions to create a GitHub Release
+5. Deploy to production automatically
+
+### Version Information
+
+The current version is displayed in the application's system log on startup and is pulled directly from `package.json`, ensuring a single source of truth for versioning.
+
 ## Project Documentation
 
 This project is thoroughly documented. For more details, please see the following files:
@@ -157,5 +196,6 @@ This project is thoroughly documented. For more details, please see the followin
 -   **[`SETUP.md`](./SETUP.md):** A comprehensive guide to deploying your own instance from scratch.
 -   **[`TESTING.md`](./TESTING.md):** An overview of our testing philosophy, tools, and practices.
 -   **[`CHANGELOG.md`](./CHANGELOG.md):** A detailed history of all notable changes and project milestones.
+-   **[`DEVELOPMENT_HISTORY.md`](./DEVELOPMENT_HISTORY.md):** Historical development phases before semantic versioning.
 -   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
 -   **[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md):** A detailed overview of the custom terminal-inspired design system, including color palettes, typography, component guidelines, and theming instructions for consistent UI/UX across the portfolio.

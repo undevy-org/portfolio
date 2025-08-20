@@ -288,3 +288,43 @@ After saving these rules, your `main` branch will be protected, and all changes 
     -   `SSH_PRIVATE_KEY`: The content of the private key file (`cat ~/.ssh/github_actions_key`).
 
 Your CI/CD pipeline in `.github/workflows/deploy.yml` will now automate deployments.
+
+## 7. Versioning for Your Fork
+
+If you're forking this project for your own use, here's how to manage versions:
+
+### Initial Setup
+
+1. **Reset the version** in `package.json` to your starting point:
+   ```json
+   {
+     "version": "1.0.0"
+   }
+   ```
+
+2. **Clear the CHANGELOG** or start a new one for your fork.
+
+3. **Install versioning tools** (already included in devDependencies):
+   ```bash
+   npm install
+   ```
+
+### Making Releases
+
+When you're ready to create a new version:
+
+```bash
+# For bug fixes and minor changes
+npm run release -- --release-as patch
+
+# For new features
+npm run release -- --release-as minor  
+
+# For breaking changes
+npm run release -- --release-as major
+
+# Push to trigger deployment
+git push --follow-tags origin main
+```
+
+The version will automatically appear in your application's startup log and be tracked in git tags.
