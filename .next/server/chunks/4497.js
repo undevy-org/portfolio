@@ -1,0 +1,8 @@
+"use strict";exports.id=4497,exports.ids=[4497],exports.modules={14952:(a,b,c)=>{c.d(b,{A:()=>d});let d=(0,c(62688).A)("chevron-right",[["path",{d:"m9 18 6-6-6-6",key:"mthhwq"}]])},29335:(a,b,c)=>{c.d(b,{A:()=>g});var d=c(60687),e=c(43210),f=c(88988);function g({children:a,className:b="",noPadding:c=!1,testId:g="screen-wrapper"}){let{currentScreen:h}=(0,f.wV)(),[i,j]=(0,e.useState)(!1),k=`
+    screen-wrapper
+    w-full
+    min-h-full
+    relative
+    ${!c?"p-4":""}
+    ${b}
+  `;return(0,d.jsx)("div",{className:`${k} ${(()=>{switch(h){case"Entry":return"flex items-center justify-center";case"ProfileBoot":return"flex flex-col justify-center";case"CaseDetail":case"SkillDetail":case"RoleDetail":return"space-y-4";default:return""}})()}`.trim(),...{"data-testid":g,"data-screen":h,"data-mounted":i},children:a})}},74497:(a,b,c)=>{c.r(b),c.d(b,{default:()=>h});var d=c(60687),e=c(88988),f=c(29335),g=c(14952);function h(){let{sessionData:a,theme:b,navigate:c,addLog:h}=(0,e.wV)(),i=a?.menu||[];return(0,d.jsx)(f.A,{children:(0,d.jsx)("div",{className:"space-y-3",children:i.map(a=>(0,d.jsxs)("button",{onClick:()=>{h(`MENU SELECT: ${a.label}`),c(a.screen)},className:"w-full text-left transition-colors flex items-center gap-4 p-4 rounded border border-secondary bg-hover",children:[(0,d.jsx)("span",{className:"text-base text-command",children:a.icon}),(0,d.jsxs)("div",{className:"flex-1",children:[(0,d.jsx)("div",{className:"text-base text-primary",children:a.label}),(0,d.jsx)("div",{className:"text-xs mt-1 text-secondary",children:a.desc})]}),(0,d.jsx)(g.A,{className:"w-5 h-5 text-secondary"})]},a.screen))})})}}};
