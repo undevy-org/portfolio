@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+### [4.0.2](https://github.com/undevy-org/portfolio/compare/v4.0.1...v4.0.2) (2025-08-20)
+
+
+### Fixed
+
+* **ui:** ProfileBoot Flickering Fix ([#55](https://github.com/undevy-org/portfolio/issues/55)) ([8bad8a9](https://github.com/undevy-org/portfolio/commit/8bad8a9b5e1f1407646fa611afc55616e17b3c94))
 
 ## [4.0.1] - 2025-08-20
 
