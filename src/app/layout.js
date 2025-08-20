@@ -38,8 +38,8 @@ export default function RootLayout({ children }) {
               {children}
               
               <div className="panels-container w-full max-w-2xl mx-auto space-y-2 mt-2">
-                <ThemeSwitcher />
                 <AnalyticsPanel />
+                <ThemeSwitcher />
                 <SystemLog />
               </div>
             </StableLayout>
