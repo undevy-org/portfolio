@@ -417,3 +417,185 @@
     animation: pulseProgress 1.5s ease-in-out infinite;
   }
 }
+
+/* ============================================
+   SCREEN TRANSITION ANIMATIONS
+   ============================================
+*/
+
+/* Exit animation - content fading out and slightly shrinking */
+@keyframes screen-exit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateZ(0); /* translateZ forces GPU acceleration */
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98) translateZ(0); /* 2% shrink creates depth */
+  }
+}
+
+/* Enter animation - content fading in and slightly growing */
+@keyframes screen-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.02) translateZ(0); /* Start 2% larger */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateZ(0); /* Return to normal size */
+  }
+}
+
+/* Animation classes used by AnimatedScreenTransition component */
+.animate-screen-exit {
+  animation: screen-exit 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* cubic-bezier creates a smooth, natural motion */
+  /* 'forwards' keeps the final state after animation */
+}
+
+.animate-screen-enter {
+  animation: screen-enter 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ============================================
+   ACCESSIBILITY: Reduced Motion Support
+   ============================================
+*/
+@media (prefers-reduced-motion: reduce) {
+  @keyframes screen-exit {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes screen-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .animate-screen-exit,
+  .animate-screen-enter {
+    animation-duration: 150ms; /* Slightly faster for reduced motion */
+  }
+}
+
+/* ============================================
+   OPTIONAL: Advanced Animation Variants
+   ============================================
+*/
+
+/* Slide animations for directional navigation */
+
+@keyframes slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-out-left {
+  animation: slide-out-left 250ms ease-in-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 250ms ease-in-out forwards;
+}
+
+/* Special boot animation for ProfileBoot screen */
+
+@keyframes terminal-boot {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.98) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-terminal-boot {
+  animation: terminal-boot 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Glitch effect for error states or special transitions */
+
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    transform: translate(-1px, 1px);
+    filter: hue-rotate(90deg);
+  }
+  40% {
+    transform: translate(1px, -1px);
+    filter: hue-rotate(180deg);
+  }
+  60% {
+    transform: translate(-1px, -1px);
+    filter: hue-rotate(270deg);
+  }
+  80% {
+    transform: translate(1px, 1px);
+    filter: hue-rotate(360deg);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 200ms steps(5) forwards;
+}
+
+/* Scrollbar */
+
+@media (min-width: 768px) {
+  /* Webkit (Chrome, Safari) */
+  *::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: var(--color-hover);
+    border-radius: 4px;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+    opacity: 0.7; /* ADDED: Makes the scrollbar thumb semi-transparent */
+    transition: opacity 0.2s ease-in-out; /* ADDED: Smooth transition for hover effect */
+  }
+  
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+    opacity: 1; /* ADDED: Makes it fully opaque on hover for better visibility */
+  }
+}

@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from './context/SessionContext';
 import ScreenRenderer from './components/ScreenRenderer';
 import TerminalWindow from './layouts/TerminalWindow';
+import AnimatedScreenTransition from './components/AnimatedScreenTransition';
 
 function AppContent() {
   const searchParams = useSearchParams();
@@ -23,7 +24,6 @@ function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   
   // Calculate window title based on current screen
-  // This logic was previously in ScreenRenderer
   const windowTitle = useMemo(() => {
     // For Entry and MainHub, use domain-specific title
     if (currentScreen === 'Entry' || currentScreen === 'MainHub') {
@@ -45,14 +45,13 @@ function AppContent() {
   
   useEffect(() => {
     const code = searchParams.get('code');
-    // ADDED: Check for demo parameter in URL
     const demoMode = searchParams.get('demo');
 
     // Handle session switching
     if (sessionData && code && code !== sessionData.accessCode) {
       addLog(`SESSION SWITCH: New code detected. Old: ${sessionData.accessCode}, New: ${code}. Terminating old session.`);
-      endSession(); 
-      return; 
+      endSession();
+      return;
     }
 
     // If already authenticated, stop loading
@@ -60,8 +59,8 @@ function AppContent() {
       setIsLoading(false);
       return;
     }
-    
-    // ADDED: New function to handle demo mode authentication
+
+    // New function to handle demo mode authentication
     const authenticateDemoMode = async () => {
       addLog('DEMO MODE: Initializing from URL parameter');
       
@@ -94,7 +93,7 @@ function AppContent() {
       }
       setIsLoading(false);
     };
-    
+
     // Authentication logic
     const authenticateWithCode = async (accessCode) => {
       if (!accessCode) {
@@ -128,10 +127,9 @@ function AppContent() {
       setIsLoading(false);
     };
     
-    // CHANGED: Modified authentication flow to check for demo mode first
     // Priority: demo mode > code-based auth > show Entry screen
     if (demoMode === 'true') {
-      // ADDED: If demo=true in URL, authenticate with demo mode
+      // If demo=true in URL, authenticate with demo mode
       authenticateDemoMode();
     } else if (code) {
       // Original code-based authentication
@@ -153,12 +151,11 @@ function AppContent() {
     );
   }
   
-  // CRITICAL: TerminalWindow is ALWAYS rendered here
-  // It provides the stable container that doesn't get recreated
-  // The existing TerminalWindow logic already handles hiding the header for Entry/ProfileBoot
   return (
-    <TerminalWindow title={windowTitle}>
-      <ScreenRenderer />
+    <TerminalWindow title={windowTitle} fixedHeight={true}>
+      <AnimatedScreenTransition>
+        <ScreenRenderer />
+      </AnimatedScreenTransition>
     </TerminalWindow>
   );
 }

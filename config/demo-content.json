@@ -33,7 +33,31 @@
       "casual": "Hey there! This is a live demonstration of my interactive portfolio. You're seeing example data that shows how the system can be personalized for different viewers. Feel free to explore!",
       "technical": "This demonstration showcases the portfolio's capability to deliver personalized, configuration-driven content based on a headless JSON architecture.",
       "formal": "Welcome to the demonstration of the Terminal Portfolio system. The content presented here is for illustrative purposes."
-    }
+    },
+    "side_projects": [
+      {
+        "id": "coffee_app",
+        "name": "Artisan Coffee Brewing App",
+        "desc": "A mobile app to help users perfect their pour-over coffee technique.",
+        "status": "COMPLETED",
+        "tech": [
+          "Figma",
+          "SwiftUI",
+          "Personal Project"
+        ]
+      },
+      {
+        "id": "smart_home_dashboard",
+        "name": "Smart Home Dashboard",
+        "desc": "A personal project to design a unified interface for various smart home devices.",
+        "status": "IN_PROGRESS",
+        "tech": [
+          "Figma",
+          "Home Assistant",
+          "React"
+        ]
+      }
+    ]
   },
   "GLOBAL_DATA": {
     "menu": [
@@ -60,6 +84,12 @@
         "screen": "SkillsGrid",
         "icon": "[SKL]",
         "desc": "Technical expertise"
+      },
+      {
+        "label": "side_projects",
+        "screen": "SideProjects",
+        "icon": "[LAB]",
+        "desc": "Personal initiatives"
       },
       {
         "label": "contact",
@@ -102,7 +132,12 @@
           "Reduced onboarding time by 25%",
           "Built a design system that accelerated development by 30%"
         ],
-        "tech": ["Figma", "React", "Data Studio", "Jira"]
+        "tech": [
+          "Figma",
+          "React",
+          "Data Studio",
+          "Jira"
+        ]
       },
       "cyberdyne_systems": {
         "summary": "Joined as an early designer to build a new consumer-facing mobile application from the ground up.",
@@ -117,7 +152,12 @@
           "Achieved a 4.7-star App Store rating",
           "Increased conversion by 60% through simplified onboarding"
         ],
-        "tech": ["Figma", "Swift", "Kotlin", "Firebase"]
+        "tech": [
+          "Figma",
+          "Swift",
+          "Kotlin",
+          "Firebase"
+        ]
       }
     },
     "case_studies": {
@@ -125,13 +165,21 @@
         "title": "Project Phoenix - Mobile App Launch",
         "desc": "Launched a consumer mobile application from zero to 50,000 monthly active users.",
         "metrics": "0 to 50K MAU",
-        "tags": ["Mobile", "0-to-1", "Consumer"]
+        "tags": [
+          "Mobile",
+          "0-to-1",
+          "Consumer"
+        ]
       },
       "project_chimera": {
         "title": "Project Chimera - Enterprise Dashboard Redesign",
         "desc": "Complete redesign of a data-heavy enterprise SaaS dashboard to improve usability.",
         "metrics": "+40% Task Completion",
-        "tags": ["B2B SaaS", "Data Visualization", "Enterprise"]
+        "tags": [
+          "B2B SaaS",
+          "Data Visualization",
+          "Enterprise"
+        ]
       }
     },
     "case_details": {
@@ -191,7 +239,12 @@
           "Built a component library with over 150 production-ready components.",
           "Wrote extensive documentation and usage guidelines for developers and designers."
         ],
-        "tools": ["Figma", "Storybook", "Style Dictionary", "Zeroheight"],
+        "tools": [
+          "Figma",
+          "Storybook",
+          "Style Dictionary",
+          "Zeroheight"
+        ],
         "impact": [
           "Accelerated development velocity by 30%",
           "Reduced UI-related bugs by 40%"
@@ -204,29 +257,18 @@
           "Designed and analyzed A/B tests that resulted in a 60% conversion lift.",
           "Used session recording and heatmap analysis to identify critical friction points."
         ],
-        "tools": ["Maze", "Hotjar", "Mixpanel", "UserTesting.com"],
+        "tools": [
+          "Maze",
+          "Hotjar",
+          "Mixpanel",
+          "UserTesting.com"
+        ],
         "impact": [
           "Identified insights that led to a 150% reduction in negative user feedback",
           "Validated designs that increased user satisfaction scores by 90%"
         ]
       }
     },
-    "side_projects": [
-      {
-        "id": "coffee_app",
-        "name": "Artisan Coffee Brewing App",
-        "desc": "A mobile app to help users perfect their pour-over coffee technique.",
-        "status": "COMPLETED",
-        "tech": ["Figma", "SwiftUI", "Personal Project"]
-      },
-      {
-        "id": "smart_home_dashboard",
-        "name": "Smart Home Dashboard",
-        "desc": "A personal project to design a unified interface for various smart home devices.",
-        "status": "IN_PROGRESS",
-        "tech": ["Figma", "Home Assistant", "React"]
-      }
-    ],
     "public_speaking": [
       {
         "title": "Design Systems Meetup - 'Tokens for Everyone'",
