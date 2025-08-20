@@ -2,6 +2,7 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import packageInfo from '../../../package.json';
 
 /**
  * SessionContext
@@ -386,7 +387,7 @@ export function SessionProvider({ children }) {
   // ========== INITIALIZATION ==========
   useEffect(() => {
     addLog('SYSTEM INITIALIZED');
-    addLog('PORTFOLIO v4.0.0 LOADED');
+    addLog(`PORTFOLIO v${packageInfo.version} LOADED`);
   }, [addLog]);
 
   // ========== CONTEXT VALUE ==========

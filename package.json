@@ -13,7 +13,8 @@
     "test:no-coverage": "jest --coverage=false",
     "test:coverage": "c8 --reporter=text --reporter=html npm test",
     "test:coverage:utils": "c8 --reporter=text --include='src/app/utils/**' npm test -- src/app/utils",
-    "test:simple-coverage": "jest --coverage --coverageDirectory=coverage --collectCoverageFrom='src/app/utils/{formatters,session}.js' --coveragePathIgnorePatterns='/node_modules/|test\\.js$'"
+    "test:simple-coverage": "jest --coverage --coverageDirectory=coverage --collectCoverageFrom='src/app/utils/{formatters,session}.js' --coveragePathIgnorePatterns='/node_modules/|test\\.js$'",
+    "release": "standard-version"
   },
   "dependencies": {
     "@reown/appkit": "^1.7.18",
@@ -45,6 +46,7 @@
     "jest-silent-reporter": "^0.6.0",
     "pino-pretty": "^13.1.1",
     "postcss": "^8.5.6",
+    "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.17"
   },
   "overrides": {
