@@ -276,21 +276,43 @@ A strict typographic scale ensures consistency and readability.
 -   **Font Sizes**: A limited set of sizes creates a clean, predictable rhythm: `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`.
 -   **Text Styles**: Emphasis is achieved through the color hierarchy, not font weight or style.
 
-## **6. Component Guidelines**
+<!-- NEW SECTION: Added to detail the application's structural and motion design. -->
+## **6. Layout & Animation System**
+
+This section defines the structural rules, spacing, and motion design of the application, ensuring a consistent and fluid user experience with zero layout shift.
+
+### **6.1. Layout & Sizing**
+-   **Stable Architecture**: The main application window uses a fixed-height layout on desktop to prevent any content jumping during navigation.
+-   **Desktop Layout**: On screens wider than 768px, the main content area has a maximum height of `700px`, with internal scrolling for longer content.
+-   **Mobile Layout**: On screens narrower than 768px, the layout is flexible, adapting to the height of the content.
+-   **Panel Positioning**: The `AnalyticsPanel` and `SystemLog` are fixed to the bottom of the content area, providing a stable context throughout the user journey.
+
+### **6.2. Animation & Transitions**
+-   **Screen Transitions**: Navigation between screens is handled by a smooth fade and scale animation to create a seamless flow.
+-   **Timings**: The total transition time is 400ms, composed of a 200ms exit animation (fade out, scale down to 0.98) and a 200ms enter animation (fade in, scale up from 1.02).
+-   **Accessibility**: All animations respect the `prefers-reduced-motion` media query, disabling transitions for users who prefer it.
+
+### **6.3. Spacing System**
+A consistent spacing scale is used throughout the application to maintain visual rhythm.
+-   **Screen Padding**: All screens have a global padding of `1rem` (16px), managed by the `ScreenWrapper` component.
+-   **Section Spacing**: Vertical spacing between panels on content-heavy screens is `1rem` (`space-y-4`).
+-   **Panel Spacing**: The space between the `AnalyticsPanel` and `SystemLog` is `0.5rem` (`space-y-2`).
+
+## **7. Component Guidelines**
 
 -   **Panels:** The fundamental "atom" of the interface, built using the `.panel-full` class. They isolate information.
 -   **Buttons:** Interactive elements styled with `.btn-command`. They must be theme-agnostic and receive their icon as a component reference prop (`icon={IconComponent}`).
 -   **Tabs & Accordions:** These components use `.bg-active` and `.border-secondary` to feel integrated with the panels they belong to.
 
-## **7. Developer's Guide: How to Extend the System**
+## **8. Developer's Guide: How to Extend the System**
 
-### **7.1. How to Style a New Component**
+### **8.1. How to Style a New Component**
 
 1.  **Use Semantic Classes First:** Always start by using the classes from our library (`.panel-full`, `.text-primary`, etc.).
 2.  **Use Tailwind for Layout:** Use standard Tailwind utilities for layout (`flex`, `grid`, `p-4`, `gap-2`, etc.).
 3.  **Avoid Direct Color/Theme Logic:** **NEVER** use theme-dependent logic (`theme === 'dark'`) or direct color classes (`bg-green-500`, `dark:bg-black`) in a component. If a required style is missing, extend the semantic library.
 
-### **7.2. How to Add a New Theme**
+### **8.2. How to Add a New Theme**
 
 Adding a new theme is a simple, four-step process:
 

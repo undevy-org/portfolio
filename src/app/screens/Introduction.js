@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { UserCheck, Mail } from 'lucide-react';
 import Button from '../components/ui/Button';
 
@@ -32,11 +33,7 @@ export default function Introduction() {
   };
 
 return (
-  <div className="p-4 font-mono">
-      {/* 
-        WHY: To match the key-value grid layout used in other panels for better visual consistency.
-        It now uses a responsive grid layout, making it cleaner on both mobile and desktop.
-      */}
+  <ScreenWrapper className="font-mono">
       <div className={panelClasses}>
         <h3 className={`mb-2 text-command`}>$profile_data</h3>
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm`}>
@@ -68,12 +65,6 @@ return (
       </div>
     </div>
 
-      {/*
-        WHY: This information is more relevant in the "Contact" context. Moving it declutters
-        the introduction and places the status details where a user would expect to find them
-        when considering making contact.
-      */}
-
     <div className="flex flex-col md:flex-row gap-3">
       <Button
         onClick={() => handleNavigate('Timeline', 'experience timeline')}
@@ -93,6 +84,6 @@ return (
         GET IN TOUCH
       </Button>
     </div>
-  </div>
+  </ScreenWrapper>
 );
 }

@@ -19,8 +19,12 @@ import {
 } from 'lucide-react';
 import { getScreenDisplayName } from '../utils/formatters';
 
-export default function TerminalWindow({ title, children }) {
-   const { 
+export default function TerminalWindow({ 
+  title, 
+  children, 
+  fixedHeight = false  // NEW PROP: Controls whether to use fixed height mode
+}) {
+  const { 
     theme, 
     toggleTheme, 
     goBack, 
@@ -32,16 +36,16 @@ export default function TerminalWindow({ title, children }) {
     screenHierarchy,
     navigate,
     domainData,
-    sessionData  // ADDED: Import sessionData to check for demo mode
+    sessionData
   } = useSession();
 
   const isBackDisabled = navigationHistory.length === 0 || currentScreen === 'Entry';
   const isUpDisabled = !screenHierarchy[currentScreen];
   const isHomeDisabled = currentScreen === 'MainHub' || currentScreen === 'Entry';
 
-    let displayTitle = title; 
+  let displayTitle = title; 
 
-    if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
+  if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
       displayTitle = domainData?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
   }
 
@@ -79,8 +83,8 @@ export default function TerminalWindow({ title, children }) {
   // Each theme has a dedicated icon for better UX
   const themeIcons = {
     dark: Sun,     
-    light: Bug,     
-    amber: Terminal,
+    light: Terminal,     
+    amber: Bug,
     bsod: Waves,
     synthwave: HardDrive,
     operator: LayoutDashboard,
@@ -88,49 +92,75 @@ export default function TerminalWindow({ title, children }) {
     radar: Moon,
   };
 
-const CurrentThemeIcon = themeIcons[theme] || Sun;
+  const CurrentThemeIcon = themeIcons[theme] || Sun;
+
+  const containerClasses = `
+    w-full 
+    max-w-2xl 
+    border 
+    rounded 
+    bg-main 
+    border-primary
+    ${fixedHeight ? 
+      // Fixed height mode: Become a flex container that fills parent
+      'h-full flex flex-col' : 
+      // Standard mode: Normal flow, grow with content
+      ''
+    }
+  `;
+
+  const contentClasses = `
+  ${fixedHeight ? 
+    'flex-1 overflow-y-auto md:overflow-y-scroll min-h-0' : 
+    ''
+    }
+  `;
 
   return (
-    <div className="w-full max-w-2xl border rounded bg-main border-primary">
+    <div className={containerClasses}>
+      {/* HEADER SECTION - Always visible when not on Entry/ProfileBoot */}
       {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
-      <div className="flex items-center justify-between p-4 border-b border-primary">
-        <h1 className="font-normal text-lg truncate min-w-0 text-command">${displayTitle}</h1>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {!['ProfileBoot', 'Entry'].includes(currentScreen) && (
-            <>
-          <Button
-            onClick={goBack}
-            icon={ArrowLeft}
-            variant="icon-only"
+        <div className="flex items-center justify-between p-4 border-b border-primary flex-shrink-0">
+          {/* flex-shrink-0 ensures header doesn't shrink when content is large */}
+          <h1 className="font-normal text-lg truncate min-w-0 text-command">
+            ${displayTitle}
+          </h1>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {!['ProfileBoot', 'Entry'].includes(currentScreen) && (
+              <>
+                <Button
+                  onClick={goBack}
+                  icon={ArrowLeft}
+                  variant="icon-only"
             className={`p-1 ${isBackDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={isBackDisabled}
+                  disabled={isBackDisabled}
             aria-label="Go back"
-          />
-          <Button
-            onClick={goUp}
-            icon={ArrowUp}
-            variant="icon-only"
+                />
+                <Button
+                  onClick={goUp}
+                  icon={ArrowUp}
+                  variant="icon-only"
             className={`p-1 ${isUpDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={isUpDisabled}
+                  disabled={isUpDisabled}
             aria-label="Go up one level"
-          />
-          <Button
-            onClick={goHome}
-            icon={Home}
-            variant="icon-only"
+                />
+                <Button
+                  onClick={goHome}
+                  icon={Home}
+                  variant="icon-only"
             className={`p-1 ${isHomeDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={isHomeDisabled}
+                  disabled={isHomeDisabled}
             aria-label="Go to Main Hub"
-          />
-            </>
-          )}
-          <Button
-            onClick={toggleTheme}
-            icon={CurrentThemeIcon}
-            variant="icon-only"
+                />
+              </>
+            )}
+            <Button
+              onClick={toggleTheme}
+              icon={CurrentThemeIcon}
+              variant="icon-only"
             className="p-1"
             aria-label="Toggle theme"
-          />
+            />
           {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
             <Button
               onClick={handleClose}
@@ -140,20 +170,22 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
               aria-label="Close session"
             />
           )}
-        </div>
+          </div>
 
-      </div>
+        </div>
       )}
 
+      {/* BREADCRUMBS - Also stays fixed, doesn't scroll with content */}
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
-        <div className="px-4 py-2 text-sm border-b border-primary" style={{ backgroundColor: 'var(--color-hover)' }}>
+        <div 
+          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0" 
+          style={{ backgroundColor: 'var(--color-hover)' }}
+        >
           <div className="flex items-center flex-wrap">
             {breadcrumbPath.map((screen, index) => (
               <span key={screen} className="flex items-center">
                 {index > 0 && (
-                  <span className="mx-2 text-secondary">
-                    &gt;
-                  </span>
+                  <span className="mx-2 text-secondary">&gt;</span>
                 )}
                 {index === breadcrumbPath.length - 1 ? (
                   // Current screen - not clickable, highlighted
@@ -174,17 +206,16 @@ const CurrentThemeIcon = themeIcons[theme] || Sun;
         </div>
       )}
 
-      {/* ADDED: Demo Mode Indicator Banner */}
-      {/* Shows only when user is in demo mode and not on Entry or ProfileBoot screens */}
+      {/* DEMO MODE BANNER - Also fixed, doesn't scroll */}
       {sessionData?.isDemoMode && !['Entry', 'ProfileBoot'].includes(currentScreen) && (
-        <div className="px-4 py-2 bg-hover border-b border-secondary">
+        <div className="px-4 py-2 bg-hover border-b border-secondary flex-shrink-0">
           <div className="text-xs text-command">
             DEMO MODE - This is example content. Get your personalized access code via Telegram.
           </div>
         </div>
       )}
 
-      <div>
+      <div className={contentClasses}>
         {children}
       </div>
     </div>

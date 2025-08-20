@@ -2,16 +2,13 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import Tabs from '../components/ui/Tabs';
 import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
 
 export default function CaseDetail() {
-  // REMOVED: The 'theme' variable is no longer needed for styling this component.
   const { sessionData, navigate, addLog, selectedCase } = useSession();
-  
-  // REMOVED: All intermediate class name variables are now obsolete.
-  // Semantic classes will be applied directly in the JSX.
   
   if (!selectedCase) {
     return (
@@ -96,11 +93,10 @@ export default function CaseDetail() {
   ];
   
   return (
-    <div className="p-4 space-y-4">
-      {/* CHANGE: Replaced 'panelClasses' with semantic classes for the main info panel. */}
+  <ScreenWrapper>
+      {/* Main info panel */}
       <div className="p-4 rounded border border-secondary">
         <div className="space-y-2">
-          {/* CHANGE: Applied semantic classes directly for consistent styling. */}
           <h2 className="text-xl text-command">{selectedCase.title}</h2>
           <p className="text-sm text-secondary">{selectedCase.desc}</p>
           <p className="text-sm pt-1 text-success">{selectedCase.metrics}</p>
@@ -108,8 +104,6 @@ export default function CaseDetail() {
             {selectedCase.tags?.map((tag) => (
               <span
                 key={tag}
-                // CHANGE: Replaced the final piece of theme-dependent logic with our standard tag styling.
-                // This fixes potential hydration errors and aligns with the new design system.
                 className="tag-badge border-secondary text-secondary bg-main"
               >
                 {tag}
@@ -148,6 +142,6 @@ export default function CaseDetail() {
           VIEW SKILLS
         </Button>
       </div>
-    </div>
+  </ScreenWrapper>
   );
 }
