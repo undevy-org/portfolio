@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [4.0.3](https://github.com/undevy-org/portfolio/compare/v4.0.2...v4.0.3) (2025-08-20)
+
+
+### Performance
+
+* **ci:** optimize pipeline by eliminating duplicate builds ([#56](https://github.com/undevy-org/portfolio/issues/56)) ([2780048](https://github.com/undevy-org/portfolio/commit/278004806b6f71e9d033fdeb811df25b95317c28))
+
 ### [4.0.2](https://github.com/undevy-org/portfolio/compare/v4.0.1...v4.0.2) (2025-08-20)
 
 
