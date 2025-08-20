@@ -19,7 +19,7 @@ export default function StableLayout({ children, showPanels = true }) {
   }, []);
   
   // Special handling for Entry screen - it shouldn't have fixed height
-  const isEntryScreen = currentScreen === 'Entry';
+  const isFlexibleScreen = ['Entry', 'ProfileBoot'].includes(currentScreen);
   
   return (
     <div className="stable-layout-root min-h-screen flex flex-col">
@@ -42,7 +42,7 @@ export default function StableLayout({ children, showPanels = true }) {
             mx-auto 
             w-full 
             max-w-2xl
-            ${!isEntryScreen && !isMobile ? 
+            ${!isFlexibleScreen && !isMobile ? 
               'md:h-[700px]' :  // Fixed height for non-Entry screens on desktop
               ''  // Flexible height for Entry or mobile
             }
