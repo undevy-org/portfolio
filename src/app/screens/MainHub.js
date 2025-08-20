@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
 
 export default function MainHub() {
@@ -9,7 +10,7 @@ export default function MainHub() {
   const menuItems = sessionData?.menu || [];
 
   return (
-    <div className="p-4">
+    <ScreenWrapper>
       <div className="space-y-3">
         {menuItems.map((item) => (
           <button
@@ -36,6 +37,6 @@ export default function MainHub() {
           </button>
         ))}
       </div>
-    </div>
+    </ScreenWrapper>
   );
 }

@@ -1,26 +1,13 @@
+// src/app/screens/SkillsGrid.js
+
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
 
 export default function SkillsGrid() {
-  const { sessionData, theme, navigate, addLog, setSelectedSkill } = useSession();
-
-  const panelClasses = `p-4 rounded border ${
-    "border-secondary"
-  }`;
-  const yellowClasses = `${
-    "text-command"
-  }`;
-  const labelClasses = `${
-    "text-primary"
-  }`;
-  const valueClasses = `${
-    "text-secondary"
-  }`;
-  const successClasses = `${
-    "text-success"
-  }`;
+  const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
 
   const skills = sessionData?.skills || [];
   
@@ -33,33 +20,31 @@ export default function SkillsGrid() {
   const getLevelColor = (level) => {
     switch(level) {
       case 'EXPERT':
-        return successClasses; // Brightest green for expert
+        return 'text-success'; // Use 'text-success' for the highest skill level.
       case 'ADVANCED':
-        return labelClasses; // Standard green
+        return 'text-primary'; // Use 'text-primary' for advanced skills.
       case 'INTERMEDIATE':
-        return valueClasses; // Gray for intermediate
+        return 'text-secondary'; // Use 'text-secondary' for intermediate skills.
       default:
-        return valueClasses;
+        return 'text-secondary'; // Default to the secondary text color.
     }
   };
   
   return (
-    <div className="p-4 space-y-4">
+    <ScreenWrapper>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {skills.map((skill) => (
           <button
             key={skill.id}
             onClick={() => handleSkillClick(skill)}
-            className={`p-4 border rounded text-left transition-colors flex justify-between items-start ${
-              "border-secondary bg-hover"
-            }`}
+            className="p-4 border rounded text-left transition-colors flex justify-between items-start border-secondary bg-hover"
           > 
             <div className="space-y-1">
-              <div className={`text-base text-command`}>
+              <div className="text-base text-command">
                 {skill.name}
               </div>
               
-              <div className={`text-sm text-secondary`}>
+              <div className="text-sm text-secondary">
                 {skill.desc}
               </div>
               
@@ -68,10 +53,10 @@ export default function SkillsGrid() {
               </div>
             </div>
 
-            <ChevronRight className={`w-5 h-5 text-secondary`} />
+            <ChevronRight className="w-5 h-5 text-secondary" />
           </button>
         ))}
       </div>
-    </div>
+    </ScreenWrapper>
   );
 }

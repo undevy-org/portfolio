@@ -1,39 +1,25 @@
+// src/app/screens/RoleDetail.js
+
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import Accordion from '../components/ui/Accordion';
 import Button from '../components/ui/Button';
-import { ChevronRight, ArrowLeft } from 'lucide-react';
+import { FolderGit2, ArrowLeft } from 'lucide-react';
 
 export default function RoleDetail() {
-  const { sessionData, theme, navigate, addLog, selectedRole } = useSession();
-
-  const panelClasses = `p-4 rounded border ${
-    "border-secondary"
-  }`;
-  const yellowClasses = `${
-    "text-command"
-  }`;
-  const labelClasses = `${
-    "text-primary"
-  }`;
-  const valueClasses = `${
-    "text-secondary"
-  }`;
+  const { sessionData, navigate, addLog, selectedRole } = useSession();
 
   if (!selectedRole) {
     return (
       <div className="p-4 text-center">
-        <p className={valueClasses}>
+        <p className="text-secondary">
           No role selected. Please go back to Timeline.
         </p>
         <button
           onClick={() => navigate('Timeline')}
-          className={`mt-4 px-4 py-2 rounded border transition-colors ${
-            theme === 'dark' 
-              ? 'border-dark-border text-dark-text-secondary hover:bg-dark-hover' 
-              : 'border-light-border text-light-text-secondary hover:bg-light-hover'
-          }`}
+          className="mt-4 px-4 py-2 rounded border transition-colors border-primary text-secondary bg-hover"
         >
           Back to Timeline
         </button>
@@ -51,12 +37,13 @@ export default function RoleDetail() {
   ];
 
   return (
-    <div className="p-4 space-y-4">
-      <div className={panelClasses}>
+    <ScreenWrapper>
+    <div className="space-y-4">
+      <div className="p-4 rounded border border-secondary">
         <div className="space-y-1">
-          <h2 className={`text-xl text-command`}>{selectedRole.company}</h2>
-          <p className={`text-base text-primary`}>{selectedRole.role}</p>
-          <p className={`text-sm text-secondary`}>{selectedRole.period} • {selectedRole.duration}</p>
+          <h2 className="text-xl text-command">{selectedRole.company}</h2>
+          <p className="text-base text-primary">{selectedRole.role}</p>
+          <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
         </div>
       </div>
 
@@ -75,20 +62,19 @@ export default function RoleDetail() {
         >
           BACK TO TIMELINE
         </Button>
-
         <Button
           onClick={() => {
-            addLog('VIEW CASE STUDIES');
+            addLog('NAVIGATE: case studies');
             navigate('CaseList');
           }}
-          icon={ChevronRight}
-          iconPosition="right"
+          icon={FolderGit2}
+          iconPosition="left"
           variant="flex"
-          className="p-2"
         >
-          VIEW CASES
+          READ CASES
         </Button>
       </div>
     </div>
+    </ScreenWrapper>
   );
 }
