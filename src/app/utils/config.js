@@ -1,3 +1,4 @@
+// src/app/utils/config.js
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -24,16 +25,14 @@ export function validateEnvironment() {
   const required = [
     'CONTENT_FILE_PATH',
     'BACKUP_DIR',
-    'ADMIN_TOKEN'
+    'ADMIN_TOKEN',
+    'DOMAIN_CONFIG_PATH'
   ];
-
   const missing = required.filter(key => !process.env[key]);
-  
   if (missing.length > 0) {
     console.warn(`Warning: Missing environment variables: ${missing.join(', ')}`);
     // Don't throw error, just warn
   }
-
   console.log('[CONFIG] Environment validation completed');
 }
 
@@ -43,8 +42,17 @@ export function validateEnvironment() {
  * @returns {string} Path to the content file
  */
 export function getContentFilePath(isDemoMode = false) {
-  // If demo mode is explicitly requested and enabled
-  if (isDemoMode && process.env.ENABLE_DEMO_MODE === 'true') {
+  // WHY: We prioritize demo mode. If it's requested and enabled, we use a dedicated
+  // environment variable for it, keeping the logic clean and portable.
+  if (isDemoMode && isDemoModeEnabled()) {
+    if (process.env.DEMO_CONTENT_FILE_PATH) {
+      if (!path.isAbsolute(process.env.DEMO_CONTENT_FILE_PATH)) {
+        return path.join(process.cwd(), process.env.DEMO_CONTENT_FILE_PATH);
+      }
+      return process.env.DEMO_CONTENT_FILE_PATH;
+    }
+    // Fallback for development if the variable isn't set.
+    console.warn('DEMO_CONTENT_FILE_PATH not set, using default config/demo-content.json');
     return path.join(process.cwd(), 'config', 'demo-content.json');
   }
 

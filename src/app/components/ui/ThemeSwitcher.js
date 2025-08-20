@@ -85,7 +85,6 @@ export default function ThemeSwitcher() {
     <div className="w-full max-w-2xl">
       {/* Main container with terminal-style border */}
       <div className="border rounded bg-main border-primary p-2">
-        {/* CHANGE: Replaced flexbox with a responsive grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {themes.map((themeName) => {
             // Get the icon component for this theme

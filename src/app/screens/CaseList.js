@@ -2,13 +2,11 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress'; // Import the progress component
 
 export default function CaseList() {
-  // REMOVED: The 'theme' variable and all intermediate class name variables
-  // (panelClasses, yellowClasses, etc.) are no longer needed. The component now exclusively
-  // uses semantic CSS classes that adapt to the theme automatically.
   const { sessionData, navigate, addLog, setSelectedCase } = useSession();
 
   const cases = sessionData?.case_studies || {};
@@ -55,8 +53,7 @@ export default function CaseList() {
   };
 
   return (
-    <div className="p-4">
-      {/* COMMENT: All class names in this block are already semantic and theme-agnostic. No changes needed. */}
+    <ScreenWrapper>
       <div className="mb-4 p-4 rounded border border-secondary">
         <div className="mb-3 text-primary">
           <span className="text-sm text-command">Access Level: </span>
@@ -119,9 +116,6 @@ export default function CaseList() {
                 {caseData.tags?.map((tag) => (
                   <span
                     key={tag}
-                      // CHANGE: Replaced the final piece of theme-dependent logic with semantic classes.
-                      // This completes the refactoring for this component and resolves potential hydration errors.
-                      // We use the same pattern as in the Accordion for consistency.
                       className="tag-badge border-secondary text-secondary bg-main"
                   >
                     {tag}
@@ -134,6 +128,6 @@ export default function CaseList() {
           );
         })}
       </div>
-    </div>
+    </ScreenWrapper>
   );
 }

@@ -7,8 +7,6 @@ import { useState, useEffect } from 'react';
 export default function Button({
   children,
   onClick,
-  // CHANGE: The 'icon' prop is now correctly destructured as 'Icon' with a capital letter.
-  // This standard practice signals that it's a React component, not a simple value.
   icon: Icon,
   iconPosition = 'left',
   variant = 'full',
@@ -18,8 +16,6 @@ export default function Button({
   successText = null,
   successDuration = 2000
 }) {
-  // REMOVED: The 'theme' variable is no longer needed here.
-  // All theme logic is now handled by the semantic CSS classes.
   const {} = useSession();
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -44,7 +40,6 @@ export default function Button({
     }
   }, [isSuccess, successDuration]);
 
-  // COMMENT: getVariantClasses remains unchanged as it controls layout, not theme.
   const getVariantClasses = () => {
     switch (variant) {
       case 'full':
@@ -60,9 +55,6 @@ export default function Button({
     }
   };
 
-  // CHANGE: The 'baseClasses' and 'themeClasses' logic has been completely replaced.
-  // We now construct the final className by combining a few base structural classes
-  // with the new, powerful semantic classes from globals.css.
   const buttonClasses = [
     'p-3',
     'rounded',
@@ -72,10 +64,8 @@ export default function Button({
     'items-center',
     'justify-center',
     'gap-2',
-    // COMMENT: Add semantic classes for theming. These adapt automatically.
     'btn-command', // This class from globals.css now handles border, color, and hover.
     isSuccess ? 'text-success' : 'text-primary', // Dynamically switch to success color if needed.
-    // COMMENT: Layout and state classes are added conditionally.
     getVariantClasses(),
     disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
     variant !== 'icon-only' ? 'border' : '',

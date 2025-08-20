@@ -2,6 +2,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 
@@ -36,10 +37,9 @@ export default function SkillDetail() {
   };
   
   return (
-    <div className="p-4 space-y-4">
+    <ScreenWrapper>
       <div className="p-4 rounded border border-secondary">
         <div className="space-y-1">
-          {/* COMMENT: These elements already use the correct semantic classes. */}
           <h2 className="text-xl text-command">{selectedSkill.name}</h2>
           <p className="text-sm text-secondary">{selectedSkill.desc}</p>
         </div>
@@ -132,6 +132,6 @@ export default function SkillDetail() {
       >
         BACK TO SKILLS
       </Button>
-    </div>
+    </ScreenWrapper>
   );
 }

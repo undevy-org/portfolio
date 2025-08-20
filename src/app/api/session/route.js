@@ -1,3 +1,4 @@
+// src/app/api/session/route.js
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
@@ -15,7 +16,9 @@ export async function GET(request) {
     const demoData = await loadContent(demoContentPath);
     
     if (demoData && demoData.DEMO_USER) {
-      const sessionData = mergeSessionData(demoData.DEMO_USER, demoData.GLOBAL_DATA);
+      // CHANGED: Pass true as third parameter to indicate demo mode
+      // This ensures demo content isn't overwritten by empty GLOBAL_DATA fields
+      const sessionData = mergeSessionData(demoData.DEMO_USER, demoData.GLOBAL_DATA, true);
       sessionData.isDemoMode = true;
       return NextResponse.json(sessionData, { status: 200 });
     }
@@ -44,7 +47,8 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
-    const sessionData = mergeSessionData(userProfile, globalData);
+    // CHANGED: Pass false as third parameter for regular (non-demo) sessions
+    const sessionData = mergeSessionData(userProfile, globalData, false);
     
     return NextResponse.json(sessionData, { status: 200 });
     
@@ -65,7 +69,8 @@ export async function GET(request) {
       }
       
       const globalData = testData.GLOBAL_DATA;
-      const sessionData = mergeSessionData(userProfile, globalData);
+      // CHANGED: Pass false for test data (non-demo mode)
+      const sessionData = mergeSessionData(userProfile, globalData, false);
       
       return NextResponse.json(sessionData, { status: 200 });
       

@@ -2,19 +2,15 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Contact() {
-  // REMOVED: The 'theme' variable is no longer needed for styling this component.
   const { sessionData, addLog, domainData } = useSession();
   const [emailCopied, setEmailCopied] = useState(false);
-
-  // REMOVED: All intermediate class variables (yellowClasses, labelClasses, etc.) are now obsolete.
-  // We apply our semantic CSS classes from globals.css directly in the JSX.
   
-  // COMMENT: The logic for sourcing contact data remains the same, as it's not theme-related.
   const baseContact = sessionData?.contact || {};
   const profileStatus = sessionData?.profile?.status || {};
 
@@ -86,10 +82,8 @@ export default function Contact() {
   const availabilityDate = getAvailabilityDate();
 
   return (
-    <div className="p-4">
+    <ScreenWrapper>
       <div className="flex flex-col gap-3 mb-4">
-        {/* CHANGE: Replaced 'mainBorderClasses' with '.border-primary' and '.bg-hover' semantic classes. */}
-        {/* This makes the button fully theme-agnostic and fixes the final hydration error source. */}
         <button
           onClick={handleCopyEmail}
           className="w-full p-3 border rounded flex items-center justify-between transition-colors border-primary bg-hover"
@@ -100,14 +94,12 @@ export default function Contact() {
           </div>
           <div className="flex items-center gap-2">
             <Copy className="w-4 h-4 text-secondary" />
-            {/* CHANGE: Replaced variable with direct semantic classes for consistency. */}
             <span className={`text-xs ${emailCopied ? "text-success" : "text-secondary"}`}>
               {emailCopied ? 'COPIED!' : 'COPY'}
             </span>
           </div>
         </button>
         <div className="flex flex-col md:flex-row gap-3">
-          {/* CHANGE: Applied the same semantic classes to the website button. */}
           <button onClick={() => handleExternalLink('Portfolio website', contactData.website)} className="w-full p-3 border rounded flex items-center justify-between transition-colors border-primary bg-hover">
           <div className="flex items-center">
               <Globe className="w-5 h-5 mr-3 text-command" />
@@ -116,7 +108,6 @@ export default function Contact() {
             <ExternalLink className="w-4 h-4 text-secondary" />
         </button>
         {contactData.telegram && (
-            // CHANGE: Applied the same semantic classes to the Telegram button.
             <button onClick={() => handleExternalLink('Telegram', contactData.telegram)} className="w-full p-3 border rounded flex items-center justify-between transition-colors border-primary bg-hover">
             <div className="flex items-center">
                 <MessageCircle className="w-5 h-5 mr-3 text-command" />
@@ -133,7 +124,6 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* COMMENT: The status panel already uses semantic classes correctly. No changes needed. */}
       <div className="p-4 border rounded border-secondary">
         <h3 className="text-base mb-2 text-command">
           $current_status
@@ -152,6 +142,6 @@ export default function Contact() {
           <span className="text-secondary">{availabilityDate}</span>
         </div>
       </div>
-    </div>
+    </ScreenWrapper>
   );
 }
