@@ -386,7 +386,7 @@ export function SessionProvider({ children }) {
   // ========== INITIALIZATION ==========
   useEffect(() => {
     addLog('SYSTEM INITIALIZED');
-    addLog('PORTFOLIO v2.1.0 LOADED');
+    addLog('PORTFOLIO v4.0.0 LOADED');
   }, [addLog]);
 
   // ========== CONTEXT VALUE ==========

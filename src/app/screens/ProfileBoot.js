@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
@@ -101,6 +102,7 @@ export default function ProfileBoot() {
   const progressPercentage = (currentStep / bootSequence.length) * 100;
   
   return (
+    <ScreenWrapper>
     <div className="p-8 flex flex-col items-center justify-center min-h-[500px]">
       <div className="mb-12 h-40 flex items-center justify-center">
         <MorphingTerminal 
@@ -129,7 +131,6 @@ export default function ProfileBoot() {
             <Button
               onClick={handleContinue}
               variant="primary"
-              // CHANGE: The icon prop is now passed correctly as a component reference, not a function.
               icon={ArrowRight}
               className="w-full px-6 py-3 transition-all duration-500"
             >
@@ -139,5 +140,6 @@ export default function ProfileBoot() {
         )}
       </div>
     </div>
+    </ScreenWrapper>
   );
 }

@@ -10,7 +10,6 @@ const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
 });
 
 export default function Tabs({ tabs, defaultTab = null }) {
-  // REMOVED: The 'theme' variable is no longer needed. Styling is handled by semantic CSS.
   const { addLog } = useSession();
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
 
@@ -21,10 +20,7 @@ export default function Tabs({ tabs, defaultTab = null }) {
 
   const activeTabData = tabs.find(tab => tab.id === activeTab);
 
-  // REMOVED: All intermediate class variables are obsolete with the new theming system.
-
   const renderContentItem = (item, idx) => {
-    // COMMENT: All classes within this function are already semantic, so no changes are needed here.
     switch (item.type) {
       case 'text':
         return (
@@ -93,16 +89,11 @@ export default function Tabs({ tabs, defaultTab = null }) {
     return (
     <div>
       <div className="w-full overflow-x-auto">
-        {/* CHANGE: Replaced 'border-dark-border-darker' with the semantic '.border-secondary' class. */}
         <div className="flex w-full border-b border-secondary">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id, tab.label)}
-              // CHANGE: Replaced the complex, theme-dependent className logic with simpler semantic classes.
-              // - The active state now uses '.bg-active', '.text-primary', and '.border-secondary'.
-              // - The inactive state uses '.text-secondary' and '.bg-hover'.
-              // This fixes hydration errors and makes the component theme-agnostic.
               className={`text-center px-4 py-3 text-sm rounded-t transition-colors whitespace-nowrap -mb-px ${
                 activeTab === tab.id
                   ? 'bg-active text-primary border-t border-x border-secondary'
@@ -115,11 +106,9 @@ export default function Tabs({ tabs, defaultTab = null }) {
         </div>
       </div>
 
-      {/* CHANGE: Replaced 'darkerBorder' with the semantic '.border-secondary' class. */}
       <div className="-mt-px p-4 border rounded-b rounded-tr border-secondary">
         {activeTabData && (
           <>
-            {/* CHANGE: Directly used the '.text-command' semantic class. */}
             <h3 className="mb-3 text-command">
               ${activeTabData.title || activeTabData.label}
             </h3>

@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
@@ -48,11 +49,6 @@ export default function Entry() {
   const intentionalLogout = useRef(false); // Remember intentional logout
   
   // ========== WEB3 AUTHENTICATION HANDLER ==========
-  /**
-   * Handles successful Web3 wallet connection and creates a session
-   * Wrapped in useCallback to prevent recreation on every render
-   * This is critical for proper React Hook dependencies
-   */
   const handleWeb3Success = useCallback(async (walletAddress) => {
     // CRITICAL CHECK #1: Prevent authentication during logout
     if (isLoggingOut.current) {
@@ -226,11 +222,6 @@ export default function Entry() {
   }, [isConnected, address, sessionData, isTerminating, web3LogoutPending, handleWeb3Success]);
   
   // ========== EFFECT 2: WEB3 LOGOUT HANDLER (ENHANCED) ==========
-  /**
-   * ENHANCED: Now uses direct state (web3LogoutPending) instead of browser events
-   * This is more reliable as React guarantees state updates reach all components
-   * Browser events can be missed if the component isn't mounted when fired
-   */
   useEffect(() => {
     // Only process logout when the flag is set and wallet is connected
     if (web3LogoutPending && isConnected && !isLoggingOut.current) {
@@ -277,10 +268,6 @@ export default function Entry() {
   }, [web3LogoutPending, isConnected, disconnectAsync, addLog, setWeb3LogoutPending]);
   
   // ========== EFFECT 2B: LEGACY BROWSER EVENT LISTENER (BACKUP) ==========
-  /**
-   * KEPT AS BACKUP: Still listens for browser events in case something else dispatches them
-   * This provides backwards compatibility but the primary mechanism is now direct state
-   */
   useEffect(() => {
     const handleWeb3LogoutRequest = () => {
       console.log('[WEB3 LOGOUT] Legacy browser event received - ignoring (using state-based approach)');
@@ -294,10 +281,6 @@ export default function Entry() {
   }, []);
 
   // ========== EFFECT 3: LOGOUT COMPLETION MONITOR ==========
-  /**
-   * Monitors wallet disconnection and safely resets the logout lock
-   * This effect ensures the lock is only released after wagmi confirms disconnection
-   */
   useEffect(() => {
     // This effect only runs when wallet becomes disconnected during a logout
     if (!isConnected && isLoggingOut.current) {
@@ -317,9 +300,6 @@ export default function Entry() {
   }, [isConnected, addLog]);
 
   // ========== TRADITIONAL AUTHENTICATION HANDLERS ==========
-  /**
-   * Handles traditional code-based authentication
-   */
   const handleSubmit = async () => {
     if (!code.trim()) {
       addLog('ERROR: No access code provided');
@@ -334,21 +314,13 @@ export default function Entry() {
     router.push(`/?code=${code}`);
   };
 
-  /**
-   * Handles Enter key press in the code input field
-   */
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !isLoading && !isConnected) {
       handleSubmit();
     }
   };
 
-  /**
-   * Opens Telegram for getting an access code
-   * Determines the correct Telegram URL based on domain
-   */
   const handleGetCode = () => {
-    // The telegram URL now comes entirely from domainData (loaded from domains.json)
     let telegramUrl;
     
     // This ensures the telegram link is always from configuration, not hardcoded
@@ -363,9 +335,6 @@ export default function Entry() {
     window.open(telegramUrl, '_blank');
   };
 
-  /**
-   * Initiates Web3 wallet connection
-   */
   const handleWeb3Login = () => {
     if (isConnected) {
       // Already connected - shouldn't happen but handle gracefully
@@ -378,66 +347,43 @@ export default function Entry() {
     open(); // Opens the Reown modal
   };
 
-  /**
-   * Opens GitHub repository
-   * This links to the project's public repository
-   */
   const handleGitHub = () => {
     addLog('EXTERNAL LINK: GitHub');
     window.open('https://github.com/undevy-org/portfolio', '_blank');
   };
 
-  /**
-   * Handles Demo Mode button click
-   * CHANGED: Now actually initiates a demo session instead of showing an error message
-   * This function makes an API request without an access code, which triggers demo mode
-   */
   const handleDemoMode = async () => {
-    // CHANGED: Log the start of demo mode initialization
     addLog('DEMO MODE: Initializing demo session');
     
-    // CHANGED: Set loading state to show user that something is happening
     setIsLoading(true);
     setAuthError(null);
     
     try {
-      // CHANGED: Make API request without code parameter to trigger demo mode
-      // The API recognizes this as a demo mode request when ENABLE_DEMO_MODE=true
       const response = await fetch('/api/session');
       
       if (response.ok) {
-        // CHANGED: Parse the demo data from the response
         const demoData = await response.json();
         
-        // CHANGED: Enrich the session data with demo mode flags
-        // This helps the application identify this as a demo session throughout
         const enrichedData = {
           ...demoData,
           isDemoMode: true,        // Flag to identify demo sessions
           accessCode: 'DEMO'       // Special code for demo mode
         };
         
-        // CHANGED: Set the session data in context
         setSessionData(enrichedData);
         
-        // CHANGED: Log successful demo mode initialization
         addLog('DEMO MODE: Session initialized');
         
-        // CHANGED: Navigate to ProfileBoot to start the demo experience
-        // The second parameter 'false' prevents adding to navigation history
         navigate('ProfileBoot', false);
         
       } else {
-        // CHANGED: Handle case where demo mode is not available (e.g., ENABLE_DEMO_MODE=false)
         addLog('DEMO MODE: Failed to initialize');
         setAuthError('Demo mode is not available at this time');
       }
     } catch (error) {
-      // CHANGED: Handle network errors or other exceptions
       addLog(`DEMO MODE ERROR: ${error.message}`);
       setAuthError('Failed to start demo mode. Please try again.');
     } finally {
-      // CHANGED: Always reset loading state when done
       setIsLoading(false);
     }
   };
@@ -453,7 +399,7 @@ export default function Entry() {
         value={code}
         onChange={(e) => setCode(e.target.value.toUpperCase())}
         onKeyPress={handleKeyPress}
-          className={`input-base flex-1 text-sm tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
+          className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
         placeholder="ENTER ACCESS CODE"
         autoFocus
         disabled={isLoading || isConnected}

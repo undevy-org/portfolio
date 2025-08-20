@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { ChevronRight, FolderGit2, Settings2 } from 'lucide-react';
 
@@ -19,7 +20,7 @@ export default function Timeline() {
   };
 
   return (
-    <div className="p-4">
+    <ScreenWrapper>
       <div className="space-y-3">
         {roles.map((role, index) => (
           <button
@@ -100,6 +101,6 @@ export default function Timeline() {
           VIEW SKILLS
         </Button>
       </div>
-    </div>
+    </ScreenWrapper>
   );
 }
