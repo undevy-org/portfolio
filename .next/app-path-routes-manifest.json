@@ -1,8 +1,0 @@
-{
-  "/api/admin/content/route": "/api/admin/content",
-  "/api/config/route": "/api/config",
-  "/api/session/route": "/api/session",
-  "/favicon.ico/route": "/favicon.ico",
-  "/_not-found/page": "/_not-found",
-  "/page": "/"
-}
