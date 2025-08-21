@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [4.0.4](https://github.com/undevy-org/portfolio/compare/v4.0.3...v4.0.4) (2025-08-21)
+
+
+### Tests
+
+* add workflow to verify .next directory handling ([#59](https://github.com/undevy-org/portfolio/issues/59)) ([e7320d1](https://github.com/undevy-org/portfolio/commit/e7320d1914824392c6d826c72f343f53702f52ca))
+
+
+### Changed
+
+* **ci/cd:** remove .next rename workaround ([#60](https://github.com/undevy-org/portfolio/issues/60)) ([f429e41](https://github.com/undevy-org/portfolio/commit/f429e41a5d0c0fafff8cf4cb13f3d0740e84d35e))
+
 ### [4.0.3](https://github.com/undevy-org/portfolio/compare/v4.0.2...v4.0.3) (2025-08-20)
 
 
