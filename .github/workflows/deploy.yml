@@ -1,10 +1,10 @@
-# Deploy Pipeline - Downloads artifacts and deploys to production
+# Deploy Pipeline - Optimized without .next rename workaround
 # Location: .github/workflows/deploy.yml
+# Version: Stage 3 - Simplified without rename logic
 
 name: Deploy to DigitalOcean
 
 on:
-  # Triggered when CI Pipeline completes on main branch
   workflow_run:
     workflows: ["CI Pipeline"]
     types: [completed]
@@ -30,29 +30,17 @@ jobs:
           name: deployment-package-${{ github.event.workflow_run.head_sha }}
           path: deployment-files
       
-      - name: Verify and restore .next directory
+      # SIMPLIFIED: No more rename detection and restoration!
+      - name: Verify downloaded artifact
         run: |
-          echo "📦 Verifying downloaded artifact structure..."
+          echo "📦 Verifying downloaded artifact..."
           
           echo "📁 Downloaded contents:"
           ls -la deployment-files/
           
-          # Check if .next was renamed
-          if [ -f "deployment-files/NEXT_WAS_RENAMED" ]; then
-            echo "🔄 Detected renamed next-build, restoring to .next..."
-            if [ -d "deployment-files/next-build" ]; then
-              mv deployment-files/next-build deployment-files/.next
-              rm deployment-files/NEXT_WAS_RENAMED
-              echo "✅ Restored .next directory"
-            else
-              echo "❌ next-build directory not found!"
-              exit 1
-            fi
-          fi
-          
-          # Final verification
+          # Direct check for .next directory (no rename logic needed)
           if [ ! -d "deployment-files/.next" ]; then
-            echo "❌ ERROR: .next directory not found after restoration!"
+            echo "❌ ERROR: .next directory not found in artifact!"
             echo "Current structure:"
             find deployment-files -type d -maxdepth 2
             exit 1
@@ -69,7 +57,7 @@ jobs:
           echo "✅ All required files present"
           echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
       
-      - name: Backup environment files, PM2 ecosystem, and project images
+      - name: Backup environment files and project images
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -86,20 +74,20 @@ jobs:
               cp -r "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects" /tmp/deploy-backup/projects-images
               echo "✅ Images backed up: $(find /tmp/deploy-backup/projects-images -type f | wc -l) files"
             else
-              echo "⚠️ No project images directory found, skipping backup"
+              echo "ℹ️ No project images directory found, skipping backup"
             fi
             
             # Backup environment files
             echo "🔐 Backing up environment files..."
-            ls -la "${{ secrets.DEPLOY_PATH_PORTFOLIO }}" | grep .env || echo "No env files found"
             for f in .env .env.local .env.production; do
               if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" ]; then
                 cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" "/tmp/deploy-backup/$f"
+                echo "✅ Backed up $f"
               fi
             done
 
-            # Backup PM2 ecosystem config if exists (protect from scp rm)
-            echo "🧩 Backing up PM2 ecosystem file..."
+            # Backup PM2 ecosystem config if exists
+            echo "⚙️ Backing up PM2 ecosystem file..."
             for ec in ecosystem.config.cjs ecosystem.config.js; do
               if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec" ]; then
                 cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec" "/tmp/deploy-backup/$ec"
@@ -118,7 +106,7 @@ jobs:
           strip_components: 1
           rm: true
 
-      - name: Restore environment files, PM2 ecosystem, and project images
+      - name: Restore environment files and project images
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -134,8 +122,8 @@ jobs:
               fi
             done
 
-            # Restore PM2 ecosystem file if backup exists
-            echo "🧩 Restoring PM2 ecosystem file..."
+            # Restore PM2 ecosystem file
+            echo "⚙️ Restoring PM2 ecosystem file..."
             for ec in ecosystem.config.cjs ecosystem.config.js; do
               if [ -f "/tmp/deploy-backup/$ec" ]; then
                 cp "/tmp/deploy-backup/$ec" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec"
@@ -151,14 +139,14 @@ jobs:
               cp -r "/tmp/deploy-backup/projects-images" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
               echo "✅ Images restored: $(find ${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects -type f | wc -l) files"
             else
-              echo "⚠️ No images backup found, creating empty directory"
+              echo "ℹ️ No images backup found, creating empty directory"
               mkdir -p "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
             fi
             
             # Clean up backup
             rm -rf /tmp/deploy-backup
 
-      - name: Install dependencies and restart portfolio (idempotent)
+      - name: Install dependencies and restart portfolio
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -173,11 +161,6 @@ jobs:
             
             echo "📁 Navigating to portfolio directory..."
             cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-            echo "PWD: $(pwd)"
-            echo "Node: $(node -v 2>/dev/null || echo 'not found')"
-            echo "NPM:  $(npm -v 2>/dev/null || echo 'not found')"
-            echo "PM2:  $(pm2 -v 2>/dev/null || echo 'not found')"
-            echo "PATH: $PATH"
             
             echo "✅ Verifying deployment files..."
             if [ ! -d ".next" ]; then
@@ -185,17 +168,16 @@ jobs:
               ls -la
               exit 1
             fi
+            echo "✅ .next directory confirmed"
 
             echo "📦 Installing production dependencies..."
             npm ci --omit=dev || npm install --production
 
-            echo "📋 PM2 process list (before):"
-            pm2 list || true
-
+            echo "🔄 Restarting portfolio application..."
             APP="${{ secrets.PM2_APP_NAME_PORTFOLIO }}"
-            echo "🔄 Ensuring PM2 app: $APP"
             if pm2 describe "$APP" >/dev/null 2>&1; then
               pm2 restart "$APP" --update-env
+              echo "✅ Restarted existing PM2 app: $APP"
             else
               echo "ℹ️ PM2 app '$APP' not found. Starting it..."
               if [ -f ecosystem.config.cjs ]; then
@@ -203,19 +185,19 @@ jobs:
               elif [ -f ecosystem.config.js ]; then
                 pm2 start ecosystem.config.js --only "$APP" --env production
               else
-                # Fallback: Next.js production run from package.json "start"
                 pm2 start npm --name "$APP" -- start
               fi
+              echo "✅ Started new PM2 app: $APP"
             fi
 
             pm2 save || true
-
-            echo "📋 PM2 process list (after):"
-            pm2 list || true
             
-            echo "✅ Deployment complete!"
+            echo "📊 PM2 status:"
+            pm2 list
+            
+            echo "✅ Portfolio deployment complete!"
       
-      # Deploy bot 
+      # Deploy bot (keeping as-is)
       - name: Checkout code for bot deployment
         uses: actions/checkout@v4
         with:
@@ -232,34 +214,30 @@ jobs:
           source: "telegram-bot/*"
           target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
       
-      - name: Install dependencies and restart bot (idempotent)
+      - name: Install dependencies and restart bot
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e  # Exit on any error
+            set -e
             
-            echo "🔧 Setting up Node environment..."
+            echo "🔧 Setting up Node environment for bot..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
             echo "📁 Navigating to bot directory..."
             cd ${{ secrets.DEPLOY_PATH_BOT }}
-            echo "PWD: $(pwd)"
-            echo "Node: $(node -v 2>/dev/null || echo 'not found')"
-            echo "NPM:  $(npm -v 2>/dev/null || echo 'not found')"
-            echo "PM2:  $(pm2 -v 2>/dev/null || echo 'not found')"
-            echo "PATH: $PATH"
             
             echo "📦 Installing bot dependencies..."
             npm ci --omit=dev || npm install --production
             
+            echo "🔄 Restarting bot..."
             APP="${{ secrets.PM2_APP_NAME_BOT }}"
-            echo "🔄 Ensuring bot PM2 app: $APP"
             if pm2 describe "$APP" >/dev/null 2>&1; then
               pm2 restart "$APP" --update-env
+              echo "✅ Restarted bot: $APP"
             else
               if [ -f ecosystem.config.cjs ]; then
                 pm2 start ecosystem.config.cjs --only "$APP" --env production
@@ -268,21 +246,25 @@ jobs:
               else
                 pm2 start npm --name "$APP" -- start
               fi
+              echo "✅ Started bot: $APP"
             fi
 
             pm2 save || true
-
-            echo "📊 Bot status:"
-            pm2 status "$APP" || true
             
-            echo "✅ Bot deployment completed successfully!"
+            echo "✅ Bot deployment completed!"
       
       # Final success notification
       - name: Deployment summary
         run: |
           echo "🎉 DEPLOYMENT SUCCESSFUL!"
+          echo "================================"
           echo "Commit: ${{ github.event.workflow_run.head_sha }}"
           echo "Portfolio and Bot have been deployed to production."
+          echo ""
+          echo "Pipeline improvements in this version:"
+          echo "✅ No more .next → next-build rename workaround"
+          echo "✅ Simplified deployment logic"
+          echo "✅ Faster artifact handling"
   
   # Handle failed CI
   failure-notification:
