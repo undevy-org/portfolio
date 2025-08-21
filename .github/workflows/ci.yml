@@ -1,5 +1,6 @@
+# CI Pipeline - Optimized without .next rename workaround
 # Location: .github/workflows/ci.yml
-# STAGE 1 OPTIMIZATION: Combined validate and build-artifact jobs to eliminate duplicate builds
+# Version: Stage 3 - Removed unnecessary rename logic
 
 name: CI Pipeline
 
@@ -11,8 +12,6 @@ on:
     branches: [main]
 
 jobs:
-  # OPTIMIZED: Single job that validates AND creates artifacts
-  # This eliminates the duplicate npm run build that was happening before
   validate-and-build:
     name: Validate and Build
     runs-on: ubuntu-latest
@@ -36,13 +35,12 @@ jobs:
       - name: Run tests
         run: npm test
       
-      # BUILD HAPPENS ONLY ONCE NOW
       - name: Build project
         run: |
           echo "🏗️ Building project..."
           npm run build
           
-          # Verify .next exists after build
+          # Verify build succeeded
           if [ ! -d ".next" ]; then
             echo "❌ Build failed - .next directory not found"
             exit 1
@@ -58,12 +56,10 @@ jobs:
       - name: Create PR verification artifact
         if: github.event_name == 'pull_request'
         run: |
-          echo "📝 Creating lightweight PR verification artifact..."
+          echo "📝 Creating PR verification report..."
           
-          # Create a verification directory with minimal info
           mkdir -p pr-verification
           
-          # Save build success info and statistics
           echo "Build Verification Report" > pr-verification/build-report.txt
           echo "=========================" >> pr-verification/build-report.txt
           echo "" >> pr-verification/build-report.txt
@@ -74,9 +70,7 @@ jobs:
           echo "" >> pr-verification/build-report.txt
           echo "Build Statistics:" >> pr-verification/build-report.txt
           echo "- Total .next size: $(du -sh .next | cut -f1)" >> pr-verification/build-report.txt
-          echo "- Static assets: $(du -sh .next/static | cut -f1)" >> pr-verification/build-report.txt
-          echo "- Server bundles: $(du -sh .next/server | cut -f1)" >> pr-verification/build-report.txt
-          echo "- Source files: $(find src -type f -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' | wc -l)" >> pr-verification/build-report.txt
+          echo "- Source files: $(find src -type f -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' 2>/dev/null | wc -l)" >> pr-verification/build-report.txt
           echo "" >> pr-verification/build-report.txt
           echo "✅ All checks passed successfully" >> pr-verification/build-report.txt
       
@@ -89,51 +83,37 @@ jobs:
           retention-days: 2
           compression-level: 6
       
-      # FOR MAIN BRANCH: Create full deployment package
-      # KEEPING ALL EXISTING RENAME LOGIC TO ENSURE SAFETY
+      # FOR MAIN BRANCH: Create deployment package
       - name: Prepare deployment package
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "📦 Creating deployment package..."
           
-          # Create a clean deployment directory
           mkdir -p deployment-package
           
-          # Copy .next directory using tar to preserve structure
+          # Copy .next directory directly (no renaming needed!)
           echo "📁 Copying .next directory..."
-          if [ -d ".next" ]; then
-            tar -cf - .next | (cd deployment-package && tar -xf -)
-            
-            # Verify the copy worked
-            if [ ! -d "deployment-package/.next" ]; then
-              echo "❌ CRITICAL: Failed to copy .next to deployment-package!"
-              echo "Source .next exists: $(ls -la .next | head -5)"
-              echo "Destination contents: $(ls -la deployment-package/)"
-              exit 1
-            fi
-            echo "✅ .next copied successfully"
-          else
-            echo "❌ .next directory not found in workspace!"
-            exit 1
-          fi
+          cp -r .next deployment-package/
           
-          # Copy other required files (keeping src for now - will remove in stage 2)
-          echo "📁 Copying other files..."
-          cp -r public deployment-package/ 2>/dev/null || echo "⚠️ public directory not found"
-          cp -r src deployment-package/
+          # Copy other required files
+          echo "📁 Copying production files..."
+          cp -r public deployment-package/ 2>/dev/null || echo "ℹ️ No public directory"
+          cp -r src deployment-package/  # Will remove this in Stage 4
           cp package.json deployment-package/
           cp package-lock.json deployment-package/
           cp next.config.mjs deployment-package/
           
-          # Remove development artifacts
-          echo "🧹 Cleaning development artifacts..."
+          # CRITICAL: Remove cache to reduce size from 569MB to ~15MB
+          echo "🧹 Removing development cache..."
           rm -rf deployment-package/.next/cache
-          find deployment-package -name "*.map" -type f -delete
           
-          # Verify .next exists in package
-          echo "🔍 Final verification of deployment-package..."
+          # Remove source maps for smaller size
+          find deployment-package -name "*.map" -type f -delete 2>/dev/null || true
+          
+          # Verify package integrity
+          echo "🔍 Verifying deployment package..."
           if [ ! -d "deployment-package/.next" ]; then
-            echo "❌ FATAL: .next missing from deployment-package!"
+            echo "❌ FATAL: .next missing from package!"
             exit 1
           fi
           
@@ -147,33 +127,11 @@ jobs:
             exit 1
           fi
           
-          echo "✅ All critical directories verified"
+          echo "✅ Package verified successfully"
+          echo "📊 Final package size: $(du -sh deployment-package | cut -f1)"
+          echo "📊 .next size (without cache): $(du -sh deployment-package/.next | cut -f1)"
       
-      # KEEPING THE RENAME LOGIC AS-IS FOR SAFETY
-      - name: Rename .next to avoid hidden directory issues
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          echo "🔄 Renaming .next to next-build (keeping existing workaround for safety)..."
-          if [ -d "deployment-package/.next" ]; then
-            mv deployment-package/.next deployment-package/next-build
-            echo "✅ Renamed .next to next-build"
-            
-            # Create a marker file to indicate renaming
-            echo "true" > deployment-package/NEXT_WAS_RENAMED
-            
-            # Verify rename worked
-            if [ ! -d "deployment-package/next-build" ]; then
-              echo "❌ Rename failed!"
-              exit 1
-            fi
-            echo "📁 Final package structure:"
-            ls -la deployment-package/
-          else
-            echo "❌ Cannot rename - .next not found!"
-            exit 1
-          fi
-      
-      # Upload deployment artifact
+      # Upload deployment artifact with hidden files support
       - name: Upload deployment artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
@@ -182,19 +140,18 @@ jobs:
           path: deployment-package/
           retention-days: 14
           compression-level: 6
-          include-hidden-files: true
+          include-hidden-files: true  # This flag handles .next correctly
       
-      - name: Post-build summary
+      - name: Deployment artifact summary
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "📊 Build and artifact creation complete!"
-          echo "Package contains:"
-          echo "  - next-build/ (renamed from .next/)"
-          echo "  - src/"
-          echo "  - public/"
-          echo "  - package.json"
-          echo "  - package-lock.json"
-          echo "  - next.config.mjs"
-          echo "  - NEXT_WAS_RENAMED marker file"
+          echo "📊 Deployment package created successfully!"
           echo ""
-          echo "🚀 Ready for deployment via deploy.yml workflow"
+          echo "Package contents:"
+          echo "  - .next/ (compiled application)"
+          echo "  - src/ (source code - will be removed in Stage 4)"
+          echo "  - public/ (static assets)"
+          echo "  - package.json, package-lock.json"
+          echo "  - next.config.mjs"
+          echo ""
+          echo "🚀 Ready for deployment!"
