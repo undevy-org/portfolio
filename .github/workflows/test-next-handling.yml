@@ -4,9 +4,7 @@
 name: Test .next Directory Handling
 
 on:
-  push:
-    branches:
-      - test/next-directory-handling
+  # Manual trigger only - completely safe
   workflow_dispatch:
     inputs:
       test_description:
