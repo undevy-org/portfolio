@@ -269,7 +269,7 @@ To enable the automated and secure CI/CD workflow, you must configure branch pro
     -   This enforces a review process, even if you are approving your own PRs.
 6.  Enable **Require status checks to pass before merging**.
     -   Enable **Require branches to be up to date before merging**. This prevents merging PRs that are based on an old version of `main`.
-    -   From the list of status checks, find and select the validation job from your CI workflow (e.g., `CI Pipeline / Validate Code Quality`).
+    -   From the list of status checks, find and select the validation job from your CI workflow (it should be named `CI Pipeline / Validate and Build`).
 
 After saving these rules, your `main` branch will be protected, and all changes will be required to pass the automated checks before they can be merged.
 

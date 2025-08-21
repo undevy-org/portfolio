@@ -135,7 +135,7 @@ This project uses a Pull Request workflow with automated CI/CD. All changes must
     - Add a description of what you changed and why
 
 7.  **Wait for the automated checks:**
-    - The CI pipeline will automatically run linting, tests, and build verification
+    - The `CI Pipeline / Validate and Build` check will automatically run. It performs linting, runs the entire test suite, and verifies that the project can be successfully built.
     - All checks must pass (green checkmarks) before merging
     - If any check fails, fix the issues locally and push again
 

@@ -20,6 +20,17 @@ This section outlines initiatives that are ongoing or planned for future release
 
 ## Historical Development Phases
 
+### Phase 8: CI/CD Pipeline Optimization
+Period: August 2025
+Status: COMPLETED
+
+A complete refactoring of the CI/CD pipeline to improve efficiency, reliability, and security.
+
+Key Optimizations:
+- Consolidated Build Process: Removed redundant build steps, reducing the pipeline execution time on `main` branch pushes by nearly 50%.
+- Simplified Artifacts: Eliminated the `.next` directory renaming workaround and excluded the `src` folder from deployment packages, making the artifact smaller and the process more robust.
+- Improved Maintainability: Streamlined the workflow files (`ci.yml`, `deploy.yml`), making them easier to understand and debug.
+
 ### Phase 7: UI Architecture & Theming System Refactor
 Period: August 2025
 Status: COMPLETED
