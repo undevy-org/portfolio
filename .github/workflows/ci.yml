@@ -1,6 +1,6 @@
-# CI Pipeline - Optimized without .next rename workaround
+# CI Pipeline - Final optimization without src folder
 # Location: .github/workflows/ci.yml
-# Version: Stage 3 - Removed unnecessary rename logic
+# Version: Stage 4 - Removed src from deployment artifacts
 
 name: CI Pipeline
 
@@ -70,7 +70,7 @@ jobs:
           echo "" >> pr-verification/build-report.txt
           echo "Build Statistics:" >> pr-verification/build-report.txt
           echo "- Total .next size: $(du -sh .next | cut -f1)" >> pr-verification/build-report.txt
-          echo "- Source files: $(find src -type f -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' 2>/dev/null | wc -l)" >> pr-verification/build-report.txt
+          echo "- Source files analyzed: $(find src -type f -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' 2>/dev/null | wc -l)" >> pr-verification/build-report.txt
           echo "" >> pr-verification/build-report.txt
           echo "✅ All checks passed successfully" >> pr-verification/build-report.txt
       
@@ -83,31 +83,26 @@ jobs:
           retention-days: 2
           compression-level: 6
       
-      # FOR MAIN BRANCH: Create deployment package
+      # FOR MAIN BRANCH: Create optimized deployment package
       - name: Prepare deployment package
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "📦 Creating deployment package..."
+          echo "📦 Creating optimized deployment package..."
           
           mkdir -p deployment-package
           
-          # Copy .next directory directly (no renaming needed!)
-          echo "📁 Copying .next directory..."
-          cp -r .next deployment-package/
-          
-          # Copy other required files
+          # Copy ONLY production-necessary files
+          # Note: src folder is NOT included - it's not needed for production!
           echo "📁 Copying production files..."
+          cp -r .next deployment-package/
           cp -r public deployment-package/ 2>/dev/null || echo "ℹ️ No public directory"
-          cp -r src deployment-package/  # Will remove this in Stage 4
           cp package.json deployment-package/
           cp package-lock.json deployment-package/
           cp next.config.mjs deployment-package/
           
-          # CRITICAL: Remove cache to reduce size from 569MB to ~15MB
-          echo "🧹 Removing development cache..."
+          # Remove development artifacts to minimize size
+          echo "🧹 Removing development artifacts..."
           rm -rf deployment-package/.next/cache
-          
-          # Remove source maps for smaller size
           find deployment-package -name "*.map" -type f -delete 2>/dev/null || true
           
           # Verify package integrity
@@ -127,11 +122,28 @@ jobs:
             exit 1
           fi
           
+          if [ ! -f "deployment-package/package.json" ]; then
+            echo "❌ FATAL: package.json missing!"
+            exit 1
+          fi
+          
           echo "✅ Package verified successfully"
-          echo "📊 Final package size: $(du -sh deployment-package | cut -f1)"
-          echo "📊 .next size (without cache): $(du -sh deployment-package/.next | cut -f1)"
+          echo ""
+          echo "📊 Deployment package statistics:"
+          echo "  Total size: $(du -sh deployment-package | cut -f1)"
+          echo "  .next size: $(du -sh deployment-package/.next | cut -f1)"
+          if [ -d "deployment-package/public" ]; then
+            echo "  public size: $(du -sh deployment-package/public | cut -f1)"
+          fi
+          echo ""
+          echo "📦 Package contents:"
+          echo "  ✅ .next/ (compiled application)"
+          echo "  ✅ public/ (static assets)"
+          echo "  ✅ package.json, package-lock.json"
+          echo "  ✅ next.config.mjs"
+          echo "  ❌ src/ (NOT included - not needed in production)"
       
-      # Upload deployment artifact with hidden files support
+      # Upload optimized deployment artifact
       - name: Upload deployment artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
@@ -140,18 +152,17 @@ jobs:
           path: deployment-package/
           retention-days: 14
           compression-level: 6
-          include-hidden-files: true  # This flag handles .next correctly
+          include-hidden-files: true
       
-      - name: Deployment artifact summary
+      - name: Optimization summary
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "📊 Deployment package created successfully!"
+          echo "🎉 Optimized deployment package created!"
           echo ""
-          echo "Package contents:"
-          echo "  - .next/ (compiled application)"
-          echo "  - src/ (source code - will be removed in Stage 4)"
-          echo "  - public/ (static assets)"
-          echo "  - package.json, package-lock.json"
-          echo "  - next.config.mjs"
+          echo "Optimization results:"
+          echo "✅ Removed src folder (not needed in production)"
+          echo "✅ Removed .next/cache (development only)"
+          echo "✅ Removed source maps (development only)"
           echo ""
-          echo "🚀 Ready for deployment!"
+          echo "The deployment package now contains ONLY what's needed for production."
+          echo "Expected benefits: faster uploads, faster deployments, improved security."
