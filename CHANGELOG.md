@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0](https://github.com/undevy-org/portfolio/compare/v4.1.0...v4.2.0) (2025-08-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* Removes all .next files from version control
+
+Problem:
+- The .next folder was incorrectly tracked in Git
+- Only .next/cache/ was in .gitignore instead of entire .next/
+- This caused repository bloat and merge conflicts
+
+Solution:
+- Fixed .gitignore to ignore entire .next/ directory
+- Removed all .next files from repository (git rm --cached)
+- Files remain on disk for local development
+
+Impact:
+- Repository size will be significantly reduced
+- No more merge conflicts from build artifacts
+- Cleaner git history going forward
+
+Note: After pulling this change, other developers should:
+1. Run 'git pull'
+2. Run 'npm run build' to regenerate their local .next
+
+### CRITICAL
+
+* Remove .next from repository and fix .gitignore ([#62](https://github.com/undevy-org/portfolio/issues/62)) ([62b5071](https://github.com/undevy-org/portfolio/commit/62b507171a62c78cd61347982478f71b19c42249))
+
 ## [4.1.0](https://github.com/undevy-org/portfolio/compare/v4.0.4...v4.1.0) (2025-08-21)
 
 
