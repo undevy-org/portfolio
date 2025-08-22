@@ -47,50 +47,29 @@ After authentication, the application transforms into a seamless Single Page App
     npm install
     ```
 
-3.  **Run the development server:**
+3.  **Set up environment variables:**
+    Copy the example environment file and fill in your local values.
+    ```bash
+    cp .env.example .env.local
+    ```
+    *Note: The project will run without this, but some features might not work as expected.*
+
+4.  **Run the development server:**
     ```bash
     npm run dev
     ```
     Access the local version at `http://localhost:3000`. The development server uses fallback test content by default.
 
-4.  **Run tests:**
+5.  **Run tests:**
     ```bash
     npm test
     ```
 
 ## Testing
 
-The project includes a comprehensive test suite built with Jest and React Testing Library. Tests are co-located with the code they test, following the pattern `*.test.js`.
+This project includes a comprehensive test suite using Jest and React Testing Library. The tests act as a safety net to prevent regressions and ensure the core logic behaves as expected.
 
-### Running Tests
-
-```bash
-# Run all tests in watch mode (default)
-npm test
-
-# Run tests once (for CI)
-npm test -- --watchAll=false
-
-# Run specific test file
-npm test -- formatters.test.js
-
-# Run tests in specific directory
-npm test -- src/app/utils
-```
-
-### Test Coverage
-
-The project currently maintains:
-- **7 test suites** passing
-- **62 tests** total (59 passing, 3 todo)
-- **Unit tests** for all utility functions with enhanced edge case handling
-- **Component tests** for core UI components
-
-### Known Testing Limitations
-
-Code coverage reporting is currently non-functional due to incompatibility between Jest and Next.js 13+ app directory structure. This is a known tooling issue that doesn't affect test execution—only coverage metrics. All tests run successfully and provide the intended safety net for refactoring.
-
-For more details about our testing strategy and philosophy, see [`TESTING.md`](./TESTING.md).
+For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[`TESTING.md`](./TESTING.md)** document.
 
 ## Contributing
 
@@ -199,3 +178,7 @@ This project is thoroughly documented. For more details, please see the followin
 -   **[`DEVELOPMENT_HISTORY.md`](./DEVELOPMENT_HISTORY.md):** Historical development phases before semantic versioning.
 -   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
 -   **[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md):** A detailed overview of the custom terminal-inspired design system, including color palettes, typography, component guidelines, and theming instructions for consistent UI/UX across the portfolio.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
