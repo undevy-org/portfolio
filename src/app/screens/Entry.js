@@ -75,7 +75,9 @@ export default function Entry() {
     addLog(`WEB3 CONNECTED: ${walletAddress}`);
     
     try {
-      const response = await fetch(`/api/session?code=0XDEFI2311`);
+      const response = await fetch(
+        `/api/session?code=${process.env.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE}`
+      );
       
       if (response.ok) {
         const userData = await response.json();
