@@ -1,157 +1,196 @@
-// src/app/components/ui/Accordion.test.js
-// Simplified version that doesn't require NavigationContext
+// test-utils/providers.js
+// Mock providers for testing React components with context
 
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Accordion from './Accordion';
-import { MockSessionProvider } from '../../../../test-utils/providers';
-import { MOCK_SESSION_DATA } from '../../../../test-utils/mocks';
+import React, { useState, useCallback, useMemo } from 'react';
+import { SessionContext } from '../src/app/context/SessionContext';
+import { MOCK_SESSION_DATA } from './mocks';
 
-describe('Accordion Component', () => {
-  // Sample sections data for testing
-  const mockSections = [
-    {
-      id: 'section-1',
-      title: 'About Me',
-      content: 'I am a passionate developer with years of experience.',
-      icon: '👤'
-    },
-    {
-      id: 'section-2',
-      title: 'Skills',
-      content: 'React, TypeScript, Node.js, and more.',
-      icon: '🛠️'
-    },
-    {
-      id: 'section-3',
-      title: 'Experience',
-      content: 'Worked at various tech companies building amazing products.',
-      icon: '💼'
+/**
+ * MockSessionProvider
+ * 
+ * A mock implementation of SessionContext for testing.
+ * Provides controllable session state and methods for tests.
+ */
+export function MockSessionProvider({ 
+  children, 
+  // Default values that can be overridden
+  sessionData = MOCK_SESSION_DATA,
+  currentScreen = 'MainHub',
+  isAuthenticated = true,
+  authMethod = 'code',
+  theme: initialTheme = 'terminal', // Renamed for clarity
+  systemLogs = [],
+  navigationHistory = [],
+  screensVisitedCount = 1,
+  // Mock functions
+  navigate = jest.fn(),
+  goBack = jest.fn(),
+  goHome = jest.fn(),
+  goUp = jest.fn(),
+  addLog = jest.fn(),
+  setSelectedCase = jest.fn(),
+  setSelectedSkill = jest.fn(),
+  setSelectedRole = jest.fn(),
+  setThemeExplicit: mockSetThemeExplicit = jest.fn(), // Important!
+  toggleTheme = jest.fn(),
+  endSession = jest.fn(),
+  // Additional overrides
+  ...overrides
+}) {
+  // Use state for theme
+  const [currentTheme, setCurrentTheme] = useState(initialTheme);
+  const [logs, setLogs] = useState(systemLogs);
+  const [navHistory, setNavHistory] = useState(navigationHistory);
+  
+  // Handler for setThemeExplicit
+  // Important: update local state AND call the mock function
+  const handleSetThemeExplicit = useCallback((newTheme) => {
+    setCurrentTheme(newTheme);
+    mockSetThemeExplicit(newTheme);
+  }, [mockSetThemeExplicit]);
+  
+  // Handler for toggleTheme
+  const handleToggleTheme = useCallback(() => {
+    const themes = ['terminal', 'dark', 'light', 'amber', 'bsod', 'synthwave', 'operator', 'kyoto', 'radar'];
+    const currentIndex = themes.indexOf(currentTheme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const newTheme = themes[nextIndex];
+    setCurrentTheme(newTheme);
+    toggleTheme();
+  }, [currentTheme, toggleTheme]);
+  
+  // Handler for logs
+  const handleAddLog = useCallback((message, type = 'info') => {
+    const newLog = {
+      timestamp: Date.now(),
+      message,
+      type
+    };
+    setLogs(prev => [...prev, newLog]);
+    addLog(message, type);
+  }, [addLog]);
+  
+  // Handler for navigation
+  const handleNavigate = useCallback((screen, addToHistory = true) => {
+    if (addToHistory) {
+      setNavHistory(prev => [...prev, currentScreen]);
     }
-  ];
+    navigate(screen, addToHistory);
+  }, [navigate, currentScreen]);
+  
+  // Create context value
+  const contextValue = useMemo(() => ({
+    // Session data
+    sessionData,
+    globalData: sessionData,
+    domainData: {
+      domain: 'test.com',
+      terminalTitle: 'test-portfolio',
+      brandName: 'TestBrand',
+      brandingToken: '$test_portfolio'
+    },
+    domainConfigLoading: false,
+    
+    // Authentication
+    isAuthenticated,
+    authMethod,
+    authError: null,
+    setAuthError: jest.fn(),
+    isTerminating: false,
+    
+    // Navigation
+    currentScreen,
+    navigationHistory: navHistory,
+    setNavigationHistory: setNavHistory,
+    navigate: handleNavigate,
+    goBack,
+    goHome,
+    goUp,
+    screenHierarchy: {
+      'RoleDetail': 'Timeline',
+      'CaseDetail': 'CaseList',
+      'SkillDetail': 'SkillsGrid',
+      'Timeline': 'MainHub',
+      'CaseList': 'MainHub',
+      'SkillsGrid': 'MainHub',
+      'Introduction': 'MainHub',
+      'SideProjects': 'MainHub',
+      'Contact': 'MainHub',
+    },
+    screensVisitedCount,
+    
+    // Theme - IMPORTANT: use currentTheme from state!
+    theme: currentTheme,
+    themes: ['dark', 'light', 'amber', 'bsod', 'synthwave', 'operator', 'kyoto', 'radar'],
+    toggleTheme: handleToggleTheme,
+    setThemeExplicit: handleSetThemeExplicit, // Use wrapper
+    getThemeIntent: () => {
+      const lightThemes = ['light', 'bsod', 'kyoto'];
+      return lightThemes.includes(currentTheme) ? 'light' : 'dark';
+    },
+    
+    // Logging
+    logEntries: logs,
+    addLog: handleAddLog,
+    
+    // Selection handlers
+    selectedCase: null,
+    setSelectedCase,
+    selectedRole: null,
+    setSelectedRole,
+    selectedSkill: null,
+    setSelectedSkill,
+    
+    // UI state
+    expandedSections: {},
+    toggleSection: jest.fn(),
+    activeTab: {},
+    setTab: jest.fn(),
+    
+    // Session management
+    endSession,
+    
+    // Web3 specific
+    web3LogoutPending: false,
+    setWeb3LogoutPending: jest.fn(),
+    
+    // Any additional overrides
+    ...overrides
+  }), [
+    sessionData,
+    isAuthenticated,
+    authMethod,
+    currentScreen,
+    navHistory,
+    handleNavigate,
+    goBack,
+    goHome,
+    goUp,
+    screensVisitedCount,
+    currentTheme, // Important: use actual theme value
+    handleToggleTheme,
+    handleSetThemeExplicit,
+    logs,
+    handleAddLog,
+    setSelectedCase,
+    setSelectedRole,
+    setSelectedSkill,
+    endSession,
+    overrides
+  ]);
+  
+  return (
+    <SessionContext.Provider value={contextValue}>
+      {children}
+    </SessionContext.Provider>
+  );
+}
 
-  // Mock addLog function to track system logging
-  const mockAddLog = jest.fn();
-
-  const renderAccordion = (props = {}, sessionProps = {}) => {
-    return render(
-      <MockSessionProvider 
-        sessionData={MOCK_SESSION_DATA} 
-        addLog={mockAddLog}
-        {...sessionProps}
-      >
-        <Accordion sections={mockSections} {...props} />
-      </MockSessionProvider>
-    );
+/**
+ * Helper to create a custom mock provider with specific overrides
+ */
+export function createMockProvider(overrides = {}) {
+  return function CustomMockProvider({ children }) {
+    return <MockSessionProvider {...overrides}>{children}</MockSessionProvider>;
   };
-
-  beforeEach(() => {
-    mockAddLog.mockClear();
-  });
-
-  describe('Basic Functionality', () => {
-    it('should render all section titles', () => {
-      renderAccordion();
-      
-      expect(screen.getByText('About Me')).toBeInTheDocument();
-      expect(screen.getByText('Skills')).toBeInTheDocument();
-      expect(screen.getByText('Experience')).toBeInTheDocument();
-    });
-
-    it('should not show content by default', () => {
-      renderAccordion();
-      
-      expect(screen.queryByText('I am a passionate developer with years of experience.')).not.toBeInTheDocument();
-      expect(screen.queryByText('React, TypeScript, Node.js, and more.')).not.toBeInTheDocument();
-    });
-
-    it('should expand section when clicked', () => {
-      renderAccordion();
-      
-      const aboutMeTitle = screen.getByText('About Me');
-      fireEvent.click(aboutMeTitle);
-      
-      expect(screen.getByText('I am a passionate developer with years of experience.')).toBeInTheDocument();
-    });
-
-    it('should collapse section when clicked again', () => {
-      renderAccordion();
-      
-      const aboutMeTitle = screen.getByText('About Me');
-      
-      // First click - expand
-      fireEvent.click(aboutMeTitle);
-      expect(screen.getByText('I am a passionate developer with years of experience.')).toBeInTheDocument();
-      
-      // Second click - collapse
-      fireEvent.click(aboutMeTitle);
-      expect(screen.queryByText('I am a passionate developer with years of experience.')).not.toBeInTheDocument();
-    });
-
-    it('should allow multiple sections to be expanded', () => {
-      renderAccordion();
-      
-      fireEvent.click(screen.getByText('About Me'));
-      fireEvent.click(screen.getByText('Skills'));
-      
-      // Both should be expanded
-      expect(screen.getByText('I am a passionate developer with years of experience.')).toBeInTheDocument();
-      expect(screen.getByText('React, TypeScript, Node.js, and more.')).toBeInTheDocument();
-    });
-  });
-
-  describe('System Log Integration', () => {
-    it('should log when a section is expanded', () => {
-      renderAccordion();
-      
-      fireEvent.click(screen.getByText('About Me'));
-      
-      expect(mockAddLog).toHaveBeenCalledWith(
-        expect.stringContaining('SECTION EXPANDED'),
-        expect.any(String)
-      );
-    });
-
-    it('should log when a section is collapsed', () => {
-      renderAccordion();
-      
-      const aboutMeTitle = screen.getByText('About Me');
-      
-      // Expand
-      fireEvent.click(aboutMeTitle);
-      mockAddLog.mockClear();
-      
-      // Collapse
-      fireEvent.click(aboutMeTitle);
-      
-      expect(mockAddLog).toHaveBeenCalledWith(
-        expect.stringContaining('SECTION COLLAPSED'),
-        expect.any(String)
-      );
-    });
-  });
-
-  describe('Edge Cases', () => {
-    it('should handle empty sections array', () => {
-      const { container } = renderAccordion({ sections: [] });
-      expect(container).toBeInTheDocument();
-    });
-
-    it('should handle sections without content', () => {
-      const sectionsWithoutContent = [
-        { id: 'no-content', title: 'Empty Section' }
-      ];
-      
-      renderAccordion({ sections: sectionsWithoutContent });
-      expect(screen.getByText('Empty Section')).toBeInTheDocument();
-    });
-
-    it('should show defaultExpanded sections', () => {
-      renderAccordion({ defaultExpanded: ['section-1'] });
-      
-      expect(screen.getByText('I am a passionate developer with years of experience.')).toBeInTheDocument();
-      expect(screen.queryByText('React, TypeScript, Node.js, and more.')).not.toBeInTheDocument();
-    });
-  });
-});
+}
