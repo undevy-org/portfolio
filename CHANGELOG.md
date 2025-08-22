@@ -129,7 +129,7 @@ Note: After pulling this change, other developers should:
 - Initial release with complete portfolio functionality
 - Single Page Application architecture with hash-based routing
 - Gated access system with URL-based authentication
-- Multi-domain support (undevy.com, foxous.design)
+- Multi-domain support
 - Complete UI component library (Accordion, Tabs, TerminalWindow)
 - All content screens (Timeline, CaseDetail, SkillsGrid, Contact)
 - CI/CD pipeline with GitHub Actions
