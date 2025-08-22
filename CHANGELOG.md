@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [4.2.1](https://github.com/undevy-org/portfolio/compare/v4.2.0...v4.2.1) (2025-08-22)
+
+
+### Tests
+
+* add component tests for ScreenWrapper and ThemeSwitcher ([#63](https://github.com/undevy-org/portfolio/issues/63)) ([6861d00](https://github.com/undevy-org/portfolio/commit/6861d00760594057557c87e72bccb47cda26105e))
+
 ## [4.2.0](https://github.com/undevy-org/portfolio/compare/v4.1.0...v4.2.0) (2025-08-21)
 
 
