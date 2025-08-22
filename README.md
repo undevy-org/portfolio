@@ -1,6 +1,8 @@
 # Interactive Terminal Portfolio
 
-This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It features a unique gated access system, dynamic content personalization, and a headless CMS powered by a Telegram bot.
+This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It features a unique gated access system, dynamic content personalization, and works in tandem with a headless CMS powered by a Telegram bot.
+
+**_Architecture Note:_** This repository contains the Next.js frontend application. The accompanying Telegram bot CMS has been extracted into its own repository: **[undevy-org/telegram-bot](https://github.com/undevy-org/telegram-bot)**.
 
 After authentication, the application transforms into a seamless Single Page Application (SPA) with hash-based routing, ensuring an instant, app-like user experience.
 
@@ -13,7 +15,7 @@ After authentication, the application transforms into a seamless Single Page App
 -   **Zero Layout Shift Navigation:** A stable layout architecture with fixed regions prevents any content jumping or visual flicker. All screen transitions are handled with smooth, accessibility-conscious animations, creating a seamless and predictable user journey.
 -   **Dual Authentication System:** Supports both traditional access codes and Web3 wallet login. Users can connect via MetaMask, WalletConnect, etc., using the Reown protocol for a seamless Web3 experience.
 -   **Decoupled Content Architecture:** All portfolio data is stored in a `content.json` file on the server, completely separate from the application code. This allows content updates without redeploying the app.
--   **Headless CMS via Telegram Bot:** A custom Telegram bot serves as a powerful, on-the-go content management system. You can create, edit, delete, and rollback content versions directly from your phone.
+-   **Headless CMS via Telegram Bot:** A custom Telegram bot (from a separate repository) serves as a powerful, on-the-go content management system. You can create, edit, delete, and rollback content versions directly from your phone.
 -   **Privacy-First Analytics:** A self-hosted Matomo instance provides detailed session tracking while ensuring full data ownership and privacy.
 -   **Automated Testing:** The project is covered by a suite of unit and component tests using Jest and React Testing Library to prevent regressions and ensure code quality.
 
@@ -30,7 +32,7 @@ After authentication, the application transforms into a seamless Single Page App
 | **Analytics**      | Matomo (self-hosted) | Runs in Docker, providing privacy-focused analytics with custom tracking. |
 | **Containerization**| Docker            | Isolates the Matomo & MariaDB stack for a clean, reproducible environment. |
 | **CI/CD**          | GitHub Actions     | Automates the entire deployment pipeline on every push to the `main` branch. |
-| **Bot Framework**  | grammY             | A modern framework for building the Telegram-based CMS.                  |
+| **Bot Framework**  | grammY             | A modern framework for building the **separate** Telegram-based CMS.      |
 | **Web3** | `wagmi` & `viem` | A collection of React Hooks and utilities for interacting with Ethereum wallets and blockchains. |
 | **Web3** | `@reown/appkit` | Powers the user-friendly wallet connection modal (QR code, wallet selection). |
 
