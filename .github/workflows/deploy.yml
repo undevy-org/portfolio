@@ -1,6 +1,6 @@
-# Deploy Pipeline - Optimized without .next rename workaround
+# Deploy Pipeline for Portfolio - UPDATED (Bot removed)
 # Location: .github/workflows/deploy.yml
-# Version: Stage 3 - Simplified without rename logic
+# Version: Post-monorepo split
 
 name: Deploy to DigitalOcean
 
@@ -19,7 +19,8 @@ jobs:
     steps:
       - name: Setup deployment info
         run: |
-          echo "🚀 Starting deployment for commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "🚀 Starting portfolio deployment"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
           echo "Triggered by: ${{ github.event.workflow_run.name }}"
           echo "Run ID: ${{ github.event.workflow_run.id }}"
       
@@ -30,7 +31,7 @@ jobs:
           name: deployment-package-${{ github.event.workflow_run.head_sha }}
           path: deployment-files
       
-      # SIMPLIFIED: No more rename detection and restoration!
+      # Verify downloaded artifact
       - name: Verify downloaded artifact
         run: |
           echo "📦 Verifying downloaded artifact..."
@@ -38,7 +39,7 @@ jobs:
           echo "📁 Downloaded contents:"
           ls -la deployment-files/
           
-          # Direct check for .next directory (no rename logic needed)
+          # Check for .next directory
           if [ ! -d "deployment-files/.next" ]; then
             echo "❌ ERROR: .next directory not found in artifact!"
             echo "Current structure:"
@@ -55,98 +56,9 @@ jobs:
           fi
           
           echo "✅ All required files present"
-          echo "📊 Total deployment size: $(du -sh deployment-files | cut -f1)"
       
-      - name: Backup environment files and project images
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p /tmp/deploy-backup
-            echo "📸 Backing up project images..."
-            
-            # Backup images if directory exists
-            if [ -d "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects" ]; then
-              echo "Found project images, creating backup..."
-              rm -rf /tmp/deploy-backup/projects-images
-              cp -r "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects" /tmp/deploy-backup/projects-images
-              echo "✅ Images backed up: $(find /tmp/deploy-backup/projects-images -type f | wc -l) files"
-            else
-              echo "ℹ️ No project images directory found, skipping backup"
-            fi
-            
-            # Backup environment files
-            echo "🔐 Backing up environment files..."
-            for f in .env .env.local .env.production; do
-              if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" ]; then
-                cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f" "/tmp/deploy-backup/$f"
-                echo "✅ Backed up $f"
-              fi
-            done
-
-            # Backup PM2 ecosystem config if exists
-            echo "⚙️ Backing up PM2 ecosystem file..."
-            for ec in ecosystem.config.cjs ecosystem.config.js; do
-              if [ -f "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec" ]; then
-                cp "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec" "/tmp/deploy-backup/$ec"
-                echo "✅ Backed up $ec"
-              fi
-            done
-
-      - name: Deploy portfolio files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deployment-files/*"
-          target: ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
-          strip_components: 1
-          rm: true
-
-      - name: Restore environment files and project images
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Restore environment files
-            echo "🔐 Restoring environment files..."
-            for f in .env .env.local .env.production; do
-              if [ -f "/tmp/deploy-backup/$f" ]; then
-                cp "/tmp/deploy-backup/$f" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$f"
-                echo "✅ Restored $f"
-              fi
-            done
-
-            # Restore PM2 ecosystem file
-            echo "⚙️ Restoring PM2 ecosystem file..."
-            for ec in ecosystem.config.cjs ecosystem.config.js; do
-              if [ -f "/tmp/deploy-backup/$ec" ]; then
-                cp "/tmp/deploy-backup/$ec" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/$ec"
-                echo "✅ Restored $ec"
-              fi
-            done
-
-            # Restore project images
-            echo "📸 Restoring project images..."
-            if [ -d "/tmp/deploy-backup/projects-images" ]; then
-              mkdir -p "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images"
-              rm -rf "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
-              cp -r "/tmp/deploy-backup/projects-images" "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
-              echo "✅ Images restored: $(find ${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects -type f | wc -l) files"
-            else
-              echo "ℹ️ No images backup found, creating empty directory"
-              mkdir -p "${{ secrets.DEPLOY_PATH_PORTFOLIO }}/public/images/projects"
-            fi
-            
-            # Clean up backup
-            rm -rf /tmp/deploy-backup
-
-      - name: Install dependencies and restart portfolio
+      # Deploy portfolio files to server
+      - name: Deploy portfolio to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -159,62 +71,26 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
-            echo "📁 Navigating to portfolio directory..."
-            cd ${{ secrets.DEPLOY_PATH_PORTFOLIO }}
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
+            TEMP_DIR="$DEPLOY_PATH-temp-$(date +%s)"
             
-            echo "✅ Verifying deployment files..."
-            if [ ! -d ".next" ]; then
-              echo "❌ ERROR: .next directory missing on server!"
-              ls -la
-              exit 1
-            fi
-            echo "✅ .next directory confirmed"
-
-            echo "📦 Installing production dependencies..."
-            npm ci --omit=dev || npm install --production
-
-            echo "🔄 Restarting portfolio application..."
-            APP="${{ secrets.PM2_APP_NAME_PORTFOLIO }}"
-            if pm2 describe "$APP" >/dev/null 2>&1; then
-              pm2 restart "$APP" --update-env
-              echo "✅ Restarted existing PM2 app: $APP"
-            else
-              echo "ℹ️ PM2 app '$APP' not found. Starting it..."
-              if [ -f ecosystem.config.cjs ]; then
-                pm2 start ecosystem.config.cjs --only "$APP" --env production
-              elif [ -f ecosystem.config.js ]; then
-                pm2 start ecosystem.config.js --only "$APP" --env production
-              else
-                pm2 start npm --name "$APP" -- start
-              fi
-              echo "✅ Started new PM2 app: $APP"
-            fi
-
-            pm2 save || true
-            
-            echo "📊 PM2 status:"
-            pm2 list
-            
-            echo "✅ Portfolio deployment complete!"
+            echo "📁 Creating temporary deployment directory..."
+            mkdir -p "$TEMP_DIR"
       
-      # Deploy bot (keeping as-is)
-      - name: Checkout code for bot deployment
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          sparse-checkout: |
-            telegram-bot
-      
-      - name: Deploy bot files to server
+      # Transfer files to server
+      - name: Transfer files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "telegram-bot/*"
-          target: ${{ secrets.DEPLOY_PATH_BOT_PARENT }}
+          source: "deployment-files/*"
+          target: "${{ secrets.DEPLOY_PATH_PORTFOLIO }}-temp-deploy"
+          strip_components: 1
+          rm: true
       
-      - name: Install dependencies and restart bot
+      # Complete deployment and restart
+      - name: Complete deployment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -223,48 +99,71 @@ jobs:
           script: |
             set -e
             
-            echo "🔧 Setting up Node environment for bot..."
+            echo "🔧 Setting up Node environment..."
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
-            echo "📁 Navigating to bot directory..."
-            cd ${{ secrets.DEPLOY_PATH_BOT }}
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
+            TEMP_PATH="$DEPLOY_PATH-temp-deploy/deployment-files"
             
-            echo "📦 Installing bot dependencies..."
+            # Backup important files
+            echo "💾 Backing up environment and user files..."
+            if [ -f "$DEPLOY_PATH/.env" ]; then
+              cp "$DEPLOY_PATH/.env" "$TEMP_PATH/.env"
+            fi
+            
+            if [ -d "$DEPLOY_PATH/public/images/projects" ]; then
+              echo "📸 Backing up user-uploaded images..."
+              cp -r "$DEPLOY_PATH/public/images/projects" "$TEMP_PATH/public/images/" || true
+            fi
+            
+            # Swap directories
+            echo "🔄 Swapping deployment directories..."
+            if [ -d "$DEPLOY_PATH" ]; then
+              mv "$DEPLOY_PATH" "$DEPLOY_PATH-old-$(date +%s)"
+            fi
+            mv "$TEMP_PATH" "$DEPLOY_PATH"
+            
+            # Install production dependencies
+            cd "$DEPLOY_PATH"
+            echo "📦 Installing production dependencies..."
             npm ci --omit=dev || npm install --production
             
-            echo "🔄 Restarting bot..."
-            APP="${{ secrets.PM2_APP_NAME_BOT }}"
+            # Restart portfolio application
+            echo "🔄 Restarting portfolio application..."
+            APP="${{ secrets.PM2_APP_NAME_PORTFOLIO }}"
+            
             if pm2 describe "$APP" >/dev/null 2>&1; then
               pm2 restart "$APP" --update-env
-              echo "✅ Restarted bot: $APP"
+              echo "✅ Portfolio restarted: $APP"
             else
-              if [ -f ecosystem.config.cjs ]; then
-                pm2 start ecosystem.config.cjs --only "$APP" --env production
-              elif [ -f ecosystem.config.js ]; then
-                pm2 start ecosystem.config.js --only "$APP" --env production
-              else
-                pm2 start npm --name "$APP" -- start
-              fi
-              echo "✅ Started bot: $APP"
+              pm2 start npm --name "$APP" -- start
+              echo "✅ Portfolio started: $APP"
             fi
-
+            
             pm2 save || true
             
-            echo "✅ Bot deployment completed!"
+            # Show application status
+            echo "📊 Application status:"
+            pm2 show "$APP" || true
+            
+            # Cleanup old directories (keep last 2 for rollback)
+            echo "🧹 Cleaning up old deployments..."
+            ls -dt $DEPLOY_PATH-old-* 2>/dev/null | tail -n +3 | xargs rm -rf || true
+            rm -rf $DEPLOY_PATH-temp-deploy || true
+            
+            echo "✅ Portfolio deployment completed!"
       
       # Final success notification
       - name: Deployment summary
         run: |
-          echo "🎉 DEPLOYMENT SUCCESSFUL!"
+          echo "🎉 PORTFOLIO DEPLOYMENT SUCCESSFUL!"
           echo "================================"
           echo "Commit: ${{ github.event.workflow_run.head_sha }}"
-          echo "Portfolio and Bot have been deployed to production."
+          echo "Portfolio has been deployed to production."
           echo ""
-          echo "Pipeline improvements in this version:"
-          echo "✅ No more .next → next-build rename workaround"
-          echo "✅ Simplified deployment logic"
-          echo "✅ Faster artifact handling"
+          echo "Note: Telegram bot is now deployed separately from:"
+          echo "https://github.com/undevy-org/telegram-bot"
   
   # Handle failed CI
   failure-notification:
