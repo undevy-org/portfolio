@@ -55,29 +55,27 @@ The `test-utils` directory contains reusable testing infrastructure:
 
 ## 4. How to Run Tests
 
-All tests can be executed with a single command from the project root:
+All tests can be executed with a single command from the project root.
 
+### 4.1. Running All Tests
 ```bash
+# Run all tests in watch mode (default for local development)
 npm test
-```
 
-This command will run Jest in watch mode by default, automatically re-running tests when files are changed. To run all tests once (for example, in a CI environment), use:
-
-```bash
+# Run all tests once (for CI environments)
 npm test -- --watchAll=false
 ```
 
-### 4.1. Running Specific Tests
-
+### 4.2. Running Specific Tests
 ```bash
-# Run tests for a specific file
+# Run tests for a single specific file
 npm test -- formatters.test.js
-
-# Run tests matching a pattern
-npm test -- --testNamePattern="should handle null"
 
 # Run tests in a specific directory
 npm test -- src/app/utils
+
+# Run tests matching a pattern in the test name
+npm test -- --testNamePattern="should handle null"
 ```
 
 ## 5. What We Test
@@ -121,30 +119,24 @@ Currently, we have two integration test files that are temporarily skipped:
 -   **`Accordion.test.js.skip`:** Comprehensive tests for the Accordion component, including system log integration and accessibility. Skipped pending verification of component structure compatibility.
 -   **`integration.test.js.skip`:** User flow tests for navigation between screens and session termination. Skipped due to missing component dependencies.
 
-## 6. Known Issues & Limitations
+## 6. Test Coverage & Limitations
 
-### 6.1. Coverage Reporting
+### 6.1. Test Execution Statistics
+The project currently maintains:
+- **7 test suites** passing
+- **62 tests** total (59 passing, 3 todo)
+- **Unit tests** for all utility functions with enhanced edge case handling
+- **Component tests** for core UI components
 
-**Issue:** Code coverage reporting is currently non-functional due to incompatibility between Jest's instrumentation and Next.js 13+ with the app directory structure.
+### 6.2. Known Issues & Limitations
 
-**Error:** `TypeError: The "original" argument must be of type function`
+**Issue: Code Coverage Reporting**
 
-**Root Cause:** Jest's coverage instrumentation conflicts with Next.js's SWC compiler when processing files with 'use client' directives and other Next.js-specific syntax.
+Code coverage reporting is currently non-functional due to incompatibility between Jest's instrumentation and Next.js 13+ with the app directory structure. This is a known tooling issue that prevents the generation of coverage reports.
 
-**Workaround Options:**
-1. Run tests without coverage: `npm test` (recommended)
-2. Use manual coverage checking scripts (if implemented)
-3. Wait for tooling updates that resolve the incompatibility
-
-### 6.2. Test Execution Statistics
-
-**Current Status:**
-- Test Suites: 9 passing (2 skipped)
-- Total Tests: 76 tests (all passing)
-- Test Files:
-  - Utils: 4 files (formatters, session, config, content)
-  - Components: 5 files (Button, TerminalProgress, ProfileDataPanel, ScreenWrapper, ThemeSwitcher)
-- Skipped Files: `Accordion.test.js`, `integration.test.js`
+-   **Error:** `TypeError: The "original" argument must be of type function`
+-   **Root Cause:** A conflict between Jest's coverage instrumentation and Next.js's SWC compiler.
+-   **Impact:** This does **not** affect test execution; all tests run correctly and provide their intended safety net. It only means we cannot automatically generate a coverage percentage report.
 
 ## 7. Writing New Tests
 
