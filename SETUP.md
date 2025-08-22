@@ -29,39 +29,16 @@ Add these secrets to your repository (Settings → Secrets and variables → Act
 
 ---
 
-## 2. Local Development Setup
-
-Before deploying, ensure the project runs on your local machine.
-
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/undevy-org/portfolio.git
-    cd portfolio
-    ```
-
-2.  **Install Dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Run the Development Server:**
-    ```bash
-    npm run dev
-    ```
-    The application will be available at `http://localhost:3000/?code=LOCAL_TEST`. The local version uses a fallback `test-content.json` file, so no server connection is needed.
-
----
-
-## 3. Server Provisioning
+## 2. Server Provisioning
 
 This section covers configuring a fresh Ubuntu 22.04 server.
 
-### 3.1. Create a Droplet/VPS
+### 2.1. Create a Droplet/VPS
 -   **Image:** Ubuntu 22.04 LTS x64
 -   **Plan:** 2GB RAM / 2 CPUs is recommended. The 1GB plan is often insufficient for running the Next.js build process, Docker, and the OS simultaneously.
 -   **Authentication:** Add your local machine's public SSH key for secure access.
 
-### 3.2. Initial Server Security
+### 2.2. Initial Server Security
 Connect to your server as `root` and create a non-root user for all operations. Replace `your_user` with your desired username.
 
 ```bash
@@ -83,7 +60,7 @@ exit
 ssh your_user@YOUR_SERVER_IP
 ```
 
-### 3.3. Install Software Stack
+### 2.3. Install Software Stack
 Install Nginx, Node.js (via nvm), PM2, and Docker.
 
 ```bash
@@ -109,7 +86,7 @@ exit
 ssh your_user@YOUR_SERVER_IP
 ```
 
-### 3.4. Configure Firewall
+### 2.4. Configure Firewall
 Set up the firewall to allow SSH and web traffic.
 
 ```bash
@@ -118,7 +95,7 @@ sudo ufw allow 'Nginx Full'
 sudo ufw enable
 ```
 
-### 3.5. Create a SWAP File (Recommended)
+### 2.5. Create a SWAP File (Recommended)
 This prevents the server from crashing due to memory exhaustion during builds.
 
 ```bash
@@ -131,9 +108,9 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 ---
 
-## 4. Application Deployment
+## 3. Application Deployment
 
-### 4.1. Set Up Server File Structure
+### 3.1. Set Up Server File Structure
 Create the required directories in your user's home folder.
 
 ```bash
@@ -151,13 +128,13 @@ touch ~/content.json
 # Populate this file with your portfolio data, using docs/CONTENT_MODEL.md as a guide.
 ```
 
-### 4.2. Matomo Analytics Setup
+### 3.2. Matomo Analytics Setup
 1.  Navigate to the Matomo directory: `cd ~/matomo`
 2.  Create a `docker-compose.yml` file. You can find an example configuration in the Matomo documentation or community resources. It should define two services: `matomo` and `db` (MariaDB).
 3.  Start the services: `docker compose up -d`
 4.  Access Matomo via your server's IP (e.g., `http://YOUR_SERVER_IP:8888` if you mapped that port) and complete the web installer.
 
-### 4.3. Nginx Configuration
+### 3.3. Nginx Configuration
 1.  Create Nginx config files for the main site and analytics.
 
     **/etc/nginx/sites-available/your-domain.com**
@@ -201,7 +178,7 @@ touch ~/content.json
     sudo certbot --nginx
     ```
 
-### 4.4. Deploy & Run Applications
+### 3.4. Deploy & Run Applications
 Clone your repository and start the applications using PM2.
 
 ```bash
@@ -226,7 +203,7 @@ pm2 start bot.js --name "portfolio-bot"
 pm2 save
 ```
 
-### 4.5. Web3 Provider Setup (Optional)
+### 3.5. Web3 Provider Setup (Optional)
 
 This project uses Reown (formerly WalletConnect) for Web3 authentication. To enable this feature in your own deployment, you need to configure it with your own Project ID.
 
@@ -251,7 +228,7 @@ This project uses Reown (formerly WalletConnect) for Web3 authentication. To ena
 
 ---
 
-## 5. GitHub Repository Configuration
+## 4. GitHub Repository Configuration
 
 To enable the automated and secure CI/CD workflow, you must configure branch protection rules for your `main` branch. This prevents direct pushes and ensures all changes are validated via a Pull Request.
 
@@ -275,7 +252,7 @@ After saving these rules, your `main` branch will be protected, and all changes 
 
 ---
 
-## 6. CI/CD Automation (GitHub Actions)
+## 5. CI/CD Automation (GitHub Actions)
 
 1.  **Generate a new SSH key** on your local machine specifically for GitHub Actions (do not use a passphrase).
     ```bash
@@ -289,7 +266,7 @@ After saving these rules, your `main` branch will be protected, and all changes 
 
 Your CI/CD pipeline in `.github/workflows/deploy.yml` will now automate deployments.
 
-## 7. Versioning for Your Fork
+## 6. Versioning for Your Fork
 
 If you're forking this project for your own use, here's how to manage versions:
 
