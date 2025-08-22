@@ -103,6 +103,8 @@ Our testing strategy is broken down by type, forming our version of the Testing 
     -   `Button.test.js` - Click handlers, disabled states, icon rendering
     -   `TerminalProgress.test.js` - Loading animations, progress updates
     -   `ProfileDataPanel.test.js` - Data rendering with SessionContext
+    -   `ScreenWrapper.test.js` - Layout wrapper behavior, conditional padding, screen-specific classes
+    -   `ThemeSwitcher.test.js` - Theme selection, conditional rendering, accessibility attributes
 -   **Goal:** To ensure that individual UI building blocks are reliable and behave as expected.
 
 ### 5.3. Content Linting Test (Special Case)
@@ -137,8 +139,11 @@ Currently, we have two integration test files that are temporarily skipped:
 ### 6.2. Test Execution Statistics
 
 **Current Status:**
-- Test Suites: 7 passing (2 skipped)
-- Total Tests: 62 tests (59 passing, 3 todo)
+- Test Suites: 9 passing (2 skipped)
+- Total Tests: 76 tests (all passing)
+- Test Files:
+  - Utils: 4 files (formatters, session, config, content)
+  - Components: 5 files (Button, TerminalProgress, ProfileDataPanel, ScreenWrapper, ThemeSwitcher)
 - Skipped Files: `Accordion.test.js`, `integration.test.js`
 
 ## 7. Writing New Tests
@@ -214,10 +219,11 @@ The CI configuration can be found in `.github/workflows/ci.yml`.
 - Resolve coverage reporting issues with Next.js 13+
 - Enable and verify Accordion component tests
 - Enable integration tests once component dependencies are implemented
-- Add tests for remaining UI components
+- Add tests for remaining UI components (NavigationButtons, AnalyticsPanel, SystemLog, MorphingTerminal)
 
 ### 9.2. Long Term
 - Implement E2E tests using Playwright or Cypress
 - Add visual regression testing for UI components
 - Achieve 80% code coverage for critical paths
 - Implement performance testing for key user flows
+- Add tests for all screens (Entry, ProfileBoot, MainHub, Introduction, etc.)
