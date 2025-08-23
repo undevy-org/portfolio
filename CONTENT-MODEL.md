@@ -23,13 +23,19 @@ The `content.json` file is a single JSON object organized into two primary key t
 
 This structure allows for maximum flexibility and minimal content duplication. Personalized profiles define *which* content to show, while the `GLOBAL_DATA` object defines *what* that content is.
 
+## 2. Demo Content (`config/demo-content.json`)
+
+The repository includes a `config/demo-content.json` file. This file serves two purposes:
+1.  **Structural Reference:** It is a complete, well-structured example of a valid `content.json` file and can be used as a template.
+2.  **Demo Mode:** When the application is accessed in demo mode (e.g., without an access code, if enabled), it uses this file to populate the interface.
+
 ---
 
-## 2. Personalized Profile Schema
+## 3. Personalized Profile Schema
 
 Each personalized profile (e.g., `"PROFILE123": { ... }`) contains the configuration and unique text for a single user journey.
 
-### 2.1. `meta` object
+### 3.1. `meta` object
 
 This object acts as the "control panel" for the entire personalized session. It tells the application which pieces of global content to use.
 
@@ -40,7 +46,7 @@ This object acts as the "control panel" for the entire personalized session. It 
 | `tone`     | `String`  | Determines which version of the introduction text to use from the `introduction` object.                   | `"technical"`         |
 | `cases`    | `Array`   | An array of case study IDs that should be displayed. Must match keys in `GLOBAL_DATA.case_studies`.      | `["case_alpha", "case_beta"]` |
 
-### 2.2. `profile` object
+### 3.2. `profile` object
 
 Contains personalized content for the `Introduction` screen.
 
@@ -69,13 +75,13 @@ Example `profile` object:
 }
 ```
 
-### 2.3. `introduction` object
+### 3.3. `introduction` object
 
 Contains different versions of the introductory text. The `meta.tone` key is used to select which text to display. Common keys include `technical`, `casual`, and `formal`.
 
 ---
 
-## 3. Global Data Schema (`GLOBAL_DATA`)
+## 4. Global Data Schema (`GLOBAL_DATA`)
 
 This object is a comprehensive library of all reusable content blocks.
 
@@ -101,7 +107,7 @@ This object is a comprehensive library of all reusable content blocks.
 
 ---
 
-## 4. How Content is Merged (Example Flow)
+## 5. How Content is Merged (Example Flow)
 
 The application’s API intelligently combines a personalized profile with the global data library to create a unique session for each visitor.
 
@@ -118,22 +124,9 @@ This approach ensures fast, app-like navigation after the initial load, as no fu
 
 ---
 
-## 5. Managing Content via Telegram Bot
+## 6. Managing Content
 
-The project includes a Telegram-based CMS bot that allows for full content management without direct file access or technical knowledge.
+While the `content.json` file can be edited manually, the recommended way to manage content is through the optional **Telegram Bot CMS**. The bot provides an interactive, user-friendly interface for creating, editing, and versioning content without direct server access.
 
-### Core Commands
--   `/status`: Shows system status, content statistics, and last modification time.
--   `/get`: Downloads the current `content.json` file.
-
-### Content Management Commands
--   `/list_cases`: Displays a list of all available case studies.
--   `/preview [case_id]`: Shows a detailed preview of a specific case study.
--   `/add_case`: Starts an interactive, 10-step wizard to create a new case study.
--   `/edit_case [case_id]`: Starts an interactive wizard to edit an existing case study field by field.
--   `/delete_case [case_id]`: Safely deletes a case study, with a preview and confirmation prompt.
-
-### Version Control Commands
--   `/history`: Displays the 10 most recent versions of the content file.
--   `/rollback [version_number]`: Restores the content file to a previous version with confirmation.
--   `/diff [version_number]`: Shows a summary of changes between the current content and a selected backup.
+For detailed instructions on using the bot, please refer to its dedicated repository:
+-   **[undevy-org/telegram-bot](https://github.com/undevy-org/telegram-bot)**
