@@ -5,6 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0](https://github.com/undevy-org/portfolio/compare/v4.2.2...v5.0.0) (2025-08-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* Telegram bot has been moved to github.com/undevy-org/telegram-bot
+   - Bot code removed from monorepo
+   - CI/CD will be updated to deploy only portfolio
+   - Documentation updated to reflect new structure
+
+* refactor: update CI/CD pipeline after bot extraction
+
+- Remove bot deployment steps from deploy.yml
+- Simplify deployment to handle only portfolio
+- Update deployment notifications
+- Remove unused bot-related secrets from workflow
+
+* fix: simplify deployment pipeline and fix SSH issues
+
+- Switch to direct push trigger instead of CI dependency
+- Use standard scp for file transfer
+- Add proper backup and restore logic
+- Remove separate CI workflow
+* Telegram bot has been moved to github.com/undevy-org/telegram-bot
+   - Bot code removed from monorepo
+   - CI/CD will be updated to deploy only portfolio
+   - Documentation updated to reflect new structure
+
+* refactor: update CI/CD pipeline after bot extraction
+
+- Remove bot deployment steps from deploy.yml
+- Simplify deployment to handle only portfolio
+- Update deployment notifications
+- Remove unused bot-related secrets from workflow
+
+* Refactor/remove-bot (#66) ([19bd9c2](https://github.com/undevy-org/portfolio/commit/19bd9c22b62853c0357356da7303c6a85b19131f)), closes [#66](https://github.com/undevy-org/portfolio/issues/66)
+* Refactor/remove bot (#65) ([35819bc](https://github.com/undevy-org/portfolio/commit/35819bc97b025f129e4be6adefb838f5eaec035c)), closes [#65](https://github.com/undevy-org/portfolio/issues/65)
+
+
+### Fixed
+
+* simplify deployment pipeline ([#67](https://github.com/undevy-org/portfolio/issues/67)) ([983408d](https://github.com/undevy-org/portfolio/commit/983408d8329a0cb89312f0bb6f4a003641b1a98f))
+
 ### [4.2.2](https://github.com/undevy-org/portfolio/compare/v4.2.1...v4.2.2) (2025-08-22)
 
 
