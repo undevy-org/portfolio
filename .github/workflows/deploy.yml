@@ -1,6 +1,6 @@
-# Deploy Pipeline for Portfolio - UPDATED (Bot removed)
+# Deploy Pipeline for Portfolio - FIXED
 # Location: .github/workflows/deploy.yml
-# Version: Post-monorepo split
+# Version: Post-monorepo split with fixes
 
 name: Deploy to DigitalOcean
 
@@ -57,8 +57,8 @@ jobs:
           
           echo "✅ All required files present"
       
-      # Deploy portfolio files to server
-      - name: Deploy portfolio to server
+      # Prepare deployment on server first
+      - name: Prepare deployment directory
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -67,15 +67,30 @@ jobs:
           script: |
             set -e
             
-            echo "🔧 Setting up Node environment..."
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            echo "🔧 Preparing deployment..."
             
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
-            TEMP_DIR="$DEPLOY_PATH-temp-$(date +%s)"
+            TEMP_PATH="$DEPLOY_PATH-temp-$(date +%s)"
             
             echo "📁 Creating temporary deployment directory..."
-            mkdir -p "$TEMP_DIR"
+            mkdir -p "$TEMP_PATH"
+            
+            # Save the temp path for next steps
+            echo "$TEMP_PATH" > /tmp/portfolio-deploy-path.txt
+            
+            # Backup current .env if it exists
+            if [ -f "$DEPLOY_PATH/.env" ]; then
+              echo "💾 Backing up .env file..."
+              cp "$DEPLOY_PATH/.env" /tmp/portfolio-env-backup
+            fi
+            
+            # Backup user-uploaded images if they exist
+            if [ -d "$DEPLOY_PATH/public/images/projects" ]; then
+              echo "📸 Backing up user-uploaded images..."
+              cp -r "$DEPLOY_PATH/public/images/projects" /tmp/portfolio-images-backup || true
+            fi
+            
+            echo "✅ Preparation complete"
       
       # Transfer files to server
       - name: Transfer files to server
@@ -85,7 +100,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "deployment-files/*"
-          target: "${{ secrets.DEPLOY_PATH_PORTFOLIO }}-temp-deploy"
+          # We'll move it to the right place in the next step
+          target: "/tmp/portfolio-deployment"
           strip_components: 1
           rm: true
       
@@ -104,17 +120,23 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
-            TEMP_PATH="$DEPLOY_PATH-temp-deploy/deployment-files"
+            TEMP_PATH=$(cat /tmp/portfolio-deploy-path.txt)
             
-            # Backup important files
-            echo "💾 Backing up environment and user files..."
-            if [ -f "$DEPLOY_PATH/.env" ]; then
-              cp "$DEPLOY_PATH/.env" "$TEMP_PATH/.env"
+            # Move files from /tmp to actual deployment directory
+            echo "📦 Moving files to deployment directory..."
+            mv /tmp/portfolio-deployment/deployment-files/* "$TEMP_PATH/"
+            
+            # Restore .env file
+            if [ -f /tmp/portfolio-env-backup ]; then
+              echo "♻️ Restoring .env file..."
+              cp /tmp/portfolio-env-backup "$TEMP_PATH/.env"
             fi
             
-            if [ -d "$DEPLOY_PATH/public/images/projects" ]; then
-              echo "📸 Backing up user-uploaded images..."
-              cp -r "$DEPLOY_PATH/public/images/projects" "$TEMP_PATH/public/images/" || true
+            # Restore user-uploaded images
+            if [ -d /tmp/portfolio-images-backup ]; then
+              echo "♻️ Restoring user-uploaded images..."
+              mkdir -p "$TEMP_PATH/public/images"
+              cp -r /tmp/portfolio-images-backup "$TEMP_PATH/public/images/projects"
             fi
             
             # Swap directories
@@ -147,10 +169,13 @@ jobs:
             echo "📊 Application status:"
             pm2 show "$APP" || true
             
-            # Cleanup old directories (keep last 2 for rollback)
-            echo "🧹 Cleaning up old deployments..."
+            # Cleanup
+            echo "🧹 Cleaning up..."
+            rm -rf /tmp/portfolio-deployment
+            rm -f /tmp/portfolio-deploy-path.txt
+            rm -f /tmp/portfolio-env-backup
+            rm -rf /tmp/portfolio-images-backup
             ls -dt $DEPLOY_PATH-old-* 2>/dev/null | tail -n +3 | xargs rm -rf || true
-            rm -rf $DEPLOY_PATH-temp-deploy || true
             
             echo "✅ Portfolio deployment completed!"
       
