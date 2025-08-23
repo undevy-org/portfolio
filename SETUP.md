@@ -19,13 +19,10 @@ This document provides a comprehensive, step-by-step guide to setting up the Int
 Add these secrets to your repository (Settings → Secrets and variables → Actions):
 
 - `SSH_HOST` - Your server's IP address
-- `SSH_USER` - Your server username  
+- `SSH_USER` - Your server username
 - `SSH_PRIVATE_KEY` - Your deployment SSH key
 - `DEPLOY_PATH_PORTFOLIO` - Path to portfolio app (e.g., `/home/username/your-domain.com`)
-- `DEPLOY_PATH_BOT_PARENT` - Parent path for bot (e.g., `/home/username`)
-- `DEPLOY_PATH_BOT` - Full path to bot (e.g., `/home/username/telegram-bot`)
 - `PM2_APP_NAME_PORTFOLIO` - PM2 process name for portfolio
-- `PM2_APP_NAME_BOT` - PM2 process name for bot
 
 ---
 
@@ -35,7 +32,7 @@ This section covers configuring a fresh Ubuntu 22.04 server.
 
 ### 2.1. Create a Droplet/VPS
 -   **Image:** Ubuntu 22.04 LTS x64
--   **Plan:** 2GB RAM / 2 CPUs is recommended. The 1GB plan is often insufficient for running the Next.js build process, Docker, and the OS simultaneously.
+-   **Plan:** 2GB RAM / 2 CPUs is recommended for running the Next.js build, Docker, and the OS.
 -   **Authentication:** Add your local machine's public SSH key for secure access.
 
 ### 2.2. Initial Server Security
@@ -120,9 +117,6 @@ mkdir -p ~/sites/your-domain.com
 # The directory for the Matomo Docker setup
 mkdir ~/matomo
 
-# The directory for the Telegram bot
-mkdir ~/telegram-bot
-
 # Create the master content file
 touch ~/content.json
 # Populate this file with your portfolio data, using docs/CONTENT_MODEL.md as a guide.
@@ -178,8 +172,8 @@ touch ~/content.json
     sudo certbot --nginx
     ```
 
-### 3.4. Deploy & Run Applications
-Clone your repository and start the applications using PM2.
+### 3.4. Deploy & Run The Portfolio Application
+Clone the repository and start the application using PM2.
 
 ```bash
 # Clone the project code
@@ -190,16 +184,6 @@ cd ~/sites/your-domain.com
 npm install
 npm run build
 pm2 start npm --name "portfolio-app" -- start
-pm2 save
-
-# Setup Telegram Bot
-cd ~/telegram-bot
-# Copy bot files from the repo (e.g., via scp or git)
-# Example: scp -r local/path/to/telegram-bot/* your_user@YOUR_SERVER_IP:~/telegram-bot/
-npm install --production
-# Create .env file with your bot token and API credentials
-nano .env 
-pm2 start bot.js --name "portfolio-bot"
 pm2 save
 ```
 
