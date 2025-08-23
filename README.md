@@ -1,8 +1,8 @@
 # Interactive Terminal Portfolio
 
-This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It features a unique gated access system, dynamic content personalization, and works in tandem with a headless CMS powered by a Telegram bot.
+This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It is a standalone Next.js application that can be deployed as a personal portfolio.
 
-**_Architecture Note:_** This repository contains the Next.js frontend application. The accompanying Telegram bot CMS has been extracted into its own repository: **[undevy-org/telegram-bot](https://github.com/undevy-org/telegram-bot)**.
+**_Architecture Note:_** This repository contains the frontend application. The accompanying headless CMS, a Telegram bot, is an **optional component** and resides in a separate repository: **[undevy-org/telegram-bot](https://github.com/undevy-org/telegram-bot)**.
 
 After authentication, the application transforms into a seamless Single Page Application (SPA) with hash-based routing, ensuring an instant, app-like user experience.
 
