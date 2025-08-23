@@ -1,6 +1,6 @@
-# Deploy Pipeline for Portfolio - FIXED
+# Deploy Pipeline for Portfolio - SIMPLIFIED
 # Location: .github/workflows/deploy.yml
-# Version: Post-monorepo split with fixes
+# Version: Post-monorepo split with simplified approach
 
 name: Deploy to DigitalOcean
 
@@ -32,7 +32,7 @@ jobs:
           path: deployment-files
       
       # Verify downloaded artifact
-      - name: Verify downloaded artifact
+      - name: Verify and prepare artifact
         run: |
           echo "📦 Verifying downloaded artifact..."
           
@@ -56,57 +56,34 @@ jobs:
           fi
           
           echo "✅ All required files present"
+          
+          # Create deployment archive
+          echo "📦 Creating deployment archive..."
+          cd deployment-files
+          tar -czf /tmp/portfolio-deploy.tar.gz .
+          echo "✅ Archive created: $(du -h /tmp/portfolio-deploy.tar.gz | cut -f1)"
       
-      # Prepare deployment on server first
-      - name: Prepare deployment directory
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            
-            echo "🔧 Preparing deployment..."
-            
-            DEPLOY_PATH="${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
-            TEMP_PATH="$DEPLOY_PATH-temp-$(date +%s)"
-            
-            echo "📁 Creating temporary deployment directory..."
-            mkdir -p "$TEMP_PATH"
-            
-            # Save the temp path for next steps
-            echo "$TEMP_PATH" > /tmp/portfolio-deploy-path.txt
-            
-            # Backup current .env if it exists
-            if [ -f "$DEPLOY_PATH/.env" ]; then
-              echo "💾 Backing up .env file..."
-              cp "$DEPLOY_PATH/.env" /tmp/portfolio-env-backup
-            fi
-            
-            # Backup user-uploaded images if they exist
-            if [ -d "$DEPLOY_PATH/public/images/projects" ]; then
-              echo "📸 Backing up user-uploaded images..."
-              cp -r "$DEPLOY_PATH/public/images/projects" /tmp/portfolio-images-backup || true
-            fi
-            
-            echo "✅ Preparation complete"
-      
-      # Transfer files to server
+      # Transfer files to server using direct SCP
       - name: Transfer files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deployment-files/*"
-          # We'll move it to the right place in the next step
-          target: "/tmp/portfolio-deployment"
-          strip_components: 1
-          rm: true
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          echo "🔑 Setting up SSH key..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Add host to known hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null
+          
+          echo "📤 Transferring portfolio files to server..."
+          scp -i ~/.ssh/deploy_key /tmp/portfolio-deploy.tar.gz $SSH_USER@$SSH_HOST:/tmp/
+          
+          echo "✅ Files transferred successfully"
       
-      # Complete deployment and restart
-      - name: Complete deployment
+      # Deploy on server
+      - name: Deploy and restart application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -120,23 +97,26 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH_PORTFOLIO }}"
-            TEMP_PATH=$(cat /tmp/portfolio-deploy-path.txt)
+            TEMP_PATH="$DEPLOY_PATH-temp-$(date +%s)"
             
-            # Move files from /tmp to actual deployment directory
-            echo "📦 Moving files to deployment directory..."
-            mv /tmp/portfolio-deployment/deployment-files/* "$TEMP_PATH/"
+            # Create temporary deployment directory
+            echo "📁 Creating temporary deployment directory..."
+            mkdir -p "$TEMP_PATH"
             
-            # Restore .env file
-            if [ -f /tmp/portfolio-env-backup ]; then
-              echo "♻️ Restoring .env file..."
-              cp /tmp/portfolio-env-backup "$TEMP_PATH/.env"
+            # Extract new files
+            echo "📦 Extracting portfolio files..."
+            tar -xzf /tmp/portfolio-deploy.tar.gz -C "$TEMP_PATH"
+            
+            # Backup and restore important files
+            if [ -f "$DEPLOY_PATH/.env" ]; then
+              echo "💾 Preserving .env file..."
+              cp "$DEPLOY_PATH/.env" "$TEMP_PATH/.env"
             fi
             
-            # Restore user-uploaded images
-            if [ -d /tmp/portfolio-images-backup ]; then
-              echo "♻️ Restoring user-uploaded images..."
+            if [ -d "$DEPLOY_PATH/public/images/projects" ]; then
+              echo "📸 Preserving user-uploaded images..."
               mkdir -p "$TEMP_PATH/public/images"
-              cp -r /tmp/portfolio-images-backup "$TEMP_PATH/public/images/projects"
+              cp -r "$DEPLOY_PATH/public/images/projects" "$TEMP_PATH/public/images/" || true
             fi
             
             # Swap directories
@@ -167,14 +147,11 @@ jobs:
             
             # Show application status
             echo "📊 Application status:"
-            pm2 show "$APP" || true
+            pm2 list | grep "$APP" || true
             
             # Cleanup
             echo "🧹 Cleaning up..."
-            rm -rf /tmp/portfolio-deployment
-            rm -f /tmp/portfolio-deploy-path.txt
-            rm -f /tmp/portfolio-env-backup
-            rm -rf /tmp/portfolio-images-backup
+            rm -f /tmp/portfolio-deploy.tar.gz
             ls -dt $DEPLOY_PATH-old-* 2>/dev/null | tail -n +3 | xargs rm -rf || true
             
             echo "✅ Portfolio deployment completed!"
