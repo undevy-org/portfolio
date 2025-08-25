@@ -15,6 +15,10 @@
     "test:coverage": "c8 --reporter=text --reporter=html npm test",
     "test:coverage:utils": "c8 --reporter=text --include='src/app/utils/**' npm test -- src/app/utils",
     "test:simple-coverage": "jest --coverage --coverageDirectory=coverage --collectCoverageFrom='src/app/utils/{formatters,session}.js' --coveragePathIgnorePatterns='/node_modules/|test\\.js$'",
+    "test:ci": "jest --config=jest.config.ci.mjs --watchAll=false",
+    "test:ci-fast": "CI_SKIP_INTEGRATION=true jest --config=jest.config.ci.mjs --watchAll=false",
+    "test:integration": "jest src/app/integration.test.js",
+    "workflow:check": "./scripts/monitor-workflow.sh",
     "release": "standard-version"
   },
   "dependencies": {
