@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [5.1.2](https://github.com/undevy-org/portfolio/compare/v5.1.1...v5.1.2) (2025-08-25)
+
+
+### Added
+
+* **architecture:** implement persistent application shell pattern ([#72](https://github.com/undevy-org/portfolio/issues/72)) ([63fde77](https://github.com/undevy-org/portfolio/commit/63fde77475c93883421bac1f7b92e89e6f46b4fb))
+
 ### [5.1.1](https://github.com/undevy-org/portfolio/compare/v5.1.0...v5.1.1) (2025-08-25)
 
 
