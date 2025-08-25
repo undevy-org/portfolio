@@ -311,9 +311,37 @@ export default function Entry() {
 
     setIsLoading(true);
     setAuthError(null);
-    addLog(`AUTHENTICATING: ${code}`);
+    addLog(`ACCESS CODE: ${code}`);
     
-    router.push(`/?code=${code}`);
+    try {
+      const response = await fetch(`/api/session?code=${code}`);
+      
+      if (response.ok) {
+        const userData = await response.json();
+        
+        const enrichedData = {
+          ...userData,
+          accessCode: code
+        };
+        
+        setSessionData(enrichedData);
+        addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown Company'}`);
+        
+        navigate('MainHub', false);
+        
+        // Update URL to reflect authentication
+        router.push(`/?code=${code}`);
+        
+      } else {
+        addLog(`ACCESS DENIED: Invalid code ${code}`);
+        setAuthError('Invalid access code. Please try again.');
+      }
+    } catch (error) {
+      addLog(`ERROR: Failed to authenticate`);
+      setAuthError('Connection error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyPress = (e) => {
