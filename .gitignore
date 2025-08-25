@@ -49,6 +49,7 @@ next-env.d.ts
 test-content-local.json
 /content-backups
 config/domains.json
+/.qoder/
 
 # Project images - stored locally and on server only
 /public/images/projects/
