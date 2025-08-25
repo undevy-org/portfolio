@@ -34,6 +34,14 @@ export function MockSessionProvider({
   setThemeExplicit: mockSetThemeExplicit = jest.fn(), // Important!
   toggleTheme = jest.fn(),
   endSession = jest.fn(),
+  // Enhanced mock functions for better testing
+  clearLogs = jest.fn(),
+  exportLogs = jest.fn(),
+  toggleSection = jest.fn(),
+  setTab = jest.fn(),
+  resetSession = jest.fn(),
+  updateSessionData = jest.fn(),
+  setSessionData = jest.fn(),
   // Additional overrides
   ...overrides
 }) {
@@ -143,12 +151,21 @@ export function MockSessionProvider({
     
     // UI state
     expandedSections: {},
-    toggleSection: jest.fn(),
+    toggleSection,
     activeTab: {},
-    setTab: jest.fn(),
+    setTab,
     
     // Session management
     endSession,
+    resetSession,
+    updateSessionData,
+    setSessionData: jest.fn(),
+    
+    // Enhanced logging capabilities
+    clearLogs,
+    exportLogs,
+    logEntries: logs,
+    systemLogCount: logs.length,
     
     // Web3 specific
     web3LogoutPending: false,
@@ -176,6 +193,12 @@ export function MockSessionProvider({
     setSelectedRole,
     setSelectedSkill,
     endSession,
+    resetSession,
+    updateSessionData,
+    clearLogs,
+    exportLogs,
+    toggleSection,
+    setTab,
     overrides
   ]);
   
