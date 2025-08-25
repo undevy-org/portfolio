@@ -1,6 +1,7 @@
 // src/app/layouts/TerminalWindow.js
 'use client';
 
+import { memo, useMemo, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
 import { 
@@ -19,7 +20,7 @@ import {
 } from 'lucide-react';
 import { getScreenDisplayName } from '../utils/formatters';
 
-export default function TerminalWindow({ 
+function TerminalWindow({ 
   title, 
   children, 
   fixedHeight = false  // NEW PROP: Controls whether to use fixed height mode
@@ -39,17 +40,26 @@ export default function TerminalWindow({
     sessionData
   } = useSession();
 
-  const isBackDisabled = navigationHistory.length === 0 || currentScreen === 'Entry';
-  const isUpDisabled = !screenHierarchy[currentScreen];
-  const isHomeDisabled = currentScreen === 'MainHub' || currentScreen === 'Entry';
+  // Memoize navigation button states to prevent recalculation on every render
+  const navigationStates = useMemo(() => ({
+    isBackDisabled: navigationHistory.length === 0 || currentScreen === 'Entry',
+    isUpDisabled: !screenHierarchy[currentScreen],
+    isHomeDisabled: currentScreen === 'MainHub' || currentScreen === 'Entry'
+  }), [navigationHistory.length, currentScreen, screenHierarchy]);
 
-  let displayTitle = title; 
+  // Extract individual states for cleaner code
+  const { isBackDisabled, isUpDisabled, isHomeDisabled } = navigationStates;
 
-  if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
-      displayTitle = domainData?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
-  }
+  // Memoize display title calculation to prevent unnecessary recalculations
+  const displayTitle = useMemo(() => {
+    if (currentScreen === 'MainHub' || currentScreen === 'Entry') {
+      return domainData?.terminalTitle || 'portfolio'; // Fallback to generic 'portfolio' if not configured
+    }
+    return title;
+  }, [title, currentScreen, domainData?.terminalTitle]);
 
-  const buildBreadcrumbPath = () => {
+  // Memoize breadcrumb path calculation to prevent rebuilding on every render
+  const breadcrumbPath = useMemo(() => {
     const path = [];
     let current = currentScreen;
     
@@ -68,20 +78,18 @@ export default function TerminalWindow({
     }
     
     return path;
-  };
+  }, [currentScreen, screenHierarchy]);
 
-  const breadcrumbPath = buildBreadcrumbPath();
-
-  const handleClose = () => {
+  // Memoize event handlers to prevent child component re-renders
+  const handleClose = useCallback(() => {
     if (currentScreen === 'Entry') {
       return;
     }
     endSession();
-  };
+  }, [currentScreen, endSession]);
 
-  // Dictionary of icons for themes
-  // Each theme has a dedicated icon for better UX
-  const themeIcons = {
+  // Memoize theme icons dictionary and current icon selection
+  const themeIcons = useMemo(() => ({
     dark: Sun,     
     light: Terminal,     
     amber: Bug,
@@ -90,11 +98,15 @@ export default function TerminalWindow({
     operator: LayoutDashboard,
     kyoto: SlidersHorizontal,
     radar: Moon,
-  };
+  }), []);
 
-  const CurrentThemeIcon = themeIcons[theme] || Sun;
+  const CurrentThemeIcon = useMemo(() => 
+    themeIcons[theme] || Sun, 
+    [theme, themeIcons]
+  );
 
-  const containerClasses = `
+  // Memoize CSS classes to prevent string concatenation on every render
+  const containerClasses = useMemo(() => `
     w-full 
     max-w-2xl 
     border 
@@ -107,14 +119,14 @@ export default function TerminalWindow({
       // Standard mode: Normal flow, grow with content
       ''
     }
-  `;
+  `, [fixedHeight]);
 
-  const contentClasses = `
+  const contentClasses = useMemo(() => `
   ${fixedHeight ? 
     'flex-1 overflow-y-auto md:overflow-y-scroll min-h-0' : 
     ''
     }
-  `;
+  `, [fixedHeight]);
 
   return (
     <div className={containerClasses}>
@@ -221,3 +233,14 @@ export default function TerminalWindow({
     </div>
   );
 }
+
+// Wrap with React.memo with custom comparison function to prevent unnecessary re-renders
+// This ensures TerminalWindow only re-renders when props actually change
+export default memo(TerminalWindow, (prevProps, nextProps) => {
+  // Only re-render if title, children, or fixedHeight props change
+  return (
+    prevProps.title === nextProps.title &&
+    prevProps.children === nextProps.children &&
+    prevProps.fixedHeight === nextProps.fixedHeight
+  );
+});

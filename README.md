@@ -176,6 +176,7 @@ This project is thoroughly documented. For more details, please see the followin
 
 -   **[`SETUP.md`](./SETUP.md):** A comprehensive guide to deploying your own instance from scratch.
 -   **[`TESTING.md`](./TESTING.md):** An overview of our testing philosophy, tools, and practices.
+-   **[`PERSISTENT-SHELL.md`](./PERSISTENT-SHELL.md):** Technical documentation of the persistent application shell architecture that ensures smooth navigation and optimal performance.
 -   **[`CHANGELOG.md`](./CHANGELOG.md):** A detailed history of all notable changes and project milestones.
 -   **[`DEVELOPMENT_HISTORY.md`](./DEVELOPMENT_HISTORY.md):** Historical development phases before semantic versioning.
 -   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
