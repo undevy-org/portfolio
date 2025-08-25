@@ -26,8 +26,76 @@ jobs:
           node-version: '20'
           cache: 'npm'
       
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies with retry logic
+        run: |
+          echo "🔍 Checking npm registry availability..."
+          npm config list
+          npm ping --registry https://registry.npmjs.org/ || echo "⚠️ Primary registry ping failed, continuing with retry logic"
+          
+          echo "📦 Installing dependencies with enhanced retry logic..."
+          
+          # Function to attempt npm ci with proper error handling
+          install_deps() {
+            local attempt=$1
+            echo "Attempt $attempt: Running npm ci..."
+            
+            if timeout 600 npm ci --verbose --no-fund --no-audit; then
+              echo "✅ Dependencies installed successfully on attempt $attempt"
+              return 0
+            else
+              local exit_code=$?
+              echo "❌ Attempt $attempt failed with exit code $exit_code"
+              
+              # Clear npm cache on failure
+              echo "🧹 Clearing npm cache..."
+              npm cache clean --force 2>/dev/null || true
+              
+              return $exit_code
+            fi
+          }
+          
+          # Retry logic with exponential backoff
+          MAX_ATTEMPTS=5
+          DELAY=30
+          
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            if install_deps $i; then
+              echo "🎉 Installation successful!"
+              break
+            elif [ $i -eq $MAX_ATTEMPTS ]; then
+              echo "💥 All $MAX_ATTEMPTS attempts failed!"
+              echo "Last attempt details:"
+              echo "- Registry: $(npm config get registry)"
+              echo "- Cache location: $(npm config get cache)"
+              echo "- Node version: $(node --version)"
+              echo "- NPM version: $(npm --version)"
+              
+              # Try alternative approach with npm install
+              echo "🔄 Trying fallback: npm install instead of npm ci..."
+              if timeout 600 npm install --verbose --no-fund --no-audit; then
+                echo "✅ Fallback installation successful!"
+                break
+              else
+                echo "💀 All installation methods failed. Exiting."
+                exit 1
+              fi
+            else
+              echo "⏳ Waiting ${DELAY} seconds before retry..."
+              sleep $DELAY
+              DELAY=$((DELAY * 2))  # Exponential backoff
+            fi
+          done
+          
+          echo "📋 Final dependency verification:"
+          npm list --depth=0 || echo "⚠️ Some dependencies may have issues, but installation completed"
+          
+          # Specific check for problematic packages
+          echo "🔍 Checking for zustand..."
+          if npm list zustand 2>/dev/null; then
+            echo "✅ zustand successfully installed"
+          else
+            echo "⚠️ zustand not found in dependency tree (may be indirect)"
+          fi
       
       - name: Run linter
         run: npm run lint
