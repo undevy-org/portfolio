@@ -36,6 +36,8 @@ jobs:
         run: npm test
       
       - name: Build project
+        env:
+          NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE: ${{ secrets.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE }}
         run: |
           echo "🏗️ Building project..."
           npm run build
