@@ -191,3 +191,189 @@ export function createMockFile(name = 'test.pdf', size = 1024, type = 'applicati
 export function delay(ms = 100) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * Advanced debugging utilities for test development
+ */
+export const TestDebugger = {
+  /**
+   * Log component render tree for debugging
+   */
+  logRenderTree: (container, label = 'Component Tree') => {
+    console.group(`🌳 ${label}`);
+    console.log(container.innerHTML);
+    console.groupEnd();
+  },
+
+  /**
+   * Log all available roles and accessible names
+   */
+  logAccessibleElements: (container) => {
+    const elements = container.querySelectorAll('*');
+    const roles = new Map();
+    
+    elements.forEach(el => {
+      const role = el.getAttribute('role') || el.tagName.toLowerCase();
+      const name = el.getAttribute('aria-label') || el.textContent?.trim() || '';
+      
+      if (!roles.has(role)) {
+        roles.set(role, []);
+      }
+      
+      if (name) {
+        roles.get(role).push(name.substring(0, 50));
+      }
+    });
+    
+    console.group('♿ Accessible Elements');
+    for (const [role, names] of roles) {
+      if (names.length > 0) {
+        console.log(`${role}:`, names);
+      }
+    }
+    console.groupEnd();
+  },
+
+  /**
+   * Monitor function calls on mock objects
+   */
+  monitorMockCalls: (mockFn, label) => {
+    const originalFn = mockFn;
+    const wrappedFn = jest.fn((...args) => {
+      console.log(`📞 ${label} called with:`, args);
+      return originalFn(...args);
+    });
+    
+    // Copy over existing mock properties
+    Object.keys(originalFn).forEach(key => {
+      if (key !== 'mockImplementation') {
+        wrappedFn[key] = originalFn[key];
+      }
+    });
+    
+    return wrappedFn;
+  },
+
+  /**
+   * Capture and log CSS classes applied to elements
+   */
+  logElementClasses: (element, label = 'Element') => {
+    const classes = Array.from(element.classList);
+    console.log(`🎨 ${label} classes:`, classes);
+    return classes;
+  },
+
+  /**
+   * Debug async state changes in components
+   */
+  waitForStateChange: async (checkFn, timeout = 5000, interval = 100) => {
+    const startTime = Date.now();
+    
+    while (Date.now() - startTime < timeout) {
+      try {
+        const result = checkFn();
+        if (result) {
+          console.log('✅ State change detected');
+          return result;
+        }
+      } catch (error) {
+        // Continue waiting
+      }
+      
+      await delay(interval);
+    }
+    
+    console.warn('⏱️ State change timeout');
+    throw new Error(`State change not detected within ${timeout}ms`);
+  },
+
+  /**
+   * Log component props for debugging
+   */
+  logComponentProps: (component, label = 'Component') => {
+    if (component && component.props) {
+      console.group(`⚙️ ${label} Props`);
+      Object.entries(component.props).forEach(([key, value]) => {
+        console.log(`${key}:`, typeof value === 'function' ? '[Function]' : value);
+      });
+      console.groupEnd();
+    }
+  }
+};
+
+/**
+ * Test data fixtures for consistent testing
+ */
+export const TestFixtures = {
+  /**
+   * Common test scenarios for different component states
+   */
+  componentStates: {
+    loading: { isLoading: true, data: null, error: null },
+    loaded: { isLoading: false, data: { test: 'data' }, error: null },
+    error: { isLoading: false, data: null, error: new Error('Test error') },
+    empty: { isLoading: false, data: [], error: null }
+  },
+
+  /**
+   * Mock user interaction events
+   */
+  userEvents: {
+    click: (element) => ({ type: 'click', target: element }),
+    keyDown: (key) => ({ type: 'keydown', key, code: key }),
+    change: (value) => ({ type: 'change', target: { value } }),
+    submit: () => ({ type: 'submit', preventDefault: jest.fn() })
+  },
+
+  /**
+   * Common viewport sizes for responsive testing
+   */
+  viewports: {
+    mobile: { width: 375, height: 667 },
+    tablet: { width: 768, height: 1024 },
+    desktop: { width: 1440, height: 900 },
+    wide: { width: 1920, height: 1080 }
+  }
+};
+
+/**
+ * Performance testing utilities
+ */
+export const PerformanceTestUtils = {
+  /**
+   * Measure component render time
+   */
+  measureRenderTime: async (renderFn) => {
+    const start = performance.now();
+    const result = renderFn();
+    const end = performance.now();
+    
+    const renderTime = end - start;
+    console.log(`⏱️ Render time: ${renderTime.toFixed(2)}ms`);
+    
+    return { result, renderTime };
+  },
+
+  /**
+   * Test for memory leaks in component lifecycle
+   */
+  checkMemoryLeaks: (component) => {
+    const initialMemory = performance.memory?.usedJSHeapSize || 0;
+    
+    return {
+      start: () => {
+        return performance.memory?.usedJSHeapSize || 0;
+      },
+      check: () => {
+        const currentMemory = performance.memory?.usedJSHeapSize || 0;
+        const memoryDiff = currentMemory - initialMemory;
+        
+        if (memoryDiff > 1000000) { // 1MB threshold
+          console.warn('⚠️ Potential memory leak detected:', `${memoryDiff} bytes`);
+        }
+        
+        return memoryDiff;
+      }
+    };
+  }
+};
