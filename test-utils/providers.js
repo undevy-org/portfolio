@@ -41,6 +41,7 @@ export function MockSessionProvider({
   setTab = jest.fn(),
   resetSession = jest.fn(),
   updateSessionData = jest.fn(),
+  setSessionData = jest.fn(),
   // Additional overrides
   ...overrides
 }) {
@@ -158,6 +159,7 @@ export function MockSessionProvider({
     endSession,
     resetSession,
     updateSessionData,
+    setSessionData: jest.fn(),
     
     // Enhanced logging capabilities
     clearLogs,

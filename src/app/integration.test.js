@@ -82,6 +82,7 @@ describe('Integration Tests: User Flows', () => {
     it('should navigate from Entry to MainHub through code authentication', async () => {
       const mockNavigate = jest.fn();
       const mockAddLog = jest.fn();
+      const mockSetSessionData = jest.fn();
       
       // Mock fetch for successful authentication
       global.fetch = jest.fn(() =>
@@ -98,6 +99,7 @@ describe('Integration Tests: User Flows', () => {
           currentScreen="Entry"
           navigate={mockNavigate}
           addLog={mockAddLog}
+          setSessionData={mockSetSessionData}
         >
           <Entry />
         </MockSessionProvider>
@@ -120,7 +122,7 @@ describe('Integration Tests: User Flows', () => {
       });
 
       // Verify logging
-      expect(mockAddLog).toHaveBeenCalledWith('ACCESS CODE: testcode');
+      expect(mockAddLog).toHaveBeenCalledWith('ACCESS CODE: TESTCODE', 'info');
 
       // Simulate successful navigation to MainHub
       rerender(
