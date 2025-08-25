@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [5.0.2](https://github.com/undevy-org/portfolio/compare/v5.0.1...v5.0.2) (2025-08-25)
+
+
+### Fixed
+
+* add Web3 access code to build environment ([#69](https://github.com/undevy-org/portfolio/issues/69)) ([6863c32](https://github.com/undevy-org/portfolio/commit/6863c32de8f9cd09e29592290df29a50a3053fe6))
+
 ### [5.0.1](https://github.com/undevy-org/portfolio/compare/v5.0.0...v5.0.1) (2025-08-23)
 
 ## [5.0.0](https://github.com/undevy-org/portfolio/compare/v4.2.2...v5.0.0) (2025-08-23)
