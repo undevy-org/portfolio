@@ -1,12 +1,10 @@
 // src/app/page.js
 'use client';
 
-import { useEffect, useState, Suspense, useMemo } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from './context/SessionContext';
-import ScreenRenderer from './components/ScreenRenderer';
-import TerminalWindow from './layouts/TerminalWindow';
-import AnimatedScreenTransition from './components/AnimatedScreenTransition';
+import PersistentShell from './components/PersistentShell';
 
 function AppContent() {
   const searchParams = useSearchParams();
@@ -16,33 +14,11 @@ function AppContent() {
     navigate, 
     addLog, 
     endSession, 
-    setAuthError,
-    currentScreen,
-    currentDomain,
-    domainData
+    setAuthError
   } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   
-  // Calculate window title based on current screen
-  const windowTitle = useMemo(() => {
-    // For Entry and MainHub, use domain-specific title
-    if (currentScreen === 'Entry' || currentScreen === 'MainHub') {
-      // Priority: domainData > currentDomain > fallback
-      if (domainData?.terminalTitle) {
-        return domainData.terminalTitle;
-      }
-      if (currentDomain) {
-        return `${currentDomain}_portfolio`;
-      }
-      return 'portfolio';
-    }
-    
-    // For other screens, convert CamelCase to snake_case
-    return currentScreen.replace(/([A-Z])/g, (match, p1, offset) => 
-      offset > 0 ? '_' + p1.toLowerCase() : p1.toLowerCase()
-    );
-  }, [currentScreen, currentDomain, domainData]);
-  
+  // Authentication and session management logic
   useEffect(() => {
     const code = searchParams.get('code');
     const demoMode = searchParams.get('demo');
@@ -142,22 +118,8 @@ function AppContent() {
 
   }, [searchParams, sessionData, setSessionData, navigate, addLog, setAuthError, endSession]);
   
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="w-full max-w-2xl mx-auto text-center p-8">
-        <div className="text-primary">AUTHENTICATING...</div>
-      </div>
-    );
-  }
-  
-  return (
-    <TerminalWindow title={windowTitle} fixedHeight={true}>
-      <AnimatedScreenTransition>
-        <ScreenRenderer />
-      </AnimatedScreenTransition>
-    </TerminalWindow>
-  );
+  // Return PersistentShell which manages TerminalWindow mounting
+  return <PersistentShell isLoading={isLoading} />;
 }
 
 export default function Home() {
