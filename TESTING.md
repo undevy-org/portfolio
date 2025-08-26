@@ -104,7 +104,10 @@ Our testing strategy is broken down by type, forming our version of the Testing 
     -   `ScreenWrapper.test.js` - Layout wrapper behavior, conditional padding, screen-specific classes
     -   `ThemeSwitcher.test.js` - Theme selection, conditional rendering, accessibility attributes
     -   `Accordion.test.js` - ✅ **ENABLED** - Section expansion/collapse, content rendering, system log integration, theme support, edge cases (18 tests passing)
+    -   `MorphingTerminal.test.js` - ✅ **REFACTORED** - Animation control, theme integration, performance management with proper async patterns (17 tests passing)
+    -   `TerminalImagePreview.test.js` - ✅ **REFACTORED** - Image loading states, lightbox functionality, responsive behavior with cache isolation (25 tests passing)
 -   **Goal:** To ensure that individual UI building blocks are reliable and behave as expected.
+-   **Recent Improvements:** Eliminated act() warnings and race conditions through proper async testing patterns using `waitFor()` instead of fixed timeouts.
 
 ### 5.3. Content Linting Test (Special Case)
 
@@ -135,11 +138,12 @@ Our testing strategy is broken down by type, forming our version of the Testing 
 
 ### 6.1. Test Execution Statistics
 The project currently maintains:
-- **8 test suites** passing (1 with minor issues)
-- **80+ tests** total (70+ passing)
+- **19 test suites** passing
+- **301+ tests** total (all passing)
 - **Unit tests** for all utility functions with enhanced edge case handling
-- **Component tests** for core UI components including the comprehensive Accordion component
+- **Component tests** for core UI components with robust async patterns
 - **Integration tests** covering critical user flows and error scenarios
+- **Zero act() warnings** achieved through proper async testing patterns
 
 ### 6.2. Known Issues & Limitations
 
@@ -153,7 +157,94 @@ Code coverage reporting is currently non-functional due to incompatibility betwe
 
 ## 7. Writing New Tests
 
-### 7.1. Unit Test Template
+### 7.1. Async Testing Best Practices
+
+**Always Use `waitFor()` for Asynchronous Operations**
+
+When testing components with async behavior, use `waitFor()` from React Testing Library instead of arbitrary timeouts:
+
+```javascript
+// ❌ AVOID: Fixed timeouts can cause race conditions and act() warnings
+const waitForStable = () => new Promise(resolve => setTimeout(resolve, 100));
+test('animation test', async () => {
+  renderComponent({ autoPlay: true });
+  await waitForStable();
+  // Test assertions...
+});
+
+// ✅ PREFERRED: Wait for specific DOM conditions
+test('animation test', async () => {
+  renderComponent({ autoPlay: true });
+  
+  const element = await waitFor(() => {
+    const el = document.querySelector('pre');
+    expect(el).toBeInTheDocument();
+    return el;
+  });
+  
+  // Wait for actual content change instead of arbitrary timeout
+  const initialContent = element.textContent;
+  await waitFor(() => {
+    expect(element.textContent).not.toBe(initialContent);
+  }, { timeout: 1000 });
+});
+```
+
+**Avoid Global State Interference**
+
+Use unique identifiers to prevent test pollution from global caches:
+
+```javascript
+// ❌ AVOID: Same values across tests can cause cache collisions
+function renderComponent() {
+  return render(<Component src="/test-image.jpg" />);
+}
+
+// ✅ PREFERRED: Unique values prevent cache interference
+function renderComponent(props = {}) {
+  const testId = Date.now() + Math.random();
+  return render(
+    <Component 
+      src={props.src || `/test-image-${testId}.jpg`} 
+      {...props} 
+    />
+  );
+}
+```
+
+**Wrap State-Changing Events in `act()`**
+
+When testing events that trigger async state updates, wrap them in `act()` to eliminate React warnings:
+
+```javascript
+// ❌ AVOID: Can cause act() warnings for async state updates
+test('handles resize events', () => {
+  renderComponent();
+  global.innerWidth = 500;
+  global.dispatchEvent(new Event('resize'));
+  expect(screen.getByText('Expected')).toBeInTheDocument();
+});
+
+// ✅ PREFERRED: Properly wrapped async events
+test('handles resize events', async () => {
+  renderComponent();
+  
+  await act(async () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 500,
+    });
+    global.dispatchEvent(new Event('resize'));
+  });
+  
+  await waitFor(() => {
+    expect(screen.getByText('Expected')).toBeInTheDocument();
+  });
+});
+```
+
+### 7.2. Unit Test Template
 
 ```javascript
 import { functionToTest } from './module';
@@ -222,13 +313,11 @@ The CI configuration can be found in `.github/workflows/ci.yml`.
 
 ### 9.1. Short Term
 - Resolve coverage reporting issues with Next.js 13+
-- Enable and verify Accordion component tests
-- Enable integration tests once component dependencies are implemented
-- Add tests for remaining UI components (NavigationButtons, AnalyticsPanel, SystemLog, MorphingTerminal)
+- Add tests for remaining UI components (NavigationButtons, AnalyticsPanel, SystemLog)
+- Add tests for all screens (Entry, ProfileBoot, MainHub, Introduction, etc.)
 
 ### 9.2. Long Term
 - Implement E2E tests using Playwright or Cypress
 - Add visual regression testing for UI components
 - Achieve 80% code coverage for critical paths
 - Implement performance testing for key user flows
-- Add tests for all screens (Entry, ProfileBoot, MainHub, Introduction, etc.)
