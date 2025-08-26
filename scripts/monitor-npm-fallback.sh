@@ -29,7 +29,15 @@ if command -v gh &> /dev/null; then
     fi
     echo ""
 else
-    echo "⚠️  GitHub CLI not installed. Install with: brew install gh"
+    echo "⚠️  GitHub CLI not installed. Install with:"
+    echo "   macOS: brew install gh"
+    echo "   Linux: curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg"
+    echo "          echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null"
+    echo "          sudo apt update && sudo apt install gh"
+    echo "   Windows: winget install --id GitHub.cli"
+    echo "   Other: See https://github.com/cli/cli#installation"
+    echo ""
+    echo "   Continuing with limited monitoring (no GitHub Actions analysis)..."
     echo "   Manual monitoring: Check GitHub Actions tab for success rates"
     echo ""
 fi

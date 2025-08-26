@@ -34,17 +34,35 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
       
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+      
       - name: Install dependencies with cache optimization
         env:
           EMERGENCY_NPM_BYPASS: ${{ vars.EMERGENCY_NPM_BYPASS }}
+        timeout-minutes: 4
         run: |
-          echo "🚀 Phase 1: Optimized npm installation with cache strategy"
+          echo "🚀 Phase 1: Optimized npm installation with dual cache strategy"
           echo "🔍 Environment check:"
           echo "- Node version: $(node --version)"
           echo "- NPM version: $(npm --version)"
           echo "- Registry: $(npm config get registry)"
           echo "- Cache location: $(npm config get cache)"
           echo "- Emergency bypass: ${EMERGENCY_NPM_BYPASS:-false}"
+          
+          # Check cache status
+          if [ -d "node_modules" ]; then
+            echo "- node_modules cache: HIT ($(du -sh node_modules 2>/dev/null | cut -f1 || echo 'unknown'))"
+            cache_hit="true"
+          else
+            echo "- node_modules cache: MISS"
+            cache_hit="false"
+          fi
           
           # Check if emergency bypass is enabled
           if [ "${EMERGENCY_NPM_BYPASS}" = "true" ]; then
@@ -64,10 +82,16 @@ jobs:
             duration=$((end_time - start_time))
             echo "✅ Dependencies installed successfully in ${duration} seconds"
             
-            # Performance metrics
+            # Performance metrics - export to both step summary and environment
+            echo "NPM_INSTALL_DURATION=${duration}" >> $GITHUB_ENV
+            echo "NPM_INSTALL_ATTEMPTS=1" >> $GITHUB_ENV
+            echo "NPM_CACHE_HIT=${cache_hit}" >> $GITHUB_ENV
+            echo "NPM_REGISTRY_USED=primary" >> $GITHUB_ENV
+            
             echo "npm_install_duration=${duration}" >> $GITHUB_STEP_SUMMARY
             echo "npm_install_attempts=1" >> $GITHUB_STEP_SUMMARY
             echo "npm_cache_strategy=prefer-offline" >> $GITHUB_STEP_SUMMARY
+            echo "npm_cache_hit=${cache_hit}" >> $GITHUB_STEP_SUMMARY
             echo "npm_registry_used=primary" >> $GITHUB_STEP_SUMMARY
             
           else
@@ -80,9 +104,15 @@ jobs:
             echo "- Registry: $(npm config get registry)"
             echo "- Network: $(curl -s --connect-timeout 5 https://registry.npmjs.org/ > /dev/null && echo 'OK' || echo 'FAILED')"
             
-            # Log failure metrics
+            # Log failure metrics - export to both step summary and environment
+            echo "NPM_INSTALL_DURATION=${duration}" >> $GITHUB_ENV
+            echo "NPM_INSTALL_ATTEMPTS=1" >> $GITHUB_ENV
+            echo "NPM_CACHE_HIT=${cache_hit}" >> $GITHUB_ENV
+            echo "NPM_FAILURE_REASON=phase1_failed" >> $GITHUB_ENV
+            
             echo "npm_install_duration=${duration}" >> $GITHUB_STEP_SUMMARY
             echo "npm_install_attempts=1" >> $GITHUB_STEP_SUMMARY
+            echo "npm_cache_hit=${cache_hit}" >> $GITHUB_STEP_SUMMARY
             echo "npm_failure_reason=phase1_failed" >> $GITHUB_STEP_SUMMARY
             
             echo "💀 Phase 1 installation failed. Future phases will be implemented if needed."
