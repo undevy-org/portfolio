@@ -71,7 +71,7 @@ After authentication, the application transforms into a seamless Single Page App
 
 This project includes a comprehensive test suite using Jest and React Testing Library. The tests act as a safety net to prevent regressions and ensure the core logic behaves as expected.
 
-For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[Testing Guide](./docs/testing/)** documentation.
+For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[Testing Guide](./docs/TESTING.md)** documentation.
 
 ## Contributing
 
@@ -172,18 +172,18 @@ The current version is displayed in the application's system log on startup and 
 
 ## Project Documentation
 
-This project is thoroughly documented. For comprehensive documentation, visit the **[Documentation Hub](./docs/)** or see the following sections:
+This project is thoroughly documented. For comprehensive documentation, visit the **[Documentation Hub](./docs/)** or see the following guides:
 
 ### Core Documentation
--   **[Setup & Deployment](./docs/setup/):** Comprehensive guides for installation, configuration, and deployment.
--   **[Testing](./docs/testing/):** Testing philosophy, strategies, and implementation guidelines.
--   **[Content Model](./docs/content-model/):** Structure and management of portfolio content.
--   **[Design System](./docs/design-system/):** Terminal-inspired design system and component library.
+-   **[Setup & Deployment](./docs/SETUP.md):** Complete setup, configuration, and deployment guide.
+-   **[Testing](./docs/TESTING.md):** Testing philosophy, strategies, and implementation guidelines.
+-   **[Content Model](./docs/CONTENT-MODEL.md):** Structure and management of portfolio content.
+-   **[Design System](./docs/DESIGN-SYSTEM.md):** Terminal-inspired design system and component library.
 
-### Development Resources
--   **[Development History](./docs/development/):** Technical decisions and project evolution.
--   **[NPM Fallback Strategy](./docs/npm-fallback/):** NPM registry fallback implementation and optimization.
--   **[Development Diffs](./docs/diffs/):** Recent implementation changes and improvements.
+### Technical Documentation
+-   **[Development History](./docs/DEVELOPMENT_HISTORY.md):** Technical decisions and project evolution.
+-   **[Persistent Shell Architecture](./docs/PERSISTENT-SHELL.md):** Technical architecture documentation.
+-   **[NPM Fallback Strategy](./docs/npm-fallback/):** NPM registry fallback implementation.
 
 ### Project Files
 -   **[Changelog](./CHANGELOG.md):** Version history and release notes.
