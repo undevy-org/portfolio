@@ -1,6 +1,6 @@
 // src/app/components/ui/Tabs.js
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from '../../context/SessionContext';
 import dynamic from 'next/dynamic';
 
@@ -9,16 +9,33 @@ const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
   loading: () => <div>Loading image...</div>
 });
 
-export default function Tabs({ tabs, defaultTab = null }) {
+export default function Tabs({ tabs = [], defaultTab = null }) {
   const { addLog } = useSession();
-  const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
+  
+  // Safely handle empty or invalid tabs
+  const validTabs = Array.isArray(tabs) ? tabs : [];
+  const firstTabId = validTabs.length > 0 ? validTabs[0].id : null;
+  
+  // Determine initial active tab
+  const initialActiveTab = defaultTab && validTabs.find(tab => tab.id === defaultTab) 
+    ? defaultTab 
+    : firstTabId;
+    
+  const [activeTab, setActiveTab] = useState(initialActiveTab);
+
+  // Update active tab when tabs prop changes and current activeTab is not valid
+  useEffect(() => {
+    if (!validTabs.find(tab => tab.id === activeTab) && firstTabId) {
+      setActiveTab(firstTabId);
+    }
+  }, [tabs, activeTab, validTabs, firstTabId]);
 
   const handleTabClick = (tabId, tabLabel) => {
     setActiveTab(tabId);
     addLog(`TAB SELECTED: ${tabLabel}`);
   };
 
-  const activeTabData = tabs.find(tab => tab.id === activeTab);
+  const activeTabData = validTabs.find(tab => tab.id === activeTab);
 
   const renderContentItem = (item, idx) => {
     switch (item.type) {
@@ -86,11 +103,16 @@ export default function Tabs({ tabs, defaultTab = null }) {
     return <div className="text-secondary">No content available</div>;
   };
 
+  // Don't render anything if no valid tabs
+  if (!validTabs.length) {
+    return null;
+  }
+
     return (
     <div>
       <div className="w-full overflow-x-auto">
         <div className="flex w-full border-b border-secondary">
-          {tabs.map((tab) => (
+          {validTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id, tab.label)}
