@@ -119,7 +119,7 @@ mkdir ~/matomo
 
 # Create the master content file
 touch ~/content.json
-# Populate this file with your portfolio data, using docs/CONTENT_MODEL.md as a guide.
+# Populate this file with your portfolio data, using the Content Model guide as reference.
 ```
 
 ### 3.2. Matomo Analytics Setup
