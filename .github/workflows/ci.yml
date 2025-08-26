@@ -26,65 +26,98 @@ jobs:
           node-version: '20'
           cache: 'npm'
       
-      - name: Install dependencies with retry logic
+      - name: Cache NPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+      
+      - name: Install dependencies with cache optimization
+        env:
+          EMERGENCY_NPM_BYPASS: ${{ vars.EMERGENCY_NPM_BYPASS }}
+        timeout-minutes: 4
         run: |
-          echo "🔍 Checking npm registry availability..."
-          npm config list
-          npm ping --registry https://registry.npmjs.org/ || echo "⚠️ Primary registry ping failed, continuing with retry logic"
+          echo "🚀 Phase 1: Optimized npm installation with dual cache strategy"
+          echo "🔍 Environment check:"
+          echo "- Node version: $(node --version)"
+          echo "- NPM version: $(npm --version)"
+          echo "- Registry: $(npm config get registry)"
+          echo "- Cache location: $(npm config get cache)"
+          echo "- Emergency bypass: ${EMERGENCY_NPM_BYPASS:-false}"
           
-          echo "📦 Installing dependencies with enhanced retry logic..."
+          # Check cache status
+          if [ -d "node_modules" ]; then
+            echo "- node_modules cache: HIT ($(du -sh node_modules 2>/dev/null | cut -f1 || echo 'unknown'))"
+            cache_hit="true"
+          else
+            echo "- node_modules cache: MISS"
+            cache_hit="false"
+          fi
           
-          # Function to attempt npm ci with proper error handling
-          install_deps() {
-            local attempt=$1
-            echo "Attempt $attempt: Running npm ci..."
+          # Check if emergency bypass is enabled
+          if [ "${EMERGENCY_NPM_BYPASS}" = "true" ]; then
+            echo "🚨 Emergency bypass enabled - using simple npm ci"
+            npm ci --timeout=300000
+            exit 0
+          fi
+          
+          # Start timer for performance metrics
+          start_time=$(date +%s)
+          
+          echo "📦 Installing dependencies with cache optimization..."
+          
+          # Phase 1: Cache-optimized installation with single attempt
+          if npm ci --prefer-offline --no-audit --no-fund --timeout=180000; then
+            end_time=$(date +%s)
+            duration=$((end_time - start_time))
+            echo "✅ Dependencies installed successfully in ${duration} seconds"
             
-            if timeout 600 npm ci --verbose --no-fund --no-audit; then
-              echo "✅ Dependencies installed successfully on attempt $attempt"
-              return 0
-            else
-              local exit_code=$?
-              echo "❌ Attempt $attempt failed with exit code $exit_code"
-              
-              # Clear npm cache on failure
-              echo "🧹 Clearing npm cache..."
-              npm cache clean --force 2>/dev/null || true
-              
-              return $exit_code
-            fi
-          }
-          
-          # Retry logic with exponential backoff
-          MAX_ATTEMPTS=5
-          DELAY=30
-          
-          for i in $(seq 1 $MAX_ATTEMPTS); do
-            if install_deps $i; then
-              echo "🎉 Installation successful!"
-              break
-            elif [ $i -eq $MAX_ATTEMPTS ]; then
-              echo "💥 All $MAX_ATTEMPTS attempts failed!"
-              echo "Last attempt details:"
-              echo "- Registry: $(npm config get registry)"
-              echo "- Cache location: $(npm config get cache)"
-              echo "- Node version: $(node --version)"
-              echo "- NPM version: $(npm --version)"
-              
-              # Try alternative approach with npm install
-              echo "🔄 Trying fallback: npm install instead of npm ci..."
-              if timeout 600 npm install --verbose --no-fund --no-audit; then
-                echo "✅ Fallback installation successful!"
-                break
-              else
-                echo "💀 All installation methods failed. Exiting."
-                exit 1
-              fi
-            else
-              echo "⏳ Waiting ${DELAY} seconds before retry..."
-              sleep $DELAY
-              DELAY=$((DELAY * 2))  # Exponential backoff
-            fi
-          done
+            # Performance metrics - export to both step summary and environment
+            echo "NPM_INSTALL_DURATION=${duration}" >> $GITHUB_ENV
+            echo "NPM_INSTALL_ATTEMPTS=1" >> $GITHUB_ENV
+            echo "NPM_CACHE_HIT=${cache_hit}" >> $GITHUB_ENV
+            echo "NPM_REGISTRY_USED=primary" >> $GITHUB_ENV
+            
+            echo "npm_install_duration=${duration}" >> $GITHUB_STEP_SUMMARY
+            echo "npm_install_attempts=1" >> $GITHUB_STEP_SUMMARY
+            echo "npm_cache_strategy=prefer-offline" >> $GITHUB_STEP_SUMMARY
+            echo "npm_cache_hit=${cache_hit}" >> $GITHUB_STEP_SUMMARY
+            echo "npm_registry_used=primary" >> $GITHUB_STEP_SUMMARY
+            
+          else
+            end_time=$(date +%s)
+            duration=$((end_time - start_time))
+            echo "❌ Installation failed after ${duration} seconds"
+            echo "📊 Failure diagnostics:"
+            echo "- Exit code: $?"
+            echo "- Duration: ${duration}s"
+            echo "- Registry: $(npm config get registry)"
+            echo "- Network: $(curl -s --connect-timeout 5 https://registry.npmjs.org/ > /dev/null && echo 'OK' || echo 'FAILED')"
+            
+            # Log failure metrics - export to both step summary and environment
+            echo "NPM_INSTALL_DURATION=${duration}" >> $GITHUB_ENV
+            echo "NPM_INSTALL_ATTEMPTS=1" >> $GITHUB_ENV
+            echo "NPM_CACHE_HIT=${cache_hit}" >> $GITHUB_ENV
+            echo "NPM_FAILURE_REASON=phase1_failed" >> $GITHUB_ENV
+            
+            echo "npm_install_duration=${duration}" >> $GITHUB_STEP_SUMMARY
+            echo "npm_install_attempts=1" >> $GITHUB_STEP_SUMMARY
+            echo "npm_cache_hit=${cache_hit}" >> $GITHUB_STEP_SUMMARY
+            echo "npm_failure_reason=phase1_failed" >> $GITHUB_STEP_SUMMARY
+            
+            echo "💀 Phase 1 installation failed. Future phases will be implemented if needed."
+            exit 1
+          fi
           
           echo "📋 Final dependency verification:"
           npm list --depth=0 || echo "⚠️ Some dependencies may have issues, but installation completed"
@@ -96,6 +129,8 @@ jobs:
           else
             echo "⚠️ zustand not found in dependency tree (may be indirect)"
           fi
+          
+          echo "🎉 Phase 1 cache-optimized installation complete!"
       
       - name: Run linter
         run: npm run lint
