@@ -147,6 +147,20 @@ All metrics are logged to `$GITHUB_STEP_SUMMARY` and can be analyzed via:
 - GitHub Actions workflow run summaries
 - Custom monitoring dashboards (future enhancement)
 - Manual log analysis
+- Automated monitoring script: `./scripts/monitor-npm-fallback.sh`
+
+### Weekly Monitoring
+Run the monitoring script to track Phase 1 performance:
+```bash
+./scripts/monitor-npm-fallback.sh
+```
+
+This script provides:
+- Recent workflow success rate analysis
+- Local npm performance testing
+- Configuration validation
+- Cache status reporting
+- Phase decision recommendations
 
 ## Troubleshooting Guide
 
@@ -248,6 +262,40 @@ git show main~1:.npmrc
 The Phase 1 implementation focuses on the most impactful improvement: aggressive caching to reduce dependency on npm registry availability. This approach should solve the majority of issues while providing a foundation for additional fallback mechanisms if needed.
 
 The phased approach ensures we implement only the complexity required to meet our success criteria, avoiding over-engineering while maintaining the ability to enhance the system based on real-world performance data.
+
+## Quick Reference
+
+### Emergency Bypass
+```bash
+# Repository Settings → Variables → Add:
+EMERGENCY_NPM_BYPASS = true
+```
+
+### Phase 2 Activation
+```bash
+# Add Phase 2 step from PHASE-2-TEMPLATE.md if:
+# - Success rate < 90% after 1 week
+# - Installation time > 3 minutes
+# - Cache hit rate < 60%
+```
+
+### Weekly Monitoring
+```bash
+./scripts/monitor-npm-fallback.sh
+```
+
+### Key Files
+- Implementation: `.github/workflows/ci.yml`
+- Configuration: `.npmrc`
+- Documentation: `NPM-FALLBACK-STRATEGY.md`
+- Phase 2 Template: `PHASE-2-TEMPLATE.md`
+- Monitoring: `scripts/monitor-npm-fallback.sh`
+
+### Success Metrics
+- ✅ Installation time: < 2 minutes (95% of builds)
+- ✅ Cache hit rate: > 80%
+- ✅ Success rate: > 90%
+- ✅ Max delay: 3 minutes (vs 15 minutes previously)
 
 ---
 
