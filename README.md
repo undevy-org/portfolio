@@ -71,7 +71,7 @@ After authentication, the application transforms into a seamless Single Page App
 
 This project includes a comprehensive test suite using Jest and React Testing Library. The tests act as a safety net to prevent regressions and ensure the core logic behaves as expected.
 
-For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[`TESTING.md`](./TESTING.md)** document.
+For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[Testing Guide](./docs/testing/)** documentation.
 
 ## Contributing
 
@@ -172,15 +172,22 @@ The current version is displayed in the application's system log on startup and 
 
 ## Project Documentation
 
-This project is thoroughly documented. For more details, please see the following files:
+This project is thoroughly documented. For comprehensive documentation, visit the **[Documentation Hub](./docs/)** or see the following sections:
 
--   **[`SETUP.md`](./SETUP.md):** A comprehensive guide to deploying your own instance from scratch.
--   **[`TESTING.md`](./TESTING.md):** An overview of our testing philosophy, tools, and practices.
--   **[`PERSISTENT-SHELL.md`](./PERSISTENT-SHELL.md):** Technical documentation of the persistent application shell architecture that ensures smooth navigation and optimal performance.
--   **[`CHANGELOG.md`](./CHANGELOG.md):** A detailed history of all notable changes and project milestones.
--   **[`DEVELOPMENT_HISTORY.md`](./DEVELOPMENT_HISTORY.md):** Historical development phases before semantic versioning.
--   **[`CONTENT_MODEL.md`](./CONTENT_MODEL.md):** A definitive guide to the structure of the `content.json` file.
--   **[`DESIGN-SYSTEM.md`](./DESIGN-SYSTEM.md):** A detailed overview of the custom terminal-inspired design system, including color palettes, typography, component guidelines, and theming instructions for consistent UI/UX across the portfolio.
+### Core Documentation
+-   **[Setup & Deployment](./docs/setup/):** Comprehensive guides for installation, configuration, and deployment.
+-   **[Testing](./docs/testing/):** Testing philosophy, strategies, and implementation guidelines.
+-   **[Content Model](./docs/content-model/):** Structure and management of portfolio content.
+-   **[Design System](./docs/design-system/):** Terminal-inspired design system and component library.
+
+### Development Resources
+-   **[Development History](./docs/development/):** Technical decisions and project evolution.
+-   **[NPM Fallback Strategy](./docs/npm-fallback/):** NPM registry fallback implementation and optimization.
+-   **[Development Diffs](./docs/diffs/):** Recent implementation changes and improvements.
+
+### Project Files
+-   **[Changelog](./CHANGELOG.md):** Version history and release notes.
+-   **[License](./LICENSE):** Project licensing information.
 
 ## License
 
