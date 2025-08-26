@@ -28,9 +28,6 @@ function renderMorphingTerminal(props = {}, sessionProps = {}) {
   };
 }
 
-// Utility to wait for component to be stable
-const waitForStable = () => new Promise(resolve => setTimeout(resolve, 100));
-
 describe('MorphingTerminal Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -39,19 +36,25 @@ describe('MorphingTerminal Component', () => {
   describe('Basic Rendering', () => {
     test('renders the terminal animation container', async () => {
       renderMorphingTerminal();
-      await waitForStable();
+      
+      await waitFor(() => {
+        const container = document.querySelector('.flex.items-center.justify-center.w-full');
+        expect(container).toBeInTheDocument();
+      });
       
       const container = document.querySelector('.flex.items-center.justify-center.w-full');
-      expect(container).toBeInTheDocument();
       expect(container).toHaveClass('flex', 'items-center', 'justify-center', 'w-full');
     });
 
     test('renders pre element with correct classes and styling', async () => {
       renderMorphingTerminal();
-      await waitForStable();
+      
+      await waitFor(() => {
+        const preElement = document.querySelector('pre');
+        expect(preElement).toBeInTheDocument();
+      });
       
       const preElement = document.querySelector('pre');
-      expect(preElement).toBeInTheDocument();
       expect(preElement).toHaveClass(
         'text-command', 
         'font-mono', 
@@ -65,32 +68,37 @@ describe('MorphingTerminal Component', () => {
 
     test('renders initial frame content correctly', async () => {
       renderMorphingTerminal();
-      await waitForStable();
       
-      // Check that frame content is rendered (looking for the center dot)
-      const preElement = document.querySelector('pre');
-      expect(preElement.textContent).toContain('·●·');
+      await waitFor(() => {
+        const preElement = document.querySelector('pre');
+        expect(preElement).toBeInTheDocument();
+        expect(preElement.textContent).toContain('·●·');
+      });
     });
 
     test('renders exactly 9 lines per frame', async () => {
       renderMorphingTerminal();
-      await waitForStable();
       
-      const lines = document.querySelectorAll('div[class="whitespace-pre"]');
-      expect(lines).toHaveLength(9);
+      await waitFor(() => {
+        const lines = document.querySelectorAll('div[class="whitespace-pre"]');
+        expect(lines).toHaveLength(9);
+      });
     });
 
     test('each line has proper opacity styling', async () => {
       renderMorphingTerminal();
-      await waitForStable();
       
-      const lines = document.querySelectorAll('div[class="whitespace-pre"]');
-      lines.forEach(line => {
-        expect(line.style.opacity).toBeDefined();
-        // Opacity should be between 0.6 and 1.0 (0.8 ± 0.2)
-        const opacity = parseFloat(line.style.opacity);
-        expect(opacity).toBeGreaterThanOrEqual(0.6);
-        expect(opacity).toBeLessThanOrEqual(1.0);
+      await waitFor(() => {
+        const lines = document.querySelectorAll('div[class="whitespace-pre"]');
+        expect(lines.length).toBeGreaterThan(0);
+        
+        lines.forEach(line => {
+          expect(line.style.opacity).toBeDefined();
+          // Opacity should be between 0.6 and 1.0 (0.8 ± 0.2)
+          const opacity = parseFloat(line.style.opacity);
+          expect(opacity).toBeGreaterThanOrEqual(0.6);
+          expect(opacity).toBeLessThanOrEqual(1.0);
+        });
       });
     });
   });
@@ -98,40 +106,46 @@ describe('MorphingTerminal Component', () => {
   describe('Animation Control', () => {
     test('starts with frame 0 when autoPlay is enabled', async () => {
       renderMorphingTerminal({ autoPlay: true });
-      await waitForStable();
       
-      // Frame 0 should have minimal content with center point
-      const preElement = document.querySelector('pre');
-      expect(preElement.textContent).toContain('·●·');
+      await waitFor(() => {
+        const preElement = document.querySelector('pre');
+        expect(preElement).toBeInTheDocument();
+        expect(preElement.textContent).toContain('·●·');
+      });
     });
 
     test('advances frames when autoPlay is enabled with reasonable delay', async () => {
       renderMorphingTerminal({ autoPlay: true, frameDelay: 50 });
-      await waitForStable();
       
-      // Initial frame
-      const preElement = document.querySelector('pre');
+      // Wait for initial render and get initial content
+      const preElement = await waitFor(() => {
+        const element = document.querySelector('pre');
+        expect(element).toBeInTheDocument();
+        return element;
+      });
+      
       const initialContent = preElement.textContent;
       
-      // Wait longer than frame delay to see changes
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Content should have changed
-      const newContent = preElement.textContent;
-      expect(newContent).not.toBe(initialContent);
+      // Wait for content to actually change (animation to advance)
+      await waitFor(() => {
+        expect(preElement.textContent).not.toBe(initialContent);
+      }, { timeout: 1000 });
     }, 10000); // 10 second timeout
 
     test('does not animate when autoPlay is false', async () => {
       renderMorphingTerminal({ autoPlay: false });
-      await waitForStable();
       
-      const preElement = document.querySelector('pre');
+      // Wait for initial render
+      const preElement = await waitFor(() => {
+        const element = document.querySelector('pre');
+        expect(element).toBeInTheDocument();
+        return element;
+      });
+      
       const initialContent = preElement.textContent;
       
-      // Wait a reasonable amount of time
+      // Wait a reasonable amount of time and verify no change
       await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Content should remain unchanged
       expect(preElement.textContent).toBe(initialContent);
     }, 5000);
   });
@@ -145,15 +159,17 @@ describe('MorphingTerminal Component', () => {
           <MorphingTerminal />
         </MockSessionProvider>
       );
-      await waitForStable();
       
-      const preElement = document.querySelector('pre');
-      const textShadow = preElement.style.textShadow;
+      await waitFor(() => {
+        const preElement = document.querySelector('pre');
+        expect(preElement).toBeInTheDocument();
+        
+        const textShadow = preElement.style.textShadow;
+        expect(textShadow).toContain('var(--color-text-command)');
+        expect(textShadow).toContain('var(--color-accent)');
+        expect(textShadow).toContain('var(--color-success)');
+      });
       
-      // Should contain multiple layers for dark theme
-      expect(textShadow).toContain('var(--color-text-command)');
-      expect(textShadow).toContain('var(--color-accent)');
-      expect(textShadow).toContain('var(--color-success)');
       expect(mockGetThemeIntent).toHaveBeenCalled();
     });
 
@@ -165,14 +181,16 @@ describe('MorphingTerminal Component', () => {
           <MorphingTerminal />
         </MockSessionProvider>
       );
-      await waitForStable();
       
-      const preElement = document.querySelector('pre');
-      const textShadow = preElement.style.textShadow;
+      await waitFor(() => {
+        const preElement = document.querySelector('pre');
+        expect(preElement).toBeInTheDocument();
+        
+        const textShadow = preElement.style.textShadow;
+        expect(textShadow).toContain('rgba(0, 0, 0,');
+        expect(textShadow).toContain('1px 1px 2px');
+      });
       
-      // Should be subtle shadow for light theme
-      expect(textShadow).toContain('rgba(0, 0, 0,');
-      expect(textShadow).toContain('1px 1px 2px');
       expect(mockGetThemeIntent).toHaveBeenCalled();
     });
   });
@@ -180,12 +198,18 @@ describe('MorphingTerminal Component', () => {
   describe('Performance and Memory Management', () => {
     test('cleans up interval on unmount', async () => {
       const { unmount } = renderMorphingTerminal({ autoPlay: true });
-      await waitForStable();
+      
+      // Wait for component to render
+      await waitFor(() => {
+        expect(document.querySelector('pre')).toBeInTheDocument();
+      });
       
       // Spy on clearInterval
       const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
       
-      unmount();
+      await act(() => {
+        unmount();
+      });
       
       expect(clearIntervalSpy).toHaveBeenCalled();
       clearIntervalSpy.mockRestore();
@@ -194,15 +218,21 @@ describe('MorphingTerminal Component', () => {
     test('handles component remount correctly', async () => {
       const { unmount } = renderMorphingTerminal({ autoPlay: true, frameDelay: 100 });
       
-      await waitForStable();
-      unmount();
+      await waitFor(() => {
+        expect(document.querySelector('pre')).toBeInTheDocument();
+      });
+      
+      await act(() => {
+        unmount();
+      });
       
       // Remount
       renderMorphingTerminal({ autoPlay: true, frameDelay: 100 });
-      await waitForStable();
       
-      const container = document.querySelector('.flex.items-center.justify-center.w-full');
-      expect(container).toBeInTheDocument();
+      await waitFor(() => {
+        const container = document.querySelector('.flex.items-center.justify-center.w-full');
+        expect(container).toBeInTheDocument();
+      });
     });
   });
 
@@ -229,30 +259,38 @@ describe('MorphingTerminal Component', () => {
         renderMorphingTerminal({ frameDelay: -100 });
       }).not.toThrow();
       
-      await waitForStable();
+      // Wait for component to render
+      await waitFor(() => {
+        expect(document.querySelector('pre')).toBeInTheDocument();
+      });
     });
   });
 
   describe('Accessibility and User Experience', () => {
     test('has proper semantic structure', async () => {
       renderMorphingTerminal();
-      await waitForStable();
       
-      const container = document.querySelector('.flex.items-center.justify-center.w-full');
-      const preElement = document.querySelector('pre');
-      
-      expect(container).toBeInTheDocument();
-      expect(preElement).toBeInTheDocument();
-      expect(preElement).toHaveClass('select-none'); // Prevents text selection
+      await waitFor(() => {
+        const container = document.querySelector('.flex.items-center.justify-center.w-full');
+        const preElement = document.querySelector('pre');
+        
+        expect(container).toBeInTheDocument();
+        expect(preElement).toBeInTheDocument();
+        expect(preElement).toHaveClass('select-none'); // Prevents text selection
+      });
     });
 
     test('respects reduced motion preferences', async () => {
       // This would ideally check for prefers-reduced-motion, but for now 
       // we ensure autoPlay can be disabled
       renderMorphingTerminal({ autoPlay: false });
-      await waitForStable();
       
-      const preElement = document.querySelector('pre');
+      const preElement = await waitFor(() => {
+        const element = document.querySelector('pre');
+        expect(element).toBeInTheDocument();
+        return element;
+      });
+      
       const initialContent = preElement.textContent;
       
       // Should not animate
@@ -262,16 +300,15 @@ describe('MorphingTerminal Component', () => {
 
     test('maintains consistent dimensions across frames', async () => {
       renderMorphingTerminal();
-      await waitForStable();
       
-      // All frames should render the same number of lines
-      const lines = document.querySelectorAll('div[class="whitespace-pre"]');
-      expect(lines).toHaveLength(9);
-      
-      // Each line should maintain consistent character width (19 chars)
-      lines.forEach(line => {
-        // The textContent includes the content, should be exactly 19 characters
-        expect(line.textContent.length).toBe(19);
+      await waitFor(() => {
+        const lines = document.querySelectorAll('div[class="whitespace-pre"]');
+        expect(lines).toHaveLength(9);
+        
+        // Each line should maintain consistent character width (19 chars)
+        lines.forEach(line => {
+          expect(line.textContent.length).toBe(19);
+        });
       });
     });
   });

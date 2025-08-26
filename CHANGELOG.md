@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Tests
+
+* **tests:** refactor MorphingTerminal and TerminalImagePreview test suites to eliminate act() warnings ([#TBD](https://github.com/undevy-org/portfolio/issues/TBD))
+  - **MorphingTerminal.test.js:** Removed `waitForStable()` helper and replaced fixed-time delays with proper `waitFor()` patterns
+  - **TerminalImagePreview.test.js:** Fixed 17 failing tests by resolving global cache collisions and aligning tests with component behavior
+  - **Async Testing:** Implemented proper async event handling with `act()` wrapping for resize events
+  - **Test Reliability:** Eliminated race conditions and improved test stability through condition-based waiting
+  - **Documentation:** Updated TESTING.md with comprehensive async testing best practices and patterns
+  - **Result:** All 301 tests now pass with zero `act()` warnings in console output
+
 ### [5.1.2](https://github.com/undevy-org/portfolio/compare/v5.1.1...v5.1.2) (2025-08-25)
 
 
