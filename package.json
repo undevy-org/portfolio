@@ -1,11 +1,6 @@
 {
   "name": "portfolio-project",
-  "version": "5.2.0",
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
   "version": "5.2.1",
-=======
-  "version": "5.2.0",
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
   "private": true,
   "license": "MIT",
   "scripts": {
