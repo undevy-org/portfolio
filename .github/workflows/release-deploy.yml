@@ -1,0 +1,258 @@
+# Production Release Deployment Pipeline
+# Location: .github/workflows/release-deploy.yml
+# Purpose: Deploy to production when a version tag is pushed (v*.*.*)
+
+name: Deploy Production Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Semantic versioning tags only
+
+jobs:
+  build-and-deploy-production:
+    name: Build and Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Setup release info
+        run: |
+          echo "🏷️ Production Release Deployment"
+          echo "Tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Target: undevy.com / foxous.design"
+      
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for changelog
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies for production build..."
+          npm ci --prefer-offline --no-audit --no-fund
+      
+      - name: Build production release
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE: ${{ secrets.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE }}
+        run: |
+          echo "🏗️ Building production release ${{ github.ref_name }}..."
+          
+          # Clean build for production
+          rm -rf .next
+          npm run build
+          
+          # Verify build succeeded
+          if [ ! -d ".next" ]; then
+            echo "❌ Build failed - .next directory not found"
+            exit 1
+          fi
+          
+          echo "✅ Production build complete"
+          echo "📊 Build stats:"
+          echo "  Total size: $(du -sh .next | cut -f1)"
+          echo "  Static assets: $(du -sh .next/static | cut -f1)"
+          echo "  Server bundles: $(du -sh .next/server | cut -f1)"
+      
+      - name: Prepare production release package
+        run: |
+          echo "📦 Creating production release package..."
+          
+          mkdir -p release-package
+          
+          # Copy production files only
+          echo "📁 Copying production files..."
+          cp -r .next release-package/
+          cp -r public release-package/ 2>/dev/null || echo "ℹ️ No public directory"
+          cp package.json release-package/
+          cp package-lock.json release-package/
+          cp next.config.mjs release-package/
+          
+          # Add version file for tracking
+          echo "${{ github.ref_name }}" > release-package/VERSION
+          echo "${{ github.sha }}" >> release-package/VERSION
+          echo "$(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> release-package/VERSION
+          
+          # Remove all development artifacts
+          echo "🧹 Cleaning development artifacts..."
+          rm -rf release-package/.next/cache
+          find release-package -name "*.map" -type f -delete 2>/dev/null || true
+          
+          # Create deployment archive
+          echo "📦 Creating deployment archive..."
+          cd release-package
+          tar -czf ../portfolio-release-${{ github.ref_name }}.tar.gz .
+          cd ..
+          
+          echo "✅ Release package created"
+          echo "📊 Package size: $(du -h portfolio-release-${{ github.ref_name }}.tar.gz | cut -f1)"
+      
+      # Upload release artifact to GitHub Release (permanent storage)
+      - name: Upload release artifact to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: portfolio-release-${{ github.ref_name }}.tar.gz
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Transfer release to server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          echo "🔐 Setting up SSH key..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Add host to known hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null
+          
+          echo "📤 Transferring release to server..."
+          scp -i ~/.ssh/deploy_key portfolio-release-${{ github.ref_name }}.tar.gz $SSH_USER@$SSH_HOST:/tmp/
+          
+          echo "✅ Release transferred successfully"
+      
+      - name: Deploy production with blue-green strategy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            
+            echo "🔧 Setting up Node environment..."
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # Configuration
+            RELEASE_TAG="${{ github.ref_name }}"
+            RELEASE_DIR="/home/undevy/releases/portfolio/$RELEASE_TAG"
+            CURRENT_LINK="/home/undevy/undevy.com"
+            SHARED_DIR="/home/undevy/shared/portfolio"
+            PM2_APP="${{ secrets.PM2_APP_NAME_PORTFOLIO }}"
+            
+            echo "🚀 Starting blue-green deployment for $RELEASE_TAG"
+            
+            # Create release directory
+            echo "📁 Creating release directory..."
+            mkdir -p "$RELEASE_DIR"
+            
+            # Extract release files
+            echo "📦 Extracting release files..."
+            tar -xzf /tmp/portfolio-release-$RELEASE_TAG.tar.gz -C "$RELEASE_DIR"
+            
+            # Copy shared files (env, uploads)
+            echo "💾 Applying production configuration..."
+            if [ -f "$SHARED_DIR/.env" ]; then
+              cp "$SHARED_DIR/.env" "$RELEASE_DIR/.env"
+            else
+              echo "❌ ERROR: Production .env file not found!"
+              exit 1
+            fi
+            
+            # Preserve user uploads if they exist
+            if [ -L "$CURRENT_LINK" ] && [ -d "$(readlink -f $CURRENT_LINK)/public/images/projects" ]; then
+              echo "📸 Preserving user-uploaded images..."
+              mkdir -p "$RELEASE_DIR/public/images"
+              cp -r "$(readlink -f $CURRENT_LINK)/public/images/projects" "$RELEASE_DIR/public/images/" || true
+            fi
+            
+            # Install production dependencies
+            cd "$RELEASE_DIR"
+            echo "📦 Installing production dependencies..."
+            npm ci --omit=dev || npm install --production
+            
+            # Get current version for rollback info
+            PREVIOUS_VERSION=""
+            if [ -L "$CURRENT_LINK" ]; then
+              PREVIOUS_VERSION=$(basename $(readlink -f $CURRENT_LINK))
+              echo "📌 Current version: $PREVIOUS_VERSION"
+            fi
+            
+            # Update symbolic link (atomic operation)
+            echo "🔄 Switching to new version..."
+            ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
+            
+            # Restart application
+            echo "🔄 Restarting production application..."
+            if pm2 describe "$PM2_APP" >/dev/null 2>&1; then
+              pm2 restart "$PM2_APP" --update-env
+              echo "✅ Application restarted: $PM2_APP"
+            else
+              # First time setup
+              cd "$CURRENT_LINK"
+              pm2 start npm --name "$PM2_APP" \
+                --max-memory-restart="400M" \
+                -- start
+              echo "✅ Application started: $PM2_APP"
+            fi
+            
+            pm2 save || true
+            
+            # Health check
+            echo "🏥 Performing health check..."
+            sleep 5
+            if pm2 describe "$PM2_APP" | grep -q "online"; then
+              echo "✅ Application is healthy and running"
+            else
+              echo "❌ Application health check failed!"
+              echo "🔄 Rolling back to previous version..."
+              if [ -n "$PREVIOUS_VERSION" ] && [ -d "/home/undevy/releases/portfolio/$PREVIOUS_VERSION" ]; then
+                ln -sfn "/home/undevy/releases/portfolio/$PREVIOUS_VERSION" "$CURRENT_LINK"
+                pm2 restart "$PM2_APP" --update-env
+                echo "✅ Rolled back to $PREVIOUS_VERSION"
+              fi
+              exit 1
+            fi
+            
+            # Show application status
+            echo "📊 Application status:"
+            pm2 list | grep "$PM2_APP" || true
+            
+            # Cleanup old releases (keep last 3)
+            echo "🧹 Cleaning up old releases..."
+            cd /home/undevy/releases/portfolio
+            ls -t | grep -v "$RELEASE_TAG" | tail -n +4 | xargs rm -rf || true
+            rm -f /tmp/portfolio-release-*.tar.gz
+            
+            # Log deployment
+            echo "📝 Logging deployment..."
+            echo "[$RELEASE_TAG] Deployed at $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> /home/undevy/deployments.log
+            
+            echo "✅ Production deployment completed successfully!"
+            echo ""
+            echo "🎉 Release $RELEASE_TAG is now live!"
+            echo "🌐 Sites:"
+            echo "  - https://undevy.com"
+            echo "  - https://foxous.design"
+            if [ -n "$PREVIOUS_VERSION" ]; then
+              echo ""
+              echo "🔄 Rollback command (if needed):"
+              echo "  ln -sfn /home/undevy/releases/portfolio/$PREVIOUS_VERSION /home/undevy/undevy.com"
+              echo "  pm2 restart $PM2_APP"
+            fi
+      
+      - name: Production deployment summary
+        run: |
+          echo "🎉 PRODUCTION RELEASE DEPLOYED!"
+          echo "=================================="
+          echo "Version: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo ""
+          echo "Production sites updated:"
+          echo "  🌐 https://undevy.com"
+          echo "  🌐 https://foxous.design"
+          echo ""
+          echo "Release artifact permanently stored in GitHub Releases"
+          echo "Blue-green deployment completed with rollback capability"
