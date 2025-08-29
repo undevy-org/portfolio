@@ -71,12 +71,7 @@ After authentication, the application transforms into a seamless Single Page App
 
 This project includes a comprehensive test suite using Jest and React Testing Library. The tests act as a safety net to prevent regressions and ensure the core logic behaves as expected.
 
-For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[Testing Guide](./docs/TESTING.md)** documentation.
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
-For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[Testing Guide](./docs/TESTING.md)** documentation.
-=======
-For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated **[Testing Guide](./docs/TESTING.md)** documentation.
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
+For a complete guide on our testing philosophy, how to run tests, and what is covered, please see the dedicated  **[Testing Guide](./docs/TESTING.md)**.
 
 ## Contributing
 
@@ -193,37 +188,6 @@ This project is thoroughly documented. For comprehensive documentation, visit th
 ### Project Files
 -   **[Changelog](./CHANGELOG.md):** Version history and release notes.
 -   **[License](./LICENSE):** Project licensing information.
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
-### Core Documentation
--   **[Setup & Deployment](./docs/SETUP.md):** Complete setup, configuration, and deployment guide.
--   **[Testing](./docs/TESTING.md):** Testing philosophy, strategies, and implementation guidelines.
--   **[Content Model](./docs/CONTENT-MODEL.md):** Structure and management of portfolio content.
--   **[Design System](./docs/DESIGN-SYSTEM.md):** Terminal-inspired design system and component library.
-
-### Technical Documentation
--   **[Development History](./docs/DEVELOPMENT_HISTORY.md):** Technical decisions and project evolution.
--   **[Persistent Shell Architecture](./docs/PERSISTENT-SHELL.md):** Technical architecture documentation.
--   **[NPM Fallback Strategy](./docs/npm-fallback/):** NPM registry fallback implementation.
-
-### Project Files
--   **[Changelog](./CHANGELOG.md):** Version history and release notes.
--   **[License](./LICENSE):** Project licensing information.
-=======
-### Core Documentation
--   **[Setup & Deployment](./docs/SETUP.md):** Complete setup, configuration, and deployment guide.
--   **[Testing](./docs/TESTING.md):** Testing philosophy, strategies, and implementation guidelines.
--   **[Content Model](./docs/CONTENT-MODEL.md):** Structure and management of portfolio content.
--   **[Design System](./docs/DESIGN-SYSTEM.md):** Terminal-inspired design system and component library.
-
-### Technical Documentation
--   **[Development History](./docs/DEVELOPMENT_HISTORY.md):** Technical decisions and project evolution.
--   **[Persistent Shell Architecture](./docs/PERSISTENT-SHELL.md):** Technical architecture documentation.
--   **[NPM Fallback Strategy](./docs/npm-fallback/):** NPM registry fallback implementation.
-
-### Project Files
--   **[Changelog](./CHANGELOG.md):** Version history and release notes.
--   **[License](./LICENSE):** Project licensing information.
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
 
 ## License
 

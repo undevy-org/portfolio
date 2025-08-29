@@ -50,6 +50,7 @@ test-content-local.json
 /content-backups
 config/domains.json
 /.qoder/
+diffs/
 
 # Project images - stored locally and on server only
 /public/images/projects/
