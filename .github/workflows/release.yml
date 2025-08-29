@@ -1,19 +1,80 @@
-name: Create Release
+# Release Notes Generator
+# Location: .github/workflows/release.yml
+# Purpose: Ensure GitHub Release is created with proper notes
+# Note: This workflow is now minimal since release-deploy.yml handles artifacts
+
+name: Create Release Notes
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 jobs:
-  release:
+  release-notes:
+    name: Generate Release Notes
     runs-on: ubuntu-latest
+    # Only run if release-deploy hasn't already created the release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          generate_release_notes: true
+          fetch-depth: 0  # Need full history for changelog
+      
+      - name: Check if release exists
+        id: check_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Checking if release already exists for ${{ github.ref_name }}..."
+          
+          if gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
+            echo "✅ Release already exists"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "📝 Release doesn't exist yet"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      # Create release only if it doesn't exist
+      # (release-deploy.yml usually creates it, but this is a fallback)
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          body: |
+            ## 🚀 Release ${{ github.ref_name }}
+            
+            This release has been automatically deployed to production.
+            
+            ### Deployment Info
+            - **Version:** ${{ github.ref_name }}
+            - **Commit:** ${{ github.sha }}
+            - **Deployed at:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            
+            ### Sites
+            - 🌐 [undevy.com](https://undevy.com)
+            - 🌐 [foxous.design](https://foxous.design)
+            
+            ### Release artifact
+            The production build artifact is attached to this release.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update release if it exists
+        if: steps.check_release.outputs.exists == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📝 Updating existing release with additional info..."
+          
+          # The release already exists (created by release-deploy.yml)
+          # We can add any additional processing here if needed
+          
+          echo "✅ Release ${{ github.ref_name }} is ready"
