@@ -146,9 +146,10 @@ jobs:
             
             # Start staging application with auto-shutdown after 2 hours
             echo "🚀 Starting staging application with auto-shutdown..."
-            pm2 start npm --name "staging-portfolio" \
-              --cron-restart="0 */2 * * *" \
+            cd "$STAGING_PATH"
+            PORT=3001 pm2 start npm --name "staging-portfolio" \
               --max-memory-restart="200M" \
+              --env production \
               -- start
             
             pm2 save || true
