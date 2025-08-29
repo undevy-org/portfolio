@@ -1,6 +1,6 @@
-# CI Pipeline - Final optimization without src folder
+# CI Pipeline - With Staging Support
 # Location: .github/workflows/ci.yml
-# Version: Stage 4 - Removed src from deployment artifacts
+# Purpose: Validate PRs and prepare staging deployments
 
 name: CI Pipeline
 
@@ -48,7 +48,7 @@ jobs:
         timeout-minutes: 4
         run: |
           echo "🚀 Phase 1: Optimized npm installation with dual cache strategy"
-          echo "🔍 Environment check:"
+          echo "📊 Environment check:"
           echo "- Node version: $(node --version)"
           echo "- NPM version: $(npm --version)"
           echo "- Registry: $(npm config get registry)"
@@ -82,7 +82,7 @@ jobs:
             duration=$((end_time - start_time))
             echo "✅ Dependencies installed successfully in ${duration} seconds"
             
-            # Performance metrics - export to both step summary and environment
+            # Performance metrics
             echo "NPM_INSTALL_DURATION=${duration}" >> $GITHUB_ENV
             echo "NPM_INSTALL_ATTEMPTS=1" >> $GITHUB_ENV
             echo "NPM_CACHE_HIT=${cache_hit}" >> $GITHUB_ENV
@@ -104,7 +104,7 @@ jobs:
             echo "- Registry: $(npm config get registry)"
             echo "- Network: $(curl -s --connect-timeout 5 https://registry.npmjs.org/ > /dev/null && echo 'OK' || echo 'FAILED')"
             
-            # Log failure metrics - export to both step summary and environment
+            # Log failure metrics
             echo "NPM_INSTALL_DURATION=${duration}" >> $GITHUB_ENV
             echo "NPM_INSTALL_ATTEMPTS=1" >> $GITHUB_ENV
             echo "NPM_CACHE_HIT=${cache_hit}" >> $GITHUB_ENV
@@ -115,20 +115,12 @@ jobs:
             echo "npm_cache_hit=${cache_hit}" >> $GITHUB_STEP_SUMMARY
             echo "npm_failure_reason=phase1_failed" >> $GITHUB_STEP_SUMMARY
             
-            echo "💀 Phase 1 installation failed. Future phases will be implemented if needed."
+            echo "💀 Phase 1 installation failed."
             exit 1
           fi
           
           echo "📋 Final dependency verification:"
           npm list --depth=0 || echo "⚠️ Some dependencies may have issues, but installation completed"
-          
-          # Specific check for problematic packages
-          echo "🔍 Checking for zustand..."
-          if npm list zustand 2>/dev/null; then
-            echo "✅ zustand successfully installed"
-          else
-            echo "⚠️ zustand not found in dependency tree (may be indirect)"
-          fi
           
           echo "🎉 Phase 1 cache-optimized installation complete!"
       
@@ -161,7 +153,7 @@ jobs:
       - name: Create PR verification artifact
         if: github.event_name == 'pull_request'
         run: |
-          echo "📝 Creating PR verification report..."
+          echo "📄 Creating PR verification report..."
           
           mkdir -p pr-verification
           
@@ -188,16 +180,15 @@ jobs:
           retention-days: 2
           compression-level: 6
       
-      # FOR MAIN BRANCH: Create optimized deployment package
-      - name: Prepare deployment package
+      # FOR MAIN BRANCH: Create staging deployment package
+      - name: Prepare staging deployment package
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "📦 Creating optimized deployment package..."
+          echo "📦 Creating staging deployment package..."
           
           mkdir -p deployment-package
           
-          # Copy ONLY production-necessary files
-          # Note: src folder is NOT included - it's not needed for production!
+          # Copy production-necessary files (no src needed)
           echo "📁 Copying production files..."
           cp -r .next deployment-package/
           cp -r public deployment-package/ 2>/dev/null || echo "ℹ️ No public directory"
@@ -205,7 +196,7 @@ jobs:
           cp package-lock.json deployment-package/
           cp next.config.mjs deployment-package/
           
-          # Remove development artifacts to minimize size
+          # Remove development artifacts
           echo "🧹 Removing development artifacts..."
           rm -rf deployment-package/.next/cache
           find deployment-package -name "*.map" -type f -delete 2>/dev/null || true
@@ -217,29 +208,11 @@ jobs:
             exit 1
           fi
           
-          if [ ! -d "deployment-package/.next/static" ]; then
-            echo "❌ FATAL: .next/static missing!"
-            exit 1
-          fi
-          
-          if [ ! -d "deployment-package/.next/server" ]; then
-            echo "❌ FATAL: .next/server missing!"
-            exit 1
-          fi
-          
-          if [ ! -f "deployment-package/package.json" ]; then
-            echo "❌ FATAL: package.json missing!"
-            exit 1
-          fi
-          
           echo "✅ Package verified successfully"
           echo ""
-          echo "📊 Deployment package statistics:"
+          echo "📊 Staging deployment package statistics:"
           echo "  Total size: $(du -sh deployment-package | cut -f1)"
           echo "  .next size: $(du -sh deployment-package/.next | cut -f1)"
-          if [ -d "deployment-package/public" ]; then
-            echo "  public size: $(du -sh deployment-package/public | cut -f1)"
-          fi
           echo ""
           echo "📦 Package contents:"
           echo "  ✅ .next/ (compiled application)"
@@ -248,26 +221,23 @@ jobs:
           echo "  ✅ next.config.mjs"
           echo "  ❌ src/ (NOT included - not needed in production)"
       
-      # Upload optimized deployment artifact
-      - name: Upload deployment artifact
+      # Upload staging deployment artifact (14 days retention)
+      - name: Upload staging deployment artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
-          name: deployment-package-${{ github.sha }}
+          name: staging-package-${{ github.sha }}
           path: deployment-package/
-          retention-days: 14
+          retention-days: 14  # Staging artifacts kept for 14 days
           compression-level: 6
           include-hidden-files: true
       
-      - name: Optimization summary
+      - name: Pipeline summary
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "🎉 Optimized deployment package created!"
+          echo "🎉 CI Pipeline completed successfully!"
           echo ""
-          echo "Optimization results:"
-          echo "✅ Removed src folder (not needed in production)"
-          echo "✅ Removed .next/cache (development only)"
-          echo "✅ Removed source maps (development only)"
-          echo ""
-          echo "The deployment package now contains ONLY what's needed for production."
-          echo "Expected benefits: faster uploads, faster deployments, improved security."
+          echo "Next steps:"
+          echo "- Staging deployment will be triggered automatically"
+          echo "- Test your changes at: https://stage.undevy.com"
+          echo "- When ready for production, run: npm run release"

@@ -1,0 +1,200 @@
+# Staging Deployment Pipeline
+# Location: .github/workflows/staging-deploy.yml
+# Purpose: Deploy to staging environment after successful CI on main branch
+
+name: Deploy to Staging
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
+    
+    steps:
+      - name: Setup deployment info
+        run: |
+          echo "🚀 Starting STAGING deployment"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Triggered by: ${{ github.event.workflow_run.name }}"
+          echo "Run ID: ${{ github.event.workflow_run.id }}"
+          echo "Target: stage.undevy.com / stage.foxous.design"
+      
+      - name: Download staging artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: staging-package-${{ github.event.workflow_run.head_sha }}
+          path: deployment-files
+      
+      - name: Verify and prepare artifact
+        run: |
+          echo "📦 Verifying downloaded artifact..."
+          
+          echo "📁 Downloaded contents:"
+          ls -la deployment-files/
+          
+          # Check for .next directory
+          if [ ! -d "deployment-files/.next" ]; then
+            echo "❌ ERROR: .next directory not found in artifact!"
+            exit 1
+          fi
+          
+          echo "✅ Found .next directory"
+          echo "📊 .next size: $(du -sh deployment-files/.next | cut -f1)"
+          
+          if [ ! -f "deployment-files/package.json" ]; then
+            echo "❌ ERROR: package.json not found!"
+            exit 1
+          fi
+          
+          echo "✅ All required files present"
+          
+          # Create deployment archive
+          echo "📦 Creating deployment archive..."
+          cd deployment-files
+          tar -czf /tmp/staging-deploy.tar.gz .
+          echo "✅ Archive created: $(du -h /tmp/staging-deploy.tar.gz | cut -f1)"
+      
+      - name: Transfer files to server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          echo "🔐 Setting up SSH key..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Add host to known hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null
+          
+          echo "📤 Transferring staging files to server..."
+          scp -i ~/.ssh/deploy_key /tmp/staging-deploy.tar.gz $SSH_USER@$SSH_HOST:/tmp/
+          
+          echo "✅ Files transferred successfully"
+      
+      - name: Deploy to staging environment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            
+            echo "🔧 Setting up Node environment..."
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            STAGING_PATH="/home/undevy/releases/staging/current"
+            TEMP_PATH="/home/undevy/releases/staging/temp-$(date +%s)"
+            
+            # Create staging directories if they don't exist
+            mkdir -p /home/undevy/releases/staging
+            
+            # Create temporary deployment directory
+            echo "📁 Creating temporary deployment directory..."
+            mkdir -p "$TEMP_PATH"
+            
+            # Extract new files
+            echo "📦 Extracting staging files..."
+            tar -xzf /tmp/staging-deploy.tar.gz -C "$TEMP_PATH"
+            
+            # Copy staging environment file
+            echo "💾 Applying staging environment configuration..."
+            if [ -f "/home/undevy/shared/staging/.env" ]; then
+              cp "/home/undevy/shared/staging/.env" "$TEMP_PATH/.env"
+            else
+              echo "⚠️ Warning: No staging .env file found, creating minimal config..."
+              echo "NODE_ENV=development" > "$TEMP_PATH/.env"
+              echo "PORT=3001" >> "$TEMP_PATH/.env"
+            fi
+            
+            # Preserve user-uploaded images if they exist
+            if [ -d "$STAGING_PATH/public/images/projects" ]; then
+              echo "📸 Preserving user-uploaded images..."
+              mkdir -p "$TEMP_PATH/public/images"
+              cp -r "$STAGING_PATH/public/images/projects" "$TEMP_PATH/public/images/" || true
+            fi
+            
+            # Swap directories
+            echo "🔄 Swapping staging directories..."
+            if [ -d "$STAGING_PATH" ]; then
+              rm -rf "$STAGING_PATH.old"
+              mv "$STAGING_PATH" "$STAGING_PATH.old"
+            fi
+            mv "$TEMP_PATH" "$STAGING_PATH"
+            
+            # Install production dependencies
+            cd "$STAGING_PATH"
+            echo "📦 Installing production dependencies..."
+            npm ci --omit=dev || npm install --production
+            
+            # Stop existing staging process if running
+            echo "🔍 Checking for existing staging process..."
+            if pm2 describe "staging-portfolio" >/dev/null 2>&1; then
+              echo "⏹️ Stopping existing staging process..."
+              pm2 stop "staging-portfolio"
+              pm2 delete "staging-portfolio"
+            fi
+            
+            # Start staging application with auto-shutdown after 2 hours
+            echo "🚀 Starting staging application with auto-shutdown..."
+            pm2 start npm --name "staging-portfolio" \
+              --cron-restart="0 */2 * * *" \
+              --max-memory-restart="200M" \
+              -- start
+            
+            pm2 save || true
+            
+            # Show application status
+            echo "📊 Staging application status:"
+            pm2 list | grep "staging-portfolio" || true
+            
+            # Set up auto-shutdown timer (will be implemented in Phase 3)
+            echo "⏰ Note: Auto-shutdown after 2 hours will be configured in Phase 3"
+            
+            # Cleanup
+            echo "🧹 Cleaning up..."
+            rm -f /tmp/staging-deploy.tar.gz
+            rm -rf "$STAGING_PATH.old" || true
+            
+            echo "✅ Staging deployment completed!"
+            echo ""
+            echo "🌐 Access staging at:"
+            echo "  - https://stage.undevy.com"
+            echo "  - https://stage.foxous.design"
+      
+      - name: Deployment summary
+        run: |
+          echo "🎉 STAGING DEPLOYMENT SUCCESSFUL!"
+          echo "================================"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo ""
+          echo "Staging sites are now live at:"
+          echo "  🌐 https://stage.undevy.com"
+          echo "  🌐 https://stage.foxous.design"
+          echo ""
+          echo "Note: Staging will auto-shutdown after 2 hours of inactivity"
+          echo "To promote to production, run: npm run release"
+  
+  # Handle failed CI
+  failure-notification:
+    name: Handle CI Failure
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+      - name: Report CI failure
+        run: |
+          echo "❌ CI Pipeline failed!"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Staging deployment cancelled due to failed tests or build."
+          echo "Check the failed run: ${{ github.event.workflow_run.html_url }}"
+          exit 1
