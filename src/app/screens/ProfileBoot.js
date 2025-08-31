@@ -8,7 +8,6 @@ import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
 import MorphingTerminal from '../components/ui/MorphingTerminal';
-// ADDED: Import the new HyperspaceTunnel component for background effect
 import HyperspaceTunnel from '../components/ui/HyperspaceTunnel';
 
 export default function ProfileBoot() {
@@ -24,7 +23,7 @@ export default function ProfileBoot() {
   // Flag when boot sequence is complete
   const [isComplete, setIsComplete] = useState(false);
   
-  // ADDED: State for controlling the hyperspace tunnel animation
+  // State for controlling the hyperspace tunnel animation
   const [isAnimationActive, setIsAnimationActive] = useState(true);
   
   // Enhanced boot sequence with more technical detail
@@ -103,7 +102,7 @@ export default function ProfileBoot() {
     navigate('MainHub', false);
   }, [addLog, navigate]);
   
-  // ADDED: Callback for when the tunnel animation completes
+  // Callback for when the tunnel animation completes
   const handleTunnelComplete = useCallback(() => {
     setIsAnimationActive(false);
   }, []);
@@ -113,23 +112,15 @@ export default function ProfileBoot() {
   
   return (
     <>
-      <div 
-        style={{ 
-          transform: 'translateY(-15%)', // Сдвигаем центр анимации вверх
-          position: 'fixed',
-          inset: 0,
-          zIndex: -1
-        }}
-      >
+      {/* FIXED: Removed the transform translateY hack */}
+      {/* Now the animation properly fills the entire screen */}
         <HyperspaceTunnel
           isActive={isAnimationActive}
           progress={progressPercentage}
           duration={10000}
           onComplete={handleTunnelComplete}
         />
-      </div>
       
-      {/* EXISTING: All original content remains unchanged, just wrapped in fragment */}
       <ScreenWrapper>
         <div className="p-8 flex flex-col items-center justify-center min-h-[500px]">
           <div className="mb-12 h-40 flex items-center justify-center">
@@ -141,7 +132,15 @@ export default function ProfileBoot() {
           
           <div className="w-full max-w-md h-20 flex flex-col items-center justify-center">
             {!isComplete ? (
-              <div className="w-full">
+              <>
+                <div className="mb-4 text-center h-6">
+                  <span className="text-primary text-sm tracking-wider uppercase animate-pulse-progress">
+                    {currentStep < bootSequence.length 
+                      ? bootSequence[currentStep].message 
+                      : 'Initialization complete'}
+                  </span>
+                </div>
+                
                 <TerminalProgress 
                   progress={progressPercentage}
                   isLoading={true}
@@ -153,7 +152,7 @@ export default function ProfileBoot() {
                 <p className="text-xs mt-2 text-center opacity-60 text-secondary">
                   {bootSequence[Math.min(currentStep, bootSequence.length - 1)]?.message}
                 </p>
-              </div>
+               </>
             ) : (
               <div className="w-full flex flex-col items-center animate-fadeIn">
                 <Button

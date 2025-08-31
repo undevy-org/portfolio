@@ -29,7 +29,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${ibmPlexMono.variable} font-mono bg-main text-primary`}>
+      <body className={`${ibmPlexMono.variable} font-mono bg-main text-primary terminal-texture`}>
         <SessionProvider>
           <Web3Provider>
             <ThemeManager />

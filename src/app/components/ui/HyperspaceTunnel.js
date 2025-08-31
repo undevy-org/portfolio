@@ -5,22 +5,39 @@ import { useEffect, useRef, useState } from 'react';
 import { useSession } from '../../context/SessionContext';
 
 /**
- * HyperspaceTunnel Component - Fixed Version
+ * HyperspaceTunnel Component - Fully Fixed Version
  * 
  * FIXES:
- * 1. Proper background handling for Kyoto and Radar themes
- * 2. Better centering relative to content container
+ * 1. Proper full-screen coverage without gaps
+ * 2. Dynamic viewBox that adapts to screen size
+ * 3. Correct background handling for all themes
+ * 4. Better center positioning that works on all screen sizes
  */
 export default function HyperspaceTunnel({ 
   isActive = false, 
   progress = 0,
   duration = 6000,
-  onComplete = () => {},
-  centerOffset = { x: 0, y: 0 } // NEW: Allow custom center positioning
+  onComplete = () => {}
 }) {
   const { theme } = useSession();
   const [isComplete, setIsComplete] = useState(false);
   const svgRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
+  
+  // Update dimensions on mount and resize
+  useEffect(() => {
+    const updateDimensions = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
   
   // Track completion
   useEffect(() => {
@@ -70,18 +87,11 @@ export default function HyperspaceTunnel({
   const [rings] = useState(() => createRingData());
   const [particles] = useState(() => createParticleData());
   
-  // FIXED: Determine correct background color based on theme
-  // For Kyoto and Radar, we need transparent background to show body color
-  const getBackgroundStyle = () => {
-    if (theme === 'kyoto' || theme === 'radar') {
-      // For these themes, don't override the body background
-      return 'transparent';
-    }
-    // For other themes, use the standard bg color
-    return 'var(--color-bg)';
-  };
-  
   if (!isActive) return null;
+  
+  // Calculate center position - slightly above center for better visual effect
+  const centerX = dimensions.width / 2;
+  const centerY = dimensions.height / 2 - (dimensions.height * 0.1); // Move up by 10% for better composition
   
   return (
     <div 
@@ -94,31 +104,41 @@ export default function HyperspaceTunnel({
         ${isComplete ? 'opacity-0' : 'opacity-100'}
       `}
       style={{ 
-        zIndex: -1,
-        // FIXED: Use transparent for Kyoto/Radar, color-bg for others
-        backgroundColor: getBackgroundStyle()
+        zIndex: -1, // Above background but below content
+        // Always fill the entire viewport
+        width: '100vw',
+        height: '100vh',
+        top: 0,
+        left: 0
       }}
     >
       <svg 
         ref={svgRef}
         className="w-full h-full"
-        viewBox="0 0 1920 1080" 
-        preserveAspectRatio="xMidYMid slice"
+        viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
+        preserveAspectRatio="none" // Changed from "xMidYMid slice" to prevent cropping
         xmlns="http://www.w3.org/2000/svg"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%'
+        }}
       >
         <defs>
           {/* Center glow gradient using theme colors */}
-          <radialGradient id="hyperspace-center-glow">
+          <radialGradient id="hyperspace-center-glow" cx="50%" cy="45%">
             <stop offset="0%" stopColor="var(--color-text-primary)" stopOpacity="0.8">
               <animate attributeName="stop-opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
             </stop>
             <stop offset="30%" stopColor="var(--color-border)" stopOpacity="0.5"/>
             <stop offset="60%" stopColor="var(--color-active)" stopOpacity="0.2"/>
-            <stop offset="100%" stopColor="var(--color-border-darker)" stopOpacity="0"/>
+            <stop offset="100%" stopColor="transparent" stopOpacity="0"/>
           </radialGradient>
           
           {/* Pulsing background gradient */}
-          <radialGradient id="hyperspace-pulse-gradient">
+          <radialGradient id="hyperspace-pulse-gradient" cx="50%" cy="45%">
             <stop offset="0%" stopColor="var(--color-text-primary)" stopOpacity="0.15">
               <animate 
                 attributeName="stop-opacity" 
@@ -148,10 +168,13 @@ export default function HyperspaceTunnel({
           </filter>
         </defs>
         
-        {/* FIXED: Only add background rect for non-Kyoto/Radar themes */}
-        {theme !== 'kyoto' && theme !== 'radar' && (
-          <rect width="100%" height="100%" fill="var(--color-bg)"/>
-        )}
+        {/* FIXED: Full background coverage with theme-aware color */}
+        <rect 
+          width="100%" 
+          height="100%" 
+          fill="var(--color-bg)"
+          opacity="1"
+        />
         
         {/* Pulsing background layer */}
         <rect 
@@ -173,9 +196,8 @@ export default function HyperspaceTunnel({
         {/* Center glow layer */}
         <rect width="100%" height="100%" fill="url(#hyperspace-center-glow)" opacity="0.3"/>
         
-        {/* NEW: Adjust center position based on centerOffset prop */}
-        {/* This allows us to align with TerminalWindow center */}
-        <g transform={`translate(${960 + centerOffset.x}, ${540 + centerOffset.y})`}>
+        {/* Animation centered with calculated position */}
+        <g transform={`translate(${centerX}, ${centerY})`}>
           {/* Center vortex point */}
           <circle 
             cx="0" 
