@@ -8,6 +8,8 @@ import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
 import MorphingTerminal from '../components/ui/MorphingTerminal';
+// ADDED: Import the new HyperspaceTunnel component for background effect
+import HyperspaceTunnel from '../components/ui/HyperspaceTunnel';
 
 export default function ProfileBoot() {
   const { 
@@ -21,6 +23,9 @@ export default function ProfileBoot() {
   const [currentStep, setCurrentStep] = useState(0);
   // Flag when boot sequence is complete
   const [isComplete, setIsComplete] = useState(false);
+  
+  // ADDED: State for controlling the hyperspace tunnel animation
+  const [isAnimationActive, setIsAnimationActive] = useState(true);
   
   // Enhanced boot sequence with more technical detail
   // Each message simulates a real system initialization process
@@ -98,48 +103,72 @@ export default function ProfileBoot() {
     navigate('MainHub', false);
   }, [addLog, navigate]);
   
+  // ADDED: Callback for when the tunnel animation completes
+  const handleTunnelComplete = useCallback(() => {
+    setIsAnimationActive(false);
+  }, []);
+  
   // Calculate progress percentage for progress bar
   const progressPercentage = (currentStep / bootSequence.length) * 100;
   
   return (
-    <ScreenWrapper>
-    <div className="p-8 flex flex-col items-center justify-center min-h-[500px]">
-      <div className="mb-12 h-40 flex items-center justify-center">
-        <MorphingTerminal 
-          autoPlay={true}
-          frameDelay={150}
+    <>
+      <div 
+        style={{ 
+          transform: 'translateY(-15%)', // Сдвигаем центр анимации вверх
+          position: 'fixed',
+          inset: 0,
+          zIndex: -1
+        }}
+      >
+        <HyperspaceTunnel
+          isActive={isAnimationActive}
+          progress={progressPercentage}
+          duration={10000}
+          onComplete={handleTunnelComplete}
         />
       </div>
       
-      <div className="w-full max-w-md h-20 flex flex-col items-center justify-center">
-        {!isComplete ? (
-          <div className="w-full">
-            <TerminalProgress 
-              progress={progressPercentage}
-              isLoading={true}
-              label="INITIALIZING"
-              showPercentage={true}
-              animateProgress={true}
-              height="h-2"
+      {/* EXISTING: All original content remains unchanged, just wrapped in fragment */}
+      <ScreenWrapper>
+        <div className="p-8 flex flex-col items-center justify-center min-h-[500px]">
+          <div className="mb-12 h-40 flex items-center justify-center">
+            <MorphingTerminal 
+              autoPlay={true}
+              frameDelay={150}
             />
-            <p className="text-xs mt-2 text-center opacity-60 text-secondary">
-              {bootSequence[Math.min(currentStep, bootSequence.length - 1)]?.message}
-            </p>
           </div>
-        ) : (
-          <div className="w-full flex flex-col items-center animate-fadeIn">
-            <Button
-              onClick={handleContinue}
-              variant="primary"
-              icon={ArrowRight}
-              className="w-full px-6 py-3 transition-all duration-500"
-            >
-              ENTER PORTFOLIO
-            </Button>
+          
+          <div className="w-full max-w-md h-20 flex flex-col items-center justify-center">
+            {!isComplete ? (
+              <div className="w-full">
+                <TerminalProgress 
+                  progress={progressPercentage}
+                  isLoading={true}
+                  label="INITIALIZING"
+                  showPercentage={true}
+                  animateProgress={true}
+                  height="h-2"
+                />
+                <p className="text-xs mt-2 text-center opacity-60 text-secondary">
+                  {bootSequence[Math.min(currentStep, bootSequence.length - 1)]?.message}
+                </p>
+              </div>
+            ) : (
+              <div className="w-full flex flex-col items-center animate-fadeIn">
+                <Button
+                  onClick={handleContinue}
+                  variant="primary"
+                  icon={ArrowRight}
+                  className="w-full px-6 py-3 transition-all duration-500"
+                >
+                  ENTER PORTFOLIO
+                </Button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
-    </ScreenWrapper>
+        </div>
+      </ScreenWrapper>
+    </>
   );
 }
