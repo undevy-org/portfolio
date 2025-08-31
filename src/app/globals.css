@@ -23,6 +23,11 @@
     --color-input-bg: #111827;
     --color-hover: rgba(34, 197, 94, 0.1);
     --color-accent: #22d3ee;
+    --color-btn-bg: rgba(255, 255, 255, 0.07);
+    --color-btn-bg-hover: rgba(255, 255, 255, 0.09);
+    --texture-line-color: 34, 197, 94;
+    --texture-opacity: 0.09;           
+    --texture-grid-size: 100px;        
   }
 
   [data-theme='light'] {
@@ -32,7 +37,7 @@
     --color-text-secondary: #4b5563;
     --color-text-tertiary: #9ca3af;
     --color-text-command: #b45309;
-    --color-text-white: #0a0a0a; /* inverted for light theme */
+    --color-text-white: #0a0a0a; 
     --color-border: #10b981;
     --color-border-darker: #059669;
     --color-active: #d1fae5;
@@ -41,6 +46,11 @@
     --color-input-bg: #ffffff;
     --color-hover: rgba(5, 150, 105, 0.1);
     --color-accent: #0284c7;
+    --color-btn-bg: rgba(5, 150, 105, 0.05);
+    --color-btn-bg-hover: rgba(5, 150, 105, 0.1);
+    --texture-line-color: 59, 130, 246; 
+    --texture-opacity: 0.09;           
+    --texture-grid-size: 120px;        
   }
 
   [data-theme='amber'] {
@@ -50,7 +60,7 @@
     --color-text-secondary: #D9A15D;
     --color-text-tertiary: #B08953;
     --color-text-command: #FFD173;
-    --color-text-white: #FFB86C; /* using amber for primary surface */
+    --color-text-white: #FFB86C;
     --color-border: #FF9F1C;
     --color-border-darker: #8B5A00;
     --color-active: #4d2e08;
@@ -59,6 +69,11 @@
     --color-input-bg: #1B1210;
     --color-hover: rgba(255, 184, 108, 0.08);
     --color-accent: #FFDDAA;
+    --color-btn-bg: rgba(255, 184, 108, 0.05);
+    --color-btn-bg-hover: rgba(255, 184, 108, 0.1);
+    --texture-line-color: 251, 146, 60;  
+    --texture-opacity: 0.05;           
+    --texture-grid-size: 100px;
   }
 
   [data-theme='bsod'] {
@@ -77,6 +92,11 @@
     --color-input-bg: #073A93;
     --color-hover: rgba(230, 243, 255, 0.06);
     --color-accent: #88B8FF;
+    --color-btn-bg: rgba(230, 243, 255, 0.08);
+    --color-btn-bg-hover: rgba(230, 243, 255, 0.15);
+    --texture-line-color: 255, 255, 255; 
+    --texture-opacity: 0.08;          
+    --texture-grid-size: 80px;         
   }
 
     [data-theme='synthwave'] {
@@ -95,6 +115,11 @@
     --color-input-bg: #2C1E5C;
     --color-hover: rgba(255, 0, 229, 0.1);
     --color-accent: #00F6FF;
+    --color-btn-bg: rgba(255, 0, 229, 0.08);
+    --color-btn-bg-hover: rgba(255, 0, 229, 0.12);
+    --texture-line-color: 236, 72, 153; 
+    --texture-opacity: 0.09;
+    --texture-grid-size: 100px;
   }
 
   [data-theme='operator'] {
@@ -113,6 +138,11 @@
     --color-input-bg: #1A1A1A;
     --color-hover: rgba(255, 65, 0, 0.1);
     --color-accent: #FFA500;
+    --color-btn-bg: rgba(255, 65, 0, 0.08);
+    --color-btn-bg-hover: rgba(255, 65, 0, 0.12);
+    --texture-line-color: 251, 191, 36; 
+    --texture-opacity: 0.09;
+    --texture-grid-size: 100px;
   }
 
   [data-theme='kyoto'] {
@@ -131,6 +161,11 @@
     --color-input-bg: #8E8E8E;
     --color-hover: rgba(74, 74, 74, 0.1);
     --color-accent: #39D9D9;
+    --color-btn-bg: rgba(26, 26, 26, 0.05);
+    --color-btn-bg-hover: rgba(26, 26, 26, 0.1);
+    --texture-line-color: 220, 38, 38;  
+    --texture-opacity: 0.09;
+    --texture-grid-size: 110px;
   }
 
   /* Specific body background for Kyoto theme */
@@ -154,6 +189,11 @@
     --color-input-bg: #32402F;
     --color-hover: rgba(179, 226, 167, 0.1);
     --color-accent: #54B3B3;
+    --color-btn-bg: rgba(179, 226, 167, 0.05);
+    --color-btn-bg-hover: rgba(179, 226, 167, 0.1);
+    --texture-line-color: 34, 197, 94;   
+    --texture-opacity: 0.08;
+    --texture-grid-size: 90px;
   }
 }
 
@@ -250,13 +290,11 @@
   }
   
   .btn-command {
-    @apply px-4 py-2 font-mono text-sm border rounded transition-colors;
-    border-color: var(--color-border);
-    color: var(--color-text-primary);
-  }
-  
+    @apply border border-primary text-primary transition-colors duration-200;
+    background-color: var(--color-btn-bg);
+    }
   .btn-command:hover {
-    background-color: var(--color-hover);
+    background-color: var(--color-btn-bg-hover);
   }
   
   .btn-active {
@@ -275,7 +313,6 @@
     color: var(--color-text-secondary);
   }
   
-  /* All other utility classes remain the same... */
   .panel-base {
     @apply border rounded-md p-4;
   }
@@ -598,4 +635,80 @@
     background: var(--color-accent);
     opacity: 1; /* ADDED: Makes it fully opaque on hover for better visibility */
   }
+}
+
+.terminal-texture {
+  position: relative;
+}
+
+.terminal-texture::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  /* IMPORTANT: z-index must be higher than HyperspaceTunnel (0) but lower than main content */
+  z-index: 1;
+  opacity: var(--texture-opacity);
+  
+  /* Create scanline effect with horizontal lines and vertical grid */
+  background-image: 
+    /* Horizontal scanlines - creates the CRT monitor effect */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(var(--texture-line-color), 0.3) 2px,
+      rgba(var(--texture-line-color), 0.3) 4px
+    ),
+    /* Vertical grid lines - adds structure and depth */
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent var(--texture-grid-size),
+      rgba(var(--texture-line-color), 0.2) var(--texture-grid-size),
+      rgba(var(--texture-line-color), 0.2) calc(var(--texture-grid-size) + 2px)
+    );
+  
+  /* Performance optimization for large screens */
+  will-change: opacity;
+  
+  /* Smooth transition when switching themes */
+  transition: opacity 0.3s ease;
+}
+
+/* Optional: Reduce texture on mobile for better performance */
+@media (max-width: 768px) {
+  .terminal-texture::before {
+    /* Simplify to just horizontal lines on mobile */
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(var(--texture-line-color), 0.2) 3px,
+        rgba(var(--texture-line-color), 0.2) 5px
+      );
+  }
+}
+
+/* Optional: Add a subtle vignette effect for more depth */
+.terminal-texture::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+  /* Radial gradient from center to edges */
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
 }
