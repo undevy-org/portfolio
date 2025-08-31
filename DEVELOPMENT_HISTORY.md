@@ -9,12 +9,10 @@ This section outlines initiatives that are ongoing or planned for future release
 ### Testing Infrastructure & Code Quality
 - Goal: Build a comprehensive testing suite that ensures code quality, prevents regressions, and enables confident refactoring.
 - Current Status: Foundational testing architecture using Jest and React Testing Library is in place. Unit tests for all critical utility functions and component tests for core UI elements have been created.
-- Next Steps: Resolve known incompatibilities with Next.js 13+ code coverage reporting. Enable and complete integration tests for full user flows.
 
 ### Enhanced User Experience & Navigation
 - Goal: Refine the user journey by creating more immersive interactive experiences and improving navigation clarity.
 - Current Status: Stable navigation system with hierarchical breadcrumbs and temporal session trace is implemented. The ProfileBoot sequence and TerminalImagePreview component provide rich, animated user feedback.
-- Next Steps: Continue to optimize component rendering to eliminate any remaining UI flicker during navigation. Further refine navigation control logic for edge cases.
 
 ---
 

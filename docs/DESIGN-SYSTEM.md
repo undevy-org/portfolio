@@ -4,7 +4,7 @@ This document outlines the design philosophy, architectural principles, and comp
 
 ## **1. Design Philosophy**
 
-The Terminal UI system is built not just on aesthetics, but on a core philosophy of clarity, control, and character. Every design decision is guided by four key principles.
+The Terminal UI system is built not just on aesthetics, but on a core philosophy of clarity, control, and character. Every design decision is guided by five key principles.
 
 -   **1.1. Command-Line Aesthetics**: The interface intentionally mimics classic terminal commands and layouts.
     *   **Why?** To create a unique, memorable experience that speaks to technical competence and honors the legacy of computing. It's an interface for builders, thinkers, and problem-solvers.
@@ -17,6 +17,9 @@ The Terminal UI system is built not just on aesthetics, but on a core philosophy
 
 -   **1.4. System Feedback Transparency**: All significant user actions and system responses are explicitly logged in a prominent, real-time `SystemLog`.
     *   **Why?** To give the user a sense of complete control and predictability, much like a developer using a well-designed tool. The application's state is never a mystery.
+
+-   **1.5. Atmospheric Depth**: Subtle visual effects like CRT-style background textures and hyperspace animations create an immersive, cinematic experience.
+    *   **Why?** To elevate the portfolio from a static document to an interactive journey. These effects are carefully calibrated to enhance rather than distract, adding personality while maintaining professional polish.
 
 ## **2. Theming Architecture: How It Works**
 
@@ -65,7 +68,7 @@ export const themeConfig = {
 
 ## **3. Color Palettes**
 
-The following tables define the color palette for each supported theme. Each theme provides a full spectrum of 15 semantic color variables.
+The following tables define the color palette for each supported theme. Each theme provides a full spectrum of 17 semantic color variables plus 3 texture effect variables.
 
 ### **3.1. How to Read These Tables**
 
@@ -91,6 +94,12 @@ The following tables define the color palette for each supported theme. Each the
 | `--color-input-bg`       | `#111827`              |
 | `--color-hover`          | `rgba(34, 197, 94, 0.1)` |
 | `--color-accent`         | `#22d3ee`              |
+| `--color-btn-bg`         | `rgba(255, 255, 255, 0.07)` |
+| `--color-btn-bg-hover`   | `rgba(255, 255, 255, 0.09)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `34, 197, 94`          |
+| `--texture-opacity`      | `0.03`                 |
+| `--texture-grid-size`    | `100px`                |
 
 ### **3.3. Light Theme**
 
@@ -110,6 +119,12 @@ The following tables define the color palette for each supported theme. Each the
 | `--color-input-bg`       | `#f9fafb`               |
 | `--color-hover`          | `rgba(5, 150, 105, 0.1)` |
 | `--color-accent`         | `#0891b2`               |
+| `--color-btn-bg`         | `rgba(5, 150, 105, 0.05)` |
+| `--color-btn-bg-hover`   | `rgba(5, 150, 105, 0.1)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `59, 130, 246`         |
+| `--texture-opacity`      | `0.02`                 |
+| `--texture-grid-size`    | `120px`                |
 
 ### **3.4. Amber Theme**
 
@@ -129,6 +144,12 @@ The following tables define the color palette for each supported theme. Each the
 | `--color-input-bg`       | `#261A12`                |
 | `--color-hover`          | `rgba(255, 184, 108, 0.08)` |
 | `--color-accent`         | `#8BE9FD`                |
+| `--color-btn-bg`         | `rgba(255, 184, 108, 0.05)` |
+| `--color-btn-bg-hover`   | `rgba(255, 184, 108, 0.1)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `251, 146, 60`         |
+| `--texture-opacity`      | `0.05`                 |
+| `--texture-grid-size`    | `100px`                |
 
 ### **3.5. BSOD Theme**
 
@@ -148,9 +169,14 @@ The following tables define the color palette for each supported theme. Each the
 | `--color-input-bg`       | `#073A93`                |
 | `--color-hover`          | `rgba(230, 243, 255, 0.06)` |
 | `--color-accent`         | `#88B8FF`                |
+| `--color-btn-bg`         | `rgba(230, 243, 255, 0.08)` |
+| `--color-btn-bg-hover`   | `rgba(230, 243, 255, 0.15)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `255, 255, 255`        |
+| `--texture-opacity`      | `0.08`                 |
+| `--texture-grid-size`    | `80px`                 |
 
 ### **3.6. Synthwave Theme**
-Inspired by 80s retro-futurism, this theme uses a deep indigo background with high-contrast neon magenta and cyan.
 
 | CSS Variable             | Value                    |
 | :----------------------- | :----------------------- |
@@ -168,9 +194,14 @@ Inspired by 80s retro-futurism, this theme uses a deep indigo background with hi
 | `--color-input-bg`       | `#2C1E5C`                |
 | `--color-hover`          | `rgba(255, 0, 229, 0.1)` |
 | `--color-accent`         | `#00F6FF`                |
+| `--color-btn-bg`         | `rgba(255, 0, 229, 0.08)` |
+| `--color-btn-bg-hover`   | `rgba(255, 0, 229, 0.12)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `236, 72, 153`         |
+| `--texture-opacity`      | `0.04`                 |
+| `--texture-grid-size`    | `100px`                |
 
 ### **3.7. Operator Theme**
-Evokes early monochrome CRT monitors with a functional, utilitarian feel. Sharp, legible text on a near-black background.
 
 | CSS Variable             | Value                  |
 | :----------------------- | :--------------------- |
@@ -188,9 +219,14 @@ Evokes early monochrome CRT monitors with a functional, utilitarian feel. Sharp,
 | `--color-input-bg`       | `#1A1A1A`              |
 | `--color-hover`          | `rgba(255, 65, 0, 0.1)` |
 | `--color-accent`         | `#FFA500`              |
+| `--color-btn-bg`         | `rgba(255, 65, 0, 0.08)` |
+| `--color-btn-bg-hover`   | `rgba(255, 65, 0, 0.12)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `251, 191, 36`         |
+| `--texture-opacity`      | `0.03`                 |
+| `--texture-grid-size`    | `100px`                |
 
 ### **3.8. Kyoto Theme**
-An industrial, cyberpunk aesthetic with a unique split background: an orange page surrounding grey "concrete" panels.
 
 | CSS Variable             | Value                  |
 | :----------------------- | :--------------------- |
@@ -208,9 +244,14 @@ An industrial, cyberpunk aesthetic with a unique split background: an orange pag
 | `--color-input-bg`       | `#8E8E8E`              |
 | `--color-hover`          | `rgba(74, 74, 74, 0.1)` |
 | `--color-accent`         | `#39D9D9`              |
+| `--color-btn-bg`         | `rgba(26, 26, 26, 0.05)` |
+| `--color-btn-bg-hover`   | `rgba(26, 26, 26, 0.1)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `220, 38, 38`          |
+| `--texture-opacity`      | `0.03`                 |
+| `--texture-grid-size`    | `110px`                |
 
 ### **3.9. Radar Theme**
-Mimics analog military hardware with a tactile feel. A khaki "chassis" surrounds an olive-green "screen".
 
 | CSS Variable             | Value                     |
 | :----------------------- | :------------------------ |
@@ -228,6 +269,13 @@ Mimics analog military hardware with a tactile feel. A khaki "chassis" surrounds
 | `--color-input-bg`       | `#32402F`                 |
 | `--color-hover`          | `rgba(179, 226, 167, 0.1)` |
 | `--color-accent`         | `#54B3B3`                 |
+| `--color-btn-bg`         | `rgba(179, 226, 167, 0.05)` |
+| `--color-btn-bg-hover`   | `rgba(179, 226, 167, 0.1)` |
+| **Texture Effects**      |                        |
+| `--texture-line-color`   | `34, 197, 94`          |
+| `--texture-opacity`      | `0.04`                 |
+| `--texture-grid-size`    | `90px`                 |
+
 
 ## **4. Semantic Class Library**
 
