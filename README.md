@@ -10,6 +10,9 @@ After authentication, the application transforms into a seamless Single Page App
 
 -   **Gated & Personalized Access:** The site is accessible only via a unique code (`?code=...`). Based on this code, all content—from greetings to project case studies—is dynamically tailored for the visitor.
 -   **Multi-Domain Support:** A single codebase can power multiple, distinctly branded portfolio instances based on the domain name, serving different content and styling.
+-   **Two-Tier Deployment:** Features a robust CI/CD pipeline with separate, isolated environments:
+    -   **Staging:** Automatically deploys on every push to the `main` branch for immediate testing.
+    -   **Production:** Deploys manually via version tags, ensuring only stable, verified code goes live.
 -   **Multi-Theme System:** Includes four distinct, built-in themes (Dark, Light, Amber, BSOD) with instant, flicker-free switching. The architecture is built on CSS variables, making it easily extensible.
 -   **Single Page Application (SPA) Experience:** After a single data load during authentication, all navigation is instantaneous and handled client-side, with bookmarkable URLs for each screen (`#Timeline`, `#CaseDetail`, etc.).
 -   **Zero Layout Shift Navigation:** A stable layout architecture with fixed regions prevents any content jumping or visual flicker. All screen transitions are handled with smooth, accessibility-conscious animations, creating a seamless and predictable user journey.
@@ -117,19 +120,19 @@ This project uses a Pull Request workflow with automated CI/CD. All changes must
 
 7.  **Wait for the automated checks:**
     - The `CI Pipeline / Validate and Build` check will automatically run. It performs linting, runs the entire test suite, and verifies that the project can be successfully built.
-    - All checks must pass (green checkmarks) before merging
-    - If any check fails, fix the issues locally and push again
+    - All checks must pass (green checkmarks) before merging.
+    - If any check fails, fix the issues locally and push again.
 
 8.  **Merge when ready:**
-    - Once all checks are green, click "Merge pull request"
-    - The changes will automatically deploy to production
+    - Once all checks are green, click "Merge pull request".
+    - The changes will automatically deploy to the **staging environment** (`stage.your-domain.com`) for final review.
 
 ### Common CI Check Failures and Solutions
 
-- **Linting errors:** Run `npm run lint` locally to see the issues, then fix them
-- **Test failures:** Run `npm test` to identify failing tests, update your code accordingly
-- **Build errors:** Run `npm run build` locally to reproduce and fix the issue
-- **Package-lock out of sync:** Run `npm install` and commit the updated `package-lock.json`
+- **Linting errors:** Run `npm run lint` locally to see the issues, then fix them.
+- **Test failures:** Run `npm test` to identify failing tests, update your code accordingly.
+- **Build errors:** Run `npm run build` locally to reproduce and fix the issue.
+- **Package-lock out of sync:** Run `npm install` and commit the updated `package-lock.json`.
 
 ## Versioning & Releases
 
@@ -142,9 +145,9 @@ We use the standard `MAJOR.MINOR.PATCH` format:
 - **MINOR**: New features that are backward compatible
 - **PATCH**: Bug fixes and minor improvements
 
-### Creating a Release
+### Creating a Release (Deploying to Production)
 
-After merging changes to `main`, create a release using:
+After merging changes to `main` and verifying them on the staging environment, create a release to deploy to production:
 
 ```bash
 # Automatically determine version based on commits
@@ -164,7 +167,7 @@ This will:
 2. Update `CHANGELOG.md` automatically
 3. Create a git commit and tag
 4. Trigger GitHub Actions to create a GitHub Release
-5. Deploy to production automatically
+5. Deploy the new version to **production** automatically.
 
 ### Version Information
 

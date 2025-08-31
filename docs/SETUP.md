@@ -108,11 +108,18 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ## 3. Application Deployment
 
 ### 3.1. Set Up Server File Structure
-Create the required directories in your user's home folder.
+Create the required directories in your user's home folder. This structure supports versioned production releases and a separate staging environment.
 
 ```bash
-# The main directory for the Next.js application
-mkdir -p ~/sites/your-domain.com
+# Main directory for all production releases
+mkdir -p ~/releases/portfolio
+
+# Main directory for the staging environment
+mkdir -p ~/releases/staging
+
+# Directory for shared configuration files (.env)
+mkdir -p ~/shared/portfolio
+mkdir -p ~/shared/staging
 
 # The directory for the Matomo Docker setup
 mkdir ~/matomo
@@ -121,6 +128,7 @@ mkdir ~/matomo
 touch ~/content.json
 # Populate this file with your portfolio data, using the Content Model guide as reference.
 ```
+*Note: The path `/home/your_user/your-domain.com` will be a symbolic link created automatically by the deployment script.*
 
 ### 3.2. Matomo Analytics Setup
 1.  Navigate to the Matomo directory: `cd ~/matomo`
@@ -129,23 +137,37 @@ touch ~/content.json
 4.  Access Matomo via your server's IP (e.g., `http://YOUR_SERVER_IP:8888` if you mapped that port) and complete the web installer.
 
 ### 3.3. Nginx Configuration
-1.  Create Nginx config files for the main site and analytics.
+1.  Create Nginx config files for the production site, staging site, and analytics.
 
-    **/etc/nginx/sites-available/your-domain.com**
+    **/etc/nginx/sites-available/your-domain.com** (Production)
     ```nginx
     server {
         listen 80;
         server_name your-domain.com www.your-domain.com;
 
         location / {
-            proxy_pass http://localhost:3000;
+            proxy_pass http://localhost:3000; # Production app runs on port 3000
             proxy_set_header Host $host;
             # ... (add other proxy headers as needed)
         }
     }
     ```
 
-    **/etc/nginx/sites-available/analytics.your-domain.com**
+    **/etc/nginx/sites-available/stage.your-domain.com** (Staging)
+    ```nginx
+    server {
+        listen 80;
+        server_name stage.your-domain.com;
+
+        location / {
+            proxy_pass http://localhost:3001; # Staging app runs on port 3001
+            proxy_set_header Host $host;
+            # ... (add other proxy headers as needed)
+        }
+    }
+    ```
+
+    **/etc/nginx/sites-available/analytics.your-domain.com** (Analytics)
     ```nginx
     server {
         listen 80;
@@ -162,30 +184,43 @@ touch ~/content.json
     ```bash
     # Enable sites
     sudo ln -s /etc/nginx/sites-available/your-domain.com /etc/nginx/sites-enabled/
+    sudo ln -s /etc/nginx/sites-available/stage.your-domain.com /etc/nginx/sites-enabled/
     sudo ln -s /etc/nginx/sites-available/analytics.your-domain.com /etc/nginx/sites-enabled/
 
     # Test Nginx config and restart
     sudo nginx -t && sudo systemctl restart nginx
 
-    # Install Certbot and get SSL certificates
+    # Install Certbot and get SSL certificates (it will prompt you for all sites)
     sudo apt install certbot python3-certbot-nginx -y
     sudo certbot --nginx
     ```
 
-### 3.4. Deploy & Run The Portfolio Application
-Clone the repository and start the application using PM2.
+### 3.4. First-Time Deployment
+The first deployment must be done manually to set up the initial structure. Subsequent deployments will be fully automated.
 
 ```bash
-# Clone the project code
-git clone https://github.com/your-github/your-repo.git ~/sites/your-domain.com
-
-# Setup Next.js App
-cd ~/sites/your-domain.com
+# Clone the project code into a temporary directory
+git clone https://github.com/your-github/your-repo.git ~/temp_deploy
+cd ~/temp_deploy
 npm install
 npm run build
-pm2 start npm --name "portfolio-app" -- start
+
+# Manually create the first release directory
+mkdir -p ~/releases/portfolio/v1.0.0
+cp -r ./* ~/releases/portfolio/v1.0.0/
+
+# Create the symbolic link
+ln -sfn ~/releases/portfolio/v1.0.0 /home/your_user/your-domain.com
+
+# Start the application with PM2
+cd /home/your_user/your-domain.com
+pm2 start npm --name "your-pm2-name" -- start
 pm2 save
+
+# Clean up temporary directory
+rm -rf ~/temp_deploy
 ```
+After this, all future deployments to production and staging will be handled by GitHub Actions.
 
 ### 3.5. Web3 Provider Setup (Optional)
 
@@ -217,7 +252,7 @@ This project uses Reown (formerly WalletConnect) for Web3 authentication. To ena
 To enable the automated and secure CI/CD workflow, you must configure branch protection rules for your `main` branch. This prevents direct pushes and ensures all changes are validated via a Pull Request.
 
 **Prerequisites:**
--   You have already created the workflow files (e.g., `ci.yml` and `deploy.yml`) in your repository's `.github/workflows` directory.
+-   You have already created the workflow files (e.g., `ci.yml`, `release-deploy.yml`, `staging-deploy.yml`) in your repository's `.github/workflows` directory.
 
 **Steps to Configure Branch Protection:**
 
@@ -248,7 +283,7 @@ After saving these rules, your `main` branch will be protected, and all changes 
     -   `SSH_USER`: Your server username (`your_user`).
     -   `SSH_PRIVATE_KEY`: The content of the private key file (`cat ~/.ssh/github_actions_key`).
 
-Your CI/CD pipeline in `.github/workflows/deploy.yml` will now automate deployments.
+Your CI/CD pipelines in `.github/workflows/` will now automate deployments.
 
 ## 6. Versioning for Your Fork
 
@@ -284,7 +319,7 @@ npm run release -- --release-as minor
 # For breaking changes
 npm run release -- --release-as major
 
-# Push to trigger deployment
+# Push to trigger deployment to production
 git push --follow-tags origin main
 ```
 
