@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [5.4.2](https://github.com/undevy-org/portfolio/compare/v5.4.1...v5.4.2) (2025-09-01)
+
+
+### Fixed
+
+* add PORTFOLIO_TITLE to build env and replace hardcoded domains ([#81](https://github.com/undevy-org/portfolio/issues/81)) ([345897f](https://github.com/undevy-org/portfolio/commit/345897f7942c39af44fd6d432b37216bc93897db))
+
 ### [5.4.1](https://github.com/undevy-org/portfolio/compare/v5.4.0...v5.4.1) (2025-09-01)
 
 
