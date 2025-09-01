@@ -7,7 +7,7 @@ name: Deploy Production Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # Semantic versioning tags only
+      - 'v*.*.*'
 
 jobs:
   build-and-deploy-production:
@@ -20,12 +20,13 @@ jobs:
           echo "🏷️ Production Release Deployment"
           echo "Tag: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
-          echo "Target: undevy.com / foxous.design"
+          # CHANGE: Using secrets for domain names instead of hardcoding
+          echo "Target: ${{ secrets.PRODUCTION_DOMAIN_1 }} / ${{ secrets.PRODUCTION_DOMAIN_2 }}"
       
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Need full history for changelog
+          fetch-depth: 0 
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,9 +42,10 @@ jobs:
       - name: Build production release
         env:
           NODE_ENV: production
+          PORTFOLIO_TITLE: ${{ secrets.PORTFOLIO_TITLE }}
           NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE: ${{ secrets.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE }}
         run: |
-          echo "🏗️ Building production release ${{ github.ref_name }}..."
+          echo "🗏 Building production release ${{ github.ref_name }}..."
           
           # Clean build for production
           rm -rf .next
@@ -94,7 +96,6 @@ jobs:
           echo "✅ Release package created"
           echo "📊 Package size: $(du -h portfolio-release-${{ github.ref_name }}.tar.gz | cut -f1)"
       
-      # Upload release artifact to GitHub Release (permanent storage)
       - name: Upload release artifact to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -239,8 +240,9 @@ jobs:
             echo ""
             echo "🎉 Release $RELEASE_TAG is now live!"
             echo "🌐 Sites:"
-            echo "  - https://undevy.com"
-            echo "  - https://foxous.design"
+            # CHANGE: Using secrets for domain names instead of hardcoding
+            echo "  - https://${{ secrets.PRODUCTION_DOMAIN_1 }}"
+            echo "  - https://${{ secrets.PRODUCTION_DOMAIN_2 }}"
             if [ -n "$PREVIOUS_VERSION" ]; then
               echo ""
               echo "🔄 Rollback command (if needed):"
@@ -256,8 +258,9 @@ jobs:
           echo "Commit: ${{ github.sha }}"
           echo ""
           echo "Production sites updated:"
-          echo "  🌐 https://undevy.com"
-          echo "  🌐 https://foxous.design"
+          # CHANGE: Using secrets for domain names instead of hardcoding
+          echo "  🌐 https://${{ secrets.PRODUCTION_DOMAIN_1 }}"
+          echo "  🌐 https://${{ secrets.PRODUCTION_DOMAIN_2 }}"
           echo ""
           echo "Release artifact permanently stored in GitHub Releases"
           echo "Blue-green deployment completed with rollback capability"

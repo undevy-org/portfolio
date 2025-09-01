@@ -23,7 +23,7 @@ jobs:
           echo "Commit: ${{ github.event.workflow_run.head_sha }}"
           echo "Triggered by: ${{ github.event.workflow_run.name }}"
           echo "Run ID: ${{ github.event.workflow_run.id }}"
-          echo "Target: stage.undevy.com / stage.foxous.design"
+          echo "Target: ${{ secrets.STAGING_DOMAIN_1 }} / ${{ secrets.STAGING_DOMAIN_2 }}"
       
       - name: Download staging artifact
         uses: dawidd6/action-download-artifact@v6
@@ -169,8 +169,8 @@ jobs:
             echo "✅ Staging deployment completed!"
             echo ""
             echo "🌐 Access staging at:"
-            echo "  - https://stage.undevy.com"
-            echo "  - https://stage.foxous.design"
+            echo "  - https://${{ secrets.STAGING_DOMAIN_1 }}"
+            echo "  - https://${{ secrets.STAGING_DOMAIN_2 }}"
       
       - name: Deployment summary
         run: |
@@ -179,13 +179,12 @@ jobs:
           echo "Commit: ${{ github.event.workflow_run.head_sha }}"
           echo ""
           echo "Staging sites are now live at:"
-          echo "  🌐 https://stage.undevy.com"
-          echo "  🌐 https://stage.foxous.design"
+          echo "  🌐 https://${{ secrets.STAGING_DOMAIN_1 }}"
+          echo "  🌐 https://${{ secrets.STAGING_DOMAIN_2 }}"
           echo ""
           echo "Note: Staging will auto-shutdown after 2 hours of inactivity"
           echo "To promote to production, run: npm run release"
   
-  # Handle failed CI
   failure-notification:
     name: Handle CI Failure
     runs-on: ubuntu-latest
