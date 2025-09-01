@@ -132,6 +132,7 @@ jobs:
       
       - name: Build project
         env:
+          PORTFOLIO_TITLE: ${{ secrets.PORTFOLIO_TITLE }}
           NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE: ${{ secrets.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE }}
         run: |
           echo "🏗️ Building project..."
@@ -149,7 +150,6 @@ jobs:
           echo "  Static assets: $(du -sh .next/static | cut -f1)"
           echo "  Server bundles: $(du -sh .next/server | cut -f1)"
       
-      # FOR PULL REQUESTS: Create lightweight verification report
       - name: Create PR verification artifact
         if: github.event_name == 'pull_request'
         run: |
@@ -180,7 +180,6 @@ jobs:
           retention-days: 2
           compression-level: 6
       
-      # FOR MAIN BRANCH: Create staging deployment package
       - name: Prepare staging deployment package
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
@@ -221,14 +220,13 @@ jobs:
           echo "  ✅ next.config.mjs"
           echo "  ❌ src/ (NOT included - not needed in production)"
       
-      # Upload staging deployment artifact (14 days retention)
       - name: Upload staging deployment artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: staging-package-${{ github.sha }}
           path: deployment-package/
-          retention-days: 14  # Staging artifacts kept for 14 days
+          retention-days: 14  
           compression-level: 6
           include-hidden-files: true
       
@@ -239,5 +237,5 @@ jobs:
           echo ""
           echo "Next steps:"
           echo "- Staging deployment will be triggered automatically"
-          echo "- Test your changes at: https://stage.undevy.com"
+          echo "- Test your changes at: https://${{ secrets.STAGING_DOMAIN_1 }}"
           echo "- When ready for production, run: npm run release"
