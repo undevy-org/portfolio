@@ -159,15 +159,6 @@ export function SessionProvider({ children }) {
       fetchDomainConfig();
     }
   }, [addLog]);
-
-  // ========== DYNAMIC DOCUMENT TITLE ==========
-  useEffect(() => {
-    // Only update title after domain config is loaded
-    if (domainData && !domainConfigLoading) {
-      document.title = domainData.brandingToken || '$terminal_portfolio';
-      addLog(`TITLE SET: ${document.title}`);
-    }
-  }, [domainData, domainConfigLoading, addLog]);
   
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {

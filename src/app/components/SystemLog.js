@@ -1,4 +1,4 @@
-// src/app/screens/SystemLog.js
+// src/app/components/SystemLog.js
 'use client';
 
 import { useSession } from '../context/SessionContext';
@@ -17,12 +17,19 @@ export default function SystemLog() {
 
   return (
     <div className="w-full max-w-2xl border rounded h-32 overflow-y-auto text-xs p-2 font-mono bg-main border-primary" ref={logContainerRef}>
-      {logEntries.map((entry, index) => (
+      {logEntries.map((entry, index) => {
+        // Check if this is the special ACCESS GRANTED message
+        const isAccessGranted = entry.includes('ACCESS GRANTED');
+        
+        return (
         <div key={index} className="flex">
           <span className="mr-2 select-none">{'>'}</span>
-          <p className="text-secondary">{entry}</p>
+            <p className={isAccessGranted ? "text-accent font-bold" : "text-secondary"}>
+              {entry}
+            </p>
         </div>
-      ))}
+        );
+      })}
       
       {logEntries.length > 0 && (
       <div className="flex items-center mt-1">
