@@ -7,7 +7,6 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
-import MorphingTerminal from '../components/ui/MorphingTerminal';
 import HyperspaceTunnel from '../components/ui/HyperspaceTunnel';
 
 export default function ProfileBoot() {
@@ -59,8 +58,8 @@ export default function ProfileBoot() {
       { message: 'Validating content structure...', duration: 400 },
       { message: 'All systems operational.', duration: 300 },
       
-      // Access granted
-      { message: 'ACCESS GRANTED', duration: 200 },
+      // Access granted - special message
+      { message: 'ACCESS GRANTED', duration: 200, isSpecial: true },
       { message: 'Welcome to the portfolio terminal.', duration: 500 }
     ];
   }, [domainData?.terminalTitle, domainData?.domain]);
@@ -77,7 +76,9 @@ export default function ProfileBoot() {
     
     // Set timer for this step's duration
     const timer = setTimeout(() => {
-      // Add message to system log (removing any trailing dots for consistency)
+      // Add message to system log
+      // For special messages like ACCESS GRANTED, we could potentially style them differently
+      // in the SystemLog component by checking the message content
       addLog(step.message.replace(/\.\.\.$/, ''));
       
       // Move to next step
@@ -112,8 +113,6 @@ export default function ProfileBoot() {
   
   return (
     <>
-      {/* FIXED: Removed the transform translateY hack */}
-      {/* Now the animation properly fills the entire screen */}
         <HyperspaceTunnel
           isActive={isAnimationActive}
           progress={progressPercentage}
@@ -121,50 +120,43 @@ export default function ProfileBoot() {
           onComplete={handleTunnelComplete}
         />
       
+      {/* Main content area */}
       <ScreenWrapper>
         <div className="p-8 flex flex-col items-center justify-center min-h-[500px]">
-          <div className="mb-12 h-40 flex items-center justify-center">
-            <MorphingTerminal 
-              autoPlay={true}
-              frameDelay={150}
-            />
-          </div>
           
-          <div className="w-full max-w-md h-20 flex flex-col items-center justify-center">
-            {!isComplete ? (
-              <>
-                <div className="mb-4 text-center h-6">
-                  <span className="text-primary text-sm tracking-wider uppercase animate-pulse-progress">
-                    {currentStep < bootSequence.length 
-                      ? bootSequence[currentStep].message 
-                      : 'Initialization complete'}
-                  </span>
-                </div>
-                
+          {/* Unified progress and button section - both visible from start */}
+          <div className="w-full max-w-md flex flex-col items-center space-y-6">
+            {/* Progress bar - wrapped in same width container as button */}
+            <div className="w-full max-w-xs">
                 <TerminalProgress 
                   progress={progressPercentage}
-                  isLoading={true}
-                  label="INITIALIZING"
+                isLoading={true}  // Always true to keep it visible
+                label="SYSTEM INITIALIZATION"
                   showPercentage={true}
                   animateProgress={true}
-                  height="h-2"
+                height="h-3"
+                showPulse={!isComplete}  // Stop pulse animation when complete
                 />
-                <p className="text-xs mt-2 text-center opacity-60 text-secondary">
-                  {bootSequence[Math.min(currentStep, bootSequence.length - 1)]?.message}
-                </p>
-               </>
-            ) : (
-              <div className="w-full flex flex-col items-center animate-fadeIn">
+            </div>
+            
+            {/* Button - content and state change based on completion */}
+            <div className="w-full max-w-xs">
                 <Button
                   onClick={handleContinue}
                   variant="primary"
-                  icon={ArrowRight}
-                  className="w-full px-6 py-3 transition-all duration-500"
+                  // Show icon only when complete
+                  icon={isComplete ? ArrowRight : null}
+                  disabled={!isComplete}
+                  className={`
+                    w-full px-6 py-3 
+                    transition-all duration-500
+                    ${!isComplete ? 'opacity-40 cursor-not-allowed' : 'animate-pulse-slow'}
+                  `}
                 >
-                  ENTER PORTFOLIO
+                  {/* Change text based on completion state */}
+                  {isComplete ? 'ENTER PORTFOLIO' : '...INITIALIZING...'}
                 </Button>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </ScreenWrapper>

@@ -18,10 +18,17 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: '--font-mono',
 });
 
+// Define the portfolio title logic in one place.
+// It reads from the environment variable PORTFOLIO_TITLE.
+// If the variable doesn't exist, it falls back to 'Interactive Portfolio'.
+const portfolioTitle = process.env.PORTFOLIO_TITLE || 'Interactive Portfolio';
+
 export const metadata = {
   title: {
-    default: "Interactive Portfolio", 
-    template: "%s | Interactive Portfolio", 
+    // Use the constant for the default title.
+    default: portfolioTitle,
+    // Use the constant in the template as well.
+    template: `%s | ${portfolioTitle}`,
   },
   description: "Interactive terminal-based portfolio",
 };
