@@ -53,10 +53,10 @@ config/domains.json
 diffs/
 
 # Project images - stored locally and on server only
-/public/images/projects/
+/public/
 
 # But keep the directory structure
-!public/images/projects/.gitkeep
+!public/images/.gitkeep
 
 # scripts
 sync-images-down.sh
