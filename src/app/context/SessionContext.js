@@ -27,6 +27,38 @@ export const themeConfig = {
   radar: { intent: 'dark' }       // Radar is dark-based with a focus on depth
 };
 
+/* Helper functions for automatic theme selection based on system preferences */
+
+/**
+ * Get a random theme matching the specified intent (dark or light)
+ * @param {string} intent - The theme intent ('dark' or 'light')
+ * @returns {string} A random theme name matching the intent
+ */
+const getRandomThemeByIntent = (intent) => {
+  const matchingThemes = themes.filter(t => themeConfig[t].intent === intent);
+  if (matchingThemes.length === 0) {
+    // Fallback to default theme if no matches (shouldn't happen with current config)
+    return intent === 'dark' ? 'dark' : 'light';
+  }
+  return matchingThemes[Math.floor(Math.random() * matchingThemes.length)];
+};
+
+/**
+ * Detect the user's system color scheme preference
+ * @returns {string} 'dark' or 'light' based on system preferences
+ */
+const getSystemPreference = () => {
+  // Server-side rendering safety
+  if (typeof window === 'undefined') return 'dark';
+  
+  // Check if the browser supports the media query
+  if (!window.matchMedia) return 'dark';
+  
+  // Query the system preference
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return isDark ? 'dark' : 'light';
+};
+
 export const SessionContext = createContext(null);
 
 /* Utility: readable timestamp for log entries */
@@ -114,6 +146,25 @@ export function SessionProvider({ children }) {
       // ignore storage errors and fallback to default
     }
     return 'dark';
+  });
+
+// Track whether the user has manually selected a theme
+  const [isThemeManuallySet, setIsThemeManuallySet] = useState(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const savedFlag = window.localStorage.getItem('themeManuallySet');
+        return savedFlag === 'true';
+      }
+    } catch (e) {
+      // Ignore storage errors
+      console.warn('Failed to read themeManuallySet from localStorage:', e);
+    }
+    return false;
+  });
+
+  // Track the current system preference for reference
+  const [systemPreference, setSystemPreference] = useState(() => {
+    return getSystemPreference();
   });
 
   const [expandedSections, setExpandedSections] = useState({});
