@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     // Allow Next.js to optimize images from our domains
     remotePatterns: [
+      // Production domains
       {
         protocol: 'https',
         hostname: 'undevy.com',
@@ -13,6 +14,18 @@ const nextConfig = {
         hostname: 'foxous.design',
         pathname: '/images/**',
       },
+      // Staging domains
+      {
+        protocol: 'https',
+        hostname: 'staging.undevy.com',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'staging.foxous.design',
+        pathname: '/images/**',
+      },
+      // Local development domains
       {
         protocol: 'http',
         hostname: 'localhost',
