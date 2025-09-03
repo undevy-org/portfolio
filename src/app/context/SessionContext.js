@@ -135,36 +135,36 @@ export function SessionProvider({ children }) {
    * 3. Fallback to 'dark' theme (if something goes wrong)
    */
   const [theme, setTheme] = useState(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const savedTheme = window.localStorage.getItem('theme');
-        
-        // Check if user has a saved theme preference
-        if (savedTheme && themes.includes(savedTheme)) {
-          // User has visited before - use their saved theme
-          console.debug('[Theme Init] Using saved theme:', savedTheme);
-          return savedTheme;
-        }
-        
-        // First visit - select random theme based on system preference
-        const systemPref = getSystemPreference();
-        const randomTheme = getRandomThemeByIntent(systemPref);
-        console.debug('[Theme Init] First visit - selected random', systemPref, 'theme:', randomTheme);
-        
-        // Save the randomly selected theme immediately
-        window.localStorage.setItem('theme', randomTheme);
-        
-        return randomTheme;
+  try {
+    if (typeof window !== 'undefined') {
+      const savedTheme = window.localStorage.getItem('theme');
+      
+      // Check if user has a saved theme preference
+      if (savedTheme && themes.includes(savedTheme)) {
+        // User has visited before - use their saved theme
+        console.debug('[Theme Init] Using saved theme:', savedTheme);
+        return savedTheme;
       }
-    } catch (e) {
-      // Ignore storage errors and fallback to default
-      console.warn('[Theme Init] Error during initialization:', e);
+      
+      // First visit - select random theme based on system preference
+      const systemPref = getSystemPreference();
+      const randomTheme = getRandomThemeByIntent(systemPref);
+      console.debug('[Theme Init] First visit - selected random', systemPref, 'theme:', randomTheme);
+      
+      // Save the randomly selected theme immediately
+      window.localStorage.setItem('theme', randomTheme);
+      
+      return randomTheme;
     }
-    // Fallback for SSR or errors
-    return 'dark';
-  });
+  } catch (e) {
+    // Ignore storage errors and fallback to default
+    console.warn('[Theme Init] Error during initialization:', e);
+  }
+  // Fallback for SSR or errors
+  return 'dark';
+});
 
-  // Track whether the user has manually selected a theme
+  /// Track whether the user has manually selected a theme
   // This helps us distinguish between automatic and manual theme selection
   const [isThemeManuallySet, setIsThemeManuallySet] = useState(() => {
     try {
@@ -172,21 +172,35 @@ export function SessionProvider({ children }) {
         // Check if the flag exists in localStorage
         const savedFlag = window.localStorage.getItem('themeManuallySet');
         
-        // Only trust the explicit flag, no migration logic
-        // This prevents false positives for new users
+        // If flag exists and is 'true', user has manually selected a theme
         if (savedFlag === 'true') {
-          console.debug('[Theme Init] Manual theme selection flag found');
+          console.debug('[Theme Init] Manual theme selection detected');
           return true;
         }
         
-        console.debug('[Theme Init] No manual selection flag - using automatic mode');
+        // MIGRATION LOGIC: For users who had themes before this feature
+        // Only migrate if they have BOTH a saved theme AND Web3/code in localStorage
+        // This indicates they're an existing user, not a new visitor
+        const savedTheme = window.localStorage.getItem('theme');
+        const hasWeb3Data = window.localStorage.getItem('@appkit/connection_status') !== null;
+        const hasAccessCode = window.localStorage.getItem('lastAccessCode') !== null;
+        
+        if (savedTheme && themes.includes(savedTheme) && (hasWeb3Data || hasAccessCode)) {
+          // Existing user with saved preferences - migrate as manual
+          console.debug('[Theme Init] Migrating existing user theme as manually set');
+          window.localStorage.setItem('themeManuallySet', 'true');
+          return true;
+        }
+        
+        // New users or users without clear history - automatic mode
+        console.debug('[Theme Init] No manual selection detected - using automatic mode');
         return false;
       }
     } catch (e) {
       // Ignore storage errors
       console.warn('[Theme Init] Failed to read themeManuallySet from localStorage:', e);
     }
-    // Default to automatic mode
+    // Default to automatic mode for new users
     return false;
   });
 

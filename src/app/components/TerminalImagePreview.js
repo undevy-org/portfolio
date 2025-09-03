@@ -287,16 +287,16 @@ export default function TerminalImagePreview({
             </button>
             
             {/* Image Container */}
-            <div className="relative w-full h-full">
-              <img 
-                src={src} 
-                alt={alt}
-                className="absolute inset-0 90vh object-cover"
-                loading="lazy"
-              />
-            </div>
-            
-            {/* Caption */}
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img 
+                    src={src} 
+                    alt={alt}
+                    className="block max-w-full max-h-full object-contain"
+                    loading="lazy"
+                    />
+                  </div>
+                  
+                  {/* Caption */}
             {alt && (
                 <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 px-4 py-2 text-center text-sm font-mono text-secondary bg-main/90 border border-secondary rounded">
                 {alt}
