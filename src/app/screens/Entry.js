@@ -3,12 +3,44 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
 import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount, useDisconnect } from 'wagmi';
 import Button from '../components/ui/Button';
+
+// Clear stale Web3 connections on page load
+// This prevents unwanted auto-reconnection from previous sessions
+if (typeof window !== 'undefined') {
+  const clearStaleWeb3 = () => {
+    const connectionStatus = window.localStorage.getItem('@appkit/connection_status');
+    if (connectionStatus === 'connected') {
+      console.log('[Web3] Clearing stale connection from previous session');
+      
+      // Clear all Web3-related localStorage keys
+      const keysToRemove = [
+        '@appkit/connection_status',
+        '@appkit/active_caip_network_id',
+        '@appkit/active_namespace',
+        '@appkit/connected_namespaces',
+        '@appkit/connections',
+        '@appkit/disconnected_connector_ids',
+        '@appkit/eip155:connected_connector_id',
+        'wagmi.store'
+      ];
+      
+      keysToRemove.forEach(key => {
+        window.localStorage.removeItem(key);
+      });
+    }
+  };
+  
+  // Run only once on initial page load
+  if (!window.__web3CleanupDone) {
+    clearStaleWeb3();
+    window.__web3CleanupDone = true;
+  }
+}
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
@@ -41,12 +73,39 @@ export default function Entry() {
   const { address, isConnected } = useAccount(); // Tracks wallet connection state
   const { disconnectAsync } = useDisconnect(); // Async function to disconnect wallet
 
-  // ========== REFS FOR PERSISTENT STATE ==========
-  // Critical: These refs persist across renders and prevent race conditions
-  const isLoggingOut = useRef(false); // Tracks if we're in the middle of a logout process
-  const hasInitialized = useRef(false); // Prevents double initialization in React StrictMode
-  const prevSessionRef = useRef(null); // CRITICAL: Track previous session state for logout detection
-  const intentionalLogout = useRef(false); // Remember intentional logout
+  /// ========== REFS FOR PERSISTENT STATE ==========
+// Critical: These refs persist across renders and prevent race conditions
+const isLoggingOut = useRef(false);
+const hasInitialized = useRef(false);
+const prevSessionRef = useRef(null);
+const intentionalLogout = useRef(false);
+
+// NEW: Track if user manually initiated connection in this session
+const userInitiatedConnection = useRef(false);
+
+// NEW: Check if this is a fresh page load with auto-restored connection
+// This happens when wagmi restores connection from localStorage
+const [isAutoRestoredConnection] = useState(() => {
+  if (typeof window === 'undefined') return false;
+  
+  // Check if we have a stored connection but no session marker
+  const hasStoredConnection = window.localStorage.getItem('@appkit/connection_status') === 'connected';
+  const isNewSession = !window.sessionStorage.getItem('web3_session_active');
+  
+  if (hasStoredConnection && isNewSession) {
+    console.log('[WEB3] Detected auto-restored connection from previous session');
+    return true;
+  }
+  
+  return false;
+});
+
+// Mark session as active (this persists until tab is closed)
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    window.sessionStorage.setItem('web3_session_active', 'true');
+  }
+}, []);
   
   // ========== WEB3 AUTHENTICATION HANDLER ==========
   const handleWeb3Success = useCallback(async (walletAddress) => {
@@ -73,6 +132,29 @@ export default function Entry() {
     
     setWeb3Status('connecting');
     addLog(`WEB3 CONNECTED: ${walletAddress}`);
+
+    // CRITICAL: Check if this is an unwanted auto-reconnection
+    // Web3 libraries restore connection from localStorage, but we only want
+    // to authenticate if the user explicitly connected during THIS session
+    if (isConnected && !sessionData) {
+      // Check if we have a fresh page load with stale Web3 connection
+      const isPageJustLoaded = !prevSessionRef.current && !hasInitialized.current;
+      const hasStoredConnection = window.localStorage.getItem('@appkit/connection_status') === 'connected';
+      
+      if (isPageJustLoaded && hasStoredConnection) {
+        console.log('[WEB3 MONITOR] Detected stale Web3 connection from previous session - ignoring');
+        // Mark as intentional logout to prevent auto-auth
+        intentionalLogout.current = true;
+        
+        // Optional: Clear the connection to prevent confusion
+        // This will disconnect the wallet silently
+        disconnectAsync().catch(err => {
+          console.log('[WEB3 MONITOR] Could not disconnect stale connection:', err);
+        });
+        
+        return;
+      }
+    }
     
     try {
       const response = await fetch(
@@ -150,12 +232,13 @@ export default function Entry() {
       hasInitialized.current = false;
     }
   }, [
-    isConnected, 
-    disconnectAsync, 
-    setSessionData, 
-    addLog, 
-    navigate, 
-    router, 
+    isConnected,
+    sessionData,
+    disconnectAsync,
+    setSessionData,
+    addLog,
+    navigate,
+    router,
     setAuthError
   ]);
   
@@ -195,6 +278,23 @@ export default function Entry() {
       console.log('[WEB3 MONITOR] Intentional logout detected - skip authentication');
       return;
     }
+
+    // Block auto-restored connections that weren't user-initiated
+    if (isConnected && isAutoRestoredConnection && !userInitiatedConnection.current) {
+      console.log('[WEB3 MONITOR] Blocking auto-restored connection - user did not initiate');
+      
+      // Silently disconnect to clean up state
+      disconnectAsync().catch(err => {
+        console.log('[WEB3] Silent disconnect failed:', err);
+      });
+      
+      return; // Don't proceed with authentication
+    }
+
+    // If user manually connected, proceed normally
+    if (isConnected && userInitiatedConnection.current) {
+      console.log('[WEB3 MONITOR] User-initiated connection detected - proceeding');
+    }
     
     // Detect if session was just cleared
     const hadSession = prevSessionRef.current !== null;
@@ -221,7 +321,7 @@ export default function Entry() {
       setWeb3Status('idle');
       }
     }
-  }, [isConnected, address, sessionData, isTerminating, web3LogoutPending, handleWeb3Success]);
+  }, [isConnected, address, sessionData, isTerminating, web3LogoutPending, handleWeb3Success, isAutoRestoredConnection, disconnectAsync]);
   
   // ========== EFFECT 2: WEB3 LOGOUT HANDLER (ENHANCED) ==========
   useEffect(() => {
@@ -371,6 +471,9 @@ export default function Entry() {
       addLog('WEB3 LOGIN: Already connected');
       return;
     }
+
+    // IMPORTANT: Mark that the user initiated the connection
+    userInitiatedConnection.current = true;
     
     addLog('WEB3 LOGIN: Opening wallet connection modal');
     setWeb3Status('connecting');
