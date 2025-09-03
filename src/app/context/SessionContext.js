@@ -368,22 +368,88 @@ export function SessionProvider({ children }) {
       const currentIndex = themes.indexOf(prevTheme);
       const safeIndex = currentIndex === -1 ? 0 : currentIndex;
       const nextIndex = (safeIndex + 1) % themes.length;
-      return themes[nextIndex];
+      const newTheme = themes[nextIndex];
+      
+      // Log the upcoming change
+      console.debug(`[Theme] Manual toggle: ${prevTheme} → ${newTheme}`);
+      
+      return newTheme;
     });
-  }, []);
-
-  const setThemeExplicit = useCallback((newTheme) => {
-    if (themes.includes(newTheme)) {
-      setTheme(newTheme);
-    } else {
-      console.warn(`SessionProvider: attempt to set unknown theme "${newTheme}"`);
+    
+    // Mark this as a manual selection
+    setIsThemeManuallySet(true);
+    
+    // Persist the manual flag to localStorage
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('themeManuallySet', 'true');
+      }
+    } catch (e) {
+      console.warn('[Theme] Failed to save manual flag:', e);
     }
   }, []);
 
-  /* NEW: Helper function to get the intent for the current theme */
+  /**
+   * Explicitly set a specific theme by name
+   * This is considered a manual user action and will prevent automatic theme changes
+   * @param {string} newTheme - The theme name to set
+   */
+  const setThemeExplicit = useCallback((newTheme) => {
+    if (themes.includes(newTheme)) {
+      // Set the new theme
+      setTheme(newTheme);
+      
+      // Mark this as a manual selection
+      setIsThemeManuallySet(true);
+      
+      // Persist the manual flag to localStorage
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem('themeManuallySet', 'true');
+          console.debug(`[Theme] Manual selection: ${newTheme}`);
+        }
+      } catch (e) {
+        console.warn('[Theme] Failed to save manual flag:', e);
+      }
+      
+      // Log the manual theme change
+      addLog(`THEME SELECTED: ${newTheme.toUpperCase()} (Manual)`);
+    } else {
+      console.warn(`SessionProvider: attempt to set unknown theme "${newTheme}"`);
+    }
+  }, [addLog]);
+
+  /* Helper function to get the intent for the current theme */
   const getThemeIntent = useCallback(() => {
     return themeConfig[theme]?.intent || 'dark';
   }, [theme]);
+
+  /**
+   * Reset theme selection to automatic mode
+   * The theme will follow system preferences and can change automatically
+   */
+  const resetToAutoTheme = useCallback(() => {
+    // Clear the manual flag
+    setIsThemeManuallySet(false);
+    
+    // Remove the flag from localStorage
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem('themeManuallySet');
+        console.debug('[Theme] Reset to automatic mode');
+      }
+    } catch (e) {
+      console.warn('[Theme] Failed to clear manual flag:', e);
+    }
+    
+    // Select a new random theme based on current system preference
+    const currentSystemPref = getSystemPreference();
+    const newTheme = getRandomThemeByIntent(currentSystemPref);
+    setTheme(newTheme);
+    
+    // Log the change
+    addLog(`THEME MODE: Automatic (System: ${currentSystemPref})`);
+  }, [addLog]);
 
   // Side-effects when theme changes: persist to localStorage and log the change
   useEffect(() => {
@@ -546,7 +612,10 @@ export function SessionProvider({ children }) {
     themes,
     toggleTheme,
     setThemeExplicit,
-    getThemeIntent, 
+    getThemeIntent,
+    isThemeManuallySet,
+    resetToAutoTheme,
+    systemPreference,
     expandedSections,
     toggleSection,
     activeTab,
@@ -564,7 +633,8 @@ export function SessionProvider({ children }) {
     // Auth error state
     authError,
     setAuthError,
-
+    
+    // Web3 logout state
     // These are exposed to Entry.js for direct state-based communication
     // This is more reliable than browser events which can be missed
     web3LogoutPending,
