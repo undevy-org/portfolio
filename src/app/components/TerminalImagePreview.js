@@ -4,21 +4,19 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from '../context/SessionContext';
 import { X } from 'lucide-react';
-import NextImage from 'next/image';
 import TerminalProgress from './ui/TerminalProgress';
 
 // Global cache for loaded images to maintain state across tab switches
 const imageLoadCache = new Map();
 
+/* eslint-disable @next/next/no-img-element */
+
 export default function TerminalImagePreview({ 
   src, 
   alt = 'Image preview',
   height = 200, // Height in pixels for the ASCII frame
-  width = 400,  // Default width for the image
   aspectRatio = '16/9', // Default aspect ratio
-  resetOnTabChange = false // Option to reset state when tab changes
 }) {
-  // REMOVED: The 'theme' variable is no longer used for styling.
   const { addLog } = useSession();
   
   // Use src as unique identifier for this image's state
@@ -198,14 +196,11 @@ export default function TerminalImagePreview({
   // Render based on state
   if (imageState.state === 'idle') {
       return (
-      // CHANGE: Replaced theme-dependent classes with semantic ones.
-      // '.bg-main', '.text-primary', and '.border-primary' now control the appearance.
         <div 
         className="relative font-mono text-sm flex items-center justify-center overflow-hidden cursor-pointer border-2 bg-main text-primary border-primary"
         style={{ height: `${height}px`, borderStyle: 'dashed' }}
           onClick={handleShowImage}
         >
-        {/* CHANGE: The button now uses the semantic '.btn-command' class for consistent styling. */}
         <button className="btn-command px-3 sm:px-4 py-2 z-10 text-xs sm:text-sm">
             [ SHOW IMAGE ]
           </button>
@@ -215,13 +210,11 @@ export default function TerminalImagePreview({
 
   if (imageState.state === 'loading') {
       return (
-      // CHANGE: Replaced theme-dependent classes with semantic '.bg-main' and '.border-primary'.
         <div 
         className="relative font-mono text-sm flex items-center justify-center overflow-hidden border-2 bg-main border-primary"
         style={{ height: `${height}px`, borderStyle: 'dashed', padding: '1rem' }}
       >
         <div className="w-full max-w-xs px-2">
-          {/* COMMENT: TerminalProgress is already refactored and theme-agnostic. */}
           <TerminalProgress 
             progress={imageState.progress}
             isLoading={true}
@@ -237,12 +230,10 @@ export default function TerminalImagePreview({
 
   if (imageState.state === 'error') {
       return (
-      // CHANGE: Replaced theme-dependent classes with semantic ones.
         <div 
         className="relative font-mono text-sm flex items-center justify-center overflow-hidden border bg-main border-primary"
         style={{ height: `${height}px`, borderStyle: 'dashed' }}
         >
-        {/* CHANGE: Directly applied the '.text-error' semantic class for the error message. */}
         <div className="text-center text-error">
             [ ERROR ]<br/>
             <span className="text-xs">Failed to load image</span>
@@ -259,19 +250,14 @@ export default function TerminalImagePreview({
           onClick={handleImageClick}
           style={{ aspectRatio }}
         >
-          {/* CHANGE: Directly applied the '.border-primary' semantic class. */}
           <div className="relative w-full h-full rounded border overflow-hidden border-primary">
-            <NextImage 
+            <img 
               src={src} 
               alt={alt}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              style={{ objectFit: 'cover' }}
-              className="transition-all group-hover:opacity-90"
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
-          {/* CHANGE: Replaced theme-dependent logic with semantic classes.
-          '.bg-main' with opacity, '.text-command', and '.border-primary' create the theme-aware hint. */}
           <div 
             className="absolute top-2 right-2 px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-main/80 text-command border border-primary"
           >
@@ -285,7 +271,6 @@ export default function TerminalImagePreview({
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={closeLightbox}
         >
-            {/* CHANGE: Replaced theme-dependent classes with a simple black background with opacity. */}
             <div className="absolute inset-0 bg-black/80" />
           
           {/* Modal Content */}
@@ -293,7 +278,6 @@ export default function TerminalImagePreview({
             className="relative max-w-[90vw] max-h-[90vh] w-full h-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-              {/* CHANGE: Replaced complex theme-dependent classes with semantic ones for the close button. */}
             <button
               onClick={closeLightbox}
                 className="absolute top-2 right-2 z-10 p-2 rounded-full transition-colors bg-main/90 text-primary bg-hover border border-primary"
@@ -304,21 +288,16 @@ export default function TerminalImagePreview({
             
             {/* Image Container */}
             <div className="relative w-full h-full">
-              <NextImage 
+              <img 
                 src={src} 
                 alt={alt}
-                fill
-                sizes="90vw"
-                style={{ objectFit: 'contain' }}
-                quality={100}
-                  // COMMENT: Drop shadow is a visual effect that can be simplified for now.
-                  className="rounded"
+                className="absolute inset-0 90vh object-cover"
+                loading="lazy"
               />
             </div>
             
             {/* Caption */}
             {alt && (
-                // CHANGE: Replaced complex theme-dependent classes with semantic ones for the caption.
                 <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 px-4 py-2 text-center text-sm font-mono text-secondary bg-main/90 border border-secondary rounded">
                 {alt}
               </div>
@@ -329,6 +308,5 @@ export default function TerminalImagePreview({
     </>
   );
   }
-  
   return null;
 }

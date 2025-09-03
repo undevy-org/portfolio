@@ -128,37 +128,65 @@ export function SessionProvider({ children }) {
   
   // ========== UI: THEME ==========
   /**
-   * Theme initialization:
-   * - Read stored theme from localStorage if available and valid.
-   * - Fallback to 'dark' if nothing is stored or the value is invalid.
-   *
-   * Note: Theme values must match the tokens and CSS selectors in globals.css.
+   * Theme initialization with automatic selection based on system preferences
+   * Priority order:
+   * 1. Previously saved theme (user has visited before)
+   * 2. Random theme matching system preference (first visit)
+   * 3. Fallback to 'dark' theme (if something goes wrong)
    */
   const [theme, setTheme] = useState(() => {
     try {
       if (typeof window !== 'undefined') {
-        const saved = window.localStorage.getItem('theme');
-        if (saved && themes.includes(saved)) {
-          return saved;
+        const savedTheme = window.localStorage.getItem('theme');
+        
+        // Check if user has a saved theme preference
+        if (savedTheme && themes.includes(savedTheme)) {
+          // User has visited before - use their saved theme
+          console.debug('[Theme Init] Using saved theme:', savedTheme);
+          return savedTheme;
         }
+        
+        // First visit - select random theme based on system preference
+        const systemPref = getSystemPreference();
+        const randomTheme = getRandomThemeByIntent(systemPref);
+        console.debug('[Theme Init] First visit - selected random', systemPref, 'theme:', randomTheme);
+        
+        // Save the randomly selected theme immediately
+        window.localStorage.setItem('theme', randomTheme);
+        
+        return randomTheme;
       }
     } catch (e) {
-      // ignore storage errors and fallback to default
+      // Ignore storage errors and fallback to default
+      console.warn('[Theme Init] Error during initialization:', e);
     }
+    // Fallback for SSR or errors
     return 'dark';
   });
 
-// Track whether the user has manually selected a theme
+  // Track whether the user has manually selected a theme
+  // This helps us distinguish between automatic and manual theme selection
   const [isThemeManuallySet, setIsThemeManuallySet] = useState(() => {
     try {
       if (typeof window !== 'undefined') {
+        // Check if the flag exists in localStorage
         const savedFlag = window.localStorage.getItem('themeManuallySet');
-        return savedFlag === 'true';
+        
+        // Only trust the explicit flag, no migration logic
+        // This prevents false positives for new users
+        if (savedFlag === 'true') {
+          console.debug('[Theme Init] Manual theme selection flag found');
+          return true;
+        }
+        
+        console.debug('[Theme Init] No manual selection flag - using automatic mode');
+        return false;
       }
     } catch (e) {
       // Ignore storage errors
-      console.warn('Failed to read themeManuallySet from localStorage:', e);
+      console.warn('[Theme Init] Failed to read themeManuallySet from localStorage:', e);
     }
+    // Default to automatic mode
     return false;
   });
 
@@ -357,18 +385,25 @@ export function SessionProvider({ children }) {
     return themeConfig[theme]?.intent || 'dark';
   }, [theme]);
 
-  // Side-effects when theme changes: persist to localStorage and log the change.
+  // Side-effects when theme changes: persist to localStorage and log the change
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('theme', theme);
+        
+        // Log additional context about theme mode
+        const mode = isThemeManuallySet ? 'MANUAL' : 'AUTO';
+        console.debug(`[Theme] Saved theme: ${theme} (Mode: ${mode})`);
       }
     } catch (e) {
-      // ignore storage write errors
+      // Ignore storage write errors
+      console.warn('[Theme] Failed to save theme to localStorage:', e);
     }
 
-    addLog(`THEME CHANGED: ${String(theme).toUpperCase()}`);
-  }, [theme, addLog]);
+    // Add to system log with mode information
+    const modeIndicator = isThemeManuallySet ? '🔒' : '🔄';
+    addLog(`THEME CHANGED: ${String(theme).toUpperCase()} ${modeIndicator}`);
+  }, [theme, isThemeManuallySet, addLog]);
 
   // ========== UI small helpers ==========
   const toggleSection = useCallback((sectionId) => {
