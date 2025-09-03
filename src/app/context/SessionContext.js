@@ -191,8 +191,11 @@ export function SessionProvider({ children }) {
   });
 
   // Track the current system preference for reference
+  // This is used to detect changes and provide context in logs
   const [systemPreference, setSystemPreference] = useState(() => {
-    return getSystemPreference();
+    const detectedPref = getSystemPreference();
+    console.debug(`[Theme] Initial system preference: ${detectedPref}`);
+    return detectedPref;
   });
 
   const [expandedSections, setExpandedSections] = useState({});
@@ -442,13 +445,19 @@ export function SessionProvider({ children }) {
       console.warn('[Theme] Failed to clear manual flag:', e);
     }
     
-    // Select a new random theme based on current system preference
+    // Get fresh system preference (in case it changed while in manual mode)
     const currentSystemPref = getSystemPreference();
+    setSystemPreference(currentSystemPref); // Update tracked preference
+    
+    // Select a new random theme based on current system preference
     const newTheme = getRandomThemeByIntent(currentSystemPref);
     setTheme(newTheme);
     
-    // Log the change
-    addLog(`THEME MODE: Automatic (System: ${currentSystemPref})`);
+    // Log the change with full context
+    addLog(`THEME MODE: Switched to AUTOMATIC`);
+    addLog(`AUTO THEME: Applied ${newTheme.toUpperCase()} (System: ${currentSystemPref})`);
+    
+    console.info(`[Theme] Reset to auto mode - applied ${newTheme} for ${currentSystemPref} system`);
   }, [addLog]);
 
   // Side-effects when theme changes: persist to localStorage and log the change
@@ -470,6 +479,85 @@ export function SessionProvider({ children }) {
     const modeIndicator = isThemeManuallySet ? '🔒' : '🔄';
     addLog(`THEME CHANGED: ${String(theme).toUpperCase()} ${modeIndicator}`);
   }, [theme, isThemeManuallySet, addLog]);
+
+  /**
+   * Listen for system theme preference changes
+   * Automatically update theme when system preference changes (only in auto mode)
+   */
+  useEffect(() => {
+    // Skip on server-side rendering
+    if (typeof window === 'undefined') return;
+    
+    // Check if browser supports matchMedia
+    if (!window.matchMedia) {
+      console.warn('[Theme] matchMedia not supported - system theme monitoring disabled');
+      return;
+    }
+    
+    // Create media query for dark mode preference
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    /**
+     * Handle system theme preference change
+     * This fires when user changes their OS theme settings
+     */
+    const handleSystemThemeChange = (e) => {
+      const newSystemPref = e.matches ? 'dark' : 'light';
+      const oldSystemPref = systemPreference;
+      
+      // Update the tracked system preference
+      setSystemPreference(newSystemPref);
+      
+      console.debug(`[Theme] System preference changed: ${oldSystemPref} → ${newSystemPref}`);
+      
+      // Only auto-switch theme if user hasn't manually selected one
+      if (!isThemeManuallySet) {
+        // Select a random theme matching the new system preference
+        const newRandomTheme = getRandomThemeByIntent(newSystemPref);
+        setTheme(newRandomTheme);
+        
+        // Log the automatic change
+        addLog(`AUTO THEME: System changed to ${newSystemPref.toUpperCase()}`);
+        addLog(`AUTO THEME: Applied ${newRandomTheme.toUpperCase()} theme`);
+        
+        console.info(`[Theme] Auto-switched to ${newRandomTheme} (system: ${newSystemPref})`);
+      } else {
+        // User has manual control - just log that we detected the change
+        addLog(`SYSTEM: Detected ${newSystemPref.toUpperCase()} mode (manual override active)`);
+        console.info(`[Theme] System changed to ${newSystemPref} but keeping manual theme`);
+      }
+    };
+    
+    // Modern browsers support addEventListener for MediaQueryList
+    // Using both methods for maximum compatibility
+    try {
+      // Modern approach (all current browsers)
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+    } catch (e1) {
+      try {
+        // Legacy approach for older browsers (deprecated but still works)
+        mediaQuery.addListener(handleSystemThemeChange);
+        console.debug('[Theme] Using legacy addListener for compatibility');
+      } catch (e2) {
+        console.warn('[Theme] Could not attach system theme listener:', e2);
+      }
+    }
+    
+    // Cleanup function - CRITICAL for preventing memory leaks
+    return () => {
+      try {
+        // Try modern removal first
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      } catch (e1) {
+        try {
+          // Fallback to legacy removal
+          mediaQuery.removeListener(handleSystemThemeChange);
+        } catch (e2) {
+          // Silent fail - component is unmounting anyway
+        }
+      }
+    };
+  }, [isThemeManuallySet, systemPreference, addLog]); // Re-run if manual flag or system pref changes
 
   // ========== UI small helpers ==========
   const toggleSection = useCallback((sectionId) => {
