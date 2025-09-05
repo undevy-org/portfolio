@@ -67,11 +67,25 @@ export function SessionProvider({ children }) {
   const [authError, setAuthError] = useState(null);
   const [isTerminating, setIsTerminating] = useState(false);
   
+  // Debugging: Log when sessionData changes
+  useEffect(() => {
+    console.log('[SESSION CONTEXT] sessionData changed to:', sessionData);
+  }, [sessionData]);
+  
   // ========== WEB3 LOGOUT STATE (ADDED) ==========
   // This state provides a direct communication channel between SessionContext and Entry.js
   // for Web3 logout. It's more reliable than browser events which can be missed if the
   // component isn't mounted yet. When true, Entry.js knows it needs to disconnect the wallet.
   const [web3LogoutPending, setWeb3LogoutPending] = useState(false);
+  
+  // ========== AUTO-FILL CODE STATE (ADDED) ==========
+  // This state provides a way to pass access codes for auto-fill animation
+  const [autoFillCode, setAutoFillCode] = useState(null);
+  
+  // Debugging: Log when autoFillCode changes
+  useEffect(() => {
+    console.log('[SESSION CONTEXT] autoFillCode changed to:', autoFillCode);
+  }, [autoFillCode]);
   
   // ========== NAVIGATION ==========
   const [currentScreen, setCurrentScreen] = useState('Entry');
@@ -162,6 +176,7 @@ export function SessionProvider({ children }) {
   
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {
+    console.log('[SESSION CONTEXT] navigate called with:', screen, addToHistory, 'currentScreen:', currentScreen);
     if (currentScreen === screen) return;
     
     if (addToHistory && currentScreen !== 'Entry') {
@@ -439,6 +454,11 @@ export function SessionProvider({ children }) {
     // This is more reliable than browser events which can be missed
     web3LogoutPending,
     setWeb3LogoutPending,
+    
+    // Auto-fill code state (ADDED)
+    // This is used to pass access codes for auto-fill animation
+    autoFillCode,
+    setAutoFillCode,
   };
 
   return (

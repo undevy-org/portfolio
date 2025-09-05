@@ -15,6 +15,8 @@ export default function Entry() {
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [web3Status, setWeb3Status] = useState('idle'); // Can be: 'idle', 'connecting', 'connected', 'disconnecting'
+  const [isAnimating, setIsAnimating] = useState(false); // Added for auto-fill animation
+  const [isComponentReady, setIsComponentReady] = useState(false); // Added for component readiness detection
   
   // ========== CONTEXT HOOKS ==========
   const { 
@@ -30,8 +32,24 @@ export default function Entry() {
     isTerminating,
     // These replace the unreliable browser event system
     web3LogoutPending,     // Flag that tells us when to disconnect wallet
-    setWeb3LogoutPending   // Function to clear the flag after disconnection
+    setWeb3LogoutPending,   // Function to clear the flag after disconnection
+    // Added for auto-fill feature
+    autoFillCode,
+    setAutoFillCode
   } = useSession();
+  
+  // Ref to store the current code value to prevent stale closure issues
+  const codeRef = useRef('');
+  
+  // Update the ref whenever code changes
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
+  
+  // Log when autoFillCode changes
+  useEffect(() => {
+    console.log('[ENTRY] Received autoFillCode:', autoFillCode);
+  }, [autoFillCode]);
   
   // ========== NEXT.JS HOOKS ==========
   const router = useRouter();
@@ -42,11 +60,34 @@ export default function Entry() {
   const { disconnectAsync } = useDisconnect(); // Async function to disconnect wallet
 
   // ========== REFS FOR PERSISTENT STATE ==========
-  // Critical: These refs persist across renders and prevent race conditions
+  const animationTimersRef = useRef([]); // Added for auto-fill animation timers
+  const isMounted = useRef(true); // Added for cleanup safety
   const isLoggingOut = useRef(false); // Tracks if we're in the middle of a logout process
   const hasInitialized = useRef(false); // Prevents double initialization in React StrictMode
   const prevSessionRef = useRef(null); // CRITICAL: Track previous session state for logout detection
   const intentionalLogout = useRef(false); // Remember intentional logout
+  const hasStartedAnimation = useRef(false); // Prevent multiple auto-fill animations
+  
+  // ========== CLEANUP SAFETY ==========
+  // Added to prevent state updates on unmounted components
+  useEffect(() => {
+    console.log('[ENTRY] Component mounted');
+    isMounted.current = true;
+    
+    // Set component readiness after a short delay to ensure DOM is ready
+    const readinessTimer = setTimeout(() => {
+      if (isMounted.current) {
+        setIsComponentReady(true);
+        console.log('[ENTRY] Component is ready');
+      }
+    }, 100);
+    
+    return () => {
+      console.log('[ENTRY] Component unmounting');
+      isMounted.current = false;
+      clearTimeout(readinessTimer);
+    };
+  }, []);
   
   // ========== WEB3 AUTHENTICATION HANDLER ==========
   const handleWeb3Success = useCallback(async (walletAddress) => {
@@ -57,7 +98,7 @@ export default function Entry() {
       return;
     }
     
-    // CRITICAL CHECK #2: Prevent double initialization in StrictMode
+    // CRITICAL CHECK #2: Prevent double initialization in React StrictMode
     if (hasInitialized.current) {
       console.log('[WEB3 AUTH] Blocked: Already initialized');
       return;
@@ -302,8 +343,11 @@ export default function Entry() {
   }, [isConnected, addLog]);
 
   // ========== TRADITIONAL AUTHENTICATION HANDLERS ==========
-  const handleSubmit = async () => {
-    if (!code.trim()) {
+  const handleSubmit = useCallback(async () => {
+    // Use the ref value instead of the state value to prevent stale closure issues
+    const currentCode = codeRef.current;
+    console.log('[ENTRY] handleSubmit called with code:', currentCode);
+    if (!currentCode.trim()) {
       addLog('ERROR: No access code provided');
       setAuthError('Please enter an access code');
       return;
@@ -311,29 +355,29 @@ export default function Entry() {
 
     setIsLoading(true);
     setAuthError(null);
-    addLog(`ACCESS CODE: ${code}`);
+    addLog(`ACCESS CODE: ${currentCode}`);
     
     try {
-      const response = await fetch(`/api/session?code=${code}`);
+      const response = await fetch(`/api/session?code=${currentCode}`);
       
       if (response.ok) {
         const userData = await response.json();
         
         const enrichedData = {
           ...userData,
-          accessCode: code
+          accessCode: currentCode
         };
         
         setSessionData(enrichedData);
         addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown Company'}`);
         
+        // Clear the code from URL to prevent re-triggering
+        router.push('/');  // Instead of router.push(`/?code=${currentCode}`)
+        
         navigate('MainHub', false);
         
-        // Update URL to reflect authentication
-        router.push(`/?code=${code}`);
-        
       } else {
-        addLog(`ACCESS DENIED: Invalid code ${code}`);
+        addLog(`ACCESS DENIED: Invalid code ${currentCode}`);
         setAuthError('Invalid access code. Please try again.');
       }
     } catch (error) {
@@ -342,7 +386,184 @@ export default function Entry() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [addLog, setAuthError, setIsLoading, setSessionData, navigate, router]);
+
+  // ========== AUTO-FILL ANIMATION FUNCTIONS ==========
+  // Added for auto-fill feature
+  
+  // Function to handle auto-submit with error handling
+  const handleAutoSubmit = useCallback(() => {
+    try {
+      // Simply call the existing handleSubmit function
+      handleSubmit();
+    } catch (error) {
+      console.error('[AUTO-FILL] Error in handleAutoSubmit:', error);
+      addLog(`AUTO-FILL ERROR: ${error.message}`);
+      // Reset animation state on error
+      if (isMounted.current) {
+        setIsAnimating(false);
+      }
+    }
+  }, [handleSubmit, addLog]);
+  
+  // Ref to store the typeCharacter function to prevent stale closures
+  const typeCharacterRef = useRef();
+  
+  // Function to type characters with animation
+  const typeCharacter = useCallback((targetCode, index = 0) => {
+    try {
+      console.log('[AUTO-FILL] typeCharacter called with:', targetCode, 'index:', index);
+      if (index <= targetCode.length) {  // <= not < to show the complete code
+        if (isMounted.current) {
+          setCode(targetCode.slice(0, index));
+          console.log('[AUTO-FILL] Set code to:', targetCode.slice(0, index));
+        }
+        
+        if (index < targetCode.length) {  // Continue typing
+          const delay = 100 + Math.random() * 100;
+          console.log('[AUTO-FILL] Scheduling next character in', delay, 'ms');
+          const timer = setTimeout(() => {
+            // Use the function directly instead of the ref to avoid stale closure issues
+            typeCharacter(targetCode, index + 1);
+          }, delay);
+          animationTimersRef.current.push(timer);
+        } else {  // Typing complete
+          console.log('[AUTO-FILL] Typing complete, scheduling auto-submit in 800ms');
+          const timer = setTimeout(() => {
+            if (isMounted.current) {
+              setIsAnimating(false);
+            }
+            handleAutoSubmit();  // Use error handling wrapper
+          }, 800);
+          animationTimersRef.current.push(timer);
+        }
+      }
+    } catch (error) {
+      console.error('[AUTO-FILL] Error in typeCharacter:', error);
+      addLog(`AUTO-FILL ERROR: ${error.message}`);
+      // Reset animation state on error
+      if (isMounted.current) {
+        setIsAnimating(false);
+      }
+    }
+  }, [setCode, handleAutoSubmit, addLog]);
+  
+  // Update the ref whenever typeCharacter changes
+  useEffect(() => {
+    typeCharacterRef.current = typeCharacter;
+  }, [typeCharacter]);
+  
+  // Ref to store the startTypingAnimation function to prevent stale closures
+  const startTypingAnimationRef = useRef();
+  
+  // Function to start the typing animation
+  const startTypingAnimation = useCallback((codeToType) => {
+    try {
+      console.log('[AUTO-FILL] startTypingAnimation called with:', codeToType);
+      // Clear any existing timers
+      animationTimersRef.current.forEach(timer => clearTimeout(timer));
+      animationTimersRef.current = [];
+      
+      // Reset input
+      if (isMounted.current) {
+        setCode('');
+        setIsAnimating(true);
+      }
+      
+      // Add visual feedback
+      const inputElement = document.querySelector('[data-testid="auth-input"]');
+      if (inputElement) {
+        inputElement.classList.add('auto-filling');
+      }
+      
+      // Start typing after a small delay
+      const timer = setTimeout(() => {
+        console.log('[AUTO-FILL] Starting character typing');
+        // Use the function directly instead of the ref to avoid stale closure issues
+        typeCharacter(codeToType);
+      }, 500);
+      animationTimersRef.current.push(timer);
+    } catch (error) {
+      console.error('[AUTO-FILL] Error in startTypingAnimation:', error);
+      addLog(`AUTO-FILL ERROR: ${error.message}`);
+      // Reset animation state on error
+      if (isMounted.current) {
+        setIsAnimating(false);
+      }
+      
+      // Remove CSS classes
+      const inputElement = document.querySelector('[data-testid="auth-input"]');
+      if (inputElement) {
+        inputElement.classList.remove('auto-filling');
+      }
+    }
+  }, [setCode, addLog, typeCharacter]);
+  
+  // Update the ref whenever startTypingAnimation changes
+  useEffect(() => {
+    startTypingAnimationRef.current = startTypingAnimation;
+  }, [startTypingAnimation]);
+  
+  // Effect to trigger animation when autoFillCode is set
+  useEffect(() => {
+    console.log('[ENTRY] autoFillCode useEffect triggered with:', autoFillCode, 'isMounted:', isMounted.current, 'isComponentReady:', isComponentReady);
+    
+    // Reset the flag when autoFillCode changes to null
+    if (!autoFillCode) {
+      hasStartedAnimation.current = false;
+    }
+    
+    // Prevent multiple auto-fill animations
+    if (autoFillCode && autoFillCode.length > 0 && isMounted.current && isComponentReady && !hasStartedAnimation.current) {
+      hasStartedAnimation.current = true; // Prevent multiple starts
+      console.log('[AUTO-FILL] Starting animation for code:', autoFillCode);
+      // Small delay to ensure component is fully mounted
+      const timer = setTimeout(() => {
+        if (isMounted.current) {
+          console.log('[AUTO-FILL] Calling startTypingAnimation with code:', autoFillCode);
+          startTypingAnimationRef.current(autoFillCode);
+        }
+      }, 300); // Increased delay to ensure component is fully mounted
+      
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+    
+    // Log why the animation might not start
+    if (autoFillCode && autoFillCode.length > 0) {
+      console.log('[ENTRY] Auto-fill code detected but animation not started because:', {
+        isMounted: isMounted.current,
+        isComponentReady: isComponentReady,
+        hasStartedAnimation: hasStartedAnimation.current
+      });
+    }
+    
+    // Cleanup function
+    return () => {
+      console.log('[AUTO-FILL] Cleaning up animation');
+      animationTimersRef.current.forEach(timer => clearTimeout(timer));
+      animationTimersRef.current = [];
+      if (isMounted.current) {
+        setIsAnimating(false);
+      }
+      // Don't clear autoFillCode here as it might interfere with the animation
+      // setAutoFillCode(null);
+      
+      // Remove CSS classes
+      const inputElement = document.querySelector('[data-testid="auth-input"]');
+      if (inputElement) {
+        inputElement.classList.remove('auto-filling');
+      }
+    };
+  }, [autoFillCode, isComponentReady]);
+
+  // Effect to clear autoFillCode after successful authentication
+  useEffect(() => {
+    if (sessionData && autoFillCode) {
+      setAutoFillCode(null);
+    }
+  }, [sessionData, autoFillCode, setAutoFillCode]);
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !isLoading && !isConnected) {
@@ -421,6 +642,11 @@ export default function Entry() {
   // ========== RENDER ==========
   return (
     <div className="p-4">
+      {/* Accessibility: Announce auto-fill process */}
+      <div aria-live="polite" className="sr-only">
+        {isAnimating ? `Auto-filling access code: ${code}` : ''}
+      </div>
+      
       {/* Main authentication section */}
       <div className="flex flex-col md:flex-row gap-3 mb-3">
         {/* Input field - now same size text as buttons */}
@@ -432,16 +658,18 @@ export default function Entry() {
           className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
         placeholder="ENTER ACCESS CODE"
         autoFocus
-        disabled={isLoading || isConnected}
+        disabled={isLoading || isConnected || isAnimating}
+        data-testid="auth-input"
       />
 
         {/* Authenticate button - now on same line as input on desktop */}
         <Button
           onClick={handleSubmit}
-          disabled={isLoading || isConnected}
+          disabled={isLoading || isConnected || isAnimating}
           icon={LockOpen}
           variant="inline"
           className="md:w-auto w-full"
+          data-testid="auth-button"
         >
           {/* Icon color handled by button component */}
           <span className="flex items-center gap-2">
@@ -461,7 +689,7 @@ export default function Entry() {
       <div className="flex gap-3 mb-4">
         <Button
           onClick={handleGetCode}
-          disabled={isConnected}
+          disabled={isConnected || isAnimating}
           icon={MessageSquare}
           className="flex-1"
         >
@@ -471,7 +699,7 @@ export default function Entry() {
 
         <Button
           onClick={handleWeb3Login}
-          disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending}
+          disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending || isAnimating}
           icon={Wallet}
           className="flex-1"
         >
@@ -493,6 +721,7 @@ export default function Entry() {
           onClick={handleGitHub}
           icon={Github}
           className="flex-1"
+          disabled={isAnimating}
         >
           GITHUB
         </Button>
@@ -501,6 +730,7 @@ export default function Entry() {
           onClick={handleDemoMode}
           icon={Sparkles}
           className="flex-1"
+          disabled={isLoading || isAnimating}
         >
           DEMO MODE
         </Button>

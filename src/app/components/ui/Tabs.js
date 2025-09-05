@@ -1,6 +1,6 @@
 // src/app/components/ui/Tabs.js
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSession } from '../../context/SessionContext';
 import dynamic from 'next/dynamic';
 
@@ -13,8 +13,8 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
   const { addLog } = useSession();
   
   // Safely handle empty or invalid tabs
-  const validTabs = Array.isArray(tabs) ? tabs : [];
-  const firstTabId = validTabs.length > 0 ? validTabs[0].id : null;
+  const validTabs = useMemo(() => Array.isArray(tabs) ? tabs : [], [tabs]);
+  const firstTabId = useMemo(() => validTabs.length > 0 ? validTabs[0].id : null, [validTabs]);
   
   // Determine initial active tab
   const initialActiveTab = defaultTab && validTabs.find(tab => tab.id === defaultTab) 

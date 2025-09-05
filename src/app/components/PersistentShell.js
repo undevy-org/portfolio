@@ -23,6 +23,8 @@ export default function PersistentShell({ isLoading }) {
     domainData,
     sessionData
   } = useSession();
+  
+  console.log('[PERSISTENT SHELL] Rendering with:', { isLoading, currentScreen });
 
   // Calculate window title with stable memoization to prevent unnecessary re-renders
   const windowTitle = useMemo(() => {
@@ -62,18 +64,17 @@ export default function PersistentShell({ isLoading }) {
         <ScreenRenderer />
       </AnimatedScreenTransition>
     );
-  }, []); // Empty dependency array because ScreenRenderer manages its own state
-
-  // Show loading state without mounting TerminalWindow
-  if (isLoading) {
-    return loadingComponent;
-  }
+  }, []); // Remove isLoading dependency, restore original implementation
 
   // CRITICAL: TerminalWindow mounts here exactly once per session
   // All subsequent navigation changes only affect the content area
+  console.log('[PERSISTENT SHELL] Rendering TerminalWindow with:', isLoading ? 'loadingComponent' : 'contentArea');
+  
+  // Always render TerminalWindow for auto-fill feature to work properly
+  // The isLoading state will be handled inside the TerminalWindow
   return (
     <TerminalWindow title={windowTitle} fixedHeight={true}>
-      {contentArea}
+      {isLoading ? loadingComponent : contentArea}
     </TerminalWindow>
   );
 }
