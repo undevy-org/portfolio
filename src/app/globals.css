@@ -712,3 +712,24 @@
     rgba(0, 0, 0, 0.1) 100%
   );
 }
+
+/* Auto-fill animation effects */
+.auto-filling {
+  animation: glow 2s ease-in-out infinite;
+  border-color: var(--color-accent) !important;
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(var(--color-accent-rgb, 255, 255, 255), 0.5); 
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(var(--color-accent-rgb, 255, 255, 255), 0.8); 
+  }
+}
+
+.button-pressing {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+  background-color: var(--color-active) !important;
+}

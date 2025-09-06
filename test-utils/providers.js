@@ -42,6 +42,11 @@ export function MockSessionProvider({
   resetSession = jest.fn(),
   updateSessionData = jest.fn(),
   setSessionData = jest.fn(),
+  // Web3 specific
+  setWeb3LogoutPending = jest.fn(),
+  // Auto-fill specific
+  autoFillCode = null,
+  setAutoFillCode = jest.fn(),
   // Additional overrides
   ...overrides
 }) {
@@ -169,7 +174,11 @@ export function MockSessionProvider({
     
     // Web3 specific
     web3LogoutPending: false,
-    setWeb3LogoutPending: jest.fn(),
+    setWeb3LogoutPending,
+    
+    // Auto-fill specific
+    autoFillCode,
+    setAutoFillCode,
     
     // Any additional overrides
     ...overrides
@@ -199,6 +208,9 @@ export function MockSessionProvider({
     exportLogs,
     toggleSection,
     setTab,
+    setWeb3LogoutPending,
+    autoFillCode,
+    setAutoFillCode,
     overrides
   ]);
   
