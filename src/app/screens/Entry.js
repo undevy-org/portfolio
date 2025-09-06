@@ -38,10 +38,10 @@ export default function Entry() {
     setAutoFillCode
   } = useSession();
   
-  // Ref to store the current code value to prevent stale closure issues
+  // Use ref for code value to avoid stale closures
   const codeRef = useRef('');
   
-  // Update the ref whenever code changes
+  // Update ref when code changes
   useEffect(() => {
     codeRef.current = code;
   }, [code]);
@@ -74,8 +74,8 @@ export default function Entry() {
     console.log('[ENTRY] Component mounted');
     isMounted.current = true;
     
-    // Set component readiness after a short delay to ensure DOM is ready
-    const readinessTimer = setTimeout(() => {
+    // Simple, reliable readiness check
+    const timer = setTimeout(() => {
       if (isMounted.current) {
         setIsComponentReady(true);
         console.log('[ENTRY] Component is ready');
@@ -85,7 +85,7 @@ export default function Entry() {
     return () => {
       console.log('[ENTRY] Component unmounting');
       isMounted.current = false;
-      clearTimeout(readinessTimer);
+      clearTimeout(timer);
     };
   }, []);
   
@@ -344,15 +344,14 @@ export default function Entry() {
 
   // ========== TRADITIONAL AUTHENTICATION HANDLERS ==========
   const handleSubmit = useCallback(async () => {
-    // Use the ref value instead of the state value to prevent stale closure issues
-    const currentCode = codeRef.current;
-    console.log('[ENTRY] handleSubmit called with code:', currentCode);
+    const currentCode = codeRef.current; // Use ref value, not state
+    
     if (!currentCode.trim()) {
       addLog('ERROR: No access code provided');
       setAuthError('Please enter an access code');
       return;
     }
-
+    
     setIsLoading(true);
     setAuthError(null);
     addLog(`ACCESS CODE: ${currentCode}`);
@@ -362,31 +361,34 @@ export default function Entry() {
       
       if (response.ok) {
         const userData = await response.json();
-        
         const enrichedData = {
           ...userData,
           accessCode: currentCode
         };
         
         setSessionData(enrichedData);
-        addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown Company'}`);
+        addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
         
-        // Clear the code from URL to prevent re-triggering
-        router.push('/');  // Instead of router.push(`/?code=${currentCode}`)
-        
+        // Clear the URL after successful auth
+        router.push('/'); // Clean URL, no parameters
         navigate('MainHub', false);
+        
+        // Clear autoFillCode after navigation
+        setTimeout(() => {
+          setAutoFillCode(null);
+        }, 100);
         
       } else {
         addLog(`ACCESS DENIED: Invalid code ${currentCode}`);
-        setAuthError('Invalid access code. Please try again.');
+        setAuthError('Invalid access code');
       }
     } catch (error) {
-      addLog(`ERROR: Failed to authenticate`);
-      setAuthError('Connection error. Please try again.');
+      addLog(`ERROR: Authentication failed`);
+      setAuthError('Connection error');
     } finally {
       setIsLoading(false);
     }
-  }, [addLog, setAuthError, setIsLoading, setSessionData, navigate, router]);
+  }, [addLog, setAuthError, setSessionData, navigate, router, setAutoFillCode]);
 
   // ========== AUTO-FILL ANIMATION FUNCTIONS ==========
   // Added for auto-fill feature

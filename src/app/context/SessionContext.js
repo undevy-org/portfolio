@@ -341,54 +341,32 @@ export function SessionProvider({ children }) {
 
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
-    addLog('SESSION TERMINATING');
-
-    // WHY: This is the core fix. It removes the `?code=` or `?web3=` parameter from the URL
-    // instantly. This prevents the authentication logic in `page.js` from triggering a
-    // re-login, thus solving the race condition.
+    // Set flag BEFORE clearing session
+    setLogoutInProgress(true);
+    
+    // Clear session data
+    setSessionData(null);
+    setAutoFillCode(null);
+    
+    // Clear URL using browser API (NOT router, it's not available here)
     if (typeof window !== 'undefined') {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.delete('code');
-      currentUrl.searchParams.delete('web3');
-      currentUrl.hash = '';
-      window.history.replaceState({}, '', currentUrl.toString());
+      // Use replaceState to clear URL without navigation
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
     }
     
-    setIsTerminating(true);
+    // Navigate to Entry
+    navigate('Entry', false);
     
-    const wasWeb3User = sessionData?.isWeb3User;
-    
-    if (wasWeb3User) {
-      // Set the direct state flag - this is the PRIMARY logout signal
-      setWeb3LogoutPending(true);
-      addLog('WEB3 LOGOUT PENDING FLAG SET');
-      
-      // Also dispatch browser event as a backup
-      if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('web3-logout-requested'));
-    }
-    }
-    
-    // Clear session data after a small delay to ensure flag propagates
+    // Reset flag after a brief delay to ensure page.js sees it
     setTimeout(() => {
-      setSessionData(null);
-      setNavigationHistory([]);
-      setCurrentScreen('Entry');
-      setSelectedCase(null);
-      setSelectedRole(null);
-      setSelectedSkill(null);
-      setExpandedSections({});
-      setActiveTab({});
-      setScreensVisitedCount(1);
-      setAuthError(null);
-      
-      setTimeout(() => {
-        setIsTerminating(false);
-        addLog('SESSION TERMINATION COMPLETE');
-      }, 1000);
-    }, 100);
+      setLogoutInProgress(false);
+    }, 500); // Half second is enough for page.js to check
     
-  }, [addLog, sessionData]);
+  }, [navigate]);
+  
+  // Track logout intent
+  const [logoutInProgress, setLogoutInProgress] = useState(false);
 
   // ========== INITIALIZATION ==========
   useEffect(() => {
@@ -443,6 +421,7 @@ export function SessionProvider({ children }) {
     screensVisitedCount,
 
     // Session management
+    logoutInProgress,
     endSession,
     
     // Auth error state

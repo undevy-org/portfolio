@@ -9,6 +9,8 @@ import PersistentShell from './components/PersistentShell';
 function AppContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  
+  // Get logoutInProgress from context
   const { 
     sessionData, 
     setSessionData, 
@@ -16,151 +18,143 @@ function AppContent() {
     addLog, 
     endSession, 
     setAuthError,
-    setAutoFillCode, // Added for auto-fill feature
+    setAutoFillCode,
+    logoutInProgress,  // ADD THIS
     autoFillCode,
     currentScreen
   } = useSession();
-  const [isLoading, setIsLoading] = useState(true); // Keep default as true
-  const hasProcessedInitialLoad = useRef(false); // Track if we've processed initial load
-  const lastProcessedCode = useRef(null); // Track the last code we processed
   
-  // Function to check for existing session
-  const checkSession = useCallback(async () => {
-    try {
-      const response = await fetch('/api/session');
-      if (response.ok) {
-        const userData = await response.json();
-        setSessionData(userData);
-        addLog('SESSION: Restored existing session');
-        console.log('[PAGE] Session found, navigating to MainHub');
-        navigate('MainHub', false);
-      } else {
-        console.log('[PAGE] No session found, showing Entry');
-        navigate('Entry', false);
-      }
-    } catch (error) {
-      console.log('[PAGE] Session check error:', error.message);
-      addLog(`SESSION CHECK ERROR: ${error.message}`);
-      // Even if session check fails, show Entry screen
-      navigate('Entry', false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [navigate, setSessionData, addLog]);
-
-  // Function to handle demo mode authentication
-  const handleDemoMode = useCallback(async () => {
-    setIsLoading(true); // Set loading state for demo mode
-    addLog('DEMO MODE: Initializing from URL parameter');
-    
-    try {
-      // Make API request without code to trigger demo mode
-      const response = await fetch('/api/session');
-      
-      if (response.ok) {
-        const demoData = await response.json();
-        
-        // Enrich data with demo mode flags
-        const enrichedData = {
-          ...demoData,
-          isDemoMode: true,
-          accessCode: 'DEMO'
-        };
-        
-        setSessionData(enrichedData);
-        addLog('DEMO MODE: Session initialized via URL');
-        navigate('ProfileBoot', false);
-      } else {
-        addLog('DEMO MODE: Not available');
-        setAuthError('Demo mode is not available at this time');
-        navigate('Entry', false);
-      }
-    } catch (error) {
-      addLog(`DEMO MODE ERROR: ${error.message}`);
-      setAuthError('Failed to start demo mode');
-      navigate('Entry', false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [navigate, setSessionData, addLog, setAuthError]);
-
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Use refs for tracking (NOT sessionStorage, NOT component state)
+  const lastProcessedCodeRef = useRef(null);
+  const hasProcessedInitialLoadRef = useRef(false);
+  const hasProcessedDemoModeRef = useRef(false);
+  
   // Authentication and session management logic
   useEffect(() => {
-    const code = searchParams.get('code');
-    const demoMode = searchParams.get('demo');
+    // Get parameters directly from window.location to ensure we have the latest values
+    let code = null;
+    let demoMode = null;
     
-    // Skip if we've already processed this exact code
-    if (code && lastProcessedCode.current === code) {
-      console.log('[PAGE] Already processed this code, skipping');
-      setIsLoading(false);
-      return;
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      code = urlParams.get('code');
+      demoMode = urlParams.get('demo');
     }
     
-    // Skip if we've already processed the initial load and nothing changed
-    if (hasProcessedInitialLoad.current) {
-      // Only process if parameters actually changed
-      if (!code && !demoMode) {
-        return;
+    // Define helper functions INSIDE useEffect to avoid dependency issues
+    const checkExistingSession = async () => {
+      try {
+        const response = await fetch('/api/session');
+        if (response.ok) {
+          const userData = await response.json();
+          setSessionData(userData);
+          navigate('MainHub', false);
+        } else {
+          navigate('Entry', false);
+        }
+      } catch (error) {
+        console.error('[PAGE] Session check error:', error);
+        navigate('Entry', false);
+      } finally {
+        setIsLoading(false);
       }
+    };
+    
+    const handleDemoMode = async () => {
+      setIsLoading(true);
+      addLog('DEMO MODE: Initializing from URL parameter');
+      
+      try {
+        const response = await fetch('/api/session');
+        
+        if (response.ok) {
+          const demoData = await response.json();
+          const enrichedData = {
+            ...demoData,
+            isDemoMode: true,
+            accessCode: 'DEMO'
+          };
+          
+          setSessionData(enrichedData);
+          addLog('DEMO MODE: Session initialized via URL');
+          navigate('ProfileBoot', false);
+        } else {
+          addLog('DEMO MODE: Not available');
+          setAuthError('Demo mode is not available at this time');
+          navigate('Entry', false);
+        }
+      } catch (error) {
+        addLog(`DEMO MODE ERROR: ${error.message}`);
+        setAuthError('Failed to start demo mode');
+        navigate('Entry', false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    // CRITICAL: Check logout flag FIRST
+    if (logoutInProgress) {
+      setIsLoading(false);
+      return; // EXIT EARLY - don't process anything during logout
     }
     
-    hasProcessedInitialLoad.current = true;
+    // Reset demo mode processing flag when there's no demo parameter
+    if (demoMode !== 'true') {
+      hasProcessedDemoModeRef.current = false;
+    }
     
-    console.log('[PAGE] useEffect triggered with:', { 
-      code, 
-      demoMode, 
-      sessionData,
-      autoFillCode,
-      currentScreen,
-      isLoading
-    });
-
-    // Don't trigger auto-fill if already authenticated with the same code
-    if (code && sessionData && sessionData.accessCode === code) {
-      console.log('[PAGE] Already authenticated with this code, skipping auto-fill');
+    // Check if we already processed this code
+    if (code && lastProcessedCodeRef.current === code && hasProcessedInitialLoadRef.current) {
       setIsLoading(false);
       return;
     }
-
-    // Handle session switching - only if we have both session and code, and they're different
-    if (sessionData && code && code !== sessionData.accessCode) {
-      addLog(`SESSION SWITCH: New code detected. Old: ${sessionData.accessCode}, New: ${code}. Terminating old session.`);
-      endSession();
+    
+    // Check if already authenticated with the same code
+    if (code && sessionData && sessionData.accessCode === code) {
+      setIsLoading(false);
       return;
     }
-
-    // Handle URL parameters
-    if (demoMode === 'true') {
-      console.log('[PAGE] Demo mode requested');
+    
+    // Handle session switching (different code while authenticated)
+    if (sessionData && code && code !== sessionData.accessCode) {
+      addLog(`SESSION SWITCH: From ${sessionData.accessCode} to ${code}`);
+      endSession(); // This will set logoutInProgress
+      return;
+    }
+    
+    // Handle demo mode (but only if not during logout and not already processed)
+    if (demoMode === 'true' && !hasProcessedDemoModeRef.current) {
+      hasProcessedDemoModeRef.current = true;
       handleDemoMode();
       return;
     }
     
-    if (code) {
-      console.log('[PAGE] Code parameter found, setting autoFillCode and navigating to Entry');
-      // Track that we've processed this code
-      lastProcessedCode.current = code;
-      // Immediately stop loading to show the Entry screen
+    // Handle code parameter for auto-fill
+    if (code && !sessionData) {
+      lastProcessedCodeRef.current = code;
+      hasProcessedInitialLoadRef.current = true;
+      
       setIsLoading(false);
-      // Set the code for auto-fill
-      console.log('[PAGE] Setting autoFillCode to:', code);
       setAutoFillCode(code);
-      // Navigate to Entry screen (synchronously, no delay needed)
       navigate('Entry', false);
-      return; // Critical: exit here, don't run checkSession
+      return;
     }
-
-    // If no special parameters, check for existing session
-    console.log('[PAGE] No special parameters, checking for existing session');
-    checkSession();
     
-  // Include all dependencies to satisfy the linter
-  }, [searchParams, sessionData, autoFillCode, currentScreen, isLoading, addLog, endSession, handleDemoMode, navigate, setAutoFillCode, checkSession, setSessionData, setAuthError]);
+    // No special parameters, check for existing session
+    if (!sessionData) {
+      checkExistingSession();
+    } else {
+      setIsLoading(false);
+    }
+    
+  }, [searchParams, logoutInProgress, sessionData, router, setSessionData, navigate, addLog, setAuthError, setAutoFillCode, endSession]); // Include all dependencies
   
   // Log when autoFillCode changes
   useEffect(() => {
     console.log('[PAGE] autoFillCode updated to:', autoFillCode);
-  }, [autoFillCode]);
+  }, [autoFillCode, searchParams]);
   
   // Return PersistentShell which manages TerminalWindow mounting
   console.log('[PAGE] Rendering PersistentShell with isLoading:', isLoading, 'currentScreen:', currentScreen);
