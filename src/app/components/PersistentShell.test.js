@@ -75,30 +75,36 @@ describe('PersistentShell Component', () => {
       expect(screen.getAllByTestId('terminal-window')).toHaveLength(1);
     });
 
-    test('shows loading state without mounting TerminalWindow when isLoading=true', () => {
+    test('shows loading state WITHIN TerminalWindow when isLoading=true', () => {
       render(
         <TestWrapper>
           <PersistentShell isLoading={true} />
         </TestWrapper>
       );
 
-      // Should show loading message
+      // Should show TerminalWindow even during loading
+      expect(screen.getByTestId('terminal-window')).toBeInTheDocument();
+      
+      // Should show loading message WITHIN TerminalWindow
       expect(screen.getByText('AUTHENTICATING...')).toBeInTheDocument();
       
-      // Should NOT show TerminalWindow during loading
-      expect(screen.queryByTestId('terminal-window')).not.toBeInTheDocument();
+      // Should NOT show regular content during loading
+      expect(screen.queryByTestId('animated-transition')).not.toBeInTheDocument();
     });
 
-    test('transitions from loading to mounted state without remounting', () => {
+    test('transitions from loading to mounted state without remounting TerminalWindow', () => {
       const { rerender } = render(
         <TestWrapper>
           <PersistentShell isLoading={true} />
         </TestWrapper>
       );
 
-      // Initially loading
+      // Initially loading - TerminalWindow is present with loading content
+      const initialWindow = screen.getByTestId('terminal-window');
       expect(screen.getByText('AUTHENTICATING...')).toBeInTheDocument();
-      expect(screen.queryByTestId('terminal-window')).not.toBeInTheDocument();
+      
+      // Should NOT show regular content during loading
+      expect(screen.queryByTestId('animated-transition')).not.toBeInTheDocument();
 
       // Transition to loaded state
       rerender(
@@ -107,9 +113,13 @@ describe('PersistentShell Component', () => {
         </TestWrapper>
       );
 
-      // Should now show TerminalWindow
+      // TerminalWindow should be the same element (not remounted)
+      const afterWindow = screen.getByTestId('terminal-window');
+      expect(initialWindow).toBe(afterWindow);
+      
+      // Should now show regular content
       expect(screen.queryByText('AUTHENTICATING...')).not.toBeInTheDocument();
-      expect(screen.getByTestId('terminal-window')).toBeInTheDocument();
+      expect(screen.getByTestId('animated-transition')).toBeInTheDocument();
     });
   });
 

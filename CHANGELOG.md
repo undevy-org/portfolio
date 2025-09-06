@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [5.4.3](https://github.com/undevy-org/portfolio/compare/v5.4.2...v5.4.3) (2025-09-03)
+
+
+### Added
+
+* implement auto-fill animation for Entry screen ([#82](https://github.com/undevy-org/portfolio/issues/82)) ([0a0b0c0](https://github.com/undevy-org/portfolio/commit/0a0b0c0d0e0f0a0b0c0d0e0f0a0b0c0d0e0f0a0b))
+
+Auto-fill feature for Entry screen:
+- Users arriving with a `code` parameter in the URL now see the Entry screen with an animation
+- The access code is automatically typed into the input field with a realistic typing animation
+- After typing, the Authenticate button is automatically clicked
+- During the animation, all action buttons except theme switcher are disabled
+- Theme switching remains functional during the animation
+- The animation is visually appealing with appropriate visual feedback
+- Proper cleanup prevents memory leaks during animation or component unmounting
+- Graceful error handling for invalid codes
+
 ### [5.4.2](https://github.com/undevy-org/portfolio/compare/v5.4.1...v5.4.2) (2025-09-01)
 
 

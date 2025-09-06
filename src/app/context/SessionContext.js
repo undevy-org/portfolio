@@ -67,11 +67,25 @@ export function SessionProvider({ children }) {
   const [authError, setAuthError] = useState(null);
   const [isTerminating, setIsTerminating] = useState(false);
   
+  // Debugging: Log when sessionData changes
+  useEffect(() => {
+    console.log('[SESSION CONTEXT] sessionData changed to:', sessionData);
+  }, [sessionData]);
+  
   // ========== WEB3 LOGOUT STATE (ADDED) ==========
   // This state provides a direct communication channel between SessionContext and Entry.js
   // for Web3 logout. It's more reliable than browser events which can be missed if the
   // component isn't mounted yet. When true, Entry.js knows it needs to disconnect the wallet.
   const [web3LogoutPending, setWeb3LogoutPending] = useState(false);
+  
+  // ========== AUTO-FILL CODE STATE (ADDED) ==========
+  // This state provides a way to pass access codes for auto-fill animation
+  const [autoFillCode, setAutoFillCode] = useState(null);
+  
+  // Debugging: Log when autoFillCode changes
+  useEffect(() => {
+    console.log('[SESSION CONTEXT] autoFillCode changed to:', autoFillCode);
+  }, [autoFillCode]);
   
   // ========== NAVIGATION ==========
   const [currentScreen, setCurrentScreen] = useState('Entry');
@@ -162,6 +176,7 @@ export function SessionProvider({ children }) {
   
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {
+    console.log('[SESSION CONTEXT] navigate called with:', screen, addToHistory, 'currentScreen:', currentScreen);
     if (currentScreen === screen) return;
     
     if (addToHistory && currentScreen !== 'Entry') {
@@ -326,54 +341,32 @@ export function SessionProvider({ children }) {
 
   // ========== SESSION FUNCTIONS ==========
   const endSession = useCallback(() => {
-    addLog('SESSION TERMINATING');
-
-    // WHY: This is the core fix. It removes the `?code=` or `?web3=` parameter from the URL
-    // instantly. This prevents the authentication logic in `page.js` from triggering a
-    // re-login, thus solving the race condition.
+    // Set flag BEFORE clearing session
+    setLogoutInProgress(true);
+    
+    // Clear session data
+    setSessionData(null);
+    setAutoFillCode(null);
+    
+    // Clear URL using browser API (NOT router, it's not available here)
     if (typeof window !== 'undefined') {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.delete('code');
-      currentUrl.searchParams.delete('web3');
-      currentUrl.hash = '';
-      window.history.replaceState({}, '', currentUrl.toString());
+      // Use replaceState to clear URL without navigation
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
     }
     
-    setIsTerminating(true);
+    // Navigate to Entry
+    navigate('Entry', false);
     
-    const wasWeb3User = sessionData?.isWeb3User;
-    
-    if (wasWeb3User) {
-      // Set the direct state flag - this is the PRIMARY logout signal
-      setWeb3LogoutPending(true);
-      addLog('WEB3 LOGOUT PENDING FLAG SET');
-      
-      // Also dispatch browser event as a backup
-      if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('web3-logout-requested'));
-    }
-    }
-    
-    // Clear session data after a small delay to ensure flag propagates
+    // Reset flag after a brief delay to ensure page.js sees it
     setTimeout(() => {
-      setSessionData(null);
-      setNavigationHistory([]);
-      setCurrentScreen('Entry');
-      setSelectedCase(null);
-      setSelectedRole(null);
-      setSelectedSkill(null);
-      setExpandedSections({});
-      setActiveTab({});
-      setScreensVisitedCount(1);
-      setAuthError(null);
-      
-      setTimeout(() => {
-        setIsTerminating(false);
-        addLog('SESSION TERMINATION COMPLETE');
-      }, 1000);
-    }, 100);
+      setLogoutInProgress(false);
+    }, 500); // Half second is enough for page.js to check
     
-  }, [addLog, sessionData]);
+  }, [navigate]);
+  
+  // Track logout intent
+  const [logoutInProgress, setLogoutInProgress] = useState(false);
 
   // ========== INITIALIZATION ==========
   useEffect(() => {
@@ -428,6 +421,7 @@ export function SessionProvider({ children }) {
     screensVisitedCount,
 
     // Session management
+    logoutInProgress,
     endSession,
     
     // Auth error state
@@ -439,6 +433,11 @@ export function SessionProvider({ children }) {
     // This is more reliable than browser events which can be missed
     web3LogoutPending,
     setWeb3LogoutPending,
+    
+    // Auto-fill code state (ADDED)
+    // This is used to pass access codes for auto-fill animation
+    autoFillCode,
+    setAutoFillCode,
   };
 
   return (
