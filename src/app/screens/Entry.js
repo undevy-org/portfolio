@@ -3,7 +3,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
 import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
@@ -20,22 +19,18 @@ export default function Entry() {
   
   // ========== CONTEXT HOOKS ==========
   const { 
-    theme, 
     addLog, 
-    currentDomain, 
     domainData, 
     authError, 
     setAuthError, 
     sessionData,        
     setSessionData, 
     navigate,
-    isTerminating,
-    // These replace the unreliable browser event system
     web3LogoutPending,     // Flag that tells us when to disconnect wallet
     setWeb3LogoutPending,   // Function to clear the flag after disconnection
-    // Added for auto-fill feature
     autoFillCode,
-    setAutoFillCode
+    setAutoFillCode,
+    logoutInProgress
   } = useSession();
   
   // Use ref for code value to avoid stale closures
@@ -64,8 +59,6 @@ export default function Entry() {
   const isMounted = useRef(true); // Added for cleanup safety
   const isLoggingOut = useRef(false); // Tracks if we're in the middle of a logout process
   const hasInitialized = useRef(false); // Prevents double initialization in React StrictMode
-  const prevSessionRef = useRef(null); // CRITICAL: Track previous session state for logout detection
-  const intentionalLogout = useRef(false); // Remember intentional logout
   const hasStartedAnimation = useRef(false); // Prevent multiple auto-fill animations
   
   // ========== CLEANUP SAFETY ==========
@@ -73,255 +66,105 @@ export default function Entry() {
   useEffect(() => {
     console.log('[ENTRY] Component mounted');
     isMounted.current = true;
-    
-    // Simple, reliable readiness check
-    const timer = setTimeout(() => {
-      if (isMounted.current) {
-        setIsComponentReady(true);
-        console.log('[ENTRY] Component is ready');
-      }
-    }, 100);
-    
+    setIsComponentReady(true); // Mark component as ready for animations
+
     return () => {
       console.log('[ENTRY] Component unmounting');
       isMounted.current = false;
-      clearTimeout(timer);
+      clearAllTimers();
     };
+    // Intentionally run this effect only on mount/unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
-  // ========== WEB3 AUTHENTICATION HANDLER ==========
-  const handleWeb3Success = useCallback(async (walletAddress) => {
-    // CRITICAL CHECK #1: Prevent authentication during logout
-    if (isLoggingOut.current) {
-      console.log('[WEB3 AUTH] Blocked: Logout in progress');
-      addLog('WEB3 LOGIN: Skipped - logout in progress');
-      return;
-    }
-    
-    // CRITICAL CHECK #2: Prevent double initialization in React StrictMode
-    if (hasInitialized.current) {
-      console.log('[WEB3 AUTH] Blocked: Already initialized');
-      return;
-    }
-    
-    if (intentionalLogout.current) {
-      console.log('[WEB3 AUTH] Blocked: User intentionally logged out');
-      return;
-    }
-    
-    console.log('[WEB3 AUTH] Starting authentication for:', walletAddress);
-    hasInitialized.current = true; // Mark as initialized immediately
-    
-    setWeb3Status('connecting');
-    addLog(`WEB3 CONNECTED: ${walletAddress}`);
-    
-    try {
-      const response = await fetch(
-        `/api/session?code=${process.env.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE}`
-      );
-      
-      if (response.ok) {
-        const userData = await response.json();
-        
-        // Enrich the session data with Web3-specific information
-        const web3SessionData = {
-          ...userData,
-          isWeb3User: true, // Flag to identify Web3 users throughout the app
-          walletAddress: walletAddress, // Store full wallet address
-          
-          // Override meta information with Web3 details
-          meta: {
-            ...userData.meta,
-            company: 'Web3 User',
-            accessMethod: 'web3'
-          },
-          
-          // Customize profile data for Web3 users
-          profile: {
-            ...userData.profile,
-            greeting_name: 'Web3 User',
-            summary: {
-              ...userData.profile?.summary,
-              title: 'Web3 Authenticated User',
-              specialization: 'Authenticated via Web3',
-              background: 'Decentralized Access'
-            }
-          }
-        };
-        
-        setSessionData(web3SessionData);
-        addLog(`WEB3 ACCESS GRANTED: ${walletAddress}`);
-        
-        setWeb3Status('connected');
-        
-        navigate('MainHub', false);
-        
-        // Update URL to reflect Web3 authentication
-        // This allows sharing the link while maintaining privacy
-        router.push(`/?web3=${walletAddress}`);
-        
-      } else {
-        console.error('[WEB3 AUTH] Server returned error:', response.status);
-        addLog('ERROR: Failed to create Web3 session');
-        setAuthError('Failed to authenticate with Web3. Please try again.');
-        setWeb3Status('idle');
-        
-        // Disconnect wallet on failure to reset state
-        if (isConnected) {
-          await disconnectAsync();
-        }
-        
-        hasInitialized.current = false;
-      }
-    } catch (error) {
-      console.error('[WEB3 AUTH] Exception during authentication:', error);
-      addLog('ERROR: Web3 session creation failed');
-      setAuthError('Network error during Web3 authentication');
-      setWeb3Status('idle');
-      
-      // Disconnect wallet on error
-      if (isConnected) {
-        try {
-          await disconnectAsync();
-        } catch (disconnectError) {
-          console.error('[WEB3 AUTH] Error during cleanup disconnect:', disconnectError);
-        }
-      }
-      
-      hasInitialized.current = false;
-    }
-  }, [
-    isConnected, 
-    disconnectAsync, 
-    setSessionData, 
-    addLog, 
-    navigate, 
-    router, 
-    setAuthError
-  ]);
-  
-  // ========== EFFECT 1: WEB3 AUTHENTICATION WITH TERMINATION CHECK ==========
-  useEffect(() => {
 
-    // This helps understand the flow and catch issues early
-    console.log('[WEB3 DEBUG]', {
-      isTerminating,
-      web3LogoutPending,
-      isLoggingOut: isLoggingOut.current,
-      hasInitialized: hasInitialized.current,
-      intentionalLogout: intentionalLogout.current,
-      isConnected,
-      hasSession: !!sessionData
-    });
-
-    // CRITICAL: Check termination flag first
-    if (isTerminating) {
-      console.log('[WEB3 MONITOR] Session is terminating - skip all authentication');
-      return;
-    }
-    
-    // This is more reliable than checking isTerminating alone
-    if (web3LogoutPending) {
-      console.log('[WEB3 MONITOR] Web3 logout is pending - skip authentication');
-      return;
-    }
-    
-    // Check if logout is in progress
-    if (isLoggingOut.current) {
-      console.log('[WEB3 MONITOR] Logout in progress - skip authentication');
-      return;
-    }
-    
-    if (intentionalLogout.current) {
-      console.log('[WEB3 MONITOR] Intentional logout detected - skip authentication');
-      return;
-    }
-    
-    // Detect if session was just cleared
-    const hadSession = prevSessionRef.current !== null;
-    const sessionJustCleared = hadSession && !sessionData;
-    prevSessionRef.current = sessionData;
-    
-    if (sessionJustCleared) {
-      console.log('[WEB3 MONITOR] Session was cleared - likely logout');
-      return;
-    }
-    
-    // Authenticate only if all conditions are met
-    if (isConnected && address && !hasInitialized.current && !sessionData && !intentionalLogout.current) {
-      console.log('[WEB3 MONITOR] All conditions met - starting authentication');
-      handleWeb3Success(address);
-    }
-    
-    // Reset flags when wallet disconnects
-    if (!isConnected) {
-      if (hasInitialized.current || intentionalLogout.current) {
-        console.log('[WEB3 MONITOR] Wallet disconnected - resetting all flags');
-      hasInitialized.current = false;
-        intentionalLogout.current = false;
-      setWeb3Status('idle');
-      }
-    }
-  }, [isConnected, address, sessionData, isTerminating, web3LogoutPending, handleWeb3Success]);
-  
-  // ========== EFFECT 2: WEB3 LOGOUT HANDLER (ENHANCED) ==========
+  // ========== EFFECT 1: WEB3 PENDING LOGOUT HANDLER ==========
   useEffect(() => {
-    // Only process logout when the flag is set and wallet is connected
+    // This handles the Web3 logout initiated from outside Entry.js
     if (web3LogoutPending && isConnected && !isLoggingOut.current) {
-      console.log('[WEB3 LOGOUT] Processing pending logout from context state');
-      
-      // CRITICAL: Set flags immediately to prevent re-authentication
+      console.log('[WEB3 LOGOUT] Pending logout detected, initiating wallet disconnect');
       isLoggingOut.current = true;
-      intentionalLogout.current = true;
-      setWeb3Status('disconnecting');
       
-      // Async function to handle the disconnection
       const performDisconnect = async () => {
-        addLog('WEB3 LOGOUT: Starting disconnect process');
-        
         try {
           console.log('[WEB3 LOGOUT] Calling disconnectAsync...');
           await disconnectAsync();
           console.log('[WEB3 LOGOUT] disconnectAsync completed successfully');
-          addLog('WEB3 LOGOUT: Wallet disconnected successfully');
         } catch (error) {
-          // Log error but don't throw - we still want to complete logout
           console.error('[WEB3 LOGOUT] Error during disconnect:', error);
-          addLog('WEB3 LOGOUT: Error during disconnect (continuing anyway)');
         } finally {
-          // IMPORTANT: Clear the pending flag in context
-          // This tells SessionContext that we've handled the logout
+          // Clear the pending flag regardless of success/failure
           setWeb3LogoutPending(false);
-          console.log('[WEB3 LOGOUT] Cleared web3LogoutPending flag');
         }
-        // Note: isLoggingOut.current is cleared in Effect 3 after disconnect is confirmed
       };
       
       performDisconnect();
     }
-    
-    // Edge case: If logout was requested but wallet is already disconnected
-    if (web3LogoutPending && !isConnected) {
-      console.log('[WEB3 LOGOUT] Logout requested but wallet already disconnected');
-      setWeb3LogoutPending(false);
-          isLoggingOut.current = false;
-          intentionalLogout.current = false;
-          setWeb3Status('idle');
-    }
-  }, [web3LogoutPending, isConnected, disconnectAsync, addLog, setWeb3LogoutPending]);
-  
-  // ========== EFFECT 2B: LEGACY BROWSER EVENT LISTENER (BACKUP) ==========
+  }, [web3LogoutPending, isConnected, disconnectAsync, setWeb3LogoutPending]);
+
+  // ========== EFFECT 2: WEB3 CONNECTION HANDLER ==========
   useEffect(() => {
-    const handleWeb3LogoutRequest = () => {
-      console.log('[WEB3 LOGOUT] Legacy browser event received - ignoring (using state-based approach)');
-      // We don't process this anymore - the state-based approach handles it
-    };
+    // Skip if component isn't ready
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      return;
+    }
     
-    window.addEventListener('web3-logout-requested', handleWeb3LogoutRequest);
-    return () => {
-      window.removeEventListener('web3-logout-requested', handleWeb3LogoutRequest);
-    };
-  }, []);
+    // Wallet just connected - attempt authentication
+    if (isConnected && address && web3Status === 'connecting') {
+      console.log('[WEB3] Wallet connected:', address);
+      
+      const performWeb3Auth = async () => {
+        setIsLoading(true);
+        setAuthError(null);
+        
+        try {
+          const code = process.env.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE || '0XDEFI2311';
+          addLog(`WEB3 AUTH: Using code ${code}`);
+          
+          const response = await fetch(`/api/session?code=${code}`);
+          
+          if (response.ok) {
+            const userData = await response.json();
+            const enrichedData = {
+              ...userData,
+              accessCode: code,
+              walletAddress: address
+            };
+            
+            setSessionData(enrichedData);
+            addLog(`WEB3 ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
+            
+            router.push('/');
+            navigate('MainHub', false);
+            
+            setWeb3Status('connected');
+          } else {
+            addLog('WEB3 ACCESS DENIED: Invalid Web3 credentials');
+            setAuthError('Web3 authentication failed');
+            setWeb3Status('idle');
+            
+            setTimeout(async () => {
+              await disconnectAsync();
+            }, 1000);
+          }
+        } catch (error) {
+          addLog('WEB3 ERROR: Authentication failed');
+          setAuthError('Connection error during Web3 auth');
+          setWeb3Status('idle');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      performWeb3Auth();
+    }
+    
+    // Wallet disconnected
+    if (!isConnected && web3Status !== 'idle') {
+      console.log('[WEB3] Wallet disconnected');
+      setWeb3Status('idle');
+    }
+  }, [isConnected, address, web3Status, addLog, setAuthError, setSessionData, navigate, router, disconnectAsync]);
 
   // ========== EFFECT 3: LOGOUT COMPLETION MONITOR ==========
   useEffect(() => {
@@ -391,7 +234,13 @@ export default function Entry() {
   }, [addLog, setAuthError, setSessionData, navigate, router, setAutoFillCode]);
 
   // ========== AUTO-FILL ANIMATION FUNCTIONS ==========
-  // Added for auto-fill feature
+  
+  // Centralized timer cleanup function with memoization
+  const clearAllTimers = useCallback(() => {
+    console.log('[AUTO-FILL] Clearing all timers');
+    animationTimersRef.current.forEach(timer => clearTimeout(timer));
+    animationTimersRef.current = [];
+  }, []); // Empty dependency array since it only uses refs
   
   // Function to handle auto-submit with error handling
   const handleAutoSubmit = useCallback(() => {
@@ -415,6 +264,15 @@ export default function Entry() {
   const typeCharacter = useCallback((targetCode, index = 0) => {
     try {
       console.log('[AUTO-FILL] typeCharacter called with:', targetCode, 'index:', index);
+      
+      // FIX: Check if logout is in progress and stop animation
+      if (logoutInProgress) {
+        console.log('[AUTO-FILL] Logout detected, stopping animation');
+        clearAllTimers();
+        setIsAnimating(false);
+        return;
+      }
+      
       if (index <= targetCode.length) {  // <= not < to show the complete code
         if (isMounted.current) {
           setCode(targetCode.slice(0, index));
@@ -432,10 +290,10 @@ export default function Entry() {
         } else {  // Typing complete
           console.log('[AUTO-FILL] Typing complete, scheduling auto-submit in 800ms');
           const timer = setTimeout(() => {
-            if (isMounted.current) {
+            if (isMounted.current && !logoutInProgress) { // FIX: Check logout before submit
               setIsAnimating(false);
+              handleAutoSubmit();  // Use error handling wrapper
             }
-            handleAutoSubmit();  // Use error handling wrapper
           }, 800);
           animationTimersRef.current.push(timer);
         }
@@ -448,7 +306,7 @@ export default function Entry() {
         setIsAnimating(false);
       }
     }
-  }, [setCode, handleAutoSubmit, addLog]);
+  }, [setCode, handleAutoSubmit, addLog, logoutInProgress, clearAllTimers]);
   
   // Update the ref whenever typeCharacter changes
   useEffect(() => {
@@ -462,9 +320,9 @@ export default function Entry() {
   const startTypingAnimation = useCallback((codeToType) => {
     try {
       console.log('[AUTO-FILL] startTypingAnimation called with:', codeToType);
-      // Clear any existing timers
-      animationTimersRef.current.forEach(timer => clearTimeout(timer));
-      animationTimersRef.current = [];
+      
+      // FIX: Use centralized timer cleanup
+      clearAllTimers();
       
       // Reset input
       if (isMounted.current) {
@@ -499,16 +357,30 @@ export default function Entry() {
         inputElement.classList.remove('auto-filling');
       }
     }
-  }, [setCode, addLog, typeCharacter]);
+  }, [setCode, addLog, typeCharacter, clearAllTimers]);
   
   // Update the ref whenever startTypingAnimation changes
   useEffect(() => {
     startTypingAnimationRef.current = startTypingAnimation;
   }, [startTypingAnimation]);
   
-  // Effect to trigger animation when autoFillCode is set
+  // FIX: Effect to trigger animation when autoFillCode is set with logout check
   useEffect(() => {
-    console.log('[ENTRY] autoFillCode useEffect triggered with:', autoFillCode, 'isMounted:', isMounted.current, 'isComponentReady:', isComponentReady);
+    console.log('[ENTRY] autoFillCode useEffect triggered with:', autoFillCode, 'logoutInProgress:', logoutInProgress);
+    
+    // FIX: Stop animation immediately if logout is in progress
+    if (logoutInProgress) {
+      console.log('[ENTRY] Logout in progress, clearing animation');
+      clearAllTimers();
+      setIsAnimating(false);
+      hasStartedAnimation.current = false;
+      // Remove CSS classes
+      const inputElement = document.querySelector('[data-testid="auth-input"]');
+      if (inputElement) {
+        inputElement.classList.remove('auto-filling');
+      }
+      return;
+    }
     
     // Reset the flag when autoFillCode changes to null
     if (!autoFillCode) {
@@ -521,7 +393,7 @@ export default function Entry() {
       console.log('[AUTO-FILL] Starting animation for code:', autoFillCode);
       // Small delay to ensure component is fully mounted
       const timer = setTimeout(() => {
-        if (isMounted.current) {
+        if (isMounted.current && !logoutInProgress) { // FIX: Additional check
           console.log('[AUTO-FILL] Calling startTypingAnimation with code:', autoFillCode);
           startTypingAnimationRef.current(autoFillCode);
         }
@@ -537,20 +409,18 @@ export default function Entry() {
       console.log('[ENTRY] Auto-fill code detected but animation not started because:', {
         isMounted: isMounted.current,
         isComponentReady: isComponentReady,
-        hasStartedAnimation: hasStartedAnimation.current
+        hasStartedAnimation: hasStartedAnimation.current,
+        logoutInProgress: logoutInProgress
       });
     }
     
     // Cleanup function
     return () => {
       console.log('[AUTO-FILL] Cleaning up animation');
-      animationTimersRef.current.forEach(timer => clearTimeout(timer));
-      animationTimersRef.current = [];
+      clearAllTimers(); // FIX: Use centralized cleanup
       if (isMounted.current) {
         setIsAnimating(false);
       }
-      // Don't clear autoFillCode here as it might interfere with the animation
-      // setAutoFillCode(null);
       
       // Remove CSS classes
       const inputElement = document.querySelector('[data-testid="auth-input"]');
@@ -558,7 +428,7 @@ export default function Entry() {
         inputElement.classList.remove('auto-filling');
       }
     };
-  }, [autoFillCode, isComponentReady]);
+  }, [autoFillCode, isComponentReady, logoutInProgress, clearAllTimers]);
 
   // Effect to clear autoFillCode after successful authentication
   useEffect(() => {
@@ -605,40 +475,13 @@ export default function Entry() {
     window.open('https://github.com/undevy-org/portfolio', '_blank');
   };
 
-  const handleDemoMode = async () => {
-    addLog('DEMO MODE: Initializing demo session');
-    
-    setIsLoading(true);
-    setAuthError(null);
-    
-    try {
-      const response = await fetch('/api/session');
-      
-      if (response.ok) {
-        const demoData = await response.json();
-        
-        const enrichedData = {
-          ...demoData,
-          isDemoMode: true,        // Flag to identify demo sessions
-          accessCode: 'DEMO'       // Special code for demo mode
-        };
-        
-        setSessionData(enrichedData);
-        
-        addLog('DEMO MODE: Session initialized');
-        
-        navigate('ProfileBoot', false);
-        
-      } else {
-        addLog('DEMO MODE: Failed to initialize');
-        setAuthError('Demo mode is not available at this time');
-      }
-    } catch (error) {
-      addLog(`DEMO MODE ERROR: ${error.message}`);
-      setAuthError('Failed to start demo mode. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+  // FIX: New handleDemoMode that navigates to URL with demo parameter
+  // This avoids duplicating the authentication logic - page.js will handle it
+  const handleDemoMode = () => {
+    addLog('DEMO MODE: Navigating to demo URL');
+    // Navigate to the URL with demo parameter
+    // page.js will detect this parameter and handle the authentication
+    router.push('/?demo=true');
   };
 
   // ========== RENDER ==========
@@ -652,17 +495,17 @@ export default function Entry() {
       {/* Main authentication section */}
       <div className="flex flex-col md:flex-row gap-3 mb-3">
         {/* Input field - now same size text as buttons */}
-      <input
-        type="text"
-        value={code}
-        onChange={(e) => setCode(e.target.value.toUpperCase())}
-        onKeyPress={handleKeyPress}
+        <input
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          onKeyPress={handleKeyPress}
           className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
-        placeholder="ENTER ACCESS CODE"
-        autoFocus
-        disabled={isLoading || isConnected || isAnimating}
-        data-testid="auth-input"
-      />
+          placeholder="ENTER ACCESS CODE"
+          autoFocus
+          disabled={isLoading || isConnected || isAnimating}
+          data-testid="auth-input"
+        />
 
         {/* Authenticate button - now on same line as input on desktop */}
         <Button
