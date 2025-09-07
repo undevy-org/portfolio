@@ -15,7 +15,7 @@ import packageInfo from '../../../package.json';
 /* Export the list of supported themes so other modules (ThemeManager, UI) can reuse it. */
 export const themes = ['dark', 'light', 'amber', 'bsod', 'synthwave', 'operator', 'kyoto', 'radar'];
 
-/* NEW: Theme intent configuration - defines the fundamental nature of each theme */
+/* Theme intent configuration - defines the fundamental nature of each theme */
 export const themeConfig = {
   dark: { intent: 'dark' },   // Dark background, bright elements
   light: { intent: 'light' }, // Light background, dark elements
@@ -37,9 +37,6 @@ const getTimestamp = () => {
     second: '2-digit',
   });
 };
-
-// Domain configuration is now fetched dynamically from the API
-// This ensures full portability and no personal data in the code
 
 const screenHierarchy = {
   // Deep-level screens 
@@ -348,6 +345,14 @@ export function SessionProvider({ children }) {
     setSessionData(null);
     setAutoFillCode(null);
     
+    // Reset page.js tracking refs to prevent demo mode auto-login
+    // This calls a global function that page.js exposes to reset its internal refs
+    // Without this, hasProcessedDemoModeRef remains true and demo mode can re-trigger
+    if (typeof window !== 'undefined' && window.__resetPageRefs) {
+      console.log('[SESSION CONTEXT] Resetting page.js tracking refs');
+      window.__resetPageRefs();
+    }
+    
     // Clear URL using browser API (NOT router, it's not available here)
     if (typeof window !== 'undefined') {
       // Use replaceState to clear URL without navigation
@@ -358,10 +363,12 @@ export function SessionProvider({ children }) {
     // Navigate to Entry
     navigate('Entry', false);
     
-    // Reset flag after a brief delay to ensure page.js sees it
+    // Increased delay to ensure all components properly see the logout flag
+    // This gives page.js more time to check logoutInProgress before processing any URL params
+    // Previously 500ms was not enough in some race conditions
     setTimeout(() => {
       setLogoutInProgress(false);
-    }, 500); // Half second is enough for page.js to check
+    }, 1000); // Increased from 500ms to 1000ms for better reliability
     
   }, [navigate]);
   
@@ -409,7 +416,7 @@ export function SessionProvider({ children }) {
     themes,
     toggleTheme,
     setThemeExplicit,
-    getThemeIntent, // NEW: Export the helper function
+    getThemeIntent, 
     expandedSections,
     toggleSection,
     activeTab,
@@ -427,14 +434,13 @@ export function SessionProvider({ children }) {
     // Auth error state
     authError,
     setAuthError,
-    
-    // Web3 logout state (ADDED)
+
     // These are exposed to Entry.js for direct state-based communication
     // This is more reliable than browser events which can be missed
     web3LogoutPending,
     setWeb3LogoutPending,
-    
-    // Auto-fill code state (ADDED)
+
+    // Auto-fill code state
     // This is used to pass access codes for auto-fill animation
     autoFillCode,
     setAutoFillCode,
