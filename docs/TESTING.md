@@ -134,6 +134,54 @@ Our testing strategy is broken down by type, forming our version of the Testing 
 -   Validates component integration without requiring full application context
 -   Covers critical user journeys and error scenarios
 
+## Auto-fill Animation Feature Tests
+
+The Entry screen auto-fill feature requires comprehensive testing to ensure proper behavior across different scenarios.
+
+### Test Cases for Auto-fill Animation
+
+#### Basic Functionality
+- **Auto-fill triggers with URL parameter**: Navigate to `/?code=TESTCODE` and verify the typing animation starts
+- **Animation completes and submits**: Ensure the code is fully typed and authentication is triggered
+- **Invalid codes show error**: Test with invalid codes to verify error handling
+- **Theme switcher remains functional**: Verify theme can be changed during animation
+
+#### Edge Cases
+- **Animation stops on logout**: Start animation, then trigger logout - animation should stop immediately
+- **No auto-login after logout**: After logging out from any session, verify no automatic re-authentication occurs
+- **Component unmount cleanup**: Navigate away during animation and verify no memory leaks or console errors
+- **Multiple rapid navigations**: Navigate to/from Entry screen rapidly to test cleanup
+
+#### Integration with Demo Mode
+- **Demo mode button works during non-animation**: Verify demo mode button is clickable when not animating
+- **Demo mode prevents auto-login loop**: After demo logout, ensure user stays on Entry screen
+- **Session check doesn't trigger demo**: Verify that session verification calls don't activate demo mode
+
+### Manual Testing Protocol
+
+1. **Setup**: Clear all browser data and localStorage
+2. **Test auto-fill with valid code**: 
+   - Navigate to `/?code=YOURCODE`
+   - Observe typing animation
+   - Verify successful authentication
+   - Confirm navigation to ProfileBoot screen
+3. **Test logout behavior**:
+   - Click logout (X button)
+   - Verify return to Entry screen
+   - Confirm no auto-login occurs
+   - Check URL has no parameters
+4. **Test demo mode isolation**:
+   - Click Demo Mode button
+   - Verify authentication
+   - Logout and confirm no re-authentication
+
+### Automated Test Coverage
+
+The following files contain tests for the auto-fill feature:
+- `src/app/screens/Entry.test.js` - Component rendering and state management
+- `src/app/api/session/route.test.js` - API endpoint logic separation
+- `src/app/page.test.js` - URL parameter handling and navigation
+
 ## 6. Test Coverage & Limitations
 
 ### 6.1. Test Execution Statistics

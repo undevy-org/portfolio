@@ -135,7 +135,7 @@ export default function Entry() {
             addLog(`WEB3 ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
             
             router.push('/');
-            navigate('MainHub', false);
+            navigate('ProfileBoot', false);
             
             setWeb3Status('connected');
           } else {
