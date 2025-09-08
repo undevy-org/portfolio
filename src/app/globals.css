@@ -715,8 +715,8 @@
 
 /* Auto-fill animation effects */
 .auto-filling {
-  animation: glow 2s ease-in-out infinite;
-  border-color: var(--color-accent) !important;
+  @apply outline-none ring-2;
+  --tw-ring-color: var(--color-border);
 }
 
 @keyframes glow {

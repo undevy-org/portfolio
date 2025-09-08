@@ -21,6 +21,7 @@ After authentication, the application transforms into a seamless Single Page App
 -   **Headless CMS via Telegram Bot:** A custom Telegram bot (from a separate repository) serves as a powerful, on-the-go content management system. You can create, edit, delete, and rollback content versions directly from your phone.
 -   **Privacy-First Analytics:** A self-hosted Matomo instance provides detailed session tracking while ensuring full data ownership and privacy.
 -   **Automated Testing:** The project is covered by a suite of unit and component tests using Jest and React Testing Library to prevent regressions and ensure code quality.
+-   **Auto-fill Animation**: Automatic typing animation for access codes when arriving via direct links
 
 ## Tech Stack
 
