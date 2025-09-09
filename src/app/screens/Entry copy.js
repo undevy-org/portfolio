@@ -9,7 +9,7 @@ import Button from '../components/ui/Button';
 // REMOVED: Direct Web3Manager import - no longer needed
 // ADDED: Import the new useWeb3State hook that properly handles lazy loading
 import { useWeb3State } from '../hooks/useWeb3State';
-        
+
 // REMOVED: The entire useWeb3Integration function (lines 11-99)
 // This function violated React rules by trying to dynamically import hooks
 // and creating components inside hooks, causing setState during render errors
@@ -47,7 +47,7 @@ export default function Entry() {
   const { 
     address,
     isConnected,
-    openWeb3Modal, 
+    openWeb3Modal,
     disconnectWallet: disconnectAsync, // Renamed for consistency
     isWeb3Loading,
     isWeb3Ready

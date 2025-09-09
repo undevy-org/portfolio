@@ -8,7 +8,7 @@ import StableLayout from "./components/StableLayout";
 import { Suspense } from 'react';
 import { SessionProvider } from "./context/SessionContext";
 import ThemeManager from "./components/ThemeManager";
-import { Web3Provider } from "./components/Web3Provider";
+import { Web3Manager } from "./components/Web3Manager"; 
 import ThemeSwitcher from "./components/ui/ThemeSwitcher";
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -18,9 +18,6 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: '--font-mono',
 });
 
-// Define the portfolio title logic in one place.
-// It reads from the environment variable PORTFOLIO_TITLE.
-// If the variable doesn't exist, it falls back to 'Interactive Portfolio'.
 const portfolioTitle = process.env.PORTFOLIO_TITLE || 'Interactive Portfolio';
 
 export const metadata = {
@@ -38,7 +35,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${ibmPlexMono.variable} font-mono bg-main text-primary terminal-texture`}>
         <SessionProvider>
-          <Web3Provider>
+          <Web3Manager> 
             <ThemeManager />
             <StableLayout>
               {/* Main content (TerminalWindow with screens) */}
@@ -54,7 +51,7 @@ export default function RootLayout({ children }) {
             <Suspense fallback={null}>
               <MatomoTracker />
             </Suspense>
-          </Web3Provider>
+          </Web3Manager>
         </SessionProvider>
       </body>
     </html>
