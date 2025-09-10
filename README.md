@@ -17,11 +17,12 @@ After authentication, the application transforms into a seamless Single Page App
 -   **Single Page Application (SPA) Experience:** After a single data load during authentication, all navigation is instantaneous and handled client-side, with bookmarkable URLs for each screen (`#Timeline`, `#CaseDetail`, etc.).
 -   **Zero Layout Shift Navigation:** A stable layout architecture with fixed regions prevents any content jumping or visual flicker. All screen transitions are handled with smooth, accessibility-conscious animations, creating a seamless and predictable user journey.
 -   **Dual Authentication System:** Supports both traditional access codes and Web3 wallet login. Users can connect via MetaMask, WalletConnect, etc., using the Reown protocol for a seamless Web3 experience.
+-   **Optimized Web3 Loading:** Web3 libraries are lazily loaded only when needed, reducing the initial bundle size by ~50% and improving load times for the majority of users who do not use Web3 authentication.
 -   **Decoupled Content Architecture:** All portfolio data is stored in a `content.json` file on the server, completely separate from the application code. This allows content updates without redeploying the app.
 -   **Headless CMS via Telegram Bot:** A custom Telegram bot (from a separate repository) serves as a powerful, on-the-go content management system. You can create, edit, delete, and rollback content versions directly from your phone.
 -   **Privacy-First Analytics:** A self-hosted Matomo instance provides detailed session tracking while ensuring full data ownership and privacy.
 -   **Automated Testing:** The project is covered by a suite of unit and component tests using Jest and React Testing Library to prevent regressions and ensure code quality.
--   **Auto-fill Animation**: Automatic typing animation for access codes when arriving via direct links
+-   **Auto-fill Animation**: Automatic typing animation for access codes when arriving via direct links (e.g., `/?code=XYZ123`), enhancing the terminal experience.
 
 ## Tech Stack
 
