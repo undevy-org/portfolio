@@ -27,6 +27,38 @@ export const themeConfig = {
   radar: { intent: 'dark' }       // Radar is dark-based with a focus on depth
 };
 
+/* Helper functions for automatic theme selection based on system preferences */
+
+/**
+ * Get a random theme matching the specified intent (dark or light)
+ * @param {string} intent - The theme intent ('dark' or 'light')
+ * @returns {string} A random theme name matching the intent
+ */
+const getRandomThemeByIntent = (intent) => {
+  const matchingThemes = themes.filter(t => themeConfig[t].intent === intent);
+  if (matchingThemes.length === 0) {
+    // Fallback to default theme if no matches (shouldn't happen with current config)
+    return intent === 'dark' ? 'dark' : 'light';
+  }
+  return matchingThemes[Math.floor(Math.random() * matchingThemes.length)];
+};
+
+/**
+ * Detect the user's system color scheme preference
+ * @returns {string} 'dark' or 'light' based on system preferences
+ */
+const getSystemPreference = () => {
+  // Server-side rendering safety
+  if (typeof window === 'undefined') return 'dark';
+  
+  // Check if the browser supports the media query
+  if (!window.matchMedia) return 'dark';
+  
+  // Query the system preference
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return isDark ? 'dark' : 'light';
+};
+
 export const SessionContext = createContext(null);
 
 /* Utility: readable timestamp for log entries */
@@ -96,24 +128,88 @@ export function SessionProvider({ children }) {
   
   // ========== UI: THEME ==========
   /**
-   * Theme initialization:
-   * - Read stored theme from localStorage if available and valid.
-   * - Fallback to 'dark' if nothing is stored or the value is invalid.
-   *
-   * Note: Theme values must match the tokens and CSS selectors in globals.css.
+   * Theme initialization with automatic selection based on system preferences
+   * Priority order:
+   * 1. Previously saved theme (user has visited before)
+   * 2. Random theme matching system preference (first visit)
+   * 3. Fallback to 'dark' theme (if something goes wrong)
    */
   const [theme, setTheme] = useState(() => {
+  try {
+    if (typeof window !== 'undefined') {
+      const savedTheme = window.localStorage.getItem('theme');
+      
+      // Check if user has a saved theme preference
+      if (savedTheme && themes.includes(savedTheme)) {
+        // User has visited before - use their saved theme
+        console.debug('[Theme Init] Using saved theme:', savedTheme);
+        return savedTheme;
+      }
+      
+      // First visit - select random theme based on system preference
+      const systemPref = getSystemPreference();
+      const randomTheme = getRandomThemeByIntent(systemPref);
+      console.debug('[Theme Init] First visit - selected random', systemPref, 'theme:', randomTheme);
+      
+      // Save the randomly selected theme immediately
+      window.localStorage.setItem('theme', randomTheme);
+      
+      return randomTheme;
+    }
+  } catch (e) {
+    // Ignore storage errors and fallback to default
+    console.warn('[Theme Init] Error during initialization:', e);
+  }
+  // Fallback for SSR or errors
+  return 'dark';
+});
+
+  /// Track whether the user has manually selected a theme
+  // This helps us distinguish between automatic and manual theme selection
+  const [isThemeManuallySet, setIsThemeManuallySet] = useState(() => {
     try {
       if (typeof window !== 'undefined') {
-        const saved = window.localStorage.getItem('theme');
-        if (saved && themes.includes(saved)) {
-          return saved;
+        // Check if the flag exists in localStorage
+        const savedFlag = window.localStorage.getItem('themeManuallySet');
+        
+        // If flag exists and is 'true', user has manually selected a theme
+        if (savedFlag === 'true') {
+          console.debug('[Theme Init] Manual theme selection detected');
+          return true;
         }
+        
+        // MIGRATION LOGIC: For users who had themes before this feature
+        // Only migrate if they have BOTH a saved theme AND Web3/code in localStorage
+        // This indicates they're an existing user, not a new visitor
+        const savedTheme = window.localStorage.getItem('theme');
+        const hasWeb3Data = window.localStorage.getItem('@appkit/connection_status') !== null;
+        const hasAccessCode = window.localStorage.getItem('lastAccessCode') !== null;
+        
+        if (savedTheme && themes.includes(savedTheme) && (hasWeb3Data || hasAccessCode)) {
+          // Existing user with saved preferences - migrate as manual
+          console.debug('[Theme Init] Migrating existing user theme as manually set');
+          window.localStorage.setItem('themeManuallySet', 'true');
+          return true;
+        }
+        
+        // New users or users without clear history - automatic mode
+        console.debug('[Theme Init] No manual selection detected - using automatic mode');
+        return false;
       }
     } catch (e) {
-      // ignore storage errors and fallback to default
+      // Ignore storage errors
+      console.warn('[Theme Init] Failed to read themeManuallySet from localStorage:', e);
     }
-    return 'dark';
+    // Default to automatic mode for new users
+    return false;
+  });
+
+  // Track the current system preference for reference
+  // This is used to detect changes and provide context in logs
+  const [systemPreference, setSystemPreference] = useState(() => {
+    const detectedPref = getSystemPreference();
+    console.debug(`[Theme] Initial system preference: ${detectedPref}`);
+    return detectedPref;
   });
 
   const [expandedSections, setExpandedSections] = useState({});
@@ -289,35 +385,193 @@ export function SessionProvider({ children }) {
       const currentIndex = themes.indexOf(prevTheme);
       const safeIndex = currentIndex === -1 ? 0 : currentIndex;
       const nextIndex = (safeIndex + 1) % themes.length;
-      return themes[nextIndex];
+      const newTheme = themes[nextIndex];
+      
+      // Log the upcoming change
+      console.debug(`[Theme] Manual toggle: ${prevTheme} → ${newTheme}`);
+      
+      return newTheme;
     });
-  }, []);
-
-  const setThemeExplicit = useCallback((newTheme) => {
-    if (themes.includes(newTheme)) {
-      setTheme(newTheme);
-    } else {
-      console.warn(`SessionProvider: attempt to set unknown theme "${newTheme}"`);
+    
+    // Mark this as a manual selection
+    setIsThemeManuallySet(true);
+    
+    // Persist the manual flag to localStorage
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('themeManuallySet', 'true');
+      }
+    } catch (e) {
+      console.warn('[Theme] Failed to save manual flag:', e);
     }
   }, []);
 
-  /* NEW: Helper function to get the intent for the current theme */
+  /**
+   * Explicitly set a specific theme by name
+   * This is considered a manual user action and will prevent automatic theme changes
+   * @param {string} newTheme - The theme name to set
+   */
+  const setThemeExplicit = useCallback((newTheme) => {
+    if (themes.includes(newTheme)) {
+      // Set the new theme
+      setTheme(newTheme);
+      
+      // Mark this as a manual selection
+      setIsThemeManuallySet(true);
+      
+      // Persist the manual flag to localStorage
+      try {
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem('themeManuallySet', 'true');
+          console.debug(`[Theme] Manual selection: ${newTheme}`);
+        }
+      } catch (e) {
+        console.warn('[Theme] Failed to save manual flag:', e);
+      }
+      
+      // Log the manual theme change
+      addLog(`THEME SELECTED: ${newTheme.toUpperCase()} (Manual)`);
+    } else {
+      console.warn(`SessionProvider: attempt to set unknown theme "${newTheme}"`);
+    }
+  }, [addLog]);
+
+  /* Helper function to get the intent for the current theme */
   const getThemeIntent = useCallback(() => {
     return themeConfig[theme]?.intent || 'dark';
   }, [theme]);
 
-  // Side-effects when theme changes: persist to localStorage and log the change.
+  /**
+   * Reset theme selection to automatic mode
+   * The theme will follow system preferences and can change automatically
+   */
+  const resetToAutoTheme = useCallback(() => {
+    // Clear the manual flag
+    setIsThemeManuallySet(false);
+    
+    // Remove the flag from localStorage
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem('themeManuallySet');
+        console.debug('[Theme] Reset to automatic mode');
+      }
+    } catch (e) {
+      console.warn('[Theme] Failed to clear manual flag:', e);
+    }
+    
+    // Get fresh system preference (in case it changed while in manual mode)
+    const currentSystemPref = getSystemPreference();
+    setSystemPreference(currentSystemPref); // Update tracked preference
+    
+    // Select a new random theme based on current system preference
+    const newTheme = getRandomThemeByIntent(currentSystemPref);
+    setTheme(newTheme);
+    
+    // Log the change with full context
+    addLog(`THEME MODE: Switched to AUTOMATIC`);
+    addLog(`AUTO THEME: Applied ${newTheme.toUpperCase()} (System: ${currentSystemPref})`);
+    
+    console.info(`[Theme] Reset to auto mode - applied ${newTheme} for ${currentSystemPref} system`);
+  }, [addLog]);
+
+  // Side-effects when theme changes: persist to localStorage and log the change
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('theme', theme);
+        
+        // Log additional context about theme mode
+        const mode = isThemeManuallySet ? 'MANUAL' : 'AUTO';
+        console.debug(`[Theme] Saved theme: ${theme} (Mode: ${mode})`);
       }
     } catch (e) {
-      // ignore storage write errors
+      // Ignore storage write errors
+      console.warn('[Theme] Failed to save theme to localStorage:', e);
     }
 
-    addLog(`THEME CHANGED: ${String(theme).toUpperCase()}`);
-  }, [theme, addLog]);
+    // Add to system log with mode information
+    const modeIndicator = isThemeManuallySet ? '🔒' : '🔄';
+    addLog(`THEME CHANGED: ${String(theme).toUpperCase()} ${modeIndicator}`);
+  }, [theme, isThemeManuallySet, addLog]);
+
+  /**
+   * Listen for system theme preference changes
+   * Automatically update theme when system preference changes (only in auto mode)
+   */
+  useEffect(() => {
+    // Skip on server-side rendering
+    if (typeof window === 'undefined') return;
+    
+    // Check if browser supports matchMedia
+    if (!window.matchMedia) {
+      console.warn('[Theme] matchMedia not supported - system theme monitoring disabled');
+      return;
+    }
+    
+    // Create media query for dark mode preference
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    /**
+     * Handle system theme preference change
+     * This fires when user changes their OS theme settings
+     */
+    const handleSystemThemeChange = (e) => {
+      const newSystemPref = e.matches ? 'dark' : 'light';
+      const oldSystemPref = systemPreference;
+      
+      // Update the tracked system preference
+      setSystemPreference(newSystemPref);
+      
+      console.debug(`[Theme] System preference changed: ${oldSystemPref} → ${newSystemPref}`);
+      
+      // Only auto-switch theme if user hasn't manually selected one
+      if (!isThemeManuallySet) {
+        // Select a random theme matching the new system preference
+        const newRandomTheme = getRandomThemeByIntent(newSystemPref);
+        setTheme(newRandomTheme);
+        
+        // Log the automatic change
+        addLog(`AUTO THEME: System changed to ${newSystemPref.toUpperCase()}`);
+        addLog(`AUTO THEME: Applied ${newRandomTheme.toUpperCase()} theme`);
+        
+        console.info(`[Theme] Auto-switched to ${newRandomTheme} (system: ${newSystemPref})`);
+      } else {
+        // User has manual control - just log that we detected the change
+        addLog(`SYSTEM: Detected ${newSystemPref.toUpperCase()} mode (manual override active)`);
+        console.info(`[Theme] System changed to ${newSystemPref} but keeping manual theme`);
+      }
+    };
+    
+    // Modern browsers support addEventListener for MediaQueryList
+    // Using both methods for maximum compatibility
+    try {
+      // Modern approach (all current browsers)
+      mediaQuery.addEventListener('change', handleSystemThemeChange);
+    } catch (e1) {
+      try {
+        // Legacy approach for older browsers (deprecated but still works)
+        mediaQuery.addListener(handleSystemThemeChange);
+        console.debug('[Theme] Using legacy addListener for compatibility');
+      } catch (e2) {
+        console.warn('[Theme] Could not attach system theme listener:', e2);
+      }
+    }
+    
+    // Cleanup function - CRITICAL for preventing memory leaks
+    return () => {
+      try {
+        // Try modern removal first
+        mediaQuery.removeEventListener('change', handleSystemThemeChange);
+      } catch (e1) {
+        try {
+          // Fallback to legacy removal
+          mediaQuery.removeListener(handleSystemThemeChange);
+        } catch (e2) {
+          // Silent fail - component is unmounting anyway
+        }
+      }
+    };
+  }, [isThemeManuallySet, systemPreference, addLog]); // Re-run if manual flag or system pref changes
 
   // ========== UI small helpers ==========
   const toggleSection = useCallback((sectionId) => {
@@ -460,7 +714,10 @@ export function SessionProvider({ children }) {
     themes,
     toggleTheme,
     setThemeExplicit,
-    getThemeIntent, 
+    getThemeIntent,
+    isThemeManuallySet,
+    resetToAutoTheme,
+    systemPreference,
     expandedSections,
     toggleSection,
     activeTab,
@@ -478,7 +735,8 @@ export function SessionProvider({ children }) {
     // Auth error state
     authError,
     setAuthError,
-
+    
+    // Web3 logout state
     // These are exposed to Entry.js for direct state-based communication
     // This is more reliable than browser events which can be missed
     web3LogoutPending,
