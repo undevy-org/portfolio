@@ -82,6 +82,25 @@ export default function Entry() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+    // ========== WEB3 STATE RESET ON MOUNT ==========
+    // Reset Web3 state when Entry screen mounts to ensure clean state
+    useEffect(() => {
+      // Only reset if we're not authenticated
+      if (!sessionData) {
+        setWeb3Status('idle');
+        
+        // If wallet is connected but no session exists, disconnect it
+        if (isConnected && !isLoggingOut.current) {
+          console.log('[Entry] Cleaning up stale Web3 connection on mount');
+          disconnectAsync().catch(error => {  // ИСПРАВЛЕНО: disconnectAsync вместо disconnectWallet
+            console.error('[Entry] Error disconnecting stale connection:', error);
+          });
+        }
+      }
+      // Intentionally run this effect only on mount - we want to reset state once
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Run only on mount
+
   // ========== EFFECT 1: WEB3 PENDING LOGOUT HANDLER ==========
   useEffect(() => {
     if (web3LogoutPending && isConnected && !isLoggingOut.current) {
@@ -113,6 +132,14 @@ export default function Entry() {
       return;
     }
     
+    // ADDED: Check for immediate connection (wallet already connected from browser storage)
+    if (isConnected && address && !sessionData && web3Status === 'idle') {
+      console.log('[WEB3] Wallet already connected from previous session, initiating authentication');
+      setWeb3Status('connecting');
+      // Authentication will trigger in next render cycle when web3Status === 'connecting'
+      return;
+    }
+    
     // Wallet just connected - attempt authentication
     if (isConnected && address && web3Status === 'connecting') {
       console.log('[WEB3] Wallet connected:', address);
@@ -132,14 +159,15 @@ export default function Entry() {
             const enrichedData = {
               ...userData,
               accessCode: code,
-              walletAddress: address
+              walletAddress: address,
+              isWeb3User: true  // ADDED: Mark as Web3 user
             };
             
             setSessionData(enrichedData);
             addLog(`WEB3 ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
             
             router.push('/');
-            navigate('ProfileBoot', false);
+            navigate('ProfileBoot', false);  // CHANGED: Use ProfileBoot instead of MainHub
             
             setWeb3Status('connected');
           } else {
@@ -147,8 +175,9 @@ export default function Entry() {
             setAuthError('Web3 authentication failed');
             setWeb3Status('idle');
             
+            // Disconnect wallet after failed auth
             setTimeout(async () => {
-              await disconnectAsync();
+              await disconnectWallet();
             }, 1000);
           }
         } catch (error) {
@@ -168,7 +197,7 @@ export default function Entry() {
       console.log('[WEB3] Wallet disconnected');
       setWeb3Status('idle');
     }
-  }, [isConnected, address, web3Status, addLog, setAuthError, setSessionData, navigate, router, disconnectAsync]);
+  }, [isConnected, address, web3Status, sessionData, addLog, setAuthError, setSessionData, navigate, router, disconnectAsync]);
   
   // ========== EFFECT 2.5: UPDATE STATUS WHEN WEB3 LOADS ==========
   // ADDED: New effect to handle Web3 loading state transitions
@@ -229,7 +258,7 @@ export default function Entry() {
         
         // Clear the URL after successful auth
         router.push('/'); // Clean URL, no parameters
-        navigate('MainHub', false);
+        navigate('ProfileBoot', false);
         
         // Clear autoFillCode after navigation
         setTimeout(() => {
@@ -568,10 +597,8 @@ export default function Entry() {
           icon={Wallet}
           className="flex-1"
         >
-          {isConnected 
-            ? `${address.slice(0, 6)}...${address.slice(-4)}` 
-            : web3Status === 'loading' 
-              ? 'LOADING WEB3...'
+          {isWeb3Loading 
+            ? 'LOADING WEB3...'
             : web3Status === 'connecting' 
               ? 'CONNECTING...' 
               : 'WEB3 LOGIN'
