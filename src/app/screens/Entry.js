@@ -6,13 +6,7 @@ import { useSession } from '../context/SessionContext';
 import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import Button from '../components/ui/Button';
-// REMOVED: Direct Web3Manager import - no longer needed
-// ADDED: Import the new useWeb3State hook that properly handles lazy loading
 import { useWeb3State } from '../hooks/useWeb3State';
-        
-// REMOVED: The entire useWeb3Integration function (lines 11-99)
-// This function violated React rules by trying to dynamically import hooks
-// and creating components inside hooks, causing setState during render errors
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
@@ -130,7 +124,7 @@ export default function Entry() {
       return;
     }
     
-    // ADDED: Check for immediate connection (wallet already connected from browser storage)
+    // Check for immediate connection (wallet already connected from browser storage)
     if (isConnected && address && !sessionData && web3Status === 'idle') {
       console.log('[WEB3] Wallet already connected from previous session, initiating authentication');
       setWeb3Status('connecting');
@@ -165,7 +159,7 @@ export default function Entry() {
             addLog(`WEB3 ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
             
             router.push('/');
-            navigate('ProfileBoot', false);  // CHANGED: Use ProfileBoot instead of MainHub
+            navigate('ProfileBoot', false);  
             
             setWeb3Status('connected');
           } else {
@@ -198,7 +192,7 @@ export default function Entry() {
   }, [isConnected, address, web3Status, sessionData, addLog, setAuthError, setSessionData, navigate, router, disconnectAsync]);
   
   // ========== EFFECT 2.5: UPDATE STATUS WHEN WEB3 LOADS ==========
-  // ADDED: New effect to handle Web3 loading state transitions
+  // New effect to handle Web3 loading state transitions
   useEffect(() => {
     // Update status based on Web3 loading state
     if (web3Status === 'connecting' && isWeb3Loading) {
@@ -499,7 +493,7 @@ export default function Entry() {
     window.open(telegramUrl, '_blank');
   };
 
-  // CHANGED: Simplified handleWeb3Login to always use openWeb3Modal
+  // Simplified handleWeb3Login to always use openWeb3Modal
   // This ensures consistent behavior whether Web3 is loaded or not
   const handleWeb3Login = useCallback(() => {
     if (isConnected) {
@@ -537,7 +531,6 @@ export default function Entry() {
   // ========== RENDER ==========
   return (
     <>
-      {/* REMOVED: Web3HookProvider rendering - no longer needed */}
       
     <div className="p-4">
       {/* Accessibility: Announce auto-fill process */}
@@ -635,26 +628,6 @@ export default function Entry() {
           DEMO MODE
         </Button>
       </div>
-      
-      {/* Status messages for Web3 connection */}
-      {isConnected && web3Status === 'connecting' && (
-        <div className="mt-2 text-center text-xs text-secondary">
-          Processing Web3 authentication...
-        </div>
-      )}
-      
-      {(web3Status === 'disconnecting' || web3LogoutPending) && (
-        <div className="mt-2 text-center text-xs text-secondary">
-          Disconnecting wallet...
-        </div>
-      )}
-      
-      {/* Show loading state for Web3 */}
-      {web3Status === 'loading' && (
-        <div className="mt-2 text-center text-xs text-secondary">
-          Loading Web3 libraries...
-        </div>
-      )}
     </div>
     </>
   );
