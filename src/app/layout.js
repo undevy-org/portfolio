@@ -10,6 +10,7 @@ import { SessionProvider } from "./context/SessionContext";
 import ThemeManager from "./components/ThemeManager";
 import { Web3Manager } from "./components/Web3Manager"; 
 import ThemeSwitcher from "./components/ui/ThemeSwitcher";
+import Web3CleanupManager from './components/Web3CleanupManager';
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['100', '200', '300', '400', '500', '600', '700'],
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <Web3Manager> 
             <ThemeManager />
+            <Web3CleanupManager />
             <StableLayout>
               {/* Main content (TerminalWindow with screens) */}
               {children}
