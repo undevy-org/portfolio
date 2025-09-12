@@ -1,24 +1,27 @@
 // src/app/components/Web3Manager.js
 'use client';
 
-import { createContext, useContext, useState, useCallback, lazy, Suspense, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 
-// Lazy load the Web3Provider - this ensures it's not included in the initial bundle
-// The import() function creates a separate chunk that's loaded on demand
-const Web3Provider = lazy(() => import('./Web3Provider'));
+// Lazy load components without Suspense to avoid re-render
+const Web3Provider = dynamic(() => import('./Web3Provider'), { 
+  ssr: false,
+  loading: () => null // No loading component to avoid flicker
+});
 
-// ADDED: Lazy load the Web3Bridge component that will provide Web3 hook values
-// This component uses Web3 hooks normally and communicates values via callback
-const Web3Bridge = lazy(() => import('./Web3Bridge'));
+const Web3Bridge = dynamic(() => import('./Web3Bridge'), { 
+  ssr: false,
+  loading: () => null // No loading component to avoid flicker
+});
 
 // Create a context to share Web3 loading state across the application
-// UPDATED: Added web3State to context interface
 const Web3Context = createContext({
   isWeb3Loaded: false,
   isWeb3Ready: false,
   loadWeb3: () => {},
   isLoading: false,
-  web3State: null // ADDED: Holds the actual Web3 hook values (address, isConnected, etc.)
+  web3State: null
 });
 
 // Custom hook to access Web3 loading state from any component
@@ -36,8 +39,7 @@ export function Web3Manager({ children }) {
   // Track loading state for UI feedback
   const [isLoading, setIsLoading] = useState(false);
   
-  // ADDED: State to hold the actual Web3 hook values received from Web3Bridge
-  // This includes address, isConnected, open, disconnectAsync, etc.
+  // State to hold the actual Web3 hook values received from Web3Bridge
   const [web3State, setWeb3State] = useState(null);
   
   // Function to trigger Web3 loading
@@ -45,15 +47,14 @@ export function Web3Manager({ children }) {
     if (!isWeb3Loaded && !isLoading) {
       console.log('[Web3Manager] Initiating Web3 library loading');
       setIsLoading(true);
-      setIsWeb3Loaded(true);
-      
-      // REMOVED: The setTimeout for setIsWeb3Ready
-      // The ready state is now set by handleWeb3StateChange when Web3Bridge reports values
+      // Delay the actual loading to next tick to avoid immediate re-render
+      setTimeout(() => {
+        setIsWeb3Loaded(true);
+      }, 0);
     }
   }, [isWeb3Loaded, isLoading]);
   
-  // ADDED: Callback handler for receiving Web3 state updates from Web3Bridge
-  // This is called by Web3Bridge whenever Web3 hook values change
+  // Callback handler for receiving Web3 state updates from Web3Bridge
   const handleWeb3StateChange = useCallback((newWeb3State) => {
     console.log('[Web3Manager] Web3 state updated from bridge:', {
       address: newWeb3State.address,
@@ -100,23 +101,16 @@ export function Web3Manager({ children }) {
       isWeb3Ready,
       loadWeb3, 
       isLoading,
-      web3State // ADDED: Include web3State in context value
+      web3State
     }}>
-      {isWeb3Loaded ? (
-        <Suspense fallback={
-          // This fallback is hidden but helps React manage the loading state
-          <div style={{ display: 'none' }}>Loading Web3 libraries...</div>
-        }>
+      {children}
+      {/* Render Web3 components conditionally without Suspense */}
+      {isWeb3Loaded && (
+        <div style={{ display: 'none' }}>
           <Web3Provider>
-            {/* ADDED: Web3Bridge component that connects Web3 hooks to our context */}
-            {/* It uses Web3 hooks normally and passes values up via callback */}
             <Web3Bridge onWeb3StateChange={handleWeb3StateChange} />
-            {children}
           </Web3Provider>
-        </Suspense>
-      ) : (
-        // When Web3 isn't loaded, render children directly
-        children
+        </div>
       )}
     </Web3Context.Provider>
   );

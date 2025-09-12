@@ -42,16 +42,14 @@ export default function Entry() {
   const router = useRouter();
   
   // ========== WEB3 HOOKS ==========
-  // CHANGED: Replace useWeb3Integration with useWeb3State
   // This new hook properly handles lazy loading without violating React rules
   const { 
     address,
     isConnected,
     openWeb3Modal, 
-    disconnectWallet: disconnectAsync, // Renamed for consistency
+    disconnectWallet: disconnectAsync, 
     isWeb3Loading,
     isWeb3Ready
-    // REMOVED: Web3HookProvider - no longer needed
   } = useWeb3State();
   
   // ========== REFS FOR PERSISTENT STATE ==========
@@ -510,11 +508,17 @@ export default function Entry() {
       return;
     }
     
-    addLog('WEB3 LOGIN: Opening wallet connection modal');
-    setWeb3Status('connecting');
+    // Set different status based on Web3 loading state
+    if (!isWeb3Ready) {
+      addLog('WEB3 LOGIN: Loading Web3 libraries');
+      setWeb3Status('loading');
+    } else {
+      addLog('WEB3 LOGIN: Opening wallet connection modal');
+      setWeb3Status('connecting');
+    }
+    
     openWeb3Modal(); // Always use openWeb3Modal which handles loading internally
-    // REMOVED: Conditional logic for isWeb3Ready and direct open() call
-  }, [isConnected, openWeb3Modal, addLog]);
+  }, [isConnected, isWeb3Ready, openWeb3Modal, addLog]);
 
   const handleGitHub = () => {
     addLog('EXTERNAL LINK: GitHub');
@@ -597,11 +601,13 @@ export default function Entry() {
           icon={Wallet}
           className="flex-1"
         >
-          {isWeb3Loading 
+          {web3Status === 'loading' 
             ? 'LOADING WEB3...'
             : web3Status === 'connecting' 
               ? 'CONNECTING...' 
-              : 'WEB3 LOGIN'
+              : isWeb3Ready && !isConnected
+                ? 'OPEN MODAL'
+                : 'WEB3 LOGIN'
           }
         </Button>
       </div>

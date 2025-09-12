@@ -260,9 +260,9 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Ready: false
     });
     
-    // Should show connecting state (Entry sets this when button is clicked)
+    // Should show loading state (Entry sets 'loading' status when !isWeb3Ready)
     await waitFor(() => {
-      const button = screen.getByRole('button', { name: /CONNECTING|WEB3 LOGIN/i });
+      const button = screen.getByRole('button', { name: /LOADING WEB3\.\.\./i });
       expect(button).toBeInTheDocument();
     }, { timeout: 3000 });
   });
