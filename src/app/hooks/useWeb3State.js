@@ -65,8 +65,24 @@ export function useWeb3State() {
       console.log('[useWeb3State] Disconnecting wallet');
       try {
         await web3State.disconnectAsync();
+        
+        // ADDED: Also clear any persisted connection data
+        if (typeof window !== 'undefined') {
+          // Clear WalletConnect data specifically
+          const wcKeys = Object.keys(localStorage).filter(key => 
+            key.includes('walletconnect') || 
+            key.includes('wc@') || 
+            key.includes('appkit')
+          );
+          wcKeys.forEach(key => localStorage.removeItem(key));
+          console.log('[useWeb3State] Cleared', wcKeys.length, 'WalletConnect keys');
+        }
       } catch (error) {
         console.error('[useWeb3State] Error disconnecting:', error);
+        // Force clear even on error
+        if (typeof window !== 'undefined' && error.message?.includes('already')) {
+          location.reload(); // Last resort if wallet state is corrupted
+        }
       }
     } else {
       console.log('[useWeb3State] Cannot disconnect - Web3 not ready');

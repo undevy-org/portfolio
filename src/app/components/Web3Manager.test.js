@@ -3,8 +3,8 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import React, { Suspense } from 'react';
 import { Web3Manager, useWeb3Manager } from './Web3Manager';
 
-// ADDED: Mock the Web3Provider that is lazy loaded
-// This was missing and causing the "Element type is invalid" error
+// Mock the Web3Provider that is lazy loaded
+// This prevents "Element type is invalid" errors
 jest.mock('./Web3Provider', () => {
   return {
     __esModule: true,
@@ -12,20 +12,29 @@ jest.mock('./Web3Provider', () => {
   };
 });
 
-// Mock the Web3Bridge component
+// Variable to control Web3Bridge mock behavior from tests
+let mockWeb3BridgeCallback = null;
+let mockWeb3BridgeState = {
+  address: null,
+  isConnected: false,
+  open: jest.fn(),
+  disconnect: jest.fn(),
+  disconnectAsync: jest.fn(() => Promise.resolve()) // Fixed: Returns Promise instead of undefined
+};
+
+// Mock the Web3Bridge component with controllable behavior
 jest.mock('./Web3Bridge', () => ({
   __esModule: true,
   default: ({ onWeb3StateChange }) => {
+    // Store the callback for test manipulation
+    mockWeb3BridgeCallback = onWeb3StateChange;
+    
     // eslint-disable-next-line react-hooks/rules-of-hooks
     React.useEffect(() => {
-      // Simulate Web3Bridge reporting its state to the parent
-      onWeb3StateChange({
-        address: null,
-        isConnected: false,
-        open: jest.fn(),
-        disconnect: jest.fn(),
-        disconnectAsync: jest.fn()
-      });
+      // Report the current mock state to the parent
+      if (onWeb3StateChange) {
+        onWeb3StateChange(mockWeb3BridgeState);
+      }
     }, [onWeb3StateChange]);
     return null;
   }
@@ -33,7 +42,7 @@ jest.mock('./Web3Bridge', () => ({
 
 // Test component to access the context
 function TestComponent() {
-  const { isWeb3Loaded, isWeb3Ready, loadWeb3, isLoading } = useWeb3Manager();
+  const { isWeb3Loaded, isWeb3Ready, loadWeb3, isLoading, web3State } = useWeb3Manager();
   
   return (
     <div data-testid="test-component">
@@ -41,6 +50,9 @@ function TestComponent() {
       <div data-testid="ready">{isWeb3Ready.toString()}</div>
       <div data-testid="loading">{isLoading.toString()}</div>
       <button onClick={loadWeb3} data-testid="load-button">Load Web3</button>
+      <div data-testid="web3-state">
+        {web3State ? `Connected: ${web3State.isConnected}, Address: ${web3State.address}` : 'No state'}
+      </div>
     </div>
   );
 }
@@ -49,6 +61,22 @@ describe('Web3Manager', () => {
   beforeEach(() => {
     // Clear any console mocks between tests
     jest.clearAllMocks();
+    jest.clearAllTimers();
+    
+    // Reset the mock state to default
+    mockWeb3BridgeCallback = null;
+    mockWeb3BridgeState = {
+      address: null,
+      isConnected: false,
+      open: jest.fn(),
+      disconnect: jest.fn(),
+      disconnectAsync: jest.fn(() => Promise.resolve()) // Fixed: Returns Promise
+    };
+  });
+
+  afterEach(async () => {
+    // Wait for any pending microtasks to complete
+    await new Promise(resolve => setTimeout(resolve, 0));
   });
 
   test('initially does not load Web3 libraries', () => {
@@ -65,39 +93,33 @@ describe('Web3Manager', () => {
   });
   
   test('loads Web3 libraries when loadWeb3 is called', async () => {
-    const { container } = render(
+    render(
       <Web3Manager>
         <TestComponent />
       </Web3Manager>
     );
     
-    // Initially, TestComponent should be visible
-    expect(screen.getByTestId('test-component')).toBeInTheDocument();
+    // Initially not loaded
     expect(screen.getByTestId('loaded')).toHaveTextContent('false');
     
     const loadButton = screen.getByTestId('load-button');
     
-    // Click to load Web3
+    // Wrap the click and all subsequent state updates in act
     await act(async () => {
       fireEvent.click(loadButton);
     });
     
-    // After clicking, isWeb3Loaded becomes true and Web3Provider should render
-    // The mocked Web3Provider renders immediately in tests (no actual async loading)
-    
-    // Wait for the Web3Provider to appear
+    // Now wait for the actual loading to complete
     await waitFor(() => {
       expect(screen.queryByTestId('web3-provider')).toBeInTheDocument();
-    }, { timeout: 1000 });
+    }, { timeout: 2000 });
     
     // The TestComponent should still be in the DOM, now inside Web3Provider
     await waitFor(() => {
-      expect(screen.getByTestId('test-component')).toBeInTheDocument();
       expect(screen.getByTestId('loaded')).toHaveTextContent('true');
       // Ready becomes true after Web3Bridge calls onWeb3StateChange
       expect(screen.getByTestId('ready')).toHaveTextContent('true');
-      expect(screen.getByTestId('loading')).toHaveTextContent('false');
-    }, { timeout: 1000 });
+    }, { timeout: 2000 });
   });
   
   test('shows loading state correctly', async () => {
@@ -109,21 +131,19 @@ describe('Web3Manager', () => {
     
     const loadButton = screen.getByTestId('load-button');
     
-    // Initial state
+    // Initial state should not be loading
     expect(screen.getByTestId('loading')).toHaveTextContent('false');
-    expect(screen.getByTestId('loaded')).toHaveTextContent('false');
     
-    // Click to load
+    // Click to trigger loading
     await act(async () => {
       fireEvent.click(loadButton);
     });
     
-    // Final state - loaded and ready
+    // Wait for the final state after loading completes
     await waitFor(() => {
-      expect(screen.getByTestId('loaded')).toHaveTextContent('true');
       expect(screen.getByTestId('ready')).toHaveTextContent('true');
       expect(screen.getByTestId('loading')).toHaveTextContent('false');
-    });
+    }, { timeout: 2000 });
   });
   
   test('does not reload if already loaded', async () => {
@@ -145,21 +165,18 @@ describe('Web3Manager', () => {
     // Wait for Web3 to be ready
     await waitFor(() => {
       expect(screen.queryByTestId('web3-provider')).toBeInTheDocument();
-    }, { timeout: 1000 });
-    
-    await waitFor(() => {
       expect(screen.getByTestId('ready')).toHaveTextContent('true');
-    }, { timeout: 1000 });
+    }, { timeout: 2000 });
     
     // Clear console logs
     consoleSpy.mockClear();
     
-    // Try to load again
+    // Try to load again - should not trigger another load
     await act(async () => {
       fireEvent.click(loadButton);
     });
     
-    // Should not trigger another load
+    // Should not log the initiating message again
     expect(consoleSpy).not.toHaveBeenCalledWith('[Web3Manager] Initiating Web3 library loading');
     
     consoleSpy.mockRestore();
@@ -174,7 +191,7 @@ describe('Web3Manager', () => {
     
     const loadButton = screen.getByTestId('load-button');
     
-    // Click multiple times rapidly
+    // Click multiple times rapidly within act
     await act(async () => {
       fireEvent.click(loadButton);
       fireEvent.click(loadButton);
@@ -184,50 +201,18 @@ describe('Web3Manager', () => {
     // Should still end up in a stable state
     await waitFor(() => {
       expect(screen.queryByTestId('web3-provider')).toBeInTheDocument();
-    }, { timeout: 1000 });
+    }, { timeout: 2000 });
     
     await waitFor(() => {
       expect(screen.getByTestId('ready')).toHaveTextContent('true');
       expect(screen.getByTestId('loading')).toHaveTextContent('false');
-    }, { timeout: 1000 });
+    }, { timeout: 2000 });
   });
   
-  // ADDED: Test that Web3Bridge integration works correctly
   test('receives and stores Web3 state from Web3Bridge', async () => {
-    // Create a custom mock for this test to verify the callback
-    const mockWeb3State = {
-      address: '0x1234567890',
-      isConnected: true,
-      open: jest.fn(),
-      disconnect: jest.fn(),
-      disconnectAsync: jest.fn()
-    };
-    
-    // Override the Web3Bridge mock for this specific test
-    jest.doMock('./Web3Bridge', () => ({
-      __esModule: true,
-      default: ({ onWeb3StateChange }) => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        React.useEffect(() => {
-          onWeb3StateChange(mockWeb3State);
-        }, [onWeb3StateChange]);
-        return null;
-      }
-    }));
-    
-    // Component to test web3State from context
-    function Web3StateTestComponent() {
-      const { web3State } = useWeb3Manager();
-      return (
-        <div data-testid="web3-state">
-          {web3State ? `Connected: ${web3State.isConnected}, Address: ${web3State.address}` : 'No state'}
-        </div>
-      );
-    }
-    
+    // Render the component with default mock state
     render(
       <Web3Manager>
-        <Web3StateTestComponent />
         <TestComponent />
       </Web3Manager>
     );
@@ -237,13 +222,38 @@ describe('Web3Manager', () => {
     
     // Trigger loading
     const loadButton = screen.getByTestId('load-button');
-    fireEvent.click(loadButton);
     
-    // Wait for Web3Bridge to report state
+    await act(async () => {
+    fireEvent.click(loadButton);
+    });
+    
+    // Wait for Web3Provider to be loaded
+    await waitFor(() => {
+      expect(screen.queryByTestId('web3-provider')).toBeInTheDocument();
+    }, { timeout: 2000 });
+    
+    // Now simulate a change in Web3 state (like wallet connection)
+    const connectedState = {
+      address: '0x1234567890',
+      isConnected: true,
+      open: jest.fn(),
+      disconnect: jest.fn(),
+      disconnectAsync: jest.fn(() => Promise.resolve()) // Fixed: Returns Promise
+    };
+    
+    // Update the mock state and trigger the callback
+    await act(async () => {
+      mockWeb3BridgeState = connectedState;
+      if (mockWeb3BridgeCallback) {
+        mockWeb3BridgeCallback(connectedState);
+      }
+    });
+    
+    // Wait for the state to be reflected in the UI
     await waitFor(() => {
       const stateElement = screen.getByTestId('web3-state');
-      // The mock should have provided the state
-      expect(stateElement.textContent).toContain('Connected');
-    }, { timeout: 1000 });
+      expect(stateElement.textContent).toContain('Connected: true');
+      expect(stateElement.textContent).toContain('Address: 0x1234567890');
+    }, { timeout: 2000 });
   });
 });

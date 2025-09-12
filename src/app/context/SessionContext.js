@@ -353,6 +353,50 @@ export function SessionProvider({ children }) {
       window.__resetPageRefs();
     }
     
+    // NEW: Clear Web3/WalletConnect data from localStorage
+    // This prevents "Already connected" issues on subsequent visits
+    if (typeof window !== 'undefined') {
+      addLog('CLEARING WEB3 DATA');
+      
+      // Collect keys to remove (can't modify localStorage while iterating)
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (
+          key.startsWith('wc@') ||           // WalletConnect v2 sessions
+          key.startsWith('reown') ||         // Reown SDK data
+          key.includes('walletconnect') ||   // Legacy WalletConnect
+          key.includes('@appkit') ||         // AppKit/Web3Modal data
+          key.includes('wagmi') ||            // Wagmi connection state
+          key.includes('W3M') ||              // Web3Modal legacy
+          key.includes('appKit')              // AppKit variants
+        )) {
+          keysToRemove.push(key);
+        }
+      }
+      
+      // Remove collected keys
+      keysToRemove.forEach(key => {
+        console.log('[SESSION] Removing Web3 localStorage key:', key);
+        localStorage.removeItem(key);
+      });
+      
+      // Also clear sessionStorage for Web3 data
+      for (let i = sessionStorage.length - 1; i >= 0; i--) {
+        const key = sessionStorage.key(i);
+        if (key && (
+          key.includes('wc') || 
+          key.includes('reown') || 
+          key.includes('wagmi') ||
+          key.includes('appkit') ||
+          key.includes('W3M')
+        )) {
+          console.log('[SESSION] Removing Web3 sessionStorage key:', key);
+          sessionStorage.removeItem(key);
+        }
+      }
+    }
+    
     // Clear URL using browser API (NOT router, it's not available here)
     if (typeof window !== 'undefined') {
       // Use replaceState to clear URL without navigation
@@ -370,7 +414,7 @@ export function SessionProvider({ children }) {
       setLogoutInProgress(false);
     }, 1000); // Increased from 500ms to 1000ms for better reliability
     
-  }, [navigate]);
+  }, [navigate, addLog]);
   
   // Track logout intent
   const [logoutInProgress, setLogoutInProgress] = useState(false);

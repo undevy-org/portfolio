@@ -82,7 +82,18 @@ export function Web3Manager({ children }) {
       isConnected: web3State?.isConnected 
     });
   }, [isWeb3Loaded, isWeb3Ready, isLoading, web3State]);
-  
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // If Web3 was loaded, ensure clean disconnection on unmount
+      if (isWeb3Ready && web3State?.disconnectAsync) {
+        console.log('[Web3Manager] Cleaning up on unmount');
+        web3State.disconnectAsync().catch(console.error);
+      }
+    };
+  }, [isWeb3Ready, web3State]);
+
   return (
     <Web3Context.Provider value={{ 
       isWeb3Loaded, 

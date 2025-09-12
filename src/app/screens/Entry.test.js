@@ -31,9 +31,17 @@ jest.mock('wagmi', () => ({
 
 // Mock Button component to avoid complexity
 jest.mock('../components/ui/Button', () => {
-  return function MockButton({ children, onClick, disabled, ...props }) {
+  return function MockButton(props) {
+    const { children, onClick, disabled, ariaLabel, type = 'button', icon, ...rest } = props;
+    // НЕ передавайте icon и другие кастомные props в DOM элемент
+    const ariaFromAttr = props['aria-label'];
     return (
-      <button onClick={onClick} disabled={disabled} {...props}>
+      <button
+        type={type}
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={ariaLabel || ariaFromAttr}
+      >
         {children}
       </button>
     );
