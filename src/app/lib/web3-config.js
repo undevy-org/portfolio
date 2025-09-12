@@ -1,3 +1,4 @@
+// src/app/lib/web3-config.js
 'use client';
 import { createAppKit } from '@reown/appkit/react';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
@@ -19,13 +20,19 @@ import {
   mantle,            // Mantle Network
 } from '@reown/appkit/networks';
 
-const projectId = 'b75ae0dd3030e568aae32958c74eb59b';
+const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID;
+
+if (!projectId) {
+  console.error('[Web3Config] CRITICAL: NEXT_PUBLIC_REOWN_PROJECT_ID is not set!');
+  console.error('[Web3Config] Please add it to your .env.local file');
+  console.error('[Web3Config] Get your Project ID from https://cloud.reown.com');
+}
 
 const metadata = {
   name: process.env.NEXT_PUBLIC_PORTFOLIO_NAME || 'Interactive Terminal Portfolio',
   description: process.env.NEXT_PUBLIC_PORTFOLIO_DESCRIPTION || 'Interactive Terminal Portfolio with Web3 Access',
-  url: typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_PORTFOLIO_URL || 'https://example.com', // CHANGED: Dynamically use current origin or env variable
-  icons: [typeof window !== 'undefined' ? `${window.location.origin}/icon.png` : `${process.env.NEXT_PUBLIC_PORTFOLIO_URL || 'https://example.com'}/icon.png`] // CHANGED: Dynamic icon URL based on current domain
+  url: typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_PORTFOLIO_URL || 'https://example.com',
+  icons: [typeof window !== 'undefined' ? `${window.location.origin}/icon.png` : `${process.env.NEXT_PUBLIC_PORTFOLIO_URL || 'https://example.com'}/icon.png`]
 };
 
 const networks = [
@@ -46,14 +53,15 @@ const networks = [
   mantle,
 ];
 
-const wagmiAdapter = new WagmiAdapter({
+// Only create adapter if we have a valid projectId
+const wagmiAdapter = projectId ? new WagmiAdapter({
   networks,
   projectId,
-
   ssr: true
-});
+}) : null;
 
-export const appKit = createAppKit({
+// Only create appKit if we have a valid projectId
+export const appKit = projectId ? createAppKit({
   adapters: [wagmiAdapter],
   networks,
   projectId,
@@ -63,9 +71,10 @@ export const appKit = createAppKit({
     '--w3m-accent': '#4ade80', // Green color from our theme
     '--w3m-border-radius-master': '8px',
   }
-});
+}) : null;
 
 export const web3Config = {
   projectId,
-  wagmiAdapter
+  wagmiAdapter,
+  isConfigured: !!projectId // Helper flag to check if Web3 is properly configured
 };
