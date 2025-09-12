@@ -4,8 +4,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { useSession } from '../../context/SessionContext';
 import dynamic from 'next/dynamic';
 
-/* eslint-disable react-hooks/exhaustive-deps */
-
 // Lazy load the image component since not all tabs will have images
 const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
   loading: () => <div>Loading image...</div>
