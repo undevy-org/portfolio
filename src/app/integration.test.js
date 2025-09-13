@@ -12,6 +12,7 @@ import MainHub from './screens/MainHub';
 import ProfileBoot from './screens/ProfileBoot';
 import CaseList from './screens/CaseList';
 import Timeline from './screens/Timeline';
+import AccessManager from './screens/AccessManager';
 
 // Mock external dependencies that aren't relevant to integration testing
 jest.mock('next/navigation', () => ({
@@ -78,6 +79,45 @@ describe('Integration Tests: User Flows', () => {
     }
   };
 
+  // Mock session data for master access
+  const mockMasterSessionData = {
+    isMasterAccess: true,
+    masterCode: 'LERUSIK',
+    codes: {
+      master: [
+        {
+          code: 'LERUSIK',
+          label: 'Master Key',
+          type: 'master',
+          description: 'Provides full system access to all codes'
+        }
+      ],
+      special: [
+        {
+          code: '0XDEFI2311',
+          label: 'Web3 Login',
+          type: 'web3',
+          description: 'Shared access code for Web3 authentication'
+        },
+        {
+          code: null,
+          label: 'Demo Mode',
+          type: 'demo',
+          description: 'Activated by accessing the site without any code parameter'
+        }
+      ],
+      user: [
+        {
+          code: 'CI_USER',
+          label: 'CI/CD Test Runner',
+          type: 'user',
+          email: 'ci@example.com',
+          telegram: '@ci_runner'
+        }
+      ]
+    }
+  };
+
   describe('Complete Session Flow', () => {
     it('should navigate from Entry to MainHub through code authentication', async () => {
       const mockNavigate = jest.fn();
@@ -100,6 +140,7 @@ describe('Integration Tests: User Flows', () => {
           navigate={mockNavigate}
           addLog={mockAddLog}
           setSessionData={mockSetSessionData}
+          logEntries={[]} // Add empty log entries
         >
           <Entry />
         </MockSessionProvider>
@@ -132,6 +173,7 @@ describe('Integration Tests: User Flows', () => {
           currentScreen="MainHub"
           navigate={mockNavigate}
           addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -167,6 +209,7 @@ describe('Integration Tests: User Flows', () => {
           navigate={mockNavigate}
           addLog={mockAddLog}
           setAuthError={mockSetAuthError}
+          logEntries={[]} // Add empty log entries
         >
           <Entry />
         </MockSessionProvider>
@@ -193,6 +236,110 @@ describe('Integration Tests: User Flows', () => {
     });
   });
 
+  describe('Master Code Access Flow', () => {
+    it('should navigate from Entry to AccessManager through master code authentication', async () => {
+      const mockNavigate = jest.fn();
+      const mockAddLog = jest.fn();
+      const mockSetSessionData = jest.fn();
+      const mockRouterPush = jest.fn();
+      
+      // Mock fetch for successful master code authentication
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockMasterSessionData)
+        })
+      );
+
+      const { rerender } = render(
+        <MockSessionProvider
+          sessionData={null}
+          isAuthenticated={false}
+          currentScreen="Entry"
+          navigate={mockNavigate}
+          addLog={mockAddLog}
+          setSessionData={mockSetSessionData}
+          logEntries={[]} // Add empty log entries
+        >
+          <Entry />
+        </MockSessionProvider>
+      );
+
+      // Verify Entry screen renders
+      expect(screen.getByPlaceholderText(/enter access code/i)).toBeInTheDocument();
+
+      // Enter master code
+      const codeInput = screen.getByPlaceholderText(/access code/i);
+      fireEvent.change(codeInput, { target: { value: 'LERUSIK' } });
+
+      // Submit the form
+      const submitButton = screen.getByRole('button', { name: /authenticate/i });
+      fireEvent.click(submitButton);
+
+      // Wait for authentication to complete
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith('AccessManager', false);
+      }, { timeout: 2000 });
+
+      // Verify logging
+      expect(mockAddLog).toHaveBeenCalledWith('ACCESS CODE: LERUSIK', 'info');
+      expect(mockAddLog).toHaveBeenCalledWith('MASTER ACCESS GRANTED: LERUSIK', 'info');
+
+      // Simulate successful navigation to AccessManager
+      rerender(
+        <MockSessionProvider
+          sessionData={mockMasterSessionData}
+          isAuthenticated={true}
+          currentScreen="AccessManager"
+          navigate={mockNavigate}
+          addLog={mockAddLog}
+          setSessionData={mockSetSessionData}
+          logEntries={[]} // Add empty log entries
+        >
+          <AccessManager />
+        </MockSessionProvider>
+      );
+
+      // Verify AccessManager renders with code information
+      // Since ScreenWrapper is mocked, we need to check for the title differently
+      expect(screen.getByText('SYSTEM ACCESS CODES')).toBeInTheDocument();
+      expect(screen.getByText('LERUSIK')).toBeInTheDocument();
+      expect(screen.getByText('Master Key')).toBeInTheDocument();
+      expect(screen.getByText('0XDEFI2311')).toBeInTheDocument();
+      expect(screen.getByText('Web3 Login')).toBeInTheDocument();
+      expect(screen.getByText('CI_USER')).toBeInTheDocument();
+      expect(screen.getByText('CI/CD Test Runner')).toBeInTheDocument();
+
+      // Cleanup
+      global.fetch.mockRestore();
+    });
+
+    it('should navigate from AccessManager to MainHub when Proceed button is clicked', () => {
+      const mockNavigate = jest.fn();
+      const mockAddLog = jest.fn();
+
+      render(
+        <MockSessionProvider
+          sessionData={mockMasterSessionData}
+          isAuthenticated={true}
+          currentScreen="AccessManager"
+          navigate={mockNavigate}
+          addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
+        >
+          <AccessManager />
+        </MockSessionProvider>
+      );
+
+      // Click the Proceed button
+      const proceedButton = screen.getByRole('button', { name: /PROCEED TO MAIN HUB/i });
+      fireEvent.click(proceedButton);
+
+      // Verify navigation to MainHub
+      expect(mockNavigate).toHaveBeenCalledWith('MainHub', false);
+    });
+  });
+
   describe('Session Termination Flow', () => {
     it('should handle session termination and return to Entry', async () => {
       const mockNavigate = jest.fn();
@@ -207,6 +354,7 @@ describe('Integration Tests: User Flows', () => {
           navigate={mockNavigate}
           addLog={mockAddLog}
           endSession={mockEndSession}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -228,6 +376,7 @@ describe('Integration Tests: User Flows', () => {
           addLog={mockAddLog}
           endSession={mockEndSession}
           isTerminating={true}
+          logEntries={[]} // Add empty log entries
         >
           <Entry />
         </MockSessionProvider>
@@ -255,6 +404,7 @@ describe('Integration Tests: User Flows', () => {
           navigate={mockNavigate}
           goBack={mockGoBack}
           addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -277,6 +427,7 @@ describe('Integration Tests: User Flows', () => {
           navigate={mockNavigate}
           goBack={mockGoBack}
           addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
         >
           <Timeline />
         </MockSessionProvider>
@@ -298,6 +449,7 @@ describe('Integration Tests: User Flows', () => {
           currentScreen="MainHub"
           navigate={mockNavigate}
           addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -319,6 +471,7 @@ describe('Integration Tests: User Flows', () => {
           currentScreen="CaseList"
           navigate={mockNavigate}
           addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
         >
           <CaseList />
         </MockSessionProvider>
@@ -344,6 +497,7 @@ describe('Integration Tests: User Flows', () => {
           theme={currentTheme}
           toggleTheme={mockToggleTheme}
           setThemeExplicit={mockSetThemeExplicit}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -363,6 +517,7 @@ describe('Integration Tests: User Flows', () => {
           theme={currentTheme}
           toggleTheme={mockToggleTheme}
           setThemeExplicit={mockSetThemeExplicit}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -386,6 +541,7 @@ describe('Integration Tests: User Flows', () => {
           currentScreen="MainHub"
           navigate={mockNavigate}
           addLog={mockAddLog}
+          logEntries={[]} // Add empty log entries
         >
           <MainHub />
         </MockSessionProvider>
@@ -414,6 +570,7 @@ describe('Integration Tests: User Flows', () => {
           navigate={mockNavigate}
           addLog={mockAddLog}
           setAuthError={mockSetAuthError}
+          logEntries={[]} // Add empty log entries
         >
           <Entry />
         </MockSessionProvider>

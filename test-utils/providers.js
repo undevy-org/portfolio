@@ -129,6 +129,7 @@ export function MockSessionProvider({
       'Introduction': 'MainHub',
       'SideProjects': 'MainHub',
       'Contact': 'MainHub',
+      'AccessManager': 'MainHub', // Added for master code feature
     },
     screensVisitedCount,
     
