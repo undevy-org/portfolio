@@ -83,6 +83,9 @@ const screenHierarchy = {
   'Introduction': 'MainHub',
   'SideProjects': 'MainHub',
   'Contact': 'MainHub',
+  
+  // Master Code Access Manager
+  'AccessManager': 'MainHub', // AccessManager leads to MainHub
 };
 
 export function SessionProvider({ children }) {

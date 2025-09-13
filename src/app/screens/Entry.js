@@ -240,17 +240,30 @@ export default function Entry() {
       
       if (response.ok) {
         const userData = await response.json();
-        const enrichedData = {
-          ...userData,
-          accessCode: currentCode
-        };
         
-        setSessionData(enrichedData);
-        addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
-        
-        // Clear the URL after successful auth
-        router.push('/'); // Clean URL, no parameters
-        navigate('ProfileBoot', false);
+        // Check if this is master access
+        if (userData.isMasterAccess) {
+          // For master access, set the session data with codes information
+          setSessionData(userData);
+          addLog(`MASTER ACCESS GRANTED: ${userData.masterCode}`);
+          
+          // Clear the URL after successful auth
+          router.push('/'); // Clean URL, no parameters
+          navigate('AccessManager', false); // Navigate to AccessManager
+        } else {
+          // Regular user authentication
+          const enrichedData = {
+            ...userData,
+            accessCode: currentCode
+          };
+          
+          setSessionData(enrichedData);
+          addLog(`ACCESS GRANTED: ${userData.meta?.company || 'Unknown'}`);
+          
+          // Clear the URL after successful auth
+          router.push('/'); // Clean URL, no parameters
+          navigate('ProfileBoot', false);
+        }
         
         // Clear autoFillCode after navigation
         setTimeout(() => {

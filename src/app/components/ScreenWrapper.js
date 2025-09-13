@@ -28,7 +28,10 @@ export default function ScreenWrapper({
   children, 
   className = '', 
   noPadding = false,
-  testId = 'screen-wrapper' 
+  testId = 'screen-wrapper',
+  title,
+  subtitle,
+  icon
 }) {
   const { currentScreen } = useSession();
   const [isMounted, setIsMounted] = useState(false);
@@ -108,6 +111,16 @@ export default function ScreenWrapper({
       className={`${baseClasses} ${getScreenSpecificClasses()}`.trim()}
       {...dataAttributes}
     >
+      {/* Render title, subtitle, and icon if provided */}
+      {(title || subtitle || icon) && (
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-1">
+            {icon && <span className="text-lg">{icon}</span>}
+            {title && <h1 className="text-xl font-bold text-command">{title}</h1>}
+          </div>
+          {subtitle && <p className="text-sm text-secondary">{subtitle}</p>}
+        </div>
+      )}
       {children}
     </div>
   );
