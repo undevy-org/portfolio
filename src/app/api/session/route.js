@@ -5,6 +5,29 @@ import path from 'path';
 import { getContentFilePath, isDemoModeEnabled, loadContent } from '../../utils/config';
 import { mergeSessionData } from '../../utils/session';
 
+// Helper function to extract user label from profile data
+function extractUserLabel(profileData) {
+  if (!profileData) return 'Unknown User';
+  
+  // Try to find a suitable name field
+  return profileData.profileName || 
+         profileData.fullName || 
+         profileData.name || 
+         profileData.title || 
+         profileData.company ||
+         'Unknown User';
+}
+
+// Helper function to extract contact information
+function extractContactInfo(profileData) {
+  if (!profileData) return {};
+  
+  return {
+    email: profileData.contactEmail || profileData.email || null,
+    telegram: profileData.contactTelegram || profileData.telegram || null
+  };
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
@@ -18,6 +41,94 @@ export async function GET(request) {
     // Return 401 to indicate no session exists
     // This is the expected behavior for session checks
     return NextResponse.json({ error: 'No active session' }, { status: 401 });
+  }
+
+  // Master Code logic - check if provided code matches MASTER_CODE environment variable
+  const masterCode = process.env.MASTER_CODE;
+  if (masterCode && code === masterCode) {
+    console.log('[SESSION API] Master code detected');
+    
+    try {
+      // Gather all codes from different sources
+      const codes = {
+        master: [{
+          code: masterCode,
+          label: 'Master Key',
+          type: 'master',
+          description: 'Provides full system access to all codes'
+        }],
+        special: [],
+        user: []
+      };
+      
+      // Add Web3 code if available
+      const web3Code = process.env.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE;
+      if (web3Code) {
+        codes.special.push({
+          code: web3Code,
+          label: 'Web3 Login',
+          type: 'web3',
+          description: 'Shared access code for Web3 authentication'
+        });
+      }
+      
+      // Add demo mode entry
+      codes.special.push({
+        code: null,
+        label: 'Demo Mode',
+        type: 'demo',
+        description: 'Activated by accessing the site without any code parameter'
+      });
+      
+      // Load user codes from content file
+      const dataFilePath = getContentFilePath(false);
+      let allData;
+      
+      try {
+        const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+        allData = JSON.parse(fileContent);
+      } catch (error) {
+        console.warn(`Could not read server content file. Falling back to local test data. Reason: ${error.message}`);
+        
+        try {
+          const testFilePath = process.env.USE_LOCAL_TEST_CONTENT
+            ? path.join(process.cwd(), 'test-content-local.json')
+            : path.join(process.cwd(), 'src/app/test-content.json');
+          const testContent = await fs.readFile(testFilePath, 'utf-8');
+          allData = JSON.parse(testContent);
+        } catch (localError) {
+          console.error('Failed to load test data:', localError);
+          // Continue with empty data if both files fail
+          allData = {};
+        }
+      }
+      
+      // Extract user codes (excluding special keys)
+      const systemKeys = ['GLOBAL_DATA', 'DEMO_USER', masterCode];
+      const userCodes = Object.keys(allData)
+        .filter(key => !systemKeys.includes(key) && !key.startsWith('_'))
+        .map(codeKey => {
+          const profileData = allData[codeKey];
+          return {
+            code: codeKey,
+            label: extractUserLabel(profileData),
+            type: 'user',
+            ...extractContactInfo(profileData)
+          };
+        });
+      
+      codes.user = userCodes;
+      
+      // Return master access response
+      return NextResponse.json({
+        isMasterAccess: true,
+        masterCode: masterCode,
+        codes: codes
+      }, { status: 200 });
+    } catch (error) {
+      console.error('[SESSION API] Error processing master code request:', error);
+      return NextResponse.json({ error: 'Server error processing master access' }, { status: 500 });
+    }
   }
 
   // Demo Mode logic - only activate when explicitly requested

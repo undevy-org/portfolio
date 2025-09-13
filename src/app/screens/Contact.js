@@ -19,25 +19,14 @@ export default function Contact() {
   const getDomainSpecificContact = () => {
     const contact = { ...baseContact };
     
-    // domainData is fetched from the API and contains configuration for the current domain
+    // Domain-specific overrides from the API
     if (domainData) {
       contact.email = domainData.email || baseContact.email;
       contact.telegram = domainData.telegram || baseContact.telegram;
       contact.website = domainData.website || baseContact.website;
     }
     
-    // These come from .env file, not hardcoded in the source
-    if (!contact.email) {
-      contact.email = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com';
-    }
-    if (!contact.telegram) {
-      contact.telegram = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example';
-    }
-    if (!contact.website) {
-      contact.website = process.env.NEXT_PUBLIC_DEFAULT_CONTACT_WEBSITE || 'https://example.com';
-  }
-    
-  return contact;
+    return contact;
   };
 
   const contactData = getDomainSpecificContact();

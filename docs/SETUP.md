@@ -195,7 +195,65 @@ touch ~/content.json
     sudo certbot --nginx
     ```
 
-### 3.4. First-Time Deployment
+### 3.4. Environment Configuration
+
+Before deploying the application, you need to configure the environment variables. Create the following files in the appropriate directories:
+
+#### Production Environment (~/shared/portfolio/.env)
+```bash
+# Core Application
+NODE_ENV=production
+PORT=3000
+
+# Content Management
+CONTENT_FILE_PATH=/home/your_user/content.json
+BACKUP_DIR=/home/your_user/backups
+ENABLE_DEMO_MODE=true
+
+# Admin API
+ADMIN_TOKEN=your-secret-admin-token-here
+
+# Master Code Access (Administrative Feature)
+MASTER_CODE=your-secure-master-code-here
+
+# Analytics (Matomo)
+NEXT_PUBLIC_MATOMO_URL=https://analytics.your-domain.com
+NEXT_PUBLIC_MATOMO_SITE_ID=1
+MATOMO_TOKEN=your-matomo-api-token-here
+
+# Browser Tab
+PORTFOLIO_TITLE=Your Portfolio Title
+
+# Web3 Integration
+NEXT_PUBLIC_REOWN_PROJECT_ID=your-project-id-here
+
+# Web3 Authentication
+NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE=your_default_web3_access_code_here
+
+# Domain Configuration
+DOMAIN_CONFIG_PATH=/home/your_user/config/domains.json
+
+# Default Contact Info
+DEFAULT_CONTACT_EMAIL=contact@your-domain.com
+DEFAULT_CONTACT_TELEGRAM=@your_telegram
+DEFAULT_CONTACT_WEBSITE=https://your-domain.com
+DEFAULT_PORTFOLIO_TITLE=Your Portfolio
+
+# Demo Configuration
+DEMO_CONTENT_FILE_PATH=/home/your_user/config/demo-content.json
+```
+
+#### Security Considerations for MASTER_CODE
+The MASTER_CODE environment variable provides administrative access to view and simulate all system access codes. To maintain security:
+
+1. **Use a Strong Code**: Generate a complex, unique master code that is not easily guessable
+2. **Keep it Secret**: Never commit the master code to version control or share it publicly
+3. **Limit Access**: Only provide the master code to trusted administrators
+4. **Regular Rotation**: Consider rotating the master code periodically for enhanced security
+
+The master code feature is designed for administrative purposes and should be treated with the same level of security as other administrative credentials.
+
+### 3.5. First-Time Deployment
 The first deployment must be done manually to set up the initial structure. Subsequent deployments will be fully automated.
 
 ```bash
@@ -222,7 +280,7 @@ rm -rf ~/temp_deploy
 ```
 After this, all future deployments to production and staging will be handled by GitHub Actions.
 
-### 3.5. Web3 Provider Setup (Optional)
+### 3.6. Web3 Provider Setup (Optional)
 
 This project uses Reown (formerly WalletConnect) for Web3 authentication with an optimized lazy-loading architecture that ensures Web3 libraries are only loaded when actually needed. This means the ~2MB of Web3 dependencies won't impact your site's initial load time - they're downloaded only when a user clicks the "Web3 Login" button.
 

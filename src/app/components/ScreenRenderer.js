@@ -18,6 +18,7 @@ const screens = {
   SkillDetail: dynamic(() => import('../screens/SkillDetail')),
   SideProjects: dynamic(() => import('../screens/SideProjects')),
   Contact: dynamic(() => import('../screens/Contact')),
+  AccessManager: dynamic(() => import('../screens/AccessManager')), // Added for master code feature
 };
 
 export default function ScreenRenderer() {

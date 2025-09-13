@@ -23,6 +23,7 @@ After authentication, the application transforms into a seamless Single Page App
 -   **Privacy-First Analytics:** A self-hosted Matomo instance provides detailed session tracking while ensuring full data ownership and privacy.
 -   **Automated Testing:** The project is covered by a suite of unit and component tests using Jest and React Testing Library to prevent regressions and ensure code quality.
 -   **Auto-fill Animation**: Automatic typing animation for access codes when arriving via direct links (e.g., `/?code=XYZ123`), enhancing the terminal experience.
+-   **Master Code Access Manager:** Administrative access to view and simulate all system access codes using a special master code, providing complete visibility into the portfolio's access control system.
 
 ## Tech Stack
 

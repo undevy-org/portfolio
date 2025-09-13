@@ -168,10 +168,10 @@ export async function getDomainConfig(hostname) {
  */
 function getDefaultDomainConfig() {
   return {
-    brandingToken: process.env.DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
-    email: process.env.DEFAULT_CONTACT_EMAIL || 'contact@example.com',
-    telegram: process.env.DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example',
-    website: process.env.DEFAULT_CONTACT_WEBSITE || 'https://example.com',
+    brandingToken: process.env.NEXT_PUBLIC_DEFAULT_PORTFOLIO_TITLE || process.env.DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
+    email: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || process.env.DEFAULT_CONTACT_EMAIL || 'contact@example.com',
+    telegram: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || process.env.DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example',
+    website: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_WEBSITE || process.env.DEFAULT_CONTACT_WEBSITE || 'https://example.com',
     analyticsEnabled: false
   };
 }

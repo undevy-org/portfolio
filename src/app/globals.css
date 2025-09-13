@@ -733,3 +733,51 @@
   transition: transform 0.1s ease;
   background-color: var(--color-active) !important;
 }
+
+/* ============================================
+   WEB3 MODAL Z-INDEX FIXES
+   ============================================
+   Ensures Web3/Reown modal appears above the terminal texture pattern
+*/
+
+/* Reown/AppKit modal container - must be above texture overlay */
+[data-w3m-modal],
+[data-w3m-modal-container],
+.w3m-modal,
+.w3m-modal-container,
+.appkit-modal,
+.appkit-modal-container,
+w3m-modal,
+w3m-router,
+wcm-modal {
+  z-index: 1000 !important;
+}
+
+/* Modal overlay background - just below the modal itself */
+[data-w3m-overlay],
+.w3m-overlay,
+.w3m-backdrop,
+.appkit-overlay,
+.appkit-backdrop,
+wcm-overlay {
+  z-index: 999 !important;
+}
+
+/* Additional selectors for the modal dialog */
+[role="dialog"][aria-modal="true"] {
+  z-index: 1000 !important;
+}
+
+/* Fix for any modal content that might be nested */
+.w3m-modal * {
+  /* Inherit the high z-index to ensure all child elements are visible */
+  z-index: inherit;
+}
+
+/* Ensure the connect button stays clickable */
+w3m-button,
+w3m-connect-button,
+[data-testid="w3m-connect-button"] {
+  position: relative;
+  z-index: 10;
+}
