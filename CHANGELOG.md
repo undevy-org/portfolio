@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0](https://github.com/undevy-org/portfolio/compare/v5.4.2...v6.0.0) (2025-09-14)
+
+
+### Changed
+
+* **deps:** bump next from 15.4.3 to 15.4.7 ([#85](https://github.com/undevy-org/portfolio/issues/85)) ([317c146](https://github.com/undevy-org/portfolio/commit/317c146e233a2d9823c835a92d2cd11a14c5a648))
+
+
+### Documentation
+
+* update README, SETUP, and TESTING guides ([#90](https://github.com/undevy-org/portfolio/issues/90)) ([378710e](https://github.com/undevy-org/portfolio/commit/378710e6905fb3147f022d86e980c39b462d8afb))
+
+
+### Added
+
+* add master code access management system ([#95](https://github.com/undevy-org/portfolio/issues/95)) ([b092e63](https://github.com/undevy-org/portfolio/commit/b092e638f0976809bb5c5e0598c69db9e4f0a802))
+* **web3:** Improve Web3 authentication and session management ([#91](https://github.com/undevy-org/portfolio/issues/91)) ([40cf665](https://github.com/undevy-org/portfolio/commit/40cf665112ba4eb5d66971980fe42af37c7ffc07))
+
+
+### Fixed
+
+* add MASTER_CODE to build environment variables ([#96](https://github.com/undevy-org/portfolio/issues/96)) ([52ccfd1](https://github.com/undevy-org/portfolio/commit/52ccfd1fce211e0ef9e405fa55d1ca0579982723))
+* configure Next.js image optimization for external static assets ([#82](https://github.com/undevy-org/portfolio/issues/82)) ([f904fdd](https://github.com/undevy-org/portfolio/commit/f904fdd373ae3e4c35334d678117fe2f66322572))
+* resolve demo mode auto-login after logout and improve auto-fill animation ([#87](https://github.com/undevy-org/portfolio/issues/87)) ([e8070a8](https://github.com/undevy-org/portfolio/commit/e8070a883b442212d682c108d53d0fa87e7e859c))
+* resolve demo mode auto-login after logout and improve auto-fill animation ([#88](https://github.com/undevy-org/portfolio/issues/88)) ([179d161](https://github.com/undevy-org/portfolio/commit/179d1614d0b75d9b91e50bdbecb40e9430b1a607))
+* resolve Web3 configuration and session persistence issues ([#92](https://github.com/undevy-org/portfolio/issues/92)) ([40e1e6c](https://github.com/undevy-org/portfolio/commit/40e1e6c85031710c0b9e66a9ec821202586350ed))
+* resolve Web3 module loading issues on stage ([#94](https://github.com/undevy-org/portfolio/issues/94)) ([bc84aaa](https://github.com/undevy-org/portfolio/commit/bc84aaaf69f83bd55367ceab40100b04fed64f1c))
+
 ### [5.4.3](https://github.com/undevy-org/portfolio/compare/v5.4.2...v5.4.3) (2025-09-03)
 
 
