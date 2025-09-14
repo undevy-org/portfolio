@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.0.3](https://github.com/undevy-org/portfolio/compare/v6.0.2...v6.0.3) (2025-09-14)
+
+
+### Fixed
+
+* deploy release auth fix (second try) ([#100](https://github.com/undevy-org/portfolio/issues/100)) ([75060a6](https://github.com/undevy-org/portfolio/commit/75060a629957dbf6b01d67c36866a6185a97a281))
+
 ### [6.0.2](https://github.com/undevy-org/portfolio/compare/v6.0.1...v6.0.2) (2025-09-14)
 
 
