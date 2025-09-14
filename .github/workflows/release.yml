@@ -1,89 +1,172 @@
-# Release Notes Generator
+# Release Notes Enhancer
 # Location: .github/workflows/release.yml
-# Purpose: Ensure GitHub Release is created with proper notes
-# Note: This workflow is now minimal since release-deploy.yml handles artifacts
+# Purpose: Enhance release notes after release-deploy.yml creates the release
+# This is a SECONDARY workflow - only enhances existing releases
 
-name: Create Release Notes
+name: Enhance Release Notes
 
 on:
   push:
     tags:
       - 'v*.*.*'
 
-# Prevent concurrent runs for the same tag -> avoid races
+# Run after release-deploy.yml by adding a delay
+# This ensures the main workflow creates the release first
 concurrency:
-  group: release-${{ github.ref_name }}
+  group: release-notes-${{ github.ref_name }}
   cancel-in-progress: false
 
-# Need write permissions to upload release assets / create fallback release if necessary
 permissions:
   contents: write
 
 jobs:
-  release-notes:
-    name: Generate Release Notes
+  enhance-release-notes:
+    name: Enhance Release Notes
     runs-on: ubuntu-latest
-    # Only run if release-deploy hasn't already created the release
+    # Only run on tag pushes
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     
     steps:
+      - name: Wait for main release workflow
+        run: |
+          echo "⏳ Waiting 30 seconds for release-deploy.yml to create the release..."
+          sleep 30
+      
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Need full history for changelog
+          fetch-depth: 0  # Need full history for generating release notes
       
       - name: Check if release exists
         id: check_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "🔍 Checking if release already exists for ${{ github.ref_name }}..."
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
           
-          if gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
-            echo "✅ Release already exists"
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "📝 Release doesn't exist yet"
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+          echo "🔍 Checking if release ${TAG} exists..."
+          
+          # Try up to 10 times with 5 second intervals (total 50 seconds)
+          for i in {1..10}; do
+            if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
+              echo "✅ Release ${TAG} found!"
+              echo "exists=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "⏳ Release not found yet, waiting... (attempt $i/10)"
+            sleep 5
+          done
+          
+          echo "❌ Release ${TAG} not found after waiting"
+          echo "exists=false" >> $GITHUB_OUTPUT
       
-      # Create release only if it doesn't exist
-      # (release-deploy.yml usually creates it, but this is a fallback)
-      - name: Create GitHub Release
-        if: steps.check_release.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Release ${{ github.ref_name }}
-          generate_release_notes: true
-          draft: true
-          prerelease: false
-          body: |
-            ## 🚀 Release ${{ github.ref_name }}
-            
-            This release has been automatically deployed to production.
-            
-            ### Deployment Info
-            - **Version:** ${{ github.ref_name }}
-            - **Commit:** ${{ github.sha }}
-            - **Deployed at:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-            
-            ### Sites
-            - 🌐 [undevy.com](https://undevy.com)
-            - 🌐 [foxous.design](https://foxous.design)
-            
-            ### Release artifact
-            The production build artifact is attached to this release.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Update release if it exists
+      - name: Generate enhanced release notes
         if: steps.check_release.outputs.exists == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "📝 Updating existing release with additional info..."
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
           
-          # The release already exists (created by release-deploy.yml)
-          # We can add any additional processing here if needed
+          echo "📝 Generating enhanced release notes for ${TAG}..."
           
-          echo "✅ Release ${{ github.ref_name }} is ready"
+          # Get the previous tag for comparison
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${TAG}^ 2>/dev/null || echo "")
+          
+          if [ -n "$PREVIOUS_TAG" ]; then
+            echo "📊 Comparing with previous version: ${PREVIOUS_TAG}"
+            
+            # Generate commit list between versions
+            COMMITS=$(git log ${PREVIOUS_TAG}..${TAG} --pretty=format:"- %s (%an)" --no-merges)
+            
+            # Count different types of changes
+            FEAT_COUNT=$(echo "$COMMITS" | grep -c "^- feat" || true)
+            FIX_COUNT=$(echo "$COMMITS" | grep -c "^- fix" || true)
+            DOCS_COUNT=$(echo "$COMMITS" | grep -c "^- docs" || true)
+            
+            # Get current release body
+            CURRENT_BODY=$(gh release view "${TAG}" --repo "${REPO}" --json body -q .body)
+            
+            # Create enhanced notes
+            ENHANCED_NOTES="/tmp/enhanced_notes_${TAG}.md"
+            cat > "${ENHANCED_NOTES}" << EOF
+          ${CURRENT_BODY}
+          
+          ## 📊 Change Summary
+          
+          - 🎯 **Features:** ${FEAT_COUNT}
+          - 🐛 **Bug Fixes:** ${FIX_COUNT}
+          - 📚 **Documentation:** ${DOCS_COUNT}
+          
+          ## 📝 Commits since ${PREVIOUS_TAG}
+          
+          ${COMMITS}
+          
+          ## 🔗 Full Comparison
+          
+          [View all changes](https://github.com/${REPO}/compare/${PREVIOUS_TAG}...${TAG})
+          EOF
+            
+            # Update the release with enhanced notes
+            echo "📤 Updating release with enhanced notes..."
+            gh release edit "${TAG}" \
+              --repo "${REPO}" \
+              --notes-file "${ENHANCED_NOTES}"
+            
+            echo "✅ Release notes enhanced successfully!"
+          else
+            echo "ℹ️ No previous tag found, skipping enhancement"
+          fi
+      
+      - name: Add comparison link
+        if: steps.check_release.outputs.exists == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          
+          # Get PR information if this came from a PR
+          echo "🔍 Looking for associated pull requests..."
+          
+          # Find PRs that were merged for this release
+          PRS=$(gh pr list --repo "${REPO}" --state merged --limit 10 --json number,title,author --jq '.[] | "- #\(.number): \(.title) (@\(.author.login))"')
+          
+          if [ -n "$PRS" ]; then
+            echo "📝 Found merged PRs, adding to release notes..."
+            
+            # Get current release body
+            CURRENT_BODY=$(gh release view "${TAG}" --repo "${REPO}" --json body -q .body)
+            
+            # Create updated notes with PR section
+            UPDATED_NOTES="/tmp/updated_notes_${TAG}.md"
+            cat > "${UPDATED_NOTES}" << EOF
+          ${CURRENT_BODY}
+          
+          ## 🔀 Merged Pull Requests
+          
+          ${PRS}
+          EOF
+            
+            # Update the release
+            gh release edit "${TAG}" \
+              --repo "${REPO}" \
+              --notes-file "${UPDATED_NOTES}" || true
+          fi
+          
+          echo "✅ Release notes enhancement complete!"
+      
+      - name: Final status
+        run: |
+          echo "📋 Release Notes Enhancement Summary"
+          echo "===================================="
+          echo "Tag: ${{ github.ref_name }}"
+          echo ""
+          if [ "${{ steps.check_release.outputs.exists }}" == "true" ]; then
+            echo "✅ Successfully enhanced release notes"
+            echo "🔗 View release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+          else
+            echo "ℹ️ Release not found - likely still being created by release-deploy.yml"
+            echo "This is not an error - the main workflow handles release creation."
+          fi
