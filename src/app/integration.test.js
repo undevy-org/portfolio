@@ -1,5 +1,10 @@
 // src/app/integration.test.js
+// ----------------------------
 // Integration tests for complete user flows across multiple components
+// - Comments and code are in English (project artifact requirement)
+// - Expanded lucide-react mock to include icons used by AccessManager and other screens
+// - Restore global.fetch safely after each test by keeping originalFetch
+// - Use getAllByText for code/text assertions that appear in both desktop and mobile DOM blocks
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -40,7 +45,7 @@ jest.mock('wagmi', () => ({
   })
 }));
 
-// Mock lucide-react icons
+// Mock lucide-react icons — include icons used by AccessManager and other screens
 jest.mock('lucide-react', () => ({
   MessageSquare: () => <span>MessageSquare</span>,
   Wallet: () => <span>Wallet</span>,
@@ -51,7 +56,11 @@ jest.mock('lucide-react', () => ({
   ChevronDown: () => <span>ChevronDown</span>,
   ArrowLeft: () => <span>ArrowLeft</span>,
   Home: () => <span>Home</span>,
-  ExternalLink: () => <span>ExternalLink</span>
+  ExternalLink: () => <span>ExternalLink</span>,
+  // Icons used by AccessManager
+  Shield: () => <span>Shield</span>,
+  Key: () => <span>Key</span>,
+  Users: () => <span>Users</span>
 }));
 
 describe('Integration Tests: User Flows', () => {
@@ -123,7 +132,8 @@ describe('Integration Tests: User Flows', () => {
       const mockNavigate = jest.fn();
       const mockAddLog = jest.fn();
       const mockSetSessionData = jest.fn();
-      
+
+      const originalFetch = global.fetch;
       // Mock fetch for successful authentication
       global.fetch = jest.fn(() =>
         Promise.resolve({
@@ -184,15 +194,16 @@ describe('Integration Tests: User Flows', () => {
       expect(screen.getByText('Case Studies')).toBeInTheDocument();
       expect(screen.getByText('Contact')).toBeInTheDocument();
 
-      // Cleanup
-      global.fetch.mockRestore();
+      // Cleanup: restore original fetch
+      global.fetch = originalFetch;
     });
 
     it('should handle authentication failure gracefully', async () => {
       const mockNavigate = jest.fn();
       const mockAddLog = jest.fn();
       const mockSetAuthError = jest.fn();
-      
+
+      const originalFetch = global.fetch;
       // Mock fetch for failed authentication
       global.fetch = jest.fn(() =>
         Promise.resolve({
@@ -232,7 +243,7 @@ describe('Integration Tests: User Flows', () => {
       expect(mockNavigate).not.toHaveBeenCalled();
 
       // Cleanup
-      global.fetch.mockRestore();
+      global.fetch = originalFetch;
     });
   });
 
@@ -241,8 +252,8 @@ describe('Integration Tests: User Flows', () => {
       const mockNavigate = jest.fn();
       const mockAddLog = jest.fn();
       const mockSetSessionData = jest.fn();
-      const mockRouterPush = jest.fn();
-      
+
+      const originalFetch = global.fetch;
       // Mock fetch for successful master code authentication
       global.fetch = jest.fn(() =>
         Promise.resolve({
@@ -276,7 +287,7 @@ describe('Integration Tests: User Flows', () => {
       const submitButton = screen.getByRole('button', { name: /authenticate/i });
       fireEvent.click(submitButton);
 
-      // Wait for authentication to complete
+      // Wait for authentication to complete and navigation to AccessManager
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith('AccessManager', false);
       }, { timeout: 2000 });
@@ -300,18 +311,17 @@ describe('Integration Tests: User Flows', () => {
         </MockSessionProvider>
       );
 
-      // Verify AccessManager renders with code information
-      // Since ScreenWrapper is mocked, we need to check for the title differently
-      expect(screen.getByText('SYSTEM ACCESS CODES')).toBeInTheDocument();
-      expect(screen.getByText('LERUSIK')).toBeInTheDocument();
-      expect(screen.getByText('Master Key')).toBeInTheDocument();
-      expect(screen.getByText('0XDEFI2311')).toBeInTheDocument();
-      expect(screen.getByText('Web3 Login')).toBeInTheDocument();
-      expect(screen.getByText('CI_USER')).toBeInTheDocument();
-      expect(screen.getByText('CI/CD Test Runner')).toBeInTheDocument();
+      // Verify AccessManager renders with master section title and codes
+      expect(screen.getByText('Master Access')).toBeInTheDocument();
+      expect(screen.getAllByText('LERUSIK').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Master Key').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('0XDEFI2311').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Web3 Login').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('CI_USER').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('CI/CD Test Runner').length).toBeGreaterThan(0);
 
       // Cleanup
-      global.fetch.mockRestore();
+      global.fetch = originalFetch;
     });
 
     it('should navigate from AccessManager to MainHub when Proceed button is clicked', () => {
@@ -556,7 +566,8 @@ describe('Integration Tests: User Flows', () => {
       const mockNavigate = jest.fn();
       const mockAddLog = jest.fn();
       const mockSetAuthError = jest.fn();
-      
+
+      const originalFetch = global.fetch;
       // Mock fetch to throw network error
       global.fetch = jest.fn(() =>
         Promise.reject(new Error('Network error'))
@@ -593,7 +604,7 @@ describe('Integration Tests: User Flows', () => {
       expect(mockAddLog).toHaveBeenCalled();
 
       // Cleanup
-      global.fetch.mockRestore();
+      global.fetch = originalFetch;
     });
   });
 });

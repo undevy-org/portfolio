@@ -6,7 +6,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import SystemLog from '../components/SystemLog';
 import Button from '../components/ui/Button';
-import { Home, Copy, ExternalLink } from 'lucide-react';
+import { Home, ChevronRight, Shield, Key, Users } from 'lucide-react';
 
 export default function AccessManager() {
   const { sessionData, navigate, addLog, setSessionData } = useSession();
@@ -28,6 +28,8 @@ export default function AccessManager() {
 
   // Function to simulate access with a specific code
   const handleCodeClick = async (code) => {
+    if (!code) return; // Don't do anything for codes without value (like Demo Mode)
+    
     try {
       addLog(`ACCESS SIMULATION: Using code ${code}`);
       
@@ -63,89 +65,185 @@ export default function AccessManager() {
   const userCodes = sessionData?.codes?.user || [];
 
   return (
-    <ScreenWrapper 
-      title="SYSTEM ACCESS CODES" 
-      subtitle="Administrative Access Panel"
-      icon="🔐"
-    >
-      <div className="space-y-6">
-        {/* Master Code Section */}
-        <div className="terminal-section">
-          <h3 className="terminal-heading">MASTER ACCESS</h3>
-          <div className="terminal-divider"></div>
-          <div className="space-y-2">
+    <ScreenWrapper>
+      {/* Master Codes Section */}
+      {masterCodes.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="w-4 h-4 text-command" />
+            <h3 className="text-sm uppercase tracking-wider text-command">Master Access</h3>
+          </div>
+          <div className="space-y-3">
             {masterCodes.map((code, index) => (
-              <div key={index} className="terminal-grid grid-cols-3 gap-4">
-                <div className="font-mono font-bold text-command">{code.code}</div>
-                <div className="text-secondary">{code.label}</div>
-                <div className="text-tertiary text-sm">{code.description}</div>
+              <div
+                key={`master-${index}`}
+                className="w-full p-4 text-left border rounded transition-colors border-secondary bg-main"
+              >
+                <div className="hidden md:grid grid-cols-[auto,1fr] items-start w-full gap-x-3">
+                  <span className="mt-1 text-command">
+                    [M{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <div>
+                    <div className="text-lg font-mono text-success">
+                      {code.code}
+                    </div>
+                    <div className="text-sm opacity-80 text-secondary">
+                      {code.label}
+                    </div>
+                    <div className="text-xs mt-1 text-secondary">
+                      {code.description}
+                    </div>
+                  </div>
+                </div>
+                <div className="md:hidden">
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-mono text-success">
+                      {code.code}
+                    </span>
+                    <span className="mt-1 text-sm text-command">
+                      [M{String(index + 1).padStart(2, '0')}]
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm text-secondary">{code.label}</div>
+                  <div className="mt-1 text-xs text-secondary">
+                    {code.description}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Special Codes Section */}
-        <div className="terminal-section">
-          <h3 className="terminal-heading">SPECIAL CODES</h3>
-          <div className="terminal-divider"></div>
-          <div className="space-y-2">
+      {/* Special Codes Section */}
+      {specialCodes.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Key className="w-4 h-4 text-command" />
+            <h3 className="text-sm uppercase tracking-wider text-command">Special Access</h3>
+          </div>
+          <div className="space-y-3">
             {specialCodes.map((code, index) => (
-              <button 
-                key={index} 
+              <button
+                key={`special-${index}`}
                 onClick={() => handleCodeClick(code.code)}
-                className="terminal-grid grid-cols-3 gap-4 w-full text-left hover:bg-hover p-2 rounded transition-colors"
-                disabled={!code.code} // Disable demo mode entry which has null code
+                disabled={!code.code}
+                className={`w-full p-4 text-left border rounded transition-colors relative ${
+                  code.code 
+                    ? "border-secondary bg-hover hover:border-primary cursor-pointer" 
+                    : "border-secondary bg-main opacity-60 cursor-default"
+                }`}
               >
-                <div className="font-mono font-bold text-command flex items-center gap-2">
-                  {code.code || '[none]'}
-                  {code.code && <ExternalLink className="w-4 h-4" />}
+                <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
+                  <span className="mt-1 text-command">
+                    [S{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <div>
+                    <div className="text-lg font-mono text-command">
+                      {code.code || '[NO CODE REQUIRED]'}
+                    </div>
+                    <div className="text-sm opacity-80 text-secondary">
+                      {code.label}
+                    </div>
+                    <div className="text-xs mt-1 text-secondary">
+                      Type: {code.type} • {code.description}
+                    </div>
+                  </div>
+                  {code.code && <ChevronRight className="w-5 h-5 mt-1 text-secondary" />}
                 </div>
-                <div className="text-secondary">{code.label}</div>
-                <div className="text-tertiary text-sm">{code.description}</div>
+                <div className="md:hidden">
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-mono text-command">
+                      {code.code || '[NO CODE]'}
+                    </span>
+                    <span className="mt-1 text-sm text-command">
+                      [S{String(index + 1).padStart(2, '0')}]
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm text-secondary">{code.label}</div>
+                  <div className="mt-1 text-xs text-secondary">
+                    Type: {code.type} • {code.description}
+                  </div>
+                  {code.code && <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />}
+                </div>
               </button>
             ))}
           </div>
         </div>
+      )}
 
-        {/* User Codes Section */}
-        <div className="terminal-section">
-          <h3 className="terminal-heading">USER CODES</h3>
-          <div className="terminal-divider"></div>
-          <div className="space-y-2">
+      {/* User Codes Section */}
+      {userCodes.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="w-4 h-4 text-command" />
+            <h3 className="text-sm uppercase tracking-wider text-command">User Codes [{userCodes.length}]</h3>
+          </div>
+          <div className="space-y-3">
             {userCodes.map((code, index) => (
-              <button 
-                key={index} 
+              <button
+                key={`user-${index}`}
                 onClick={() => handleCodeClick(code.code)}
-                className="terminal-grid grid-cols-3 gap-4 w-full text-left hover:bg-hover p-2 rounded transition-colors"
+                className="w-full p-4 text-left border rounded transition-colors relative border-secondary bg-hover hover:border-primary"
               >
-                <div className="font-mono font-bold text-command flex items-center gap-2">
-                  {code.code}
-                  <ExternalLink className="w-4 h-4" />
+                <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
+                  <span className="mt-1 text-command">
+                    [{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <div>
+                    <div className="text-lg font-mono text-command">
+                      {code.code}
+                    </div>
+                    <div className="text-sm opacity-80 text-secondary">
+                      {code.label}
+                    </div>
+                    <div className="text-xs mt-1 text-secondary">
+                      {code.email && <span>{code.email}</span>}
+                      {code.email && code.telegram && <span> • </span>}
+                      {code.telegram && <span>{code.telegram}</span>}
+                      {!code.email && !code.telegram && <span>No contact info</span>}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
                 </div>
-                <div className="text-secondary">{code.label}</div>
-                <div className="text-tertiary text-sm">
-                  {code.email && `${code.email}`}
-                  {code.telegram && ` ${code.telegram}`}
+                <div className="md:hidden">
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-mono text-command">
+                      {code.code}
+                    </span>
+                    <span className="mt-1 text-sm text-command">
+                      [{String(index + 1).padStart(2, '0')}]
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm text-secondary">{code.label}</div>
+                  <div className="mt-1 text-xs text-secondary">
+                    {code.email && <span>{code.email}</span>}
+                    {code.email && code.telegram && <span> • </span>}
+                    {code.telegram && <span>{code.telegram}</span>}
+                    {!code.email && !code.telegram && <span>No contact info</span>}
+                  </div>
+                  <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
                 </div>
               </button>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Action Button */}
-        <div className="pt-4">
-          <Button 
-            onClick={handleProceed}
-            icon={Home}
-            className="w-full"
-          >
-            PROCEED TO MAIN HUB
-          </Button>
-        </div>
-
-        {/* System Log */}
-        <SystemLog />
+      {/* Action Buttons */}
+      <div className="flex mt-5 flex-col md:flex-row gap-3">
+        <Button
+          onClick={handleProceed}
+          icon={Home}
+          iconPosition="left"
+          variant="flex"
+        >
+          PROCEED TO MAIN HUB
+        </Button>
       </div>
+
+      {/* System Log */}
+      <SystemLog />
     </ScreenWrapper>
   );
 }
