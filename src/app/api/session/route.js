@@ -7,7 +7,15 @@ import { mergeSessionData } from '../../utils/session';
 
 // Helper function to extract user label from profile data
 function extractUserLabel(profileData) {
-  if (!profileData) return 'Unknown User';
+  // Prefer greeting_name if available
+  if (profileData?.profile?.greeting_name) {
+    return profileData.profile.greeting_name;
+  }
+
+  // Fallback to company name if available
+  if (profileData?.meta?.company) {
+    return profileData.meta.company;
+  }
   
   // Try to find a suitable name field
   return profileData.profileName || 

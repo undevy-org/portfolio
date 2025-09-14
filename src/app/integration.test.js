@@ -91,11 +91,11 @@ describe('Integration Tests: User Flows', () => {
   // Mock session data for master access
   const mockMasterSessionData = {
     isMasterAccess: true,
-    masterCode: 'LERUSIK',
+    masterCode: 'TEST_MASTER_CODE',
     codes: {
       master: [
         {
-          code: 'LERUSIK',
+          code: 'TEST_MASTER_CODE',
           label: 'Master Key',
           type: 'master',
           description: 'Provides full system access to all codes'
@@ -103,7 +103,7 @@ describe('Integration Tests: User Flows', () => {
       ],
       special: [
         {
-          code: '0XDEFI2311',
+          code: 'TEST_WEB3_CODE',
           label: 'Web3 Login',
           type: 'web3',
           description: 'Shared access code for Web3 authentication'
@@ -281,7 +281,7 @@ describe('Integration Tests: User Flows', () => {
 
       // Enter master code
       const codeInput = screen.getByPlaceholderText(/access code/i);
-      fireEvent.change(codeInput, { target: { value: 'LERUSIK' } });
+      fireEvent.change(codeInput, { target: { value: 'TEST_MASTER_CODE' } });
 
       // Submit the form
       const submitButton = screen.getByRole('button', { name: /authenticate/i });
@@ -293,8 +293,8 @@ describe('Integration Tests: User Flows', () => {
       }, { timeout: 2000 });
 
       // Verify logging
-      expect(mockAddLog).toHaveBeenCalledWith('ACCESS CODE: LERUSIK', 'info');
-      expect(mockAddLog).toHaveBeenCalledWith('MASTER ACCESS GRANTED: LERUSIK', 'info');
+      expect(mockAddLog).toHaveBeenCalledWith('ACCESS CODE: TEST_MASTER_CODE', 'info');
+      expect(mockAddLog).toHaveBeenCalledWith('MASTER ACCESS GRANTED: TEST_MASTER_CODE', 'info');
 
       // Simulate successful navigation to AccessManager
       rerender(
@@ -313,9 +313,9 @@ describe('Integration Tests: User Flows', () => {
 
       // Verify AccessManager renders with master section title and codes
       expect(screen.getByText('Master Access')).toBeInTheDocument();
-      expect(screen.getAllByText('LERUSIK').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('TEST_MASTER_CODE').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Master Key').length).toBeGreaterThan(0);
-      expect(screen.getAllByText('0XDEFI2311').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('TEST_WEB3_CODE').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Web3 Login').length).toBeGreaterThan(0);
       expect(screen.getAllByText('CI_USER').length).toBeGreaterThan(0);
       expect(screen.getAllByText('CI/CD Test Runner').length).toBeGreaterThan(0);
