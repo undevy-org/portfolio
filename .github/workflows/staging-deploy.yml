@@ -113,8 +113,8 @@ jobs:
             
             # Copy staging environment file
             echo "💾 Applying staging environment configuration..."
-            if [ -f "/home/undevy/shared/staging/.env" ]; then
-              cp "/home/undevy/shared/staging/.env" "$TEMP_PATH/.env"
+            if [ -f "${{ secrets.SHARED_ENV_PATH_STAGING }}/.env" ]; then
+              cp "${{ secrets.SHARED_ENV_PATH_STAGING }}/.env" "$TEMP_PATH/.env"
             else
               echo "⚠️ Warning: No staging .env file found, creating minimal config..."
               echo "NODE_ENV=development" > "$TEMP_PATH/.env"

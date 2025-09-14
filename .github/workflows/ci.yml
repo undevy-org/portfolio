@@ -135,6 +135,7 @@ jobs:
           PORTFOLIO_TITLE: ${{ secrets.PORTFOLIO_TITLE }}
           NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE: ${{ secrets.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE }}
           NEXT_PUBLIC_REOWN_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_REOWN_PROJECT_ID }}
+          MASTER_CODE: ${{ secrets.MASTER_CODE }}
         run: |
           echo "🏗️ Building project..."
           npm run build
