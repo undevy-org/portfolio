@@ -1,19 +1,16 @@
 // src/app/screens/AccessManager.test.js
 // ------------------------------------
-// Fully revised test for AccessManager — second iteration
+// Fully revised test for AccessManager (demo test adjusted to not rely on provider internals)
 // - Comments are in English (project artifact requirement)
 // - Tests handle the responsive DOM duplicate nodes (desktop + mobile)
 // - All state-updating user interactions are wrapped in act(...) to avoid React warnings
 // - addLog calls are asserted using robust matchers (second "level" arg may be present)
-// - Avoid relying on provider internals (don't require the passed mockSetSessionData to be called)
-//   because the test provider may manage session state internally; instead assert observable
-//   effects like navigation, fetch calls, and log messages.
 
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { MockSessionProvider } from '../../../test-utils/providers';
 import AccessManager from './AccessManager';
 
-// Mock Button component to avoid complexity in tests
+// Mock Button component to avoid complexity
 jest.mock('../components/ui/Button', () => {
   return function MockButton(props) {
     const { children, onClick } = props;
@@ -43,7 +40,7 @@ jest.mock('../components/SystemLog', () => {
   };
 });
 
-// Mock lucide-react icons used in the component
+// Mock ALL lucide-react icons used in the component
 jest.mock('lucide-react', () => ({
   Home: () => <div>Home Icon</div>,
   ChevronRight: () => <div>ChevronRight Icon</div>,
@@ -52,38 +49,10 @@ jest.mock('lucide-react', () => ({
   Users: () => <div>Users Icon</div>,
 }));
 
-// Mock fetch API globally
+// Mock fetch API
 global.fetch = jest.fn();
 
-// Helper to click a label (first occurrence) and wait for an async condition
-// - Many items are rendered twice in DOM (desktop + mobile blocks), so we use getAllByText()[0]
-// - Wrap the click in act(...) to avoid "not wrapped in act" warnings when the click triggers
-//   state updates inside the provider
-async function clickLabelAndWait(label, conditionCallback) {
-  const matches = screen.getAllByText(label);
-  if (!matches || matches.length === 0) {
-    throw new Error(`Label not found in DOM: ${label}`);
-  }
-
-  const labelEl = matches[0];
-  const btn = labelEl.closest('button');
-  expect(btn).toBeInTheDocument();
-
-  // Wrap the click in act so React state updates are properly flushed in tests
-  await act(async () => {
-    fireEvent.click(btn);
-  });
-
-  // If the caller provided a condition to wait for, use waitFor to wait for it
-  if (conditionCallback) {
-    await waitFor(conditionCallback, { timeout: 2000 });
-  }
-
-  return btn;
-}
-
 describe('AccessManager Screen', () => {
-  // Keep the mock session data similar to the real shapes used by the component
   const mockSessionData = {
     isMasterAccess: true,
     masterCode: 'LERUSIK',
@@ -132,6 +101,28 @@ describe('AccessManager Screen', () => {
     fetch.mockClear();
   });
 
+  // Helper to click a label (first occurrence) and wait for an async condition
+  async function clickLabelAndWait(label, conditionCallback) {
+    const matches = screen.getAllByText(label);
+    if (!matches || matches.length === 0) {
+      throw new Error(`Label not found in DOM: ${label}`);
+    }
+
+    const labelEl = matches[0];
+    const btn = labelEl.closest('button');
+    expect(btn).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(btn);
+    });
+
+    if (conditionCallback) {
+      await waitFor(conditionCallback, { timeout: 2000 });
+    }
+
+    return btn;
+  }
+
   test('renders AccessManager screen with all code sections', () => {
     render(
       <MockSessionProvider
@@ -147,13 +138,11 @@ describe('AccessManager Screen', () => {
       </MockSessionProvider>
     );
 
-    // Basic smoke checks
     expect(screen.getByTestId('screen-wrapper')).toBeInTheDocument();
     expect(screen.getByText('Master Access')).toBeInTheDocument();
     expect(screen.getByText('Special Access')).toBeInTheDocument();
     expect(screen.getByText(/User Codes \[2\]/)).toBeInTheDocument();
 
-    // The component renders each code in desktop + mobile blocks, therefore multiple matches
     expect(screen.getAllByText('LERUSIK').length).toBeGreaterThan(0);
     expect(screen.getAllByText('0XDEFI2311').length).toBeGreaterThan(0);
     expect(screen.getAllByText('CI_USER').length).toBeGreaterThan(0);
@@ -238,7 +227,6 @@ describe('AccessManager Screen', () => {
     const mockSetSessionData = jest.fn();
     const mockAddLog = jest.fn();
 
-    // Mock successful authentication response
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -261,13 +249,13 @@ describe('AccessManager Screen', () => {
       </MockSessionProvider>
     );
 
-    // Click the first occurrence of the label and wait for navigation to ProfileBoot
     await clickLabelAndWait('0XDEFI2311', () => expect(mockNavigate).toHaveBeenCalledWith('ProfileBoot', false));
 
-    // Assert that logging was called (we accept any second argument for log level)
-    expect(mockAddLog).toHaveBeenCalledWith('ACCESS SIMULATION: Using code 0XDEFI2311', expect.any(String));
+    expect(mockAddLog).toHaveBeenCalledWith(
+      'ACCESS SIMULATION: Using code 0XDEFI2311',
+      expect.any(String)
+    );
 
-    // Ensure the API was invoked and navigation occurred
     expect(fetch).toHaveBeenCalledWith('/api/session?code=0XDEFI2311');
     expect(mockNavigate).toHaveBeenCalledWith('ProfileBoot', false);
   });
@@ -277,7 +265,6 @@ describe('AccessManager Screen', () => {
     const mockSetSessionData = jest.fn();
     const mockAddLog = jest.fn();
 
-    // Mock successful authentication response
     fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -300,42 +287,66 @@ describe('AccessManager Screen', () => {
       </MockSessionProvider>
     );
 
-    // Click label and wait for navigation to ProfileBoot
     await clickLabelAndWait('CI_USER', () => expect(mockNavigate).toHaveBeenCalledWith('ProfileBoot', false));
 
-    // We assert logging and fetch; we do not rely on provider's setSessionData being called
     expect(mockAddLog).toHaveBeenCalledWith('ACCESS SIMULATION: Using code CI_USER', expect.any(String));
     expect(fetch).toHaveBeenCalledWith('/api/session?code=CI_USER');
     expect(mockNavigate).toHaveBeenCalledWith('ProfileBoot', false);
   });
 
-  test('disables demo mode entry which has null code', () => {
+  // Updated demo test: do not assume provider calls external setSessionData
+  test('demo mode button is enabled and triggers demo flow', async () => {
+    const mockNavigate = jest.fn();
+    const mockSetSessionData = jest.fn();
+    const mockAddLog = jest.fn();
+
+    // Mock demo fetch response (no code param)
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        meta: { company: 'Demo Company' },
+        profile: { name: 'Demo User' }
+      })
+    });
+
     render(
       <MockSessionProvider
         sessionData={mockSessionData}
         isAuthenticated={true}
         currentScreen="AccessManager"
-        navigate={jest.fn()}
-        addLog={jest.fn()}
-        setSessionData={jest.fn()}
+        navigate={mockNavigate}
+        addLog={mockAddLog}
+        setSessionData={mockSetSessionData}
         logEntries={[]}
       >
         <AccessManager />
       </MockSessionProvider>
     );
 
-    // Demo mode shows a different label on mobile vs desktop; pick the desktop label first
     const demoLabel = screen.getAllByText('[NO CODE REQUIRED]')[0];
     const demoButton = demoLabel.closest('button');
 
     expect(demoButton).toBeInTheDocument();
-    expect(demoButton).toBeDisabled();
+    expect(demoButton).not.toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(demoButton);
+    });
+
+    // Wait for observable effects: fetch called and navigation to ProfileBoot
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith('/api/session');
+      expect(mockNavigate).toHaveBeenCalledWith('ProfileBoot', false);
+    }, { timeout: 2000 });
+
+    // Assert logs: started demo and granted demo access
+    expect(mockAddLog).toHaveBeenCalledWith('DEMO MODE ACTIVATED', expect.any(String));
+    expect(mockAddLog).toHaveBeenCalledWith('DEMO ACCESS GRANTED', expect.any(String));
   });
 
   test('handles authentication error gracefully', async () => {
     const mockAddLog = jest.fn();
 
-    // Mock failed authentication response
     fetch.mockResolvedValueOnce({
       ok: false,
       json: async () => ({ error: 'Invalid access code' })
@@ -355,10 +366,13 @@ describe('AccessManager Screen', () => {
       </MockSessionProvider>
     );
 
-    // Click and wait for the denial log
-    await clickLabelAndWait('CI_USER', () =>
-      expect(mockAddLog).toHaveBeenCalledWith('ACCESS DENIED: Invalid access code', expect.any(String))
-    );
+    const userLabel = screen.getAllByText('CI_USER')[0];
+    const userButton = userLabel.closest('button');
+    fireEvent.click(userButton);
+
+    await screen.findByTestId('screen-wrapper');
+
+    expect(mockAddLog).toHaveBeenCalledWith('ACCESS DENIED: Invalid access code', expect.any(String));
   });
 
   test('displays contact information for user codes', () => {
@@ -384,7 +398,6 @@ describe('AccessManager Screen', () => {
   test('handles network error during authentication', async () => {
     const mockAddLog = jest.fn();
 
-    // Mock network error
     fetch.mockRejectedValueOnce(new Error('Network error'));
 
     render(
@@ -401,9 +414,12 @@ describe('AccessManager Screen', () => {
       </MockSessionProvider>
     );
 
-    // Click and wait for the error log
-    await clickLabelAndWait('CI_USER', () =>
-      expect(mockAddLog).toHaveBeenCalledWith('ACCESS ERROR: Network error', expect.any(String))
-    );
+    const userLabel = screen.getAllByText('CI_USER')[0];
+    const userButton = userLabel.closest('button');
+    fireEvent.click(userButton);
+
+    await screen.findByTestId('screen-wrapper');
+
+    expect(mockAddLog).toHaveBeenCalledWith('ACCESS ERROR: Network error', expect.any(String));
   });
 });

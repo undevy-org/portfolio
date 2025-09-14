@@ -4,7 +4,6 @@
 import { useEffect } from 'react';
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
-import SystemLog from '../components/SystemLog';
 import Button from '../components/ui/Button';
 import { Home, ChevronRight, Shield, Key, Users } from 'lucide-react';
 
@@ -27,10 +26,29 @@ export default function AccessManager() {
   };
 
   // Function to simulate access with a specific code
-  const handleCodeClick = async (code) => {
-    if (!code) return; // Don't do anything for codes without value (like Demo Mode)
-    
+  const handleCodeClick = async (code, isDemo = false) => {
     try {
+      
+      // Handle demo access
+      if (isDemo) {
+        addLog(`DEMO MODE ACTIVATED`);
+        
+        // Simulate fetching demo session data
+        const response = await fetch(`/api/session`);
+        
+        if (response.ok) {
+          const demoData = await response.json();
+          setSessionData(demoData);
+          addLog(`DEMO ACCESS GRANTED`);
+          navigate('ProfileBoot', false);
+        } else {
+          addLog(`DEMO ACCESS FAILED`);
+        }
+        return;
+      }
+      
+      if (!code) return;
+      
       addLog(`ACCESS SIMULATION: Using code ${code}`);
       
       // Make API call to authenticate with this code
@@ -52,7 +70,7 @@ export default function AccessManager() {
         navigate('ProfileBoot', false);
       } else {
         const errorData = await response.json();
-        addLog(`ACCESS DENIED: ${errorData.error || 'Invalid code'}`);
+        addLog(`ACCESS DENIED: ${errorData.error || 'Invalid access code'}`);
       }
     } catch (error) {
       addLog(`ACCESS ERROR: ${error.message}`);
@@ -62,8 +80,16 @@ export default function AccessManager() {
   // Extract codes from session data
   const masterCodes = sessionData?.codes?.master || [];
   const specialCodes = sessionData?.codes?.special || [];
-  const userCodes = sessionData?.codes?.user || [];
+  const rawUserCodes = sessionData?.codes?.user || [];
+  
+  // Filter out special codes from user codes to avoid duplication
+  const specialCodeValues = specialCodes
+    .filter(code => code.code)
+    .map(code => code.code);
 
+  const userCodes = rawUserCodes.filter(
+    userCode => !specialCodeValues.includes(userCode.code)
+  );
   return (
     <ScreenWrapper>
       {/* Master Codes Section */}
@@ -75,16 +101,17 @@ export default function AccessManager() {
           </div>
           <div className="space-y-3">
             {masterCodes.map((code, index) => (
-              <div
+              <button
                 key={`master-${index}`}
-                className="w-full p-4 text-left border rounded transition-colors border-secondary bg-main"
+                onClick={() => handleCodeClick(code.code)}
+                className="w-full p-4 text-left border rounded transition-colors relative border-secondary bg-hover hover:border-primary cursor-pointer"
               >
-                <div className="hidden md:grid grid-cols-[auto,1fr] items-start w-full gap-x-3">
+                <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
                   <span className="mt-1 text-command">
                     [M{String(index + 1).padStart(2, '0')}]
                   </span>
                   <div>
-                    <div className="text-lg font-mono text-success">
+                    <div className="text-lg font-mono text-command">
                       {code.code}
                     </div>
                     <div className="text-sm opacity-80 text-secondary">
@@ -94,10 +121,11 @@ export default function AccessManager() {
                       {code.description}
                     </div>
                   </div>
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
                 </div>
                 <div className="md:hidden">
                   <div className="flex justify-between items-start">
-                    <span className="text-lg font-mono text-success">
+                    <span className="text-lg font-mono text-command">
                       {code.code}
                     </span>
                     <span className="mt-1 text-sm text-command">
@@ -108,8 +136,9 @@ export default function AccessManager() {
                   <div className="mt-1 text-xs text-secondary">
                     {code.description}
                   </div>
+                  <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -126,10 +155,16 @@ export default function AccessManager() {
             {specialCodes.map((code, index) => (
               <button
                 key={`special-${index}`}
-                onClick={() => handleCodeClick(code.code)}
-                disabled={!code.code}
+                onClick={() => {
+                  if (code.type === 'demo' && !code.code) {
+                    handleCodeClick(null, true); 
+                  } else if (code.code) {
+                    handleCodeClick(code.code);
+                  }
+                }}
+                disabled={false} 
                 className={`w-full p-4 text-left border rounded transition-colors relative ${
-                  code.code 
+                  code.code || code.type === 'demo'
                     ? "border-secondary bg-hover hover:border-primary cursor-pointer" 
                     : "border-secondary bg-main opacity-60 cursor-default"
                 }`}
@@ -149,7 +184,7 @@ export default function AccessManager() {
                       Type: {code.type} • {code.description}
                     </div>
                   </div>
-                  {code.code && <ChevronRight className="w-5 h-5 mt-1 text-secondary" />}
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
                 </div>
                 <div className="md:hidden">
                   <div className="flex justify-between items-start">
@@ -164,7 +199,7 @@ export default function AccessManager() {
                   <div className="mt-1 text-xs text-secondary">
                     Type: {code.type} • {code.description}
                   </div>
-                  {code.code && <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />}
+                  <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
                 </div>
               </button>
             ))}
@@ -241,9 +276,6 @@ export default function AccessManager() {
           PROCEED TO MAIN HUB
         </Button>
       </div>
-
-      {/* System Log */}
-      <SystemLog />
     </ScreenWrapper>
   );
 }
