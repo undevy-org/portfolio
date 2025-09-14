@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.0.1](https://github.com/undevy-org/portfolio/compare/v6.0.0...v6.0.1) (2025-09-14)
+
+
+### CI/CD
+
+* **release:** wait for GH Release and upload artifact via gh; avoid duplicate create ([#98](https://github.com/undevy-org/portfolio/issues/98)) ([5bce4b9](https://github.com/undevy-org/portfolio/commit/5bce4b951cae2c1f42e18daec96fc53ea48811ca))
+
 ## [6.0.0](https://github.com/undevy-org/portfolio/compare/v5.4.2...v6.0.0) (2025-09-14)
 
 ### Added
