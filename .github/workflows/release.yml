@@ -10,6 +10,15 @@ on:
     tags:
       - 'v*.*.*'
 
+# Prevent concurrent runs for the same tag -> avoid races
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+# Need write permissions to upload release assets / create fallback release if necessary
+permissions:
+  contents: write
+
 jobs:
   release-notes:
     name: Generate Release Notes
