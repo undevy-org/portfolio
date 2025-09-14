@@ -7,48 +7,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0](https://github.com/undevy-org/portfolio/compare/v5.4.2...v6.0.0) (2025-09-14)
 
-
-### Changed
-
-* **deps:** bump next from 15.4.3 to 15.4.7 ([#85](https://github.com/undevy-org/portfolio/issues/85)) ([317c146](https://github.com/undevy-org/portfolio/commit/317c146e233a2d9823c835a92d2cd11a14c5a648))
-
-
-### Documentation
-
-* update README, SETUP, and TESTING guides ([#90](https://github.com/undevy-org/portfolio/issues/90)) ([378710e](https://github.com/undevy-org/portfolio/commit/378710e6905fb3147f022d86e980c39b462d8afb))
-
-
 ### Added
 
-* add master code access management system ([#95](https://github.com/undevy-org/portfolio/issues/95)) ([b092e63](https://github.com/undevy-org/portfolio/commit/b092e638f0976809bb5c5e0598c69db9e4f0a802))
-* **web3:** Improve Web3 authentication and session management ([#91](https://github.com/undevy-org/portfolio/issues/91)) ([40cf665](https://github.com/undevy-org/portfolio/commit/40cf665112ba4eb5d66971980fe42af37c7ffc07))
+- **Master Code Access**
+  - Add `MASTER_CODE` environment variable and master authentication to session API.
+  - New `AccessManager` screen to view and inspect available access codes.
+  - Entry screen navigation updates to support master access flows.
+  - Comprehensive tests and documentation added for master access management.
 
+- **Automatic theme selection** (PR #93)
+  - Add `getRandomThemeByIntent` helper to select random themes by intent.
+  - Add `getSystemPreference` helper and `systemPreference` state to detect OS color-scheme.
+  - Track manual choice with `isThemeManuallySet`; provide `resetToAutoTheme`.
+  - Implement automatic theme selection on first visit; visual indicators added (🔄 auto / 🔒 manual).
+  - Real-time system theme change detection (media query listener) with proper cleanup and legacy API support.
+  - Removed incorrect Web3 cleanup accidentally added to theme initialization.
+
+- **Entry screen code autofill** (PR #86)
+  - Add code auto-fill flow for the entry screen.
+  - Add `logoutInProgress` state to prevent re-authentication to demo mode during logout.
+
+### Improved
+
+- **Web3 authentication & session management** (PR #91)
+  - Stale/leftover wallet connections are automatically cleaned up on entry load to avoid 'already connected' errors.
+  - Logout now reliably clears all Web3-related storage (localStorage/sessionStorage) for WalletConnect, Wagmi, etc.
+  - Auto-login now correctly triggers if a wallet is already connected in the browser.
+  - `Web3Manager` disconnects on component unmount to avoid dangling connections.
+  - `useWeb3State` improved to force-clear corrupted connection data and reload when necessary.
+  - UI: 'WEB3 LOGIN' button provides clearer statuses: 'LOADING WEB3...' / 'CONNECTING...'.
+  - Jest tests for Web3 were overhauled with more robust mocks and async handling.
 
 ### Fixed
 
-* add MASTER_CODE to build environment variables ([#96](https://github.com/undevy-org/portfolio/issues/96)) ([52ccfd1](https://github.com/undevy-org/portfolio/commit/52ccfd1fce211e0ef9e405fa55d1ca0579982723))
-* configure Next.js image optimization for external static assets ([#82](https://github.com/undevy-org/portfolio/issues/82)) ([f904fdd](https://github.com/undevy-org/portfolio/commit/f904fdd373ae3e4c35334d678117fe2f66322572))
-* resolve demo mode auto-login after logout and improve auto-fill animation ([#87](https://github.com/undevy-org/portfolio/issues/87)) ([e8070a8](https://github.com/undevy-org/portfolio/commit/e8070a883b442212d682c108d53d0fa87e7e859c))
-* resolve demo mode auto-login after logout and improve auto-fill animation ([#88](https://github.com/undevy-org/portfolio/issues/88)) ([179d161](https://github.com/undevy-org/portfolio/commit/179d1614d0b75d9b91e50bdbecb40e9430b1a607))
-* resolve Web3 configuration and session persistence issues ([#92](https://github.com/undevy-org/portfolio/issues/92)) ([40e1e6c](https://github.com/undevy-org/portfolio/commit/40e1e6c85031710c0b9e66a9ec821202586350ed))
-* resolve Web3 module loading issues on stage ([#94](https://github.com/undevy-org/portfolio/issues/94)) ([bc84aaa](https://github.com/undevy-org/portfolio/commit/bc84aaaf69f83bd55367ceab40100b04fed64f1c))
+- **Resolve Web3 module loading issues on stage** (PR #94)
+  - Add `NEXT_PUBLIC_REOWN_PROJECT_ID` to CI/CD workflows.
+  - Temporary Project ID fallback added (to be removed after secret is available).
+  - Add debounce protection for Web3 button double-clicks.
 
-### [5.4.3](https://github.com/undevy-org/portfolio/compare/v5.4.2...v5.4.3) (2025-09-03)
+- **Resolve Web3 configuration & session persistence issues** (PR #92)
+  - Add `NEXT_PUBLIC_REOWN_PROJECT_ID` to `.env.local` and update `.env.example`.
+  - Remove insecure hardcoded Project ID fallback.
+  - Add `Web3CleanupManager` to disconnect wallet on tab close.
+  - Add proper error handling when Project ID is missing.
 
+- **Fix demo-mode auto-login & autofill animation memory leaks** (PR #88 / #87)
+  - Separate session-check from demo-mode logic in API route (explicit check parameter).
+  - Fix memory leaks in animation timers with centralized cleanup.
+  - Add logout state tracking to prevent animation/auth during logout.
+  - Improve demo-mode button to use URL navigation instead of duplicate logic.
 
-### Added
+- **Static assets / Next.js image optimization fixes** (PR #83 / #82)
+  - Configure `remotePatterns` for Next.js Image optimization across production and staging domains.
+  - Update CI/CD to avoid `public/images` duplication.
+  - Images served by Nginx in production; local dev helper script added.
 
-* implement auto-fill animation for Entry screen ([#82](https://github.com/undevy-org/portfolio/issues/82)) ([0a0b0c0](https://github.com/undevy-org/portfolio/commit/0a0b0c0d0e0f0a0b0c0d0e0f0a0b0c0d0e0f0a0b))
+- **Contact data fallback & Web3 modal z-index** (uncommitted)
+  - Fix Contact component to avoid falling back to `example.com` when data missing.
+  - Add z-index overrides so Web3/Reown modal appears above terminal texture.
+  - Synchronize environment variable names between client and server.
 
-Auto-fill feature for Entry screen:
-- Users arriving with a `code` parameter in the URL now see the Entry screen with an animation
-- The access code is automatically typed into the input field with a realistic typing animation
-- After typing, the Authenticate button is automatically clicked
-- During the animation, all action buttons except theme switcher are disabled
-- Theme switching remains functional during the animation
-- The animation is visually appealing with appropriate visual feedback
-- Proper cleanup prevents memory leaks during animation or component unmounting
-- Graceful error handling for invalid codes
+### Changed / Chore / Performance
+
+- **Dependency bump** (PR #85)
+  - Bump `next` from `15.4.3` to `15.4.7`.
+
+- **Performance / lazy-loading fixes** (PR #89 - squash)
+  - Apply changes from `perf/web3-lazy-loading-fix` (rebased on latest main).
+
+### Documentation
+
+- **Docs** (PR #90)
+  - Update `README`, `SETUP`, and `TESTING` guides to reflect configuration and new flows.
+
+### Tests
+- Web3 test suite improved with robust mocks and proper async handling (PR #91).
+- Master-code feature includes tests (uncommitted).
 
 ### [5.4.2](https://github.com/undevy-org/portfolio/compare/v5.4.1...v5.4.2) (2025-09-01)
 
