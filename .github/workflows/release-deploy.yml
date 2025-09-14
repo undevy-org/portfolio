@@ -1,6 +1,7 @@
 # Production Release Deployment Pipeline
 # Location: .github/workflows/release-deploy.yml
 # Purpose: Deploy to production when a version tag is pushed (v*.*.*)
+# This is the PRIMARY workflow for releases - handles everything end-to-end
 
 name: Deploy Production Release
 
@@ -14,7 +15,7 @@ concurrency:
   group: release-${{ github.ref_name }}
   cancel-in-progress: false
 
-# Need write permissions to upload release assets / create fallback release if necessary
+# Need write permissions to upload release assets and create releases
 permissions:
   contents: write
 
@@ -29,13 +30,12 @@ jobs:
           echo "🏷️ Production Release Deployment"
           echo "Tag: ${{ github.ref_name }}"
           echo "Commit: ${{ github.sha }}"
-          # CHANGE: Using secrets for domain names instead of hardcoding
           echo "Target: ${{ secrets.PRODUCTION_DOMAIN_1 }} / ${{ secrets.PRODUCTION_DOMAIN_2 }}"
       
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0  # Need full history for changelog
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -56,7 +56,7 @@ jobs:
           NEXT_PUBLIC_REOWN_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_REOWN_PROJECT_ID }}
           MASTER_CODE: ${{ secrets.MASTER_CODE }}
         run: |
-          echo "🗏 Building production release ${{ github.ref_name }}..."
+          echo "🏗 Building production release ${{ github.ref_name }}..."
           
           # Clean build for production
           rm -rf .next
@@ -107,58 +107,70 @@ jobs:
           echo "✅ Release package created"
           echo "📊 Package size: $(du -h portfolio-release-${{ github.ref_name }}.tar.gz | cut -f1)"
       
-      - name: Ensure gh (GitHub CLI) is available
-        run: |
-          if command -v gh >/dev/null 2>&1; then
-            echo "gh already installed"
-            gh --version
-          else
-            echo "Installing GitHub CLI..."
-            sudo apt-get update
-            sudo apt-get install -y gh
-            gh --version
-          fi
-
-      - name: Wait for GitHub Release to exist (or create minimal fallback)
+      - name: Create GitHub Release with artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.ref_name }}"
           REPO="${{ github.repository }}"
-          echo "Waiting up to 60s for GitHub Release ${TAG} to exist..."
-          for i in $(seq 1 12); do
+          ARTIFACT="portfolio-release-${TAG}.tar.gz"
+          
+          echo "📝 Creating GitHub Release for ${TAG}..."
+          
+          # Check if release already exists (shouldn't happen with our concurrency control)
             if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
-              echo "✅ Release ${TAG} exists."
-              exit 0
-            fi
-            sleep 5
-          done
-
-          echo "⚠️ Release not found after waiting — creating a minimal fallback release..."
-          TMP_NOTE="/tmp/release_note_${TAG}.txt"
-          echo "Automated release placeholder for ${TAG} created by release-deploy.yml at $(date -u)" > "$TMP_NOTE"
-          # Create minimal release if it still doesn't exist (if another job created it concurrently, this may harmlessly fail)
-          gh release create "${TAG}" --repo "${REPO}" --title "Release ${TAG}" --notes-file "$TMP_NOTE" || echo "⚠️ Could not create fallback release (it may have appeared concurrently)."
-
-      - name: Upload artifact to GitHub Release (gh)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG="${{ github.ref_name }}"
-          REPO="${{ github.repository }}"
-          ART="portfolio-release-${TAG}.tar.gz"
-          if [ ! -f "${ART}" ]; then
-            echo "❌ Artifact ${ART} not found"
-            ls -la || true
-            exit 1
+            echo "⚠️ Release ${TAG} already exists. Deleting it to recreate..."
+            gh release delete "${TAG}" --repo "${REPO}" --yes || true
+            sleep 2
           fi
-          echo "Uploading ${ART} to release ${TAG} (clobber if exists)..."
-          gh release upload "${TAG}" "${ART}" --repo "${REPO}" --clobber
-          echo "✅ Artifact uploaded to GitHub Release"
-
-          echo "📢 Publishing release..."
-          gh release edit "${TAG}" --repo "${REPO}" --draft=false
-          echo "✅ Release published"
+          
+          # Extract changelog for this version if CHANGELOG.md exists
+          RELEASE_NOTES=""
+          if [ -f "CHANGELOG.md" ]; then
+            echo "📖 Extracting changelog for ${TAG}..."
+            # Try to extract the section for this version from CHANGELOG.md
+            # This is a simple extraction - adjust based on your CHANGELOG format
+            RELEASE_NOTES=$(awk "/## \[?${TAG#v}/,/## \[?[0-9]/" CHANGELOG.md | head -n -2) || true
+          fi
+          
+          # Create release notes file
+          NOTES_FILE="/tmp/release_notes_${TAG}.md"
+          cat > "${NOTES_FILE}" << EOF
+          ## 🚀 Release ${TAG}
+          
+          This release has been automatically built and deployed to production.
+          
+          ### Deployment Info
+          - **Version:** ${TAG}
+          - **Commit:** ${{ github.sha }}
+          - **Deployed at:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          ### Sites
+          - 🌐 [${{ secrets.PRODUCTION_DOMAIN_1 }}](https://${{ secrets.PRODUCTION_DOMAIN_1 }})
+          - 🌐 [${{ secrets.PRODUCTION_DOMAIN_2 }}](https://${{ secrets.PRODUCTION_DOMAIN_2 }})
+          
+          ${RELEASE_NOTES}
+          
+          ### Release Artifact
+          The production build artifact is attached below.
+          EOF
+          
+          # Create the release as DRAFT first
+          echo "📝 Creating draft release..."
+          gh release create "${TAG}" \
+            --repo "${REPO}" \
+            --title "Release ${TAG}" \
+            --notes-file "${NOTES_FILE}" \
+            --draft
+          
+          # Upload the artifact
+          echo "📤 Uploading release artifact..."
+          gh release upload "${TAG}" \
+            "${ARTIFACT}" \
+            --repo "${REPO}" \
+            --clobber
+          
+          echo "✅ Release created with artifact"
       
       - name: Transfer release to server
         env:
@@ -300,7 +312,6 @@ jobs:
             echo ""
             echo "🎉 Release $RELEASE_TAG is now live!"
             echo "🌐 Sites:"
-            # CHANGE: Using secrets for domain names instead of hardcoding
             echo "  - https://${{ secrets.PRODUCTION_DOMAIN_1 }}"
             echo "  - https://${{ secrets.PRODUCTION_DOMAIN_2 }}"
             if [ -n "$PREVIOUS_VERSION" ]; then
@@ -310,6 +321,22 @@ jobs:
               echo "  pm2 restart $PM2_APP"
             fi
       
+      - name: Publish GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          
+          echo "📢 Publishing release ${TAG}..."
+          
+          # Publish the release (make it visible to everyone)
+          gh release edit "${TAG}" \
+            --repo "${REPO}" \
+            --draft=false
+          
+          echo "✅ Release ${TAG} published successfully!"
+      
       - name: Production deployment summary
         run: |
           echo "🎉 PRODUCTION RELEASE DEPLOYED!"
@@ -318,9 +345,9 @@ jobs:
           echo "Commit: ${{ github.sha }}"
           echo ""
           echo "Production sites updated:"
-          # CHANGE: Using secrets for domain names instead of hardcoding
           echo "  🌐 https://${{ secrets.PRODUCTION_DOMAIN_1 }}"
           echo "  🌐 https://${{ secrets.PRODUCTION_DOMAIN_2 }}"
           echo ""
+          echo "GitHub Release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
           echo "Release artifact permanently stored in GitHub Releases"
           echo "Blue-green deployment completed with rollback capability"
