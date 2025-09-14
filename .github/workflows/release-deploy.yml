@@ -9,6 +9,15 @@ on:
     tags:
       - 'v*.*.*'
 
+# Prevent concurrent runs for the same tag -> avoid races
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+# Need write permissions to upload release assets / create fallback release if necessary
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy-production:
     name: Build and Deploy to Production
@@ -98,14 +107,64 @@ jobs:
           echo "✅ Release package created"
           echo "📊 Package size: $(du -h portfolio-release-${{ github.ref_name }}.tar.gz | cut -f1)"
       
-      - name: Upload release artifact to GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: portfolio-release-${{ github.ref_name }}.tar.gz
-          name: Release ${{ github.ref_name }}
-          generate_release_notes: true
+      # --- REPLACED: use gh CLI to avoid racing with release.yml (creates release if absent, uploads artifact) ---
+      - name: Ensure gh (GitHub CLI) is available
+        run: |
+          if command -v gh >/dev/null 2>&1; then
+            echo "gh already installed"
+            gh --version
+          else
+            echo "Installing GitHub CLI..."
+            sudo apt-get update
+            sudo apt-get install -y gh
+            gh --version
+          fi
+
+      - name: Authenticate gh with GITHUB_TOKEN
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # gh reads token from stdin with --with-token
+          echo "${GITHUB_TOKEN}" | gh auth login --with-token
+          gh auth status --show-token || true
+
+      - name: Wait for GitHub Release to exist (or create minimal fallback)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          echo "Waiting up to 60s for GitHub Release ${TAG} to exist..."
+          for i in $(seq 1 12); do
+            if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
+              echo "✅ Release ${TAG} exists."
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "⚠️ Release not found after waiting — creating a minimal fallback release..."
+          TMP_NOTE="/tmp/release_note_${TAG}.txt"
+          echo "Automated release placeholder for ${TAG} created by release-deploy.yml at $(date -u)" > "$TMP_NOTE"
+          # Create minimal release if it still doesn't exist (if another job created it concurrently, this may harmlessly fail)
+          gh release create "${TAG}" --repo "${REPO}" --title "Release ${TAG}" --notes-file "$TMP_NOTE" || echo "⚠️ Could not create fallback release (it may have appeared concurrently)."
+
+      - name: Upload artifact to GitHub Release (gh)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          ART="portfolio-release-${TAG}.tar.gz"
+          if [ ! -f "${ART}" ]; then
+            echo "❌ Artifact ${ART} not found"
+            ls -la || true
+            exit 1
+          fi
+          echo "Uploading ${ART} to release ${TAG} (clobber if exists)..."
+          gh release upload "${TAG}" "${ART}" --repo "${REPO}" --clobber
+          echo "✅ Artifact uploaded to GitHub Release"
+      # --- END REPLACED SECTION ---
       
       - name: Transfer release to server
         env:
