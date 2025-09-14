@@ -107,7 +107,6 @@ jobs:
           echo "✅ Release package created"
           echo "📊 Package size: $(du -h portfolio-release-${{ github.ref_name }}.tar.gz | cut -f1)"
       
-      # --- REPLACED: use gh CLI to avoid racing with release.yml (creates release if absent, uploads artifact) ---
       - name: Ensure gh (GitHub CLI) is available
         run: |
           if command -v gh >/dev/null 2>&1; then
@@ -119,14 +118,6 @@ jobs:
             sudo apt-get install -y gh
             gh --version
           fi
-
-      - name: Authenticate gh with GITHUB_TOKEN
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # gh reads token from stdin with --with-token
-          echo "${GITHUB_TOKEN}" | gh auth login --with-token
-          gh auth status --show-token || true
 
       - name: Wait for GitHub Release to exist (or create minimal fallback)
         env:
