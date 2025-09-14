@@ -55,7 +55,7 @@ jobs:
         with:
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
-          draft: false
+          draft: true
           prerelease: false
           body: |
             ## 🚀 Release ${{ github.ref_name }}

@@ -155,7 +155,10 @@ jobs:
           echo "Uploading ${ART} to release ${TAG} (clobber if exists)..."
           gh release upload "${TAG}" "${ART}" --repo "${REPO}" --clobber
           echo "✅ Artifact uploaded to GitHub Release"
-      # --- END REPLACED SECTION ---
+
+          echo "📢 Publishing release..."
+          gh release edit "${TAG}" --repo "${REPO}" --draft=false
+          echo "✅ Release published"
       
       - name: Transfer release to server
         env:
