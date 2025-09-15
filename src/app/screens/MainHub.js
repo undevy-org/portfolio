@@ -27,7 +27,7 @@ export default function MainHub() {
             </span>
             
             <div className="flex-1">
-              <CommandTitle text={item.label} level="div" className="text-base" />
+              <CommandTitle text={item.label} level="h3" className="text-base" />
               <div className="text-xs mt-1 text-secondary">
                 {item.desc}
               </div>

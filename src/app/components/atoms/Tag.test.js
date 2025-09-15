@@ -27,4 +27,16 @@ describe('Tag', () => {
     const tag = screen.getByText('Test Tag');
     expect(tag).toHaveClass('custom-class');
   });
+
+  test('renders with status variant', () => {
+    render(<Tag text="Test Tag" status="success" />);
+    const tag = screen.getByText('Test Tag');
+    expect(tag).toHaveClass('border-success', 'text-success');
+  });
+
+  test('renders with tech variant including brackets', () => {
+    render(<Tag text="React" variant="tech" />);
+    const tag = screen.getByText('[React]');
+    expect(tag).toBeInTheDocument();
+  });
 });

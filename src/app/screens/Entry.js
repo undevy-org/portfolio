@@ -564,6 +564,7 @@ export default function Entry() {
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             onKeyDown={handleKeyPress}
             error={!!authError}
+            aria-describedby={authError ? "auth-code-error" : undefined}
             placeholder="ENTER ACCESS CODE"
             disabled={isLoading || isConnected || isAnimating}
             data-testid="auth-input"
@@ -589,7 +590,7 @@ export default function Entry() {
 
       {/* Error message display */}
       {authError && (
-        <div className="mb-3 text-sm text-error">
+        <div id="auth-code-error" className="mb-3 text-sm text-error">
           {authError}
         </div>
       )}

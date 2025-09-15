@@ -36,14 +36,17 @@ export default function SideProjects() {
             <div key={project.id} className="p-4 rounded border border-secondary">
             <div className="flex items-start justify-between mb-2">
                 <CommandTitle text={project.name} level="h3" className="text-base" />
-              <Tag text={project.status} className={getStatusColorClasses(project.status)} />
+              <Tag 
+                text={project.status} 
+                status={getStatusFromProjectStatus(project.status)} 
+              />
             </div>
             
               <p className="text-sm mb-2 text-secondary">{project.desc}</p>
             
               <div className="flex flex-wrap gap-2">
                 {project.tech?.map((tech) => (
-                  <Tag key={tech} text={`[${tech}]`} />
+                  <Tag key={tech} text={tech} variant="tech" />
                 ))}
               </div>
           </div>
@@ -75,3 +78,15 @@ export default function SideProjects() {
     </ScreenWrapper>
   );
 }
+
+const getStatusFromProjectStatus = (status) => {
+  switch(status) {
+    case 'COMPLETED':
+      return 'success';
+    case 'IN_PROGRESS':
+      return 'command';
+    case 'EXPERIMENTAL':
+    default:
+      return 'default';
+  }
+};

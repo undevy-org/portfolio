@@ -104,7 +104,7 @@ export default function CaseList() {
               className="w-full p-4 border rounded text-left transition-colors flex items-start gap-4 border-secondary bg-hover"
             >
               <div className="flex-1 space-y-1">
-                <CommandTitle text={caseData.title} level="div" className="text-lg" />
+                <CommandTitle text={caseData.title} level="h3" className="text-lg" />
                 <div className="text-sm text-secondary">
                 {caseData.desc}
               </div>
