@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const config = {
-  darkMode: false,
+
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -16,7 +16,11 @@ const config = {
         '2xs': '0.625rem', // 10px
       },
       fontFamily: {
-        mono: ['IBM Plex Mono', 'monospace'],
+        mono: [
+          'var(--font-mono)',
+          'IBM Plex Mono',
+          'monospace'
+        ],
       },
       borderRadius: {
         'terminal': '4px',

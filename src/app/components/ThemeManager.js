@@ -7,34 +7,38 @@ import { useSession } from '../context/SessionContext';
 /**
  * ThemeManager Component
  *
- * Responsible for applying the proper HTML/body classes for the active theme.
- * - Sets data-theme attribute on <html> for ALL themes
- * - Manages body background and text color classes using CSS variables
+ * Responsible for applying the theme to the document.
+ * - Sets data-theme attribute on <html> for CSS variables
+ * - Preserves existing body classes from layout.js (font loading)
  */
-
 export default function ThemeManager() {
   const { theme } = useSession();
 
-  /**
-   * Apply theme using CSS variables approach
-   * This eliminates the need for theme-specific body classes
-   */
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
     const html = document.documentElement;
     const body = document.body;
 
-    // Single source of truth: data-theme attribute
+    // Set data-theme for CSS variables
     html.setAttribute('data-theme', theme);
     
-    // Use semantic classes that reference CSS variables
-    body.className = 'bg-main text-primary terminal-texture';
+    // Preserve existing classes (especially font classes from layout.js)
+    // Only ensure our semantic classes are present, don't overwrite everything
+    if (!body.classList.contains('bg-main')) {
+      body.classList.add('bg-main');
+    }
+    if (!body.classList.contains('text-primary')) {
+      body.classList.add('text-primary');
+    }
+    if (!body.classList.contains('terminal-texture')) {
+      body.classList.add('terminal-texture');
+    }
 
     // Debug info
     console.debug(`[ThemeManager] Theme applied: ${theme}`, {
       dataTheme: html.getAttribute('data-theme'),
-      bodyClass: body.className,
+      bodyClasses: body.className,
     });
   }, [theme]);
 
