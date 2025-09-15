@@ -6,6 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import Tabs from '../components/ui/Tabs';
 import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
+import { Tag } from '../components/atoms';
 
 export default function CaseDetail() {
   const { sessionData, navigate, addLog, selectedCase } = useSession();
@@ -102,12 +103,7 @@ export default function CaseDetail() {
           <p className="text-sm pt-1 text-success">{selectedCase.metrics}</p>
           <div className="flex flex-wrap gap-2 pt-2">
             {selectedCase.tags?.map((tag) => (
-              <span
-                key={tag}
-                className="tag-badge border-secondary text-secondary bg-main"
-              >
-                {tag}
-              </span>
+              <Tag key={tag} text={tag} />
             ))}
           </div>
         </div>

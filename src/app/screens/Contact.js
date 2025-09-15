@@ -6,6 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
+import { CommandTitle } from '../components/atoms';
 
 export default function Contact() {
   const { sessionData, addLog, domainData } = useSession();
@@ -114,9 +115,7 @@ export default function Contact() {
       </div>
 
       <div className="p-4 border rounded border-secondary">
-        <h3 className="text-base mb-2 text-command">
-          $current_status
-          </h3>
+        <CommandTitle text="current_status" level="h3" className="mb-2" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
           <span className="text-primary">$seeking:</span>
           <span className="text-secondary">{profileStatus.seeking || 'Not specified'}</span>

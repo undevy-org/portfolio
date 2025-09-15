@@ -64,7 +64,7 @@ describe('AnalyticsPanel Component', () => {
       renderAnalyticsPanel();
       
       expect(screen.getByText('$analytics')).toBeInTheDocument();
-      expect(screen.getByText('$analytics')).toHaveClass('text-command');
+      expect(screen.getByText('$analytics')).toHaveClass('title-command');
     });
 
     test('renders in correct container with proper styling', () => {
@@ -191,7 +191,7 @@ describe('AnalyticsPanel Component', () => {
       renderAnalyticsPanel();
       
       expect(screen.getByText('$session_trace')).toBeInTheDocument();
-      expect(screen.getByText('$session_trace')).toHaveClass('text-command');
+      expect(screen.getByText('$session_trace')).toHaveClass('title-command');
     });
 
     test('displays navigation history with correct indexing', () => {
@@ -222,16 +222,10 @@ describe('AnalyticsPanel Component', () => {
       
       // Find the current screen in the trace section - look for text-command that's not the heading
       const traceSection = screen.getByText('$session_trace').parentElement;
-      const commandElements = traceSection.querySelectorAll('.text-command');
-      // Should have at least 2: the heading and the current screen
-      expect(commandElements.length).toBeGreaterThanOrEqual(2);
-      
-      // Find the one that contains 'CaseDetail'
-      const currentScreenElement = Array.from(commandElements).find(el => 
-        el.textContent.includes('CaseDetail') && !el.textContent.includes('$session_trace')
-      );
+      // The current screen should have the text-command class
+      const currentScreenElement = traceSection.querySelector('.text-command');
       expect(currentScreenElement).toBeTruthy();
-      expect(currentScreenElement).toHaveClass('text-command');
+      expect(currentScreenElement.textContent).toBe('CaseDetail');
     });
 
     test('handles empty navigation history', () => {

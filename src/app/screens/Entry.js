@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useWeb3State } from '../hooks/useWeb3State';
+import { Divider, Input, Label } from '../components/atoms';
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
@@ -554,16 +555,16 @@ export default function Entry() {
       {/* Main authentication section */}
       <div className="flex flex-col md:flex-row gap-3 mb-3">
         {/* Input field - now same size text as buttons */}
-        <input
+        <Input
           type="text"
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
-          onKeyPress={handleKeyPress}
-          className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
+          onKeyDown={handleKeyPress}
+          error={!!authError}
           placeholder="ENTER ACCESS CODE"
-          autoFocus
           disabled={isLoading || isConnected || isAnimating}
           data-testid="auth-input"
+          className="flex-1 text-sm min-h-[3rem] tracking-wider"
         />
 
         {/* Authenticate button - now on same line as input on desktop */}
@@ -619,7 +620,7 @@ export default function Entry() {
       </div>
       
       {/* Divider - subtle border like in AnalyticsPanel */}
-      <div className="border-t border-secondary opacity-50 my-4"></div>
+      <Divider />
 
       {/* Secondary action buttons - GitHub and Demo Mode */}
       <div className="flex gap-3">

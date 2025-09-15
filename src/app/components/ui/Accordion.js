@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { useSession } from '../../context/SessionContext';
 import { ChevronDown } from 'lucide-react';
+import { Tag, CommandTitle } from '../../components/atoms';
 
 export default function Accordion({ sections, defaultExpanded = null }) {
   const { addLog } = useSession();
@@ -32,9 +33,7 @@ export default function Accordion({ sections, defaultExpanded = null }) {
          return (
           <div key={idx} className="flex flex-wrap gap-2 pt-2">
             {item.value.map((tag) => (
-              <span key={tag} className="tag-badge border-secondary text-secondary bg-main">
-                {tag}
-              </span>
+              <Tag key={tag} text={tag} />
             ))}
           </div>
         );
@@ -54,7 +53,7 @@ export default function Accordion({ sections, defaultExpanded = null }) {
               expandedSection === section.id ? 'border-b border-secondary' : ''
             }`}
           >
-            <h3 className="text-command">${section.title}</h3>
+            <CommandTitle text={section.title} level="h3" />
             <ChevronDown className={`w-5 h-5 transform transition-transform ${expandedSection === section.id ? 'rotate-180' : ''}`} />
           </button>
 
