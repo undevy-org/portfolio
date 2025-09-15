@@ -4,6 +4,7 @@
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { ExternalLink } from 'lucide-react';
+import { CommandTitle, Tag } from '../components/atoms';
 
 export default function SideProjects() {
   const { sessionData, addLog } = useSession();
@@ -16,44 +17,30 @@ export default function SideProjects() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const getStatusColorClasses = (status) => {
-    switch(status) {
-      case 'COMPLETED':
-        return 'border-success text-success';
-      case 'IN_PROGRESS':
-        return 'border-command text-command';
-      case 'EXPERIMENTAL':
-      default:
-        return 'border-secondary text-secondary';
-    }
-  };
-  
   return (
     <ScreenWrapper>
       <div className="space-y-3 mb-2">
         {projects.map((project) => (
             <div key={project.id} className="p-4 rounded border border-secondary">
             <div className="flex items-start justify-between mb-2">
-                <h3 className="text-base text-command">{project.name}</h3>
-              <span className={`tag-badge ml-4 ${getStatusColorClasses(project.status)}`}>
-                {project.status}
-              </span>
+                <CommandTitle text={project.name} level="h3" className="text-base" />
+              <Tag text={project.status} />
             </div>
             
               <p className="text-sm mb-2 text-secondary">{project.desc}</p>
             
-              <div className="flex flex-wrap gap-x-2 text-sm text-primary">
-              {project.tech?.map((tech) => (
-                <span key={tech}>[{tech}]</span>
-              ))}
-            </div>
+              <div className="flex flex-wrap gap-2">
+                {project.tech?.map((tech) => (
+                  <Tag key={tech} text={`[${tech}]`} />
+                ))}
+              </div>
           </div>
         ))}
       </div>
 
             {speaking.length > 0 && (
               <div className="p-4 rounded border border-secondary">
-                <h3 className="text-base mb-3 text-command">$public_speaking</h3>
+                <CommandTitle text="public_speaking" level="h3" className="text-base mb-3" />
                 <div className="space-y-2">
                   {speaking.map((item, index) => (
                     <a

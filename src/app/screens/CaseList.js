@@ -5,6 +5,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress'; // Import the progress component
+import { Tag, CommandTitle } from '../components/atoms';
 
 export default function CaseList() {
   const { sessionData, navigate, addLog, setSelectedCase } = useSession();
@@ -103,9 +104,7 @@ export default function CaseList() {
               className="w-full p-4 border rounded text-left transition-colors flex items-start gap-4 border-secondary bg-hover"
             >
               <div className="flex-1 space-y-1">
-                <div className="text-lg text-command">
-                {caseData.title}
-              </div>
+                <CommandTitle text={caseData.title} level="h3" className="text-lg" />
                 <div className="text-sm text-secondary">
                 {caseData.desc}
               </div>
@@ -114,12 +113,7 @@ export default function CaseList() {
               </div>
                 <div className="flex flex-wrap gap-2 pt-2">
                 {caseData.tags?.map((tag) => (
-                  <span
-                    key={tag}
-                      className="tag-badge border-secondary text-secondary bg-main"
-                  >
-                    {tag}
-                  </span>
+                  <Tag key={tag} text={tag} />
                 ))}
               </div>
               </div>

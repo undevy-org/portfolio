@@ -4,6 +4,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { ChevronRight, FolderGit2, Settings2 } from 'lucide-react';
+import { CommandTitle } from '../components/atoms';
 
 export default function Timeline() {
   const { sessionData, theme, navigate, addLog, setSelectedRole } = useSession();
@@ -36,9 +37,7 @@ export default function Timeline() {
               </span>
 
               <div>
-                <div className={`text-lg font-normal text-command`}>
-                  {role.company}
-                </div>
+                <CommandTitle text={role.company} level="div" className="text-lg" />
                 <div className={`text-sm opacity-80 text-secondary`}>
                   {role.role}
                 </div>
@@ -55,9 +54,7 @@ export default function Timeline() {
 
             <div className="md:hidden">
               <div className="flex justify-between items-start">
-                  <span className={`text-lg text-command`}>
-                    {role.company}
-                  </span>
+                  <CommandTitle text={role.company} level="div" className="text-lg" />
                   <span className={`mt-1 text-sm text-command`}>
                     [{String(index + 1).padStart(2, '0')}]
                   </span>

@@ -7,6 +7,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import Accordion from '../components/ui/Accordion';
 import Button from '../components/ui/Button';
 import { FolderGit2, ArrowLeft } from 'lucide-react';
+import { CommandTitle } from '../components/atoms';
 
 export default function RoleDetail() {
   const { sessionData, navigate, addLog, selectedRole } = useSession();
@@ -41,7 +42,7 @@ export default function RoleDetail() {
     <div className="space-y-4">
       <div className="p-4 rounded border border-secondary">
         <div className="space-y-1">
-          <h2 className="text-xl text-command">{selectedRole.company}</h2>
+          <CommandTitle text={selectedRole.company} level="h2" className="text-xl" />
           <p className="text-base text-primary">{selectedRole.role}</p>
           <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
         </div>

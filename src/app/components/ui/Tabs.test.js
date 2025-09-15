@@ -236,11 +236,15 @@ describe('Tabs Component', () => {
     });
 
     test('renders sub headings with command style', () => {
-      renderTabs();
+      render(
+        <MockSessionProvider>
+          <Tabs tabs={TEST_TABS} />
+        </MockSessionProvider>
+      );
       
       const subHeading = screen.getByText('$Key Features');
       expect(subHeading).toBeInTheDocument();
-      expect(subHeading).toHaveClass('text-command');
+      expect(subHeading).toHaveClass('title-command');
     });
 
     test('renders dividers correctly', () => {

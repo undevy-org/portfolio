@@ -190,9 +190,9 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify MainHub renders with menu items
-      expect(screen.getByText('Timeline')).toBeInTheDocument();
-      expect(screen.getByText('Case Studies')).toBeInTheDocument();
-      expect(screen.getByText('Contact')).toBeInTheDocument();
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
+      expect(screen.getByText('$Case Studies')).toBeInTheDocument();
+      expect(screen.getByText('$Contact')).toBeInTheDocument();
 
       // Cleanup: restore original fetch
       global.fetch = originalFetch;
@@ -312,7 +312,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify AccessManager renders with master section title and codes
-      expect(screen.getByText('Master Access')).toBeInTheDocument();
+      expect(screen.getByText('$Master Access')).toBeInTheDocument();
       expect(screen.getAllByText('TEST_MASTER_CODE').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Master Key').length).toBeGreaterThan(0);
       expect(screen.getAllByText('TEST_WEB3_CODE').length).toBeGreaterThan(0);
@@ -371,7 +371,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify MainHub is rendered
-      expect(screen.getByText('Timeline')).toBeInTheDocument();
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
 
       // Simulate session termination trigger
       mockEndSession();
@@ -421,7 +421,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Click on Timeline menu item
-      const timelineButton = screen.getByText('Timeline').closest('button');
+      const timelineButton = screen.getByText('$Timeline').closest('button');
       fireEvent.click(timelineButton);
 
       // Verify navigation and logging were called (but not specific arguments due to complex screen logic)
@@ -466,7 +466,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Click on Case Studies menu item
-      const caseListButton = screen.getByText('Case Studies').closest('button');
+      const caseListButton = screen.getByText('$Case Studies').closest('button');
       fireEvent.click(caseListButton);
 
       // Verify navigation and logging were called (but not specific arguments)
@@ -514,7 +514,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify initial theme
-      expect(screen.getByText('Timeline')).toBeInTheDocument();
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
 
       // Simulate theme change
       currentTheme = 'light';
@@ -534,8 +534,8 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify the component still renders correctly after theme change
-      expect(screen.getByText('Timeline')).toBeInTheDocument();
-      expect(screen.getByText('Case Studies')).toBeInTheDocument();
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
+      expect(screen.getByText('$Case Studies')).toBeInTheDocument();
     });
   });
 
@@ -559,7 +559,7 @@ describe('Integration Tests: User Flows', () => {
 
       // Should render without crashing even with null session data
       // Component should handle empty menu gracefully
-      expect(screen.queryByText('Timeline')).not.toBeInTheDocument();
+      expect(screen.queryByText('$Timeline')).not.toBeInTheDocument();
     });
 
     it('should handle network errors during authentication', async () => {
