@@ -2,6 +2,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import { CommandTitle, Divider } from '../components/atoms';
 
 export default function AnalyticsPanel() {
   const { 
@@ -27,7 +28,7 @@ export default function AnalyticsPanel() {
   return (
     <div className="w-full max-w-2xl border rounded p-3 text-sm bg-main border-primary">
 
-      <h2 className="text-base mb-2 text-command">$analytics</h2>
+      <CommandTitle text="analytics" level="h2" className="mb-2" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
         {/* 1. Company */}
         <div>
@@ -76,10 +77,12 @@ export default function AnalyticsPanel() {
         </div>
       </div>
       
+      <Divider spacing="my-4" />
+      
       {/* Navigation Path / Breadcrumbs */}
-      <div className="mt-4 pt-3 border-t border-secondary">
+      <div className="mt-4 pt-3">
 
-        <h3 className="text-base mb-2 text-command">$session_trace</h3>
+        <CommandTitle text="session_trace" level="h3" className="mb-2" />
         
         <div className="text-sm flex items-center flex-wrap">
           {navigationHistory.length > 0 ? (

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useWeb3State } from '../hooks/useWeb3State';
+import { Divider, Input, Label } from '../components/atoms';
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
@@ -554,17 +555,22 @@ export default function Entry() {
       {/* Main authentication section */}
       <div className="flex flex-col md:flex-row gap-3 mb-3">
         {/* Input field - now same size text as buttons */}
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          onKeyPress={handleKeyPress}
-          className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
-          placeholder="ENTER ACCESS CODE"
-          autoFocus
-          disabled={isLoading || isConnected || isAnimating}
-          data-testid="auth-input"
-        />
+        <div className="flex-1">
+          <Label htmlFor="auth-code-input" text="Access Code" className="sr-only" />
+          <Input
+            id="auth-code-input"
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            onKeyDown={handleKeyPress}
+            error={!!authError}
+            aria-describedby={authError ? "auth-code-error" : undefined}
+            placeholder="ENTER ACCESS CODE"
+            disabled={isLoading || isConnected || isAnimating}
+            data-testid="auth-input"
+            className="flex-1 text-sm min-h-[3rem] tracking-wider"
+          />
+        </div>
 
         {/* Authenticate button - now on same line as input on desktop */}
         <Button
@@ -584,7 +590,7 @@ export default function Entry() {
 
       {/* Error message display */}
       {authError && (
-        <div className="mb-3 text-sm text-error">
+        <div id="auth-code-error" className="mb-3 text-sm text-error">
           {authError}
         </div>
       )}
@@ -619,7 +625,7 @@ export default function Entry() {
       </div>
       
       {/* Divider - subtle border like in AnalyticsPanel */}
-      <div className="border-t border-secondary opacity-50 my-4"></div>
+      <Divider />
 
       {/* Secondary action buttons - GitHub and Demo Mode */}
       <div className="flex gap-3">

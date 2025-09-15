@@ -4,6 +4,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { UserCheck, Mail } from 'lucide-react';
 import Button from '../components/ui/Button';
+import { CommandTitle } from '../components/atoms';
 
 export default function Introduction() {
   const { sessionData, theme, navigate, addLog } = useSession();
@@ -35,7 +36,7 @@ export default function Introduction() {
 return (
   <ScreenWrapper className="font-mono">
       <div className={panelClasses}>
-        <h3 className={`mb-2 text-command`}>$profile_data</h3>
+        <CommandTitle text="profile_data" level="h3" className="mb-2" />
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm`}>
           <span className={labelClasses}>$title:</span>
           <span className={valueClasses}>{profile.summary?.title}</span>
@@ -49,12 +50,12 @@ return (
     </div>
 
       <div className={panelClasses}>
-        <h3 className={`mb-2 text-command`}>$about_me</h3>
+        <CommandTitle text="about_me" level="h3" className="mb-2" />
         <p className={`text-sm leading-relaxed text-secondary`}>{introText}</p>
     </div>
 
       <div className={panelClasses}>
-        <h3 className={`mb-2 text-command`}>$core_attributes</h3>
+        <CommandTitle text="core_attributes" level="h3" className="mb-2" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
         {profile.attributes?.map((attr, index) => (
           <div key={index}>
