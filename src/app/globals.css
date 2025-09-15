@@ -250,6 +250,21 @@
     background-color: var(--color-hover);
   }
   
+  /* Add cursor-terminal class for the SystemLog component */
+  .cursor-terminal {
+    background-color: var(--color-text-secondary);
+    pointer-events: none;
+  }
+  
+  /* Add progress track and fill classes for TerminalProgress component */
+  .progress-track {
+    background-color: var(--color-hover);
+  }
+  
+  .progress-fill {
+    background-color: var(--color-success);
+  }
+  
   /* Border styles */
   .border-primary {
     border-color: var(--color-border);

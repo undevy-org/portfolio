@@ -94,19 +94,14 @@ export default function TerminalProgress({
       </div>
       
       <div 
-        className={`${height} relative w-full overflow-hidden border border-secondary`}
-        style={{
-          backgroundColor: 'var(--color-hover)'
-        }}
+        className={`${height} relative w-full overflow-hidden border border-secondary progress-track`}
       >
         <div 
-          className={`absolute inset-y-0 left-0 transition-all duration-300 ease-out ${
+          className={`absolute inset-y-0 left-0 transition-all duration-300 ease-out progress-fill ${
             showPulse && displayProgress < 100 ? 'animate-pulse-progress' : ''
           }`}
           style={{ 
-            width: `${displayProgress}%`,
-            // Use CSS variable for theme-aware success color
-            backgroundColor: 'var(--color-success)'
+            width: `${displayProgress}%`
           }}
         />
       </div>
