@@ -2,7 +2,7 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { CommandTitle } from '../components/atoms';
+import { CommandTitle, Divider } from '../components/atoms';
 
 export default function AnalyticsPanel() {
   const { 
@@ -77,8 +77,10 @@ export default function AnalyticsPanel() {
         </div>
       </div>
       
+      <Divider spacing="mt-4 pt-3" />
+      
       {/* Navigation Path / Breadcrumbs */}
-      <div className="mt-4 pt-3 border-t border-secondary">
+      <div className="mt-4 pt-3">
 
         <CommandTitle text="session_trace" level="h3" className="mb-2" />
         

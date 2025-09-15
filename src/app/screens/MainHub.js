@@ -3,6 +3,7 @@
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
+import { CommandTitle } from '../components/atoms';
 
 export default function MainHub() {
   const { sessionData, theme, navigate, addLog } = useSession();
@@ -26,9 +27,7 @@ export default function MainHub() {
             </span>
             
             <div className="flex-1">
-              <div className="text-base text-primary">
-                {item.label}
-              </div>
+              <CommandTitle text={item.label} level="div" className="text-base" />
               <div className="text-xs mt-1 text-secondary">
                 {item.desc}
               </div>

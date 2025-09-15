@@ -6,6 +6,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { Home, ChevronRight, Shield, Key, Users } from 'lucide-react';
+import { CommandTitle } from '../components/atoms';
 
 export default function AccessManager() {
   const { sessionData, navigate, addLog, setSessionData } = useSession();
@@ -97,7 +98,7 @@ export default function AccessManager() {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <Shield className="w-4 h-4 text-command" />
-            <h3 className="text-sm uppercase tracking-wider text-command">Master Access</h3>
+            <CommandTitle text="Master Access" level="h3" className="text-sm uppercase tracking-wider" />
           </div>
           <div className="space-y-3">
             {masterCodes.map((code, index) => (
@@ -149,7 +150,7 @@ export default function AccessManager() {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <Key className="w-4 h-4 text-command" />
-            <h3 className="text-sm uppercase tracking-wider text-command">Special Access</h3>
+            <CommandTitle text="Special Access" level="h3" className="text-sm uppercase tracking-wider" />
           </div>
           <div className="space-y-3">
             {specialCodes.map((code, index) => (
@@ -212,7 +213,7 @@ export default function AccessManager() {
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <Users className="w-4 h-4 text-command" />
-            <h3 className="text-sm uppercase tracking-wider text-command">User Codes [{userCodes.length}]</h3>
+            <CommandTitle text={`User Codes [${userCodes.length}]`} level="h3" className="text-sm uppercase tracking-wider" />
           </div>
           <div className="space-y-3">
             {userCodes.map((code, index) => (

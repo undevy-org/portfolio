@@ -5,6 +5,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
+import { CommandTitle, Divider } from '../components/atoms';
 
 export default function SkillDetail() {
   const { sessionData, navigate, addLog, selectedSkill } = useSession();
@@ -44,10 +45,10 @@ export default function SkillDetail() {
           <p className="text-sm text-secondary">{selectedSkill.desc}</p>
         </div>
 
-        <div className="my-3 border-t border-secondary"></div>
+        <Divider />
         
         <div>
-          <h3 className="text-base mb-2 text-command">$proficiency_level</h3>
+          <CommandTitle text="proficiency_level" level="h3" className="text-base mb-2" />
           <div className="flex items-center gap-4">
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((level) => (
@@ -66,7 +67,7 @@ export default function SkillDetail() {
         </div>
       </div>
       <div className="p-4 rounded border border-secondary">
-        <h3 className="text-base mb-2 text-command">$skill_overview</h3>
+        <CommandTitle text="skill_overview" level="h3" className="text-base mb-2" />
         <p className="text-sm leading-relaxed text-secondary">
           {skillDetails.description || 'No description available.'}
         </p>
@@ -74,7 +75,7 @@ export default function SkillDetail() {
 
       {skillDetails.examples?.length > 0 && (
         <div className="p-4 rounded border border-secondary">
-          <h3 className="text-base mb-2 text-command">$implementations</h3>
+          <CommandTitle text="implementations" level="h3" className="text-base mb-2" />
           <div className="space-y-1">
             {skillDetails.examples.map((example, idx) => (
               <div key={idx} className="text-sm flex items-start">
@@ -88,7 +89,7 @@ export default function SkillDetail() {
 
       {skillDetails.impact && (
         <div className="p-4 rounded border border-secondary">
-          <h3 className="text-base mb-2 text-command">$business_impact</h3>
+          <CommandTitle text="business_impact" level="h3" className="text-base mb-2" />
           <div className="space-y-2">
             {Array.isArray(skillDetails.impact) ? (
               skillDetails.impact.map((item, idx) => (
@@ -109,7 +110,7 @@ export default function SkillDetail() {
 
       {skillDetails.tools?.length > 0 && (
         <div className="p-4 rounded border border-secondary">
-          <h3 className="text-base mb-2 text-command">$related_tools</h3>
+          <CommandTitle text="related_tools" level="h3" className="text-base mb-2" />
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
             {skillDetails.tools.map((tool) => (
               <span key={tool} className="text-secondary">

@@ -6,7 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import Tabs from '../components/ui/Tabs';
 import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
-import { Tag } from '../components/atoms';
+import { Tag, CommandTitle } from '../components/atoms';
 
 export default function CaseDetail() {
   const { sessionData, navigate, addLog, selectedCase } = useSession();
@@ -98,7 +98,7 @@ export default function CaseDetail() {
       {/* Main info panel */}
       <div className="p-4 rounded border border-secondary">
         <div className="space-y-2">
-          <h2 className="text-xl text-command">{selectedCase.title}</h2>
+          <CommandTitle text={selectedCase.title} level="h2" className="text-xl" />
           <p className="text-sm text-secondary">{selectedCase.desc}</p>
           <p className="text-sm pt-1 text-success">{selectedCase.metrics}</p>
           <div className="flex flex-wrap gap-2 pt-2">
