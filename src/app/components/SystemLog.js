@@ -45,12 +45,10 @@ export default function SystemLog() {
               style={{ caretColor: 'transparent' }}
             />
             <span 
-            className={'absolute top-1/2 -translate-y-1/2 inline-block w-2 h-4 animate-pulse'}
+            className={'absolute top-1/2 -translate-y-1/2 inline-block w-2 h-4 animate-pulse cursor-terminal'}
               style={{
               // Approximating character width more accurately for monospace font
-              left: `${inputValue.length * 7.2}px`, 
-              pointerEvents: 'none',
-              backgroundColor: 'var(--color-text-secondary)'
+              left: `${inputValue.length * 7.2}px`
               }}
             ></span>
       </div>

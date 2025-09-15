@@ -190,8 +190,7 @@ function TerminalWindow({
       {/* BREADCRUMBS - Also stays fixed, doesn't scroll with content */}
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
         <div 
-          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0" 
-          style={{ backgroundColor: 'var(--color-hover)' }}
+          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0 bg-hover"
         >
           <div className="flex items-center flex-wrap">
             {breadcrumbPath.map((screen, index) => (

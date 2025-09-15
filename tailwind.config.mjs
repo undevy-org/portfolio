@@ -23,152 +23,8 @@ const config = {
   theme: {
     extend: {
       colors: {
-        // -------------------------
-        // DARK THEME TOKENS
-        // -------------------------
-        'dark-bg': '#000000',
-        'dark-text-white': '#ffffff',
-        'dark-text-primary': '#86efac',
-        'dark-text-secondary': '#9ca3af',
-        'dark-text-tertiary': '#6b7280',
-        'dark-text-command': '#eab308',
-        'dark-border': '#22c55e',
-        'dark-border-darker': '#166534',
-        'dark-active': '#15803d',
-        'dark-error': '#dc2626',
-        'dark-success': '#4ade80',
-        'dark-input-bg': '#111827',
-        'dark-hover': 'rgba(34, 197, 94, 0.1)',
-        'dark-accent': '#22d3ee',
-
-        // -------------------------
-        // LIGHT THEME TOKENS
-        // -------------------------
-        'light-bg': '#ffffff',
-        'light-text-black': '#0a0a0a',
-        'light-text-primary': '#065f46',
-        'light-text-secondary': '#4b5563',
-        'light-text-tertiary': '#9ca3af',
-        'light-text-command': '#b45309',
-        'light-border': '#10b981',
-        'light-border-darker': '#059669',
-        'light-border-lighter': '#6ee7b7',
-        'light-active': '#d1fae5',
-        'light-error': '#dc2626',
-        'light-success': '#059669',
-        'light-input-bg': '#ffffff',
-        'light-hover': 'rgba(5, 150, 105, 0.1)',
-        'light-accent': '#0284c7',
-
-        // -------------------------
-        // AMBER THEME TOKENS
-        // -------------------------
-        'amber-bg': '#1C1C1C',
-        'amber-surface': '#2A2A2A',
-        'amber-text-primary': '#FFFFFF',
-        'amber-text-secondary': '#D6D6D6',
-        'amber-text-tertiary': '#A3A3A3',
-        'amber-text-command': '#D94A1E',
-        'amber-border': '#D94A1E',
-        'amber-border-darker': '#7A2B12',
-        'amber-active': '#FF5C28',
-        'amber-error': '#FF3B30',
-        'amber-success': '#34C759',
-        'amber-input-bg': '#242424',
-        'amber-hover': 'rgba(217, 74, 30, 0.12)',
-        'amber-accent': '#FF784E',
-        'amber-tag-border': '#D6D6D6',
-
-        // -------------------------
-        // BSOD THEME TOKENS
-        // -------------------------
-        'bsod-bg': '#0B4DA8',
-        'bsod-surface': '#08429A',
-        'bsod-text-primary': '#FFFFFF',
-        'bsod-text-secondary': '#CFE9FF',
-        'bsod-text-tertiary': '#9EC7FF',
-        'bsod-text-command': '#E1F0FF',
-        'bsod-border': '#E6F3FF',
-        'bsod-border-darker': '#7FB3FF',
-        'bsod-active': '#0066FF',
-        'bsod-error': '#FF6B6B',
-        'bsod-success': '#00D084',
-        'bsod-input-bg': '#073A93',
-        'bsod-hover': 'rgba(230, 243, 255, 0.06)',
-        'bsod-accent': '#88B8FF',
-        'bsod-tag-border': '#C7E1FF',
-
-        // -------------------------
-        // SYNTHWAVE THEME TOKENS
-        // -------------------------
-        'synthwave-bg': '#1A103C',
-        'synthwave-text-white': '#FF00E5',
-        'synthwave-text-primary': '#FF00E5',
-        'synthwave-text-secondary': '#00BFFF',
-        'synthwave-text-tertiary': '#7B61FF',
-        'synthwave-text-command': '#F7B801',
-        'synthwave-border': '#FF00E5',
-        'synthwave-border-darker': '#00BFFF',
-        'synthwave-active': '#4C00A4',
-        'synthwave-error': '#FF1B1B',
-        'synthwave-success': '#39FF14',
-        'synthwave-input-bg': '#2C1E5C',
-        'synthwave-hover': 'rgba(255, 0, 229, 0.1)',
-        'synthwave-accent': '#00F6FF',
-
-        /// -------------------------
-        // OPERATOR THEME TOKENS
-        // --------------------------
-        'operator-bg': '#1E0000',
-        'operator-text-white': '#FF4100',
-        'operator-text-primary': '#FF4100',
-        'operator-text-secondary': '#FFA500',
-        'operator-text-tertiary': '#B37400',
-        'operator-text-command': '#FF4100',
-        'operator-border': '#FF4100',
-        'operator-border-darker': '#FFA500',
-        'operator-active': '#5D1800',
-        'operator-error': '#FFFF00',
-        'operator-success': '#A8FF00',
-        'operator-input-bg': '#1A1A1A',
-        'operator-hover': 'rgba(255, 65, 0, 0.1)',
-        'operator-accent': '#FFA500',
-
-        /// -------------------------
-        // KYOTO THEME TOKENS
-        // --------------------------
-        'kyoto-bg': '#B0B0B0',
-        'kyoto-text-white': '#1A1A1A',
-        'kyoto-text-primary': '#1A1A1A',
-        'kyoto-text-secondary': '#4A4A4A',
-        'kyoto-text-tertiary': '#7A7A7A',
-        'kyoto-text-command': '#D95D39',
-        'kyoto-border': '#1A1A1A',
-        'kyoto-border-darker': '#4A4A4A',
-        'kyoto-active': '#8E8E8E',
-        'kyoto-error': '#A80000',
-        'kyoto-success': '#0A6D0A',
-        'kyoto-input-bg': '#A0A0A0',
-        'kyoto-hover': 'rgba(74, 74, 74, 0.1)',
-        'kyoto-accent': '#39D9D9',
-
-        /// -------------------------
-        // RADAR THEME TOKENS
-        // --------------------------
-        'radar-bg': '#3C4D3A',
-        'radar-text-white': '#B3E2A7',
-        'radar-text-primary': '#B3E2A7',
-        'radar-text-secondary': '#8BAA85',
-        'radar-text-tertiary': '#5A5A5A',
-        'radar-text-command': '#D98E39',
-        'radar-border': '#2A2A2A',
-        'radar-border-darker': '#2A2A2A',
-        'radar-active': '#2F3D2D',
-        'radar-error': '#D94639',
-        'radar-success': '#65B354',
-        'radar-input-bg': '#32402F',
-        'radar-hover': 'rgba(179, 226, 167, 0.1)',
-        'radar-accent': '#54B3B3',
+        // Most theming is handled by CSS variables in globals.css
+        // Only keep tokens that are actually used for backward compatibility
       },
 
       // Font sizes intentionally set to fixed pixel values for terminal-like UI
@@ -199,6 +55,15 @@ const config = {
       // Small, consistent rounded corners
       borderRadius: {
         'DEFAULT': '0.25rem',
+      },
+      
+      // Animations
+      animation: {
+        'fade-in': 'fadeIn 0.3s ease-in-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'pulse-progress': 'pulseProgress 1.5s ease-in-out infinite',
+        'screen-exit': 'screen-exit 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
+        'screen-enter': 'screen-enter 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
       },
     },
   },
