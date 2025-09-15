@@ -32,10 +32,7 @@ export default function ThemeManager() {
     body.className = 'bg-main text-primary terminal-texture';
 
     // Debug info
-    console.debug(`[ThemeManager] Theme applied: ${theme}`, {
-      dataTheme: html.getAttribute('data-theme'),
-      bodyClass: body.className,
-    });
+    console.debug(`[ThemeManager] Theme applied: ${theme}`);
   }, [theme]);
 
   return null;

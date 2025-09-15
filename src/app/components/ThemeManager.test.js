@@ -6,7 +6,6 @@ import ThemeManager from './ThemeManager';
 
 jest.mock('../context/SessionContext', () => ({
   useSession: jest.fn(),
-  themes: ['dark', 'light', 'amber', 'bsod', 'synthwave', 'operator', 'kyoto', 'radar']
 }));
 import { useSession } from '../context/SessionContext';
 
