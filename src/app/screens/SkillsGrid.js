@@ -5,7 +5,6 @@
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
-import { Tag } from '../components/atoms';
 
 export default function SkillsGrid() {
   const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
@@ -51,12 +50,6 @@ export default function SkillsGrid() {
               
               <div className={`text-sm pt-1 ${getLevelColor(skill.level)}`}>
                 [{skill.level}]
-              </div>
-              
-              <div className="flex flex-wrap gap-2 pt-2">
-                {skill.tags?.map((tag) => (
-                  <Tag key={tag} text={tag} />
-                ))}
               </div>
             </div>
 

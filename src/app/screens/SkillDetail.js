@@ -41,7 +41,7 @@ export default function SkillDetail() {
     <ScreenWrapper>
       <div className="p-4 rounded border border-secondary">
         <div className="space-y-1">
-          <h2 className="text-xl text-command">{selectedSkill.name}</h2>
+          <CommandTitle text={selectedSkill.name} level="h2" className="text-xl" />
           <p className="text-sm text-secondary">{selectedSkill.desc}</p>
         </div>
 

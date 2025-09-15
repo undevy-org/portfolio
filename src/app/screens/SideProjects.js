@@ -17,18 +17,6 @@ export default function SideProjects() {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const getStatusColorClasses = (status) => {
-    switch(status) {
-      case 'COMPLETED':
-        return 'border-success text-success';
-      case 'IN_PROGRESS':
-        return 'border-command text-command';
-      case 'EXPERIMENTAL':
-      default:
-        return 'border-secondary text-secondary';
-    }
-  };
-  
   return (
     <ScreenWrapper>
       <div className="space-y-3 mb-2">
@@ -36,17 +24,14 @@ export default function SideProjects() {
             <div key={project.id} className="p-4 rounded border border-secondary">
             <div className="flex items-start justify-between mb-2">
                 <CommandTitle text={project.name} level="h3" className="text-base" />
-              <Tag 
-                text={project.status} 
-                status={getStatusFromProjectStatus(project.status)} 
-              />
+              <Tag text={project.status} />
             </div>
             
               <p className="text-sm mb-2 text-secondary">{project.desc}</p>
             
               <div className="flex flex-wrap gap-2">
                 {project.tech?.map((tech) => (
-                  <Tag key={tech} text={tech} variant="tech" />
+                  <Tag key={tech} text={`[${tech}]`} />
                 ))}
               </div>
           </div>
@@ -78,15 +63,3 @@ export default function SideProjects() {
     </ScreenWrapper>
   );
 }
-
-const getStatusFromProjectStatus = (status) => {
-  switch(status) {
-    case 'COMPLETED':
-      return 'success';
-    case 'IN_PROGRESS':
-      return 'command';
-    case 'EXPERIMENTAL':
-    default:
-      return 'default';
-  }
-};
