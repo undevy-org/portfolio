@@ -27,17 +27,15 @@ Our theming system is designed for instant, client-side theme switching without 
 
 ### **2.1. The Core Idea: CSS Variables & `data-theme`**
 
-Instead of relying on Tailwind's `dark:` variant, we control the theme via a `data-theme` attribute on the root `<html>` element. This attribute acts as a switch that instantly changes the values of all our CSS color variables, causing the entire UI to re-render with the new palette.
+We control themes exclusively via a `data-theme` attribute on the root `<html>` element. This attribute acts as a switch that instantly changes the values of all our CSS color variables, causing the entire UI to re-render with the new palette. This is our single source of truth for theming.
 
-### **2.2. The Three Layers of Styling**
+### **2.2. The Two Layers of Styling**
 
-Our system is organized into three distinct layers, ensuring a clear separation of concerns.
+Our system is organized into two distinct layers, ensuring a clear separation of concerns.
 
-1.  **Layer 1: Tailwind Config (`tailwind.config.mjs`)**: This is where we define all our raw color values as named "tokens" (e.g., `'dark-bg'`, `'amber-text-primary'`). This file is our master color library.
+1.  **Layer 1: Global CSS (`globals.css`)**: Here, we define semantic CSS variables (e.g., `--color-bg`, `--color-text-primary`). For each supported theme (e.g., `[data-theme='light']`), we assign the appropriate color values to these variables.
 
-2.  **Layer 2: Global CSS (`globals.css`)**: Here, we define semantic CSS variables (e.g., `--color-bg`, `--color-text-primary`). For each supported theme (e.g., `[data-theme='light']`), we assign the appropriate color tokens from Tailwind to these variables.
-
-3.  **Layer 3: Semantic Classes (`globals.css`)**: We create a library of reusable, semantic utility classes (e.g., `.bg-main`, `.text-primary`). These classes use the CSS variables, making them automatically theme-aware. **Components should only use these classes.**
+2.  **Layer 2: Semantic Classes (`globals.css`)**: We create a library of reusable, semantic utility classes (e.g., `.bg-main`, `.text-primary`). These classes use the CSS variables, making them automatically theme-aware. **Components should only use these classes.**
 
 ### **2.3. How a Theme is Applied (The Flow)**
 
@@ -290,7 +288,7 @@ This is the library of approved, theme-aware classes defined in `globals.css`. C
 
 ### **4.2. Background & Border Classes**
 -   `.bg-main`: For the main background of panels and windows.
--   `.bg-hover`: To be used with the `:hover` pseudo-class for subtle feedback.
+-   `.bg-hover`: For backgrounds that apply on hover, also used for static subtle backgrounds.
 -   `.bg-active`: For active UI elements like tabs.
 -   `.border-primary`: For primary borders (main window, buttons).
 -   `.border-secondary`: For secondary, less prominent borders (internal panels, dividers).
@@ -301,7 +299,12 @@ This is the library of approved, theme-aware classes defined in `globals.css`. C
 -   `.input-base`: The standard input field style.
 -   `.tag-badge`: The standard style for tags.
 
-### **4.4. Usage Example: Building a Panel**
+### **4.4. Specialized UI Classes**
+-   `.cursor-terminal`: For terminal-style cursors (includes pointer-events: none).
+-   `.progress-track`: Background for progress bar tracks.
+-   `.progress-fill`: Fill color for progress bar indicators.
+
+### **4.5. Usage Example: Building a Panel**
 
 This system dramatically simplifies component markup.
 
@@ -324,7 +327,6 @@ A strict typographic scale ensures consistency and readability.
 -   **Font Sizes**: A limited set of sizes creates a clean, predictable rhythm: `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`.
 -   **Text Styles**: Emphasis is achieved through the color hierarchy, not font weight or style.
 
-<!-- NEW SECTION: Added to detail the application's structural and motion design. -->
 ## **6. Layout & Animation System**
 
 This section defines the structural rules, spacing, and motion design of the application, ensuring a consistent and fluid user experience with zero layout shift.
@@ -359,12 +361,18 @@ A consistent spacing scale is used throughout the application to maintain visual
 1.  **Use Semantic Classes First:** Always start by using the classes from our library (`.panel-full`, `.text-primary`, etc.).
 2.  **Use Tailwind for Layout:** Use standard Tailwind utilities for layout (`flex`, `grid`, `p-4`, `gap-2`, etc.).
 3.  **Avoid Direct Color/Theme Logic:** **NEVER** use theme-dependent logic (`theme === 'dark'`) or direct color classes (`bg-green-500`, `dark:bg-black`) in a component. If a required style is missing, extend the semantic library.
+4.  **No Inline Styles for Colors:** Never use inline styles with CSS variables for colors. Instead, create a new semantic class in `globals.css` if needed.
 
 ### **8.2. How to Add a New Theme**
 
-Adding a new theme is a simple, four-step process:
+Adding a new theme is a simple, three-step process:
 
-1.  **Add Color Tokens:** Define the new theme's color palette in `tailwind.config.mjs` (e.g., `'matrix-bg': '#0D2B0D'`).
-2.  **Define CSS Variables:** Add a new `[data-theme='matrix']` block in `globals.css` and assign your new tokens to the semantic CSS variables.
-3.  **Update Theme Configuration:** In `src/app/context/SessionContext.js`, add the new theme's name to the `themes` array and add an entry for it in the `themeConfig` object, defining its `intent` as either `'dark'` or `'light'`.
-4.  **Add Theme Icon:** Add an icon for the new theme to the `themeIcons` dictionary in `src/app/components/ui/ThemeSwitcher.js` and `src/app/layouts/TerminalWindow.js`.
+1.  **Define CSS Variables:** Add a new `[data-theme='matrix']` block in `globals.css` and define all the color variables with your theme's values.
+2.  **Update Theme Configuration:** In `src/app/context/SessionContext.js`, add the new theme's name to the `themes` array and add an entry for it in the `themeConfig` object, defining its `intent` as either `'dark'` or `'light'`.
+3.  **Add Theme Icon:** Add an icon for the new theme to the `themeIcons` dictionary in `src/app/components/ui/ThemeSwitcher.js` and `src/app/layouts/TerminalWindow.js`.
+
+### **8.3. Implementation Best Practices**
+
+1.  **Theme Manager Behavior:** The `ThemeManager` component should only set the `data-theme` attribute and add necessary semantic classes without overwriting existing body classes (especially font-related classes from Next.js).
+2.  **Single Source of Truth:** The `data-theme` attribute is the only mechanism for theme switching. No legacy class-based theming should be used.
+3.  **CSS Variable Consistency:** All themes must define the complete set of CSS variables to ensure consistent behavior across the application.

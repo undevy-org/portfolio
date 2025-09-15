@@ -555,17 +555,21 @@ export default function Entry() {
       {/* Main authentication section */}
       <div className="flex flex-col md:flex-row gap-3 mb-3">
         {/* Input field - now same size text as buttons */}
-        <Input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          onKeyDown={handleKeyPress}
-          error={!!authError}
-          placeholder="ENTER ACCESS CODE"
-          disabled={isLoading || isConnected || isAnimating}
-          data-testid="auth-input"
-          className="flex-1 text-sm min-h-[3rem] tracking-wider"
-        />
+        <div className="flex-1">
+          <Label htmlFor="auth-code-input" text="Access Code" className="sr-only" />
+          <Input
+            id="auth-code-input"
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            onKeyDown={handleKeyPress}
+            error={!!authError}
+            placeholder="ENTER ACCESS CODE"
+            disabled={isLoading || isConnected || isAnimating}
+            data-testid="auth-input"
+            className="flex-1 text-sm min-h-[3rem] tracking-wider"
+          />
+        </div>
 
         {/* Authenticate button - now on same line as input on desktop */}
         <Button

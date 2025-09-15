@@ -77,7 +77,7 @@ export default function AnalyticsPanel() {
         </div>
       </div>
       
-      <Divider spacing="mt-4 pt-3" />
+      <Divider spacing="my-4" />
       
       {/* Navigation Path / Breadcrumbs */}
       <div className="mt-4 pt-3">

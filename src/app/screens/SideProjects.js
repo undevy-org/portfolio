@@ -43,7 +43,7 @@ export default function SideProjects() {
             
               <div className="flex flex-wrap gap-2">
                 {project.tech?.map((tech) => (
-                  <Tag key={tech} text={tech} />
+                  <Tag key={tech} text={`[${tech}]`} />
                 ))}
               </div>
           </div>

@@ -1,37 +1,20 @@
-import { forwardRef } from 'react';
+'use client';
 
-const Input = forwardRef(function Input({ 
+export default function Input({ 
   type = 'text',
-  placeholder,
-  value,
-  onChange,
-  onKeyDown,
   error = false,
-  disabled = false,
-  autoComplete,
-  id,
-  name,
-  className = ''
-}, ref) {
+  className = '',
+  ...props 
+}) {
+  const baseClasses = 'input-base';
   const errorClasses = error ? 'input-error' : '';
   
   return (
     <input
-      ref={ref}
       type={type}
-      id={id}
-      name={name}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-      disabled={disabled}
-      autoComplete={autoComplete}
-      className={`input-base ${errorClasses} ${className}`}
-      aria-invalid={error}
-      aria-describedby={error && id ? `${id}-error` : undefined}
+      className={`${baseClasses} ${errorClasses} ${className}`}
+      aria-invalid={error ? 'true' : 'false'}
+      {...props}
     />
   );
-});
-
-export default Input;
+}

@@ -1,3 +1,5 @@
+'use client';
+
 export default function Divider({ 
   variant = 'solid',
   spacing = 'my-2',
