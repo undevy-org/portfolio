@@ -294,9 +294,10 @@ describe('AnalyticsPanel Component', () => {
   describe('Responsive Layout', () => {
     test('uses responsive grid layout for statistics', () => {
       renderAnalyticsPanel();
-      
-      const statsGrid = screen.getByText('$company:').closest('div').parentElement;
-      expect(statsGrid).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-4', 'gap-y-1', 'text-sm');
+
+      const companyElement = screen.getByText('$company:');
+      const labelValuePair = companyElement.closest('div');
+      expect(labelValuePair).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-4', 'gap-y-1', 'text-sm');
     });
 
     test('session trace section has proper border styling', () => {

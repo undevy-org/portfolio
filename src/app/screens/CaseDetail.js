@@ -4,9 +4,9 @@
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Tabs from '../components/ui/Tabs';
-import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
 import { Tag, CommandTitle } from '../components/atoms';
+import { Panel, NavigationButton } from '../components/molecules';
 
 export default function CaseDetail() {
   const { sessionData, navigate, addLog, selectedCase } = useSession();
@@ -95,48 +95,33 @@ export default function CaseDetail() {
   
   return (
   <ScreenWrapper>
-      {/* Main info panel */}
-      <div className="p-4 rounded border border-secondary">
-        <div className="space-y-2">
-          <CommandTitle text={selectedCase.title} level="h2" className="text-xl" />
-          <p className="text-sm text-secondary">{selectedCase.desc}</p>
-          <p className="text-sm pt-1 text-success">{selectedCase.metrics}</p>
-          <div className="flex flex-wrap gap-2 pt-2">
-            {selectedCase.tags?.map((tag) => (
-              <Tag key={tag} text={tag} />
-            ))}
-          </div>
+      <Panel>
+        <CommandTitle text={selectedCase.title} level="h2" className="text-xl" />
+        <p className="text-sm text-secondary">{selectedCase.desc}</p>
+        <p className="text-sm pt-1 text-success">{selectedCase.metrics}</p>
+        <div className="flex flex-wrap gap-2 pt-2">
+          {selectedCase.tags?.map((tag) => (
+            <Tag key={tag} text={tag} />
+          ))}
         </div>
-      </div>
+      </Panel>
 
       <Tabs tabs={tabs} defaultTab="challenge" />
 
       <div className="mt-4 flex flex-col md:flex-row gap-3">
-        <Button
-          onClick={() => {
-            addLog('RETURN TO CASE LIST');
-            navigate('CaseList');
-          }}
+        <NavigationButton
+          screen="CaseList"
+          label="BACK TO CASES"
           icon={ArrowLeft}
-          iconPosition="left"
-          variant="flex"
-          className="p-2"
-        >
-          BACK TO CASES
-        </Button>
-        
-        <Button
-          onClick={() => {
-            addLog('NAVIGATE: skills matrix');
-            navigate('SkillsGrid');
-          }}
+          logMessage="RETURN TO CASE LIST"
+        />
+
+        <NavigationButton
+          screen="SkillsGrid"
+          label="VIEW SKILLS"
           icon={Zap}
-          iconPosition="left"
-          variant="flex"
-          className="p-2"
-        >
-          VIEW SKILLS
-        </Button>
+          logMessage="NAVIGATE: skills matrix"
+        />
       </div>
   </ScreenWrapper>
   );

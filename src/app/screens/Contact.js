@@ -7,6 +7,7 @@ import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import { CommandTitle } from '../components/atoms';
+import { Panel, LabelValuePair } from '../components/molecules';
 
 export default function Contact() {
   const { sessionData, addLog, domainData } = useSession();
@@ -114,22 +115,13 @@ export default function Contact() {
         </div>
       </div>
 
-      <div className="p-4 border rounded border-secondary">
+      <Panel>
         <CommandTitle text="current_status" level="h3" className="mb-2" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className="text-primary">$seeking:</span>
-          <span className="text-secondary">{profileStatus.seeking || 'Not specified'}</span>
-
-          <span className="text-primary">$location:</span>
-          <span className="text-secondary">Remote, EMEA</span>
-
-          <span className="text-primary">$target_comp:</span>
-          <span className="text-secondary">{profileStatus.salary || 'Negotiable'}</span>
-          
-          <span className="text-primary">$availability:</span>
-          <span className="text-secondary">{availabilityDate}</span>
-        </div>
-      </div>
+        <LabelValuePair label="$seeking" value={profileStatus.seeking || 'Not specified'} responsive />
+        <LabelValuePair label="$location" value="Remote, EMEA" responsive />
+        <LabelValuePair label="$target_comp" value={profileStatus.salary || 'Negotiable'} responsive />
+        <LabelValuePair label="$availability" value={availabilityDate} responsive />
+      </Panel>
     </ScreenWrapper>
   );
 }

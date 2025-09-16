@@ -7,6 +7,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
 import { Home, ChevronRight, Shield, Key, Users } from 'lucide-react';
 import { CommandTitle } from '../components/atoms';
+import { SectionHeader, Panel } from '../components/molecules';
 
 export default function AccessManager() {
   const { sessionData, navigate, addLog, setSessionData } = useSession();
@@ -96,10 +97,7 @@ export default function AccessManager() {
       {/* Master Codes Section */}
       {masterCodes.length > 0 && (
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="w-4 h-4 text-command" />
-            <CommandTitle text="Master Access" level="h3" className="text-sm uppercase tracking-wider" />
-          </div>
+          <SectionHeader title="Master Access" icon={Shield} />
           <div className="space-y-3">
             {masterCodes.map((code, index) => (
               <button
@@ -148,10 +146,7 @@ export default function AccessManager() {
       {/* Special Codes Section */}
       {specialCodes.length > 0 && (
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Key className="w-4 h-4 text-command" />
-            <CommandTitle text="Special Access" level="h3" className="text-sm uppercase tracking-wider" />
-          </div>
+          <SectionHeader title="Special Access" icon={Key} />
           <div className="space-y-3">
             {specialCodes.map((code, index) => (
               <button
@@ -211,10 +206,7 @@ export default function AccessManager() {
       {/* User Codes Section */}
       {userCodes.length > 0 && (
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Users className="w-4 h-4 text-command" />
-            <CommandTitle text={`User Codes [${userCodes.length}]`} level="h3" className="text-sm uppercase tracking-wider" />
-          </div>
+          <SectionHeader title={`User Codes [${userCodes.length}]`} icon={Users} />
           <div className="space-y-3">
             {userCodes.map((code, index) => (
               <button
