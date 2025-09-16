@@ -3,87 +3,57 @@
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { UserCheck, Mail } from 'lucide-react';
-import Button from '../components/ui/Button';
 import { CommandTitle } from '../components/atoms';
+import { Panel, LabelValuePair, NavigationButton, ListItem } from '../components/molecules';
 
 export default function Introduction() {
-  const { sessionData, theme, navigate, addLog } = useSession();
-
-  const panelClasses = `p-4 rounded border mb-4 ${
-    "border-secondary"
-  }`;
-  const yellowClasses = `text-base ${
-    "text-command"
-  }`;
-  const labelClasses = `${
-    "text-primary"
-  }`;
-  const valueClasses = `${
-    "text-secondary"
-  }`;
+  const { sessionData } = useSession();
 
   const profile = sessionData?.profile || {};
-    const introText =
+  const introText =
     sessionData?.introduction?.[sessionData?.meta?.tone] ||
     sessionData?.introduction?.formal ||
     'Welcome to my portfolio!';
-    
-  const handleNavigate = (screen, label) => {
-    addLog(`NAVIGATE: ${label}`);
-    navigate(screen);
-  };
 
 return (
   <ScreenWrapper className="font-mono">
-      <div className={panelClasses}>
+      <Panel>
         <CommandTitle text="profile_data" level="h3" className="mb-2" />
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm`}>
-          <span className={labelClasses}>$title:</span>
-          <span className={valueClasses}>{profile.summary?.title}</span>
-          
-          <span className={labelClasses}>$specialization:</span>
-          <span className={valueClasses}>{profile.summary?.specialization}</span>
+        <div className="space-y-1">
+          <LabelValuePair label="$title" value={profile.summary?.title} responsive />
+          <LabelValuePair label="$specialization" value={profile.summary?.specialization} responsive />
+          <LabelValuePair label="$background" value={profile.summary?.background} responsive />
+        </div>
+      </Panel>
 
-          <span className={labelClasses}>$background:</span>
-          <span className={valueClasses}>{profile.summary?.background}</span>
-      </div>
-    </div>
-
-      <div className={panelClasses}>
+      <Panel>
         <CommandTitle text="about_me" level="h3" className="mb-2" />
         <p className={`text-sm leading-relaxed text-secondary`}>{introText}</p>
-    </div>
+      </Panel>
 
-      <div className={panelClasses}>
+      <Panel>
         <CommandTitle text="core_attributes" level="h3" className="mb-2" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
-        {profile.attributes?.map((attr, index) => (
-          <div key={index}>
-              <span className={labelClasses}>[✓] </span>
-              <span className={valueClasses}>{attr}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+          {profile.attributes?.map((attr, index) => (
+            <ListItem key={index} marker="✓" text={attr} />
+          ))}
+        </div>
+      </Panel>
 
     <div className="flex flex-col md:flex-row gap-3">
-      <Button
-        onClick={() => handleNavigate('Timeline', 'experience timeline')}
+      <NavigationButton
+        screen="Timeline"
+        label="VIEW EXPERIENCE"
         icon={UserCheck}
-        iconPosition="left"
-        variant="flex"
-      >
-        VIEW EXPERIENCE
-      </Button>
+        logMessage="NAVIGATE: experience timeline"
+      />
 
-      <Button
-        onClick={() => handleNavigate('Contact', 'contact info')}
+      <NavigationButton
+        screen="Contact"
+        label="GET IN TOUCH"
         icon={Mail}
-        iconPosition="left"
-        variant="flex"
-      >
-        GET IN TOUCH
-      </Button>
+        logMessage="NAVIGATE: contact info"
+      />
     </div>
   </ScreenWrapper>
 );

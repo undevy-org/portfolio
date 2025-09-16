@@ -6,6 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { ChevronRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress'; // Import the progress component
 import { Tag, CommandTitle } from '../components/atoms';
+import { Panel } from '../components/molecules';
 
 export default function CaseList() {
   const { sessionData, navigate, addLog, setSelectedCase } = useSession();
@@ -101,23 +102,44 @@ export default function CaseList() {
             <button
               key={caseId}
               onClick={() => handleCaseClick(caseId, caseData)}
-              className="w-full p-4 border rounded text-left transition-colors flex items-start gap-4 border-secondary bg-hover"
+              className="w-full text-left transition-colors"
             >
-              <div className="flex-1 space-y-1">
-                <CommandTitle text={caseData.title} level="h3" className="text-lg" />
-                <div className="text-sm text-secondary">
-                {caseData.desc}
-              </div>
-                <div className="text-sm pt-1 text-primary">
-                {caseData.metrics}
-              </div>
-                <div className="flex flex-wrap gap-2 pt-2">
-                {caseData.tags?.map((tag) => (
-                  <Tag key={tag} text={tag} />
-                ))}
-              </div>
-              </div>
-              <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
+              <Panel className="bg-hover hover:border-primary cursor-pointer">
+                <div className="hidden md:flex justify-between items-start gap-x-3">
+                  <div className="space-y-1">
+                    <CommandTitle text={caseData.title} level="h3" className="text-lg" />
+                    <div className="text-sm text-secondary">
+                      {caseData.desc}
+                    </div>
+                    <div className="text-sm pt-1 text-primary">
+                      {caseData.metrics}
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {caseData.tags?.map((tag) => (
+                        <Tag key={tag} text={tag} />
+                      ))}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
+                </div>
+                <div className="md:hidden">
+                  <div className="space-y-1">
+                    <CommandTitle text={caseData.title} level="h3" className="text-lg" />
+                    <div className="text-sm text-secondary">
+                      {caseData.desc}
+                    </div>
+                    <div className="text-sm pt-1 text-primary">
+                      {caseData.metrics}
+                    </div>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {caseData.tags?.map((tag) => (
+                        <Tag key={tag} text={tag} />
+                      ))}
+                    </div>
+                    <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
+                  </div>
+                </div>
+              </Panel>
             </button>
           );
         })}
