@@ -3,9 +3,9 @@
 
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
-import Button from '../components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 import { CommandTitle, Divider } from '../components/atoms';
+import { Panel, NavigationButton, ListItem } from '../components/molecules';
 
 export default function SkillDetail() {
   const { sessionData, navigate, addLog, selectedSkill } = useSession();
@@ -39,77 +39,65 @@ export default function SkillDetail() {
   
   return (
     <ScreenWrapper>
-      <div className="p-4 rounded border border-secondary">
-        <div className="space-y-1">
-          <CommandTitle text={selectedSkill.name} level="h2" className="text-xl" />
-          <p className="text-sm text-secondary">{selectedSkill.desc}</p>
-        </div>
+      <Panel>
+        <CommandTitle text={selectedSkill.name} level="h2" className="text-xl" />
+        <p className="text-sm text-secondary">{selectedSkill.desc}</p>
 
         <Divider />
-        
-        <div>
-          <CommandTitle text="proficiency_level" level="h3" className="text-base mb-2" />
-          <div className="flex items-center gap-4">
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <div
-                  key={level}
-                  className={`w-5 h-5 border border-primary ${
-                    level <= getLevelValue(selectedSkill.level)
-                      ? 'bg-primary'
-                      : ''
-                  }`}
-                />
-              ))}
-            </div>
-            <p className="text-lg text-primary">{selectedSkill.level}</p>
+
+        <CommandTitle text="proficiency_level" level="h3" className="text-base mb-2" />
+        <div className="flex items-center gap-4">
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((level) => (
+              <div
+                key={level}
+                className={`w-5 h-5 border border-primary ${
+                  level <= getLevelValue(selectedSkill.level)
+                    ? 'bg-primary'
+                    : ''
+                }`}
+              />
+            ))}
           </div>
+          <p className="text-lg text-primary">{selectedSkill.level}</p>
         </div>
-      </div>
-      <div className="p-4 rounded border border-secondary">
+      </Panel>
+
+      <Panel>
         <CommandTitle text="skill_overview" level="h3" className="text-base mb-2" />
         <p className="text-sm leading-relaxed text-secondary">
           {skillDetails.description || 'No description available.'}
         </p>
-      </div>
+      </Panel>
 
       {skillDetails.examples?.length > 0 && (
-        <div className="p-4 rounded border border-secondary">
+        <Panel>
           <CommandTitle text="implementations" level="h3" className="text-base mb-2" />
           <div className="space-y-1">
             {skillDetails.examples.map((example, idx) => (
-              <div key={idx} className="text-sm flex items-start">
-                <span className="mr-2 text-command">[{idx + 1}]</span>
-                <span className="text-secondary">{example}</span>
-              </div>
+              <ListItem key={idx} marker={`[${idx + 1}]`} text={example} />
             ))}
           </div>
-        </div>
+        </Panel>
       )}
 
       {skillDetails.impact && (
-        <div className="p-4 rounded border border-secondary">
+        <Panel>
           <CommandTitle text="business_impact" level="h3" className="text-base mb-2" />
           <div className="space-y-2">
             {Array.isArray(skillDetails.impact) ? (
               skillDetails.impact.map((item, idx) => (
-                <div key={idx} className="text-sm flex items-start">
-                  <span className="mr-2 text-success">[✓]</span>
-                  <span className="text-secondary">{item}</span>
-                </div>
+                <ListItem key={idx} marker="✓" text={item} />
               ))
             ) : (
-              <div className="text-sm flex items-start">
-                <span className="mr-2 text-success">[✓]</span>
-                <span className="text-secondary">{skillDetails.impact}</span>
-              </div>
+              <ListItem marker="✓" text={skillDetails.impact} />
             )}
           </div>
-        </div>
+        </Panel>
       )}
 
       {skillDetails.tools?.length > 0 && (
-        <div className="p-4 rounded border border-secondary">
+        <Panel>
           <CommandTitle text="related_tools" level="h3" className="text-base mb-2" />
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
             {skillDetails.tools.map((tool) => (
@@ -118,21 +106,15 @@ export default function SkillDetail() {
               </span>
             ))}
           </div>
-        </div>
+        </Panel>
       )}
 
-      <Button
-        onClick={() => {
-          addLog('RETURN TO SKILLS GRID');
-          navigate('SkillsGrid');
-        }}
+      <NavigationButton
+        screen="SkillsGrid"
+        label="BACK TO SKILLS"
         icon={ArrowLeft}
-        iconPosition="left"
-        variant="full"
-        className="p-2"
-      >
-        BACK TO SKILLS
-      </Button>
+        logMessage="RETURN TO SKILLS GRID"
+      />
     </ScreenWrapper>
   );
 }

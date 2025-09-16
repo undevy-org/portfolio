@@ -5,9 +5,9 @@
 import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Accordion from '../components/ui/Accordion';
-import Button from '../components/ui/Button';
 import { FolderGit2, ArrowLeft } from 'lucide-react';
 import { CommandTitle } from '../components/atoms';
+import { Panel, NavigationButton } from '../components/molecules';
 
 export default function RoleDetail() {
   const { sessionData, navigate, addLog, selectedRole } = useSession();
@@ -40,40 +40,27 @@ export default function RoleDetail() {
   return (
     <ScreenWrapper>
     <div className="space-y-4">
-      <div className="p-4 rounded border border-secondary">
-        <div className="space-y-1">
-          <CommandTitle text={selectedRole.company} level="h2" className="text-xl" />
-          <p className="text-base text-primary">{selectedRole.role}</p>
-          <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
-        </div>
-      </div>
+      <Panel>
+        <CommandTitle text={selectedRole.company} level="h2" className="text-xl" />
+        <p className="text-base text-primary">{selectedRole.role}</p>
+        <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
+      </Panel>
 
       <Accordion sections={sections} defaultExpanded="summary" />
 
       <div className="mt-4 flex flex-col md:flex-row gap-3">
-        <Button
-          onClick={() => {
-            addLog('RETURN TO TIMELINE');
-            navigate('Timeline');
-          }}
-            icon={ArrowLeft}
-            iconPosition="left"
-            variant="flex"
-            className="p-2"
-        >
-          BACK TO TIMELINE
-        </Button>
-        <Button
-          onClick={() => {
-            addLog('NAVIGATE: case studies');
-            navigate('CaseList');
-          }}
+        <NavigationButton
+          screen="Timeline"
+          label="BACK TO TIMELINE"
+          icon={ArrowLeft}
+          logMessage="RETURN TO TIMELINE"
+        />
+        <NavigationButton
+          screen="CaseList"
+          label="READ CASES"
           icon={FolderGit2}
-          iconPosition="left"
-          variant="flex"
-        >
-          READ CASES
-        </Button>
+          logMessage="NAVIGATE: case studies"
+        />
       </div>
     </div>
     </ScreenWrapper>

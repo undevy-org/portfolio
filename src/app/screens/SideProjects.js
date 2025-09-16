@@ -5,6 +5,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { ExternalLink } from 'lucide-react';
 import { CommandTitle, Tag } from '../components/atoms';
+import { Panel } from '../components/molecules';
 
 export default function SideProjects() {
   const { sessionData, addLog } = useSession();
@@ -21,29 +22,29 @@ export default function SideProjects() {
     <ScreenWrapper>
       <div className="space-y-3 mb-2">
         {projects.map((project) => (
-            <div key={project.id} className="p-4 rounded border border-secondary">
+          <Panel key={project.id}>
             <div className="flex items-start justify-between mb-2">
-                <CommandTitle text={project.name} level="h3" className="text-base" />
+              <CommandTitle text={project.name} level="h3" className="text-base" />
               <Tag text={project.status} />
             </div>
-            
-              <p className="text-sm mb-2 text-secondary">{project.desc}</p>
-            
-              <div className="flex flex-wrap gap-2">
-                {project.tech?.map((tech) => (
-                  <Tag key={tech} text={`[${tech}]`} />
-                ))}
-              </div>
-          </div>
+
+            <p className="text-sm mb-2 text-secondary">{project.desc}</p>
+
+            <div className="flex flex-wrap gap-2">
+              {project.tech?.map((tech) => (
+                <Tag key={tech} text={`[${tech}]`} />
+              ))}
+            </div>
+          </Panel>
         ))}
       </div>
 
-            {speaking.length > 0 && (
-              <div className="p-4 rounded border border-secondary">
-                <CommandTitle text="public_speaking" level="h3" className="text-base mb-3" />
-                <div className="space-y-2">
-                  {speaking.map((item, index) => (
-                    <a
+      {speaking.length > 0 && (
+        <Panel>
+          <CommandTitle text="public_speaking" level="h3" className="text-base mb-3" />
+          <div className="space-y-2">
+            {speaking.map((item, index) => (
+              <a
                 key={index}
                 href={item.url}
                 target="_blank"
@@ -58,7 +59,7 @@ export default function SideProjects() {
               </a>
             ))}
           </div>
-        </div>
+        </Panel>
       )}
     </ScreenWrapper>
   );
