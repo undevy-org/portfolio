@@ -56,7 +56,7 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
         );
       case 'sub_heading':
         return (
-          <CommandTitle key={idx} text={item.value} level="div" className="mb-2 mt-4" />
+          <CommandTitle key={idx} text={item.value} level="h3" className="mb-2 mt-4" />
         );
       
       case 'divider':
