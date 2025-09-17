@@ -4,6 +4,7 @@
 import { useSession } from '../context/SessionContext';
 import { CommandTitle, Divider } from '../components/atoms';
 import { LabelValuePair } from '../components/molecules';
+import Panel from '../components/molecules/Panel';
 
 export default function AnalyticsPanel() {
   const { 
@@ -27,7 +28,11 @@ export default function AnalyticsPanel() {
   };
 
   return (
-    <div className="w-full max-w-2xl border rounded p-3 text-sm bg-main border-primary">
+    <div className="w-full max-w-2xl text-sm">
+      <Panel
+        className="p-3 border-primary text-sm border rounded"
+        noPadding={true}
+      >
 
       <CommandTitle text="analytics" level="h2" className="mb-2" />
       <LabelValuePair label="$company" value={sessionData.meta?.company} responsive />
@@ -81,6 +86,8 @@ export default function AnalyticsPanel() {
           )}
         </div>
       </div>
+
+      </Panel>
     </div>
   );
 }

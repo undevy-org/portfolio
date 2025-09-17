@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useSession } from '../../context/SessionContext';
 import dynamic from 'next/dynamic';
 import { Divider, CommandTitle } from '../../components/atoms';
+import Panel from '../molecules/Panel';
 
 // Lazy load the image component since not all tabs will have images
 const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
@@ -127,14 +128,14 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
         </div>
       </div>
 
-      <div className="-mt-px p-4 border rounded-b rounded-tr border-secondary">
+      <Panel className="-mt-px rounded-b rounded-bl">
         {activeTabData && (
           <>
             <CommandTitle text={activeTabData.title || activeTabData.label} level="h3" className="mb-3" />
             {renderTabContent()}
           </>
         )}
-      </div>
+      </Panel>
     </div>
   );
 }

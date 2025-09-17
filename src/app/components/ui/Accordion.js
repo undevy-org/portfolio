@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useSession } from '../../context/SessionContext';
 import { ChevronDown } from 'lucide-react';
 import { Tag, CommandTitle } from '../../components/atoms';
+import Panel from '../../components/molecules/Panel';
 
 export default function Accordion({ sections, defaultExpanded = null }) {
   const { addLog } = useSession();
@@ -46,11 +47,11 @@ export default function Accordion({ sections, defaultExpanded = null }) {
   return (
     <div className="space-y-3">
       {sections.map((section) => (
-        <div key={section.id} className="border rounded border-secondary">
+        <Panel key={section.id} className="border-secondary">
           <button
             onClick={() => toggleSection(section.id)}
             className={`w-full p-4 text-left flex justify-between items-center transition-colors bg-hover ${
-              expandedSection === section.id ? 'border-b border-secondary' : ''
+              expandedSection === section.id ? 'border-b border-secondary rounded-b-none' : ''
             }`}
           >
             <CommandTitle text={section.title} level="h3" />
@@ -58,14 +59,14 @@ export default function Accordion({ sections, defaultExpanded = null }) {
           </button>
 
           {expandedSection === section.id && (
-            <div className="p-4 space-y-2">
+            <div className="px-4 pb-4 pt-2 space-y-2">
               {Array.isArray(section.content)
                 ? section.content.map(renderContentItem)
                 : renderContentItem(section.content, 0)
               }
             </div>
           )}
-        </div>
+        </Panel>
       ))}
     </div>
   );

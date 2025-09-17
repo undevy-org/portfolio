@@ -69,12 +69,21 @@ describe('AnalyticsPanel Component', () => {
 
     test('renders in correct container with proper styling', () => {
       renderAnalyticsPanel();
-      
-      const container = screen.getByText('$analytics').closest('div');
+
+      // Find the Panel component (the actual styled container)
+      const analyticsTitle = screen.getByText('$analytics');
+      const container = analyticsTitle.closest('[class*="panel-base"]'); // Find Panel component
+
+      // Panel provides: panel-base panel-theme (maps to border/border-secondary and bg-main/border-secondary)
+      // Custom className provides: p-3 border-primary text-sm border rounded
       expect(container).toHaveClass(
-        'w-full', 'max-w-2xl', 'border', 'rounded', 'p-3', 
-        'text-sm', 'bg-main', 'border-primary'
+        'panel-base', 'panel-theme', 'p-3',
+        'border-primary', 'text-sm', 'border', 'rounded'
       );
+
+      // Also verify the outer wrapper has the sizing classes
+      const wrapper = analyticsTitle.closest('[class*="w-full"]');
+      expect(wrapper).toHaveClass('w-full', 'max-w-2xl', 'text-sm');
     });
 
     test('does not render when sessionData is null', () => {
