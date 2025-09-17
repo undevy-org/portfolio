@@ -6,8 +6,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
-import { CommandTitle } from '../components/atoms';
-import { Panel, LabelValuePair } from '../components/molecules';
+import { ProfileDataGrid } from '../components/organisms';
 
 export default function Contact() {
   const { sessionData, addLog, domainData } = useSession();
@@ -115,13 +114,16 @@ export default function Contact() {
         </div>
       </div>
 
-      <Panel>
-        <CommandTitle text="current_status" level="h3" className="mb-2" />
-        <LabelValuePair label="$seeking" value={profileStatus.seeking || 'Not specified'} responsive />
-        <LabelValuePair label="$location" value="Remote, EMEA" responsive />
-        <LabelValuePair label="$target_comp" value={profileStatus.salary || 'Negotiable'} responsive />
-        <LabelValuePair label="$availability" value={availabilityDate} responsive />
-      </Panel>
+      <ProfileDataGrid
+        title="current_status"
+        data={{
+          seeking: profileStatus.seeking || 'Not specified',
+          location: 'Remote, EMEA',
+          target_comp: profileStatus.salary || 'Negotiable',
+          availability: availabilityDate
+        }}
+        responsive
+      />
     </ScreenWrapper>
   );
 }

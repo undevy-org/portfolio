@@ -25,22 +25,25 @@ export default function Timeline() {
         items={roles}
         onItemClick={handleRoleClick}
         columns={1}
+        className="mb-3"
       />
 
-      <NavigationPanel buttons={[
-        {
-          screen: 'CaseList',
-          label: 'READ CASES',
-          icon: FolderGit2,
-          logMessage: 'NAVIGATE: case studies'
-        },
-        {
-          screen: 'SkillsGrid',
-          label: 'VIEW SKILLS',
-          icon: Settings2,
-          logMessage: 'NAVIGATE: skills matrix'
-        }
-      ]} layout="row" />
+      <div className="mt-5">
+        <NavigationPanel buttons={[
+          {
+            screen: 'CaseList',
+            label: 'READ CASES',
+            icon: FolderGit2,
+            logMessage: 'NAVIGATE: case studies'
+          },
+          {
+            screen: 'SkillsGrid',
+            label: 'VIEW SKILLS',
+            icon: Settings2,
+            logMessage: 'NAVIGATE: skills matrix'
+          }
+        ]} layout="row" />
+      </div>
     </ScreenWrapper>
   );
 }
