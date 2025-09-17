@@ -5,6 +5,7 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import TerminalProgress from '../components/ui/TerminalProgress'; // Import the progress component
 import { ResponsiveCardGrid } from '../components/organisms';
+import Panel from '../components/molecules/Panel';
 
 export default function CaseList() {
   const { sessionData, navigate, addLog, setSelectedCase } = useSession();
@@ -66,7 +67,7 @@ export default function CaseList() {
 
   return (
     <ScreenWrapper>
-      <div className="mb-4 p-4 rounded border border-secondary">
+      <Panel className="mb-4">
         <div className="mb-3 text-primary">
           <span className="text-sm text-command">Access Level: </span>
           <span className="text-sm text-success">{accessInfo.level}</span>
@@ -103,7 +104,7 @@ export default function CaseList() {
             <span>✓ Maximum access level achieved</span>
           </div>
         )}
-      </div>
+      </Panel>
 
       <ResponsiveCardGrid
         items={caseItems}
