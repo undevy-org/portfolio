@@ -4,7 +4,8 @@ import { useSession } from '../context/SessionContext';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { UserCheck, Mail } from 'lucide-react';
 import { CommandTitle } from '../components/atoms';
-import { Panel, LabelValuePair, NavigationButton, ListItem } from '../components/molecules';
+import { Panel, ListItem } from '../components/molecules';
+import { ProfileDataGrid, NavigationPanel } from '../components/organisms';
 
 export default function Introduction() {
   const { sessionData } = useSession();
@@ -17,14 +18,15 @@ export default function Introduction() {
 
 return (
   <ScreenWrapper className="font-mono">
-      <Panel>
-        <CommandTitle text="profile_data" level="h3" className="mb-2" />
-        <div className="space-y-1">
-          <LabelValuePair label="$title" value={profile.summary?.title} responsive />
-          <LabelValuePair label="$specialization" value={profile.summary?.specialization} responsive />
-          <LabelValuePair label="$background" value={profile.summary?.background} responsive />
-        </div>
-      </Panel>
+      <ProfileDataGrid
+        title="profile_data"
+        data={{
+          title: profile.summary?.title,
+          specialization: profile.summary?.specialization,
+          background: profile.summary?.background
+        }}
+        responsive
+      />
 
       <Panel>
         <CommandTitle text="about_me" level="h3" className="mb-2" />
@@ -40,21 +42,20 @@ return (
         </div>
       </Panel>
 
-    <div className="flex flex-col md:flex-row gap-3">
-      <NavigationButton
-        screen="Timeline"
-        label="VIEW EXPERIENCE"
-        icon={UserCheck}
-        logMessage="NAVIGATE: experience timeline"
-      />
-
-      <NavigationButton
-        screen="Contact"
-        label="GET IN TOUCH"
-        icon={Mail}
-        logMessage="NAVIGATE: contact info"
-      />
-    </div>
+    <NavigationPanel buttons={[
+      {
+        screen: 'Timeline',
+        label: 'VIEW EXPERIENCE',
+        icon: UserCheck,
+        logMessage: 'NAVIGATE: experience timeline'
+      },
+      {
+        screen: 'Contact',
+        label: 'GET IN TOUCH',
+        icon: Mail,
+        logMessage: 'NAVIGATE: contact info'
+      }
+    ]} layout="row" />
   </ScreenWrapper>
 );
 }

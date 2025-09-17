@@ -190,9 +190,9 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify MainHub renders with menu items
-      expect(screen.getByText('$Timeline')).toBeInTheDocument();
-      expect(screen.getByText('$Case Studies')).toBeInTheDocument();
-      expect(screen.getByText('$Contact')).toBeInTheDocument();
+      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getAllByText('$Case Studies')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getAllByText('$Contact')).toHaveLength(2); // Desktop and mobile versions
 
       // Cleanup: restore original fetch
       global.fetch = originalFetch;
@@ -371,7 +371,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify MainHub is rendered
-      expect(screen.getByText('$Timeline')).toBeInTheDocument();
+      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
 
       // Simulate session termination trigger
       mockEndSession();
@@ -421,7 +421,8 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Click on Timeline menu item
-      const timelineButton = screen.getByText('$Timeline').closest('button');
+      const timelineButtons = screen.getAllByText('$Timeline');
+      const timelineButton = timelineButtons[0].closest('button');
       fireEvent.click(timelineButton);
 
       // Verify navigation and logging were called (but not specific arguments due to complex screen logic)
@@ -466,7 +467,8 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Click on Case Studies menu item
-      const caseListButton = screen.getByText('$Case Studies').closest('button');
+      const caseListButtons = screen.getAllByText('$Case Studies');
+      const caseListButton = caseListButtons[0].closest('button');
       fireEvent.click(caseListButton);
 
       // Verify navigation and logging were called (but not specific arguments)
@@ -514,7 +516,7 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify initial theme
-      expect(screen.getByText('$Timeline')).toBeInTheDocument();
+      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
 
       // Simulate theme change
       currentTheme = 'light';
@@ -534,8 +536,8 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify the component still renders correctly after theme change
-      expect(screen.getByText('$Timeline')).toBeInTheDocument();
-      expect(screen.getByText('$Case Studies')).toBeInTheDocument();
+      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getAllByText('$Case Studies')).toHaveLength(2); // Desktop and mobile versions
     });
   });
 
