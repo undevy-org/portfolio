@@ -35,9 +35,9 @@ export default function SkillsGrid() {
     <>
       <div className="hidden md:flex justify-between items-start gap-x-3">
         <div className="space-y-1">
-          <div className="text-base text-command">
+          <span className="text-base text-command">
             {skill.name}
-          </div>
+          </span>
           <div className="text-sm text-secondary">
             {skill.desc}
           </div>
@@ -49,9 +49,9 @@ export default function SkillsGrid() {
       </div>
       <div className="md:hidden">
         <div className="space-y-1">
-          <div className="text-base text-command">
+          <span className="text-base text-command">
             {skill.name}
-          </div>
+          </span>
           <div className="text-sm text-secondary">
             {skill.desc}
           </div>

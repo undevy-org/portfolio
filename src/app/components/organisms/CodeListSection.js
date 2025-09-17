@@ -48,10 +48,10 @@ export default function CodeListSection({
               <span className="mt-1 text-command">
                 [{prefix && `${prefix}`}{String(index + 1).padStart(2, '0')}]
               </span>
-              <div>
-                <div className="text-lg font-mono text-command">
+                <div>
+                <span className="text-lg font-mono text-command">
                   {code.code || (variant === 'special' ? '[NO CODE REQUIRED]' : code.code)}
-                </div>
+                </span>
                 <div className="text-sm opacity-80 text-secondary">
                   {code.label}
                 </div>

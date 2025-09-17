@@ -220,9 +220,9 @@ function TerminalWindow({
       {/* DEMO MODE BANNER - Also fixed, doesn't scroll */}
       {sessionData?.isDemoMode && !['Entry', 'ProfileBoot'].includes(currentScreen) && (
         <div className="px-4 py-2 bg-hover border-b border-secondary flex-shrink-0">
-          <div className="text-xs text-command">
+          <span className="text-xs text-command">
             DEMO MODE - This is example content. Get your personalized access code via Telegram.
-          </div>
+          </span>
         </div>
       )}
 
