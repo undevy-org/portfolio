@@ -2,23 +2,18 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
-import { ArrowLeft } from 'lucide-react';
-import { CommandTitle, Divider } from '../components/atoms';
-import { Panel, NavigationButton, ListItem } from '../components/molecules';
+import { DetailViewTemplate } from '../components/templates';
 
 export default function SkillDetail() {
   const { sessionData, navigate, addLog, selectedSkill } = useSession();
 
   if (!selectedSkill) {
     return (
-      <div className="p-4 text-center">
-        <p className="text-secondary">
-          No skill selected. Please go back to Skills Grid.
-        </p>
+      <div className="p-4 text-center text-secondary">
+        <p>No skill selected. Please go back to Skills Grid.</p>
         <button
           onClick={() => navigate('SkillsGrid')}
-          className="mt-4 btn-command"
+          className="mt-4 px-4 py-2 rounded border border-primary text-white-black"
         >
           Back to Skills
         </button>
@@ -36,85 +31,93 @@ export default function SkillDetail() {
       default: return 0;
     }
   };
-  
-  return (
-    <ScreenWrapper>
-      <Panel>
-        <CommandTitle text={selectedSkill.name} level="h2" className="text-xl" />
-        <p className="text-sm text-secondary">{selectedSkill.desc}</p>
 
-        <Divider />
+  // Prepare content sections
+  const content = [];
 
-        <CommandTitle text="proficiency_level" level="h3" className="text-base mb-2" />
-        <div className="flex items-center gap-4">
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((level) => (
-              <div
-                key={level}
-                className={`w-5 h-5 border border-primary ${
-                  level <= getLevelValue(selectedSkill.level)
-                    ? 'bg-primary'
-                    : ''
-                }`}
-              />
-            ))}
-          </div>
-          <p className="text-lg text-primary">{selectedSkill.level}</p>
+  // Skill overview
+  content.push({
+    label: 'skill_overview',
+    content: (
+      <p className="text-sm leading-relaxed text-secondary">
+        {skillDetails.description || 'No description available.'}
+      </p>
+    )
+  });
+
+  // Implementations
+  if (skillDetails.examples?.length > 0) {
+    content.push({
+      label: 'implementations',
+      content: (
+        <div className="space-y-1">
+          {skillDetails.examples.map((example, idx) => (
+            <div key={idx} className="flex items-start">
+              <span className="text-secondary mr-2">[{idx + 1}]</span>
+              <p className="text-sm text-secondary">{example}</p>
+            </div>
+          ))}
         </div>
-      </Panel>
+      )
+    });
+  }
 
-      <Panel>
-        <CommandTitle text="skill_overview" level="h3" className="text-base mb-2" />
-        <p className="text-sm leading-relaxed text-secondary">
-          {skillDetails.description || 'No description available.'}
-        </p>
-      </Panel>
+  // Business impact
+  if (skillDetails.impact) {
+    content.push({
+      label: 'business_impact',
+      content: (
+        <div className="space-y-2">
+          {Array.isArray(skillDetails.impact) ? (
+            skillDetails.impact.map((item, idx) => (
+              <div key={idx} className="flex items-start">
+                <span className="text-secondary mr-2">✓</span>
+                <p className="text-sm text-secondary">{item}</p>
+              </div>
+            ))
+          ) : (
+            <div className="flex items-start">
+              <span className="text-secondary mr-2">✓</span>
+              <p className="text-sm text-secondary">{skillDetails.impact}</p>
+            </div>
+          )}
+        </div>
+      )
+    });
+  }
 
-      {skillDetails.examples?.length > 0 && (
-        <Panel>
-          <CommandTitle text="implementations" level="h3" className="text-base mb-2" />
-          <div className="space-y-1">
-            {skillDetails.examples.map((example, idx) => (
-              <ListItem key={idx} marker={`[${idx + 1}]`} text={example} />
-            ))}
-          </div>
-        </Panel>
-      )}
+  // Related tools
+  if (skillDetails.tools?.length > 0) {
+    content.push({
+      label: 'related_tools',
+      content: (
+        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
+          {skillDetails.tools.map((tool) => (
+            <span key={tool} className="text-secondary">
+              [{tool}]
+            </span>
+          ))}
+        </div>
+      )
+    });
+  }
 
-      {skillDetails.impact && (
-        <Panel>
-          <CommandTitle text="business_impact" level="h3" className="text-base mb-2" />
-          <div className="space-y-2">
-            {Array.isArray(skillDetails.impact) ? (
-              skillDetails.impact.map((item, idx) => (
-                <ListItem key={idx} marker="✓" text={item} />
-              ))
-            ) : (
-              <ListItem marker="✓" text={skillDetails.impact} />
-            )}
-          </div>
-        </Panel>
-      )}
-
-      {skillDetails.tools?.length > 0 && (
-        <Panel>
-          <CommandTitle text="related_tools" level="h3" className="text-base mb-2" />
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
-            {skillDetails.tools.map((tool) => (
-              <span key={tool} className="text-secondary">
-                [{tool}]
-              </span>
-            ))}
-          </div>
-        </Panel>
-      )}
-
-      <NavigationButton
-        screen="SkillsGrid"
-        label="BACK TO SKILLS"
-        icon={ArrowLeft}
-        logMessage="RETURN TO SKILLS GRID"
-      />
-    </ScreenWrapper>
+  return (
+    <DetailViewTemplate
+      entityType="skill"
+      title={selectedSkill.name}
+      subtitle={selectedSkill.desc}
+      proficiency={{
+        level: selectedSkill.level,
+        value: getLevelValue(selectedSkill.level)
+      }}
+      content={content}
+      displayMode="sections"
+      onBack={() => {
+        addLog('RETURN TO SKILLS GRID');
+        navigate('SkillsGrid');
+      }}
+      backLabel="BACK TO SKILLS"
+    />
   );
 }

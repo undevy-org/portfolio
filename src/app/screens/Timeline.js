@@ -1,9 +1,9 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
 import { FolderGit2, Settings2 } from 'lucide-react';
-import { NavigationPanel, ResponsiveCardGrid } from '../components/organisms';
+import { ResponsiveCardGrid } from '../components/organisms';
+import { StandardScreenTemplate } from '../components/templates';
 
 export default function Timeline() {
   const { sessionData, theme, navigate, addLog, setSelectedRole } = useSession();
@@ -20,30 +20,29 @@ export default function Timeline() {
   };
 
   return (
-    <ScreenWrapper>
+    <StandardScreenTemplate
+      title="experience"
+      navigationButtons={[
+        {
+          screen: 'CaseList',
+          label: 'READ CASES',
+          icon: FolderGit2,
+          logMessage: 'NAVIGATE: case studies'
+        },
+        {
+          screen: 'SkillsGrid',
+          label: 'VIEW SKILLS',
+          icon: Settings2,
+          logMessage: 'NAVIGATE: skills matrix'
+        }
+      ]}
+    >
       <ResponsiveCardGrid
         items={roles}
         onItemClick={handleRoleClick}
         columns={1}
         className="mb-3"
       />
-
-      <div className="mt-5">
-        <NavigationPanel buttons={[
-          {
-            screen: 'CaseList',
-            label: 'READ CASES',
-            icon: FolderGit2,
-            logMessage: 'NAVIGATE: case studies'
-          },
-          {
-            screen: 'SkillsGrid',
-            label: 'VIEW SKILLS',
-            icon: Settings2,
-            logMessage: 'NAVIGATE: skills matrix'
-          }
-        ]} layout="row" />
-      </div>
-    </ScreenWrapper>
+    </StandardScreenTemplate>
   );
 }
