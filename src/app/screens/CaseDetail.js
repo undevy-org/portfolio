@@ -2,24 +2,19 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
-import Tabs from '../components/ui/Tabs';
 import { ArrowLeft, Zap } from 'lucide-react';
-import { Tag, CommandTitle } from '../components/atoms';
-import { Panel, NavigationButton } from '../components/molecules';
+import { DetailViewTemplate } from '../components/templates';
 
 export default function CaseDetail() {
   const { sessionData, navigate, addLog, selectedCase } = useSession();
-  
+
   if (!selectedCase) {
     return (
-      <div className="p-4 text-center">
-        <p className="text-secondary">
-          No case selected. Please go back to Case List.
-        </p>
+      <div className="p-4 text-center text-secondary">
+        <p>No case selected. Please go back to Case List.</p>
         <button
           onClick={() => navigate('CaseList')}
-          className="mt-4 btn-command"
+          className="mt-4 px-4 py-2 rounded border border-primary text-white-black"
         >
           Back to Cases
         </button>
@@ -29,100 +24,118 @@ export default function CaseDetail() {
 
   const caseDetails = sessionData?.case_details?.[selectedCase.id] || {};
   const caseImages = caseDetails.images || {};
-  
-  const tabs = [
+
+  // Prepare metadata for display
+  const metadata = {};
+  if (caseDetails.company) metadata.company = caseDetails.company;
+  if (caseDetails.timeline) metadata.timeline = caseDetails.timeline;
+  if (caseDetails.team_size) metadata.team_size = caseDetails.team_size;
+  if (caseDetails.budget) metadata.budget = caseDetails.budget;
+
+  // Prepare content sections
+  const content = [
     {
-      id: 'challenge',
       label: 'challenge',
-      title: 'problem_statement',
-      content: [
-        { type: 'text', value: caseDetails.challenge || 'No challenge description available.' },
-        // Add image object if it exists - Tabs will need to handle this new type
-        ...(caseImages.challenge ? [{
-          type: 'image',
-          src: caseImages.challenge,
-          alt: 'Problem visualization',
-          height: 300
-        }] : [])
-      ]
+      content: (
+        <div>
+          <p className="text-sm text-secondary mb-4">
+            {caseDetails.challenge || 'No challenge description available.'}
+          </p>
+          {caseImages.challenge && (
+            <div className="mt-4">
+              {/* Placeholder for image integration */}
+              <p className="text-xs text-secondary italic">Challenge visualization would appear here</p>
+            </div>
+          )}
+        </div>
+      )
     },
     {
-      id: 'approach',
       label: 'approach',
-      title: 'methodology',
-      content: caseDetails.approach?.map(item => ({ 
-        type: 'list_item', 
-        value: item 
-      })) || []
-    },
-    {
-      id: 'solution',
-      label: 'solution',
-      title: 'implementation',
-      content: [
-        { type: 'text', value: caseDetails.solution || 'No solution description available.' },
-        ...(caseImages.solution ? [{
-          type: 'image',
-          src: caseImages.solution,
-          alt: 'Solution implementation',
-          height: 250
-        }] : [])
-      ]
-    },
-    {
-      id: 'results',
-      label: 'results',
-      title: 'impact_metrics',
-      content: [
-        ...(caseDetails.results?.map(item => ({ 
-          type: 'list_item', 
-          value: item 
-        })) || []),
-        ...(caseDetails.learnings ? [
-          { type: 'divider' },
-          { type: 'sub_heading', value: 'key_learnings' },
-          { type: 'text', value: caseDetails.learnings }
-        ] : []),
-        ...(caseImages.results ? [{
-          type: 'image',
-          src: caseImages.results,
-          alt: 'Results visualization',
-          height: 200
-        }] : [])
-      ]
-    }
-  ];
-  
-  return (
-  <ScreenWrapper>
-      <Panel>
-        <CommandTitle text={selectedCase.title} level="h2" className="text-xl" />
-        <p className="text-sm text-secondary">{selectedCase.desc}</p>
-        <p className="text-sm pt-1 text-success">{selectedCase.metrics}</p>
-        <div className="flex flex-wrap gap-2 pt-2">
-          {selectedCase.tags?.map((tag) => (
-            <Tag key={tag} text={tag} />
+      content: caseDetails.approach?.length > 0 ? (
+        <div className="space-y-2">
+          {caseDetails.approach.map((item, idx) => (
+            <div key={idx} className="flex items-start">
+              <span className="text-secondary mr-2">•</span>
+              <p className="text-sm text-secondary">{item}</p>
+            </div>
           ))}
         </div>
-      </Panel>
+      ) : (
+        <p className="text-sm text-secondary">No approach details available.</p>
+      )
+    },
+    {
+      label: 'solution',
+      content: (
+        <div>
+          <p className="text-sm text-secondary mb-4">
+            {caseDetails.solution || 'No solution description available.'}
+          </p>
+          {caseImages.solution && (
+            <div className="mt-4">
+              {/* Placeholder for image integration */}
+              <p className="text-xs text-secondary italic">Solution visualization would appear here</p>
+            </div>
+          )}
+        </div>
+      )
+    },
+    {
+      label: 'results',
+      content: (
+        <div className="space-y-4">
+          {caseDetails.results?.length > 0 && (
+            <div className="space-y-2">
+              {caseDetails.results.map((item, idx) => (
+                <div key={idx} className="flex items-start">
+                  <span className="text-secondary mr-2">✓</span>
+                  <p className="text-sm text-secondary">{item}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {caseDetails.learnings && (
+            <div>
+              <p className="text-xs text-command italic mb-2">Key Learnings</p>
+              <p className="text-sm text-secondary">{caseDetails.learnings}</p>
+            </div>
+          )}
+          {caseImages.results && (
+            <div className="mt-4">
+              {/* Placeholder for image integration */}
+              <p className="text-xs text-secondary italic">Results visualization would appear here</p>
+            </div>
+          )}
+        </div>
+      )
+    }
+  ];
 
-      <Tabs tabs={tabs} defaultTab="challenge" />
+  const additionalButtons = [
+    {
+      screen: 'SkillsGrid',
+      label: 'VIEW SKILLS',
+      icon: Zap,
+      logMessage: 'NAVIGATE: skills matrix'
+    }
+  ];
 
-      <div className="mt-4 flex flex-col md:flex-row gap-3">
-        <NavigationButton
-          screen="CaseList"
-          label="BACK TO CASES"
-          icon={ArrowLeft}
-          logMessage="RETURN TO CASE LIST"
-        />
-
-        <NavigationButton
-          screen="SkillsGrid"
-          label="VIEW SKILLS"
-          icon={Zap}
-          logMessage="NAVIGATE: skills matrix"
-        />
-      </div>
-  </ScreenWrapper>
+  return (
+    <DetailViewTemplate
+      entityType="case"
+      title={selectedCase.title}
+      subtitle={selectedCase.desc}
+      metadata={Object.keys(metadata).length > 0 ? metadata : null}
+      tags={selectedCase.tags}
+      content={content}
+      displayMode="tabs"
+      onBack={() => {
+        addLog('RETURN TO CASE LIST');
+        navigate('CaseList');
+      }}
+      backLabel="BACK TO CASES"
+      additionalButtons={additionalButtons}
+    />
   );
 }
