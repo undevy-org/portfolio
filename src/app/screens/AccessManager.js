@@ -154,7 +154,6 @@ export default function AccessManager() {
   return (
     <ListViewTemplate
       items={accessSections}
-      onItemClick={() => {}} // Not used since we handle clicks in renderCard
       renderCard={customRenderCard}
       navigationButtons={navigationButtons}
     />

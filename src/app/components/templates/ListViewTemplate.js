@@ -164,12 +164,29 @@ export default function ListViewTemplate({
 
         {/* Items grid */}
         {items && items.length > 0 ? (
-          <ResponsiveCardGrid
-            items={items}
-            onItemClick={onItemClick}
-            renderCard={renderCard || (variant === 'menu' ? menuRenderCard : defaultRenderCard)}
-            columns={1}
-          />
+          renderCard ? (
+            // Custom renderCard - render items directly without button wrappers
+            <div className="space-y-3">
+              {items.map((item, index) =>
+                renderCard(item, index)
+              )}
+            </div>
+          ) : (
+            // Default ResponsiveCardGrid with button wrappers
+            <div className="space-y-3">
+              {items.map((item, index) => (
+                <button
+                  key={item.id || index}
+                  onClick={() => onItemClick && onItemClick(item)}
+                  className="w-full text-left transition-colors"
+                >
+                  <Panel className="bg-hover hover:border-primary cursor-pointer relative">
+                    {(variant === 'menu' ? menuRenderCard : defaultRenderCard)(item, index)}
+                  </Panel>
+                </button>
+              ))}
+            </div>
+          )
         ) : (
           emptyState || (
             <Panel>
