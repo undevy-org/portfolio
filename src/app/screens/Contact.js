@@ -79,6 +79,8 @@ export default function Contact() {
         target_comp: profileStatus.salary || 'Negotiable',
         availability: availabilityDate
       }}
+      headerDataTitle="current_status"
+      headerDataBeforeChildren={false}
     >
       <div className="flex flex-col gap-3 mb-4">
         <button

@@ -17,12 +17,14 @@ export default function Introduction() {
 
 return (
   <StandardScreenTemplate
+    title="introduction"
     className="font-mono"
     headerData={{
       title: profile.summary?.title,
       specialization: profile.summary?.specialization,
       background: profile.summary?.background
     }}
+    headerDataTitle="profile_data"
     navigationButtons={[
       {
         screen: 'Timeline',
