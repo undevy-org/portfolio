@@ -2,7 +2,7 @@
 
 import { CommandTitle } from '../atoms';
 import { Panel, NavigationButton } from '../molecules';
-import { TerminalProgress } from '../ui';
+import { TerminalProgress } from '../ui/TerminalProgress';
 import { ResponsiveCardGrid } from '../organisms';
 import ScreenWrapper from '../ScreenWrapper';
 

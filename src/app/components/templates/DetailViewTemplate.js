@@ -2,7 +2,7 @@
 
 import { CommandTitle, Tag, Divider } from '../atoms';
 import { Panel, NavigationButton, ListItem } from '../molecules';
-import { TerminalProgress } from '../ui';
+import { TerminalProgress } from '../ui/TerminalProgress';
 import ScreenWrapper from '../ScreenWrapper';
 import Tabs from '../ui/Tabs';
 import Accordion from '../ui/Accordion';
