@@ -2,11 +2,10 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
 import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
-import { ProfileDataGrid } from '../components/organisms';
+import { StandardScreenTemplate } from '../components/templates';
 
 export default function Contact() {
   const { sessionData, addLog, domainData } = useSession();
@@ -72,7 +71,17 @@ export default function Contact() {
   const availabilityDate = getAvailabilityDate();
 
   return (
-    <ScreenWrapper>
+    <StandardScreenTemplate
+      title="contact"
+      headerData={{
+        seeking: profileStatus.seeking || 'Not specified',
+        location: 'Remote, EMEA',
+        target_comp: profileStatus.salary || 'Negotiable',
+        availability: availabilityDate
+      }}
+      headerDataTitle="current_status"
+      headerDataBeforeChildren={false}
+    >
       <div className="flex flex-col gap-3 mb-4">
         <button
           onClick={handleCopyEmail}
@@ -102,7 +111,7 @@ export default function Contact() {
             <div className="flex items-center">
                 <MessageCircle className="w-5 h-5 mr-3 text-command" />
                 <span className="text-white-black">
-                  {contactData.telegram.includes('t.me/') 
+                  {contactData.telegram.includes('t.me/')
                     ? '@' + contactData.telegram.split('t.me/')[1]
                     : contactData.telegram
                   }
@@ -113,17 +122,6 @@ export default function Contact() {
         )}
         </div>
       </div>
-
-      <ProfileDataGrid
-        title="current_status"
-        data={{
-          seeking: profileStatus.seeking || 'Not specified',
-          location: 'Remote, EMEA',
-          target_comp: profileStatus.salary || 'Negotiable',
-          availability: availabilityDate
-        }}
-        responsive
-      />
-    </ScreenWrapper>
+    </StandardScreenTemplate>
   );
 }
