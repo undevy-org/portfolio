@@ -3,8 +3,8 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import ScreenWrapper from '../components/ScreenWrapper';
 import { ResponsiveCardGrid } from '../components/organisms';
+import { StandardScreenTemplate } from '../components/templates';
 
 export default function SkillsGrid() {
   const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
@@ -65,13 +65,15 @@ export default function SkillsGrid() {
   );
 
   return (
-    <ScreenWrapper>
+    <StandardScreenTemplate
+      title="skills"
+    >
       <ResponsiveCardGrid
         items={skills}
         onItemClick={handleSkillClick}
         renderCard={renderSkillCard}
         columns={2}
       />
-    </ScreenWrapper>
+    </StandardScreenTemplate>
   );
 }
