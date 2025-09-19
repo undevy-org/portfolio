@@ -1,6 +1,5 @@
 // src/app/components/ui/ThemeSwitcher.stories.js
 import ThemeSwitcher from './ThemeSwitcher';
-import { MockSessionProvider } from '../../../../test-utils/storybook-mocks.jsx';
 
 /**
  * ThemeSwitcher Story Configuration
@@ -16,13 +15,6 @@ const meta = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <Story />
-      </MockSessionProvider>
-    ),
-  ],
   argTypes: {
     className: {
       control: 'text',
@@ -50,16 +42,6 @@ export const Default = {
  * Theme simulation stories - Mock different themes
  */
 export const InDarkTheme = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider mockSession={{ theme: 'dark' }}>
-        <div className="p-4 bg-slate-900 text-white">
-          <p className="mb-2 text-sm">Current Theme: Dark</p>
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -70,16 +52,6 @@ export const InDarkTheme = {
 };
 
 export const InLightTheme = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider mockSession={{ theme: 'light' }}>
-        <div className="p-4 bg-white text-black border">
-          <p className="mb-2 text-sm">Current Theme: Light</p>
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -90,16 +62,6 @@ export const InLightTheme = {
 };
 
 export const InAmberTheme = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider mockSession={{ theme: 'amber' }}>
-        <div className="p-4 bg-amber-100 text-amber-900">
-          <p className="mb-2 text-sm">Current Theme: Amber</p>
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -123,19 +85,6 @@ export const ClickableThemeSwitcher = {
 };
 
 export const ThemeSwitcherWithCallback = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="space-y-2">
-          <p className="text-sm">Click the button to cycle themes:</p>
-          <Story />
-          <p className="text-xs text-command">
-            Check browser console for theme change logs
-          </p>
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -149,16 +98,6 @@ export const ThemeSwitcherWithCallback = {
  * Interface examples - Different placements
  */
 export const InHeader = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="flex items-center justify-between p-4 bg-primary/10 border-b">
-          <span className="font-semibold">Portfolio App</span>
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -169,26 +108,6 @@ export const InHeader = {
 };
 
 export const InSidebar = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="w-64 min-h-screen border-r bg-background p-4">
-          <div className="space-y-4">
-            <h3 className="font-semibold">Settings</h3>
-            <div className="space-y-2">
-              <div>Theme Selection:</div>
-              <Story />
-            </div>
-            <div className="pt-2 border-t text-sm text-secondary">
-              <p>Current Theme</p>
-              <p>Notifications</p>
-              <p>Language</p>
-            </div>
-          </div>
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -199,24 +118,6 @@ export const InSidebar = {
 };
 
 export const AsDropdown = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="relative">
-          <button className="flex items-center gap-2 px-3 py-2 border rounded">
-            <span>Settings</span>
-            <span>▼</span>
-          </button>
-          <div className="absolute top-full mt-1 w-full p-2 bg-background border rounded shadow-lg">
-            <div className="space-y-2">
-              <span className="text-sm font-medium">Appearance</span>
-              <Story />
-            </div>
-          </div>
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -260,16 +161,6 @@ ThemeStates.parameters = {
  * Accessibility examples
  */
 export const WithLabel = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="flex items-center gap-3">
-          <label className="text-sm font-medium">Theme:</label>
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -312,21 +203,6 @@ export const WithCustomClass = {
  * Animation simulation
  */
 export const FastScrolling = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="animate-pulse">
-          <p className="text-xs mb-2">
-            Simulating fast theme switching (animation):
-          </p>
-          <Story />
-          <p className="text-xs mt-2 text-secondary">
-            Click repeatedly to cycle through themes quickly
-          </p>
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {
@@ -340,22 +216,6 @@ export const FastScrolling = {
  * User preference simulation
  */
 export const ManualVsAutoIndication = {
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm">Theme Mode:</span>
-            <span className="text-xs bg-primary/20 px-2 py-1 rounded">Manual</span>
-          </div>
-          <Story />
-          <p className="text-xs text-secondary">
-            Theme changes persist in localStorage
-          </p>
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   parameters: {
     docs: {
       description: {

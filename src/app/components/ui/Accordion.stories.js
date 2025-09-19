@@ -1,6 +1,5 @@
 // src/app/components/ui/Accordion.stories.js
 import Accordion from './Accordion';
-import { MockSessionProvider } from '../../../../test-utils/storybook-mocks.jsx';
 
 /**
  * Accordion Story Configuration
@@ -16,13 +15,6 @@ const meta = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <Story />
-      </MockSessionProvider>
-    ),
-  ],
   argTypes: {
     sections: {
       control: 'object',

@@ -1,6 +1,5 @@
 // src/app/components/ui/HyperspaceTunnel.stories.js
 import HyperspaceTunnel from './HyperspaceTunnel';
-import { MockSessionProvider } from '../../../../test-utils/storybook-mocks.jsx';
 import { useState } from 'react';
 
 /**
@@ -17,13 +16,6 @@ const meta = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <Story />
-      </MockSessionProvider>
-    ),
-  ],
   argTypes: {
     isActive: {
       control: 'boolean',
@@ -325,33 +317,6 @@ export const WithOverlayContent = {
     },
     layout: 'fullscreen',
   },
-  decorators: [
-    (Story) => (
-      <div className="relative w-full h-screen">
-        {/* Background content */}
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900 to-blue-900">
-          <div className="h-full flex items-center justify-center">
-            <div className="text-white text-center">
-              <h1 className="text-4xl font-bold mb-4">JOHN DOE</h1>
-              <p className="text-xl mb-8">Senior Software Engineer</p>
-              <div className="space-y-4">
-                <div className="bg-white bg-opacity-10 p-4 rounded">
-                  <code className="text-green-400">$ terminal status</code>
-                  <br />
-                  <span>System ready for hyperspace transition...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* The tunnel effect */}
-        <MockSessionProvider>
-          <Story />
-        </MockSessionProvider>
-      </div>
-    ),
-  ],
 };
 
 /**

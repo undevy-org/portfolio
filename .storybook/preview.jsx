@@ -1,4 +1,3 @@
-import React from 'react';
 import '../src/app/globals.css';
 import { MockSessionProvider } from '../test-utils/storybook-mocks.jsx';
 

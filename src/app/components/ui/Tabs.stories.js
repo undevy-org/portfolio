@@ -1,6 +1,5 @@
 // src/app/components/ui/Tabs.stories.js
 import Tabs from './Tabs';
-import { MockSessionProvider } from '../../../../test-utils/storybook-mocks.jsx';
 
 /**
  * Tabs Story Configuration
@@ -16,13 +15,6 @@ const meta = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <Story />
-      </MockSessionProvider>
-    ),
-  ],
   argTypes: {
     tabs: {
       control: 'object',

@@ -26,12 +26,20 @@ const config = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, '../src'),
+      // Replace SessionContext with mock for all story files
+      '../context/SessionContext': path.resolve(__dirname, '../test-utils/storybook-mocks.jsx'),
+      '../../context/SessionContext': path.resolve(__dirname, '../test-utils/storybook-mocks.jsx'),
+      '.././context/SessionContext': path.resolve(__dirname, '../test-utils/storybook-mocks.jsx'),
     };
 
-    // Add proper JSX loader for .jsx files
+    // Add proper JSX loader for .jsx and .js files (both src/ and .storybook/)
     config.module.rules.push({
       test: /\.jsx?$/,
-      include: path.resolve(__dirname, '../src'),
+      include: [
+        path.resolve(__dirname, '../src'),
+        path.resolve(__dirname, '../test-utils'),
+        __dirname
+      ],
       use: [
         {
           loader: require.resolve('babel-loader'),

@@ -3,7 +3,6 @@ import TerminalWindow from './TerminalWindow';
 import Button from '../components/ui/Button';
 import CommandTitle from '../components/atoms/CommandTitle';
 import LabelValuePair from '../components/molecules/LabelValuePair';
-import { MockSessionProvider } from '../../../test-utils/storybook-mocks.jsx';
 import { useState } from 'react';
 import { ChevronRight, User, Settings } from 'lucide-react';
 
@@ -21,29 +20,6 @@ const meta = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider mockSession={{
-        sessionData: {
-          sessionData: {
-            id: 'storybook-session',
-            accessCode: 'DEMO123',
-            walletAddress: null,
-            company: 'Storybook Demo',
-            role: 'Developer',
-            startTime: new Date().toISOString(),
-            isDemoMode: true,
-            isDemoUser: true
-          }
-        },
-        currentScreen: 'StorybookTest'
-      }}>
-        <div className="min-h-screen bg-bg flex items-center justify-center p-8">
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
   argTypes: {
     title: {
       control: 'text',
@@ -199,21 +175,6 @@ export const OnMainHub = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider mockSession={{
-        currentScreen: 'MainHub',
-        sessionData: {
-          id: 'storybook-session',
-          isDemoMode: false
-        }
-      }}>
-        <div className="min-h-screen bg-bg flex items-center justify-center p-8">
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
 };
 
 export const InSessionMode = {
@@ -275,24 +236,6 @@ export const DemoModeBanner = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider mockSession={{
-        sessionData: {
-          isDemoMode: true,
-          isDemoUser: true
-        },
-        currentScreen: 'DemoScreen',
-        domainData: {
-          terminalTitle: 'demo-session'
-        }
-      }}>
-        <div className="min-h-screen bg-bg flex items-center justify-center p-8">
-          <Story />
-        </div>
-      </MockSessionProvider>
-    ),
-  ],
 };
 
 /**
@@ -334,30 +277,18 @@ const BreadcrumbDemo = (args) => {
         </button>
       </div>
 
-      <MockSessionProvider mockSession={{
-        currentScreen,
-        screenHierarchy: {
-          'CaseDetail': 'CaseList',
-          'CaseList': 'MainHub',
-          'SkillDetail': 'SkillsGrid',
-          'SkillsGrid': 'MainHub',
-        }
-      }}>
-        <div className="bg-bg p-8 rounded">
-          <TerminalWindow
-            {...args}
-            title={currentScreen.toLowerCase()}
-          >
-            <div className="p-6">
-              <CommandTitle text={`${currentScreen} Content`} />
-              <p className="text-secondary mt-4">
-                This screen shows breadcrumb navigation. Try changing the screen above
-                to see how breadcrumbs update with the navigation hierarchy.
-              </p>
-            </div>
-          </TerminalWindow>
+      <TerminalWindow
+        {...args}
+        title={currentScreen.toLowerCase()}
+      >
+        <div className="p-6">
+          <CommandTitle text={`${currentScreen} Content`} />
+          <p className="text-secondary mt-4">
+            This screen shows breadcrumb navigation. Try changing the screen above
+            to see how breadcrumbs update with the navigation hierarchy.
+          </p>
         </div>
-      </MockSessionProvider>
+      </TerminalWindow>
     </div>
   );
 };

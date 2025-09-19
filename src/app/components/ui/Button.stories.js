@@ -1,6 +1,5 @@
 // src/app/components/ui/Button.stories.js
 import Button from './Button';
-import { MockSessionProvider } from '../../../../test-utils/storybook-mocks.jsx';
 import { Star, ChevronRight, User, Plus, X } from 'lucide-react';
 
 /**
@@ -17,13 +16,7 @@ const meta = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <MockSessionProvider>
-        <Story />
-      </MockSessionProvider>
-    ),
-  ],
+
   argTypes: {
     children: {
       control: 'text',
