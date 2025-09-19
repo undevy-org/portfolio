@@ -1,7 +1,8 @@
 // .storybook/main.js
+const path = require('path');
+
 const config = {
   stories: [
-    // Look for stories next to components, not in separate directory
     '../src/app/components/**/*.stories.js',
     '../src/app/components/**/*.mdx'
   ],
@@ -12,11 +13,45 @@ const config = {
     '@chromatic-com/storybook'
   ],
   framework: {
-    name: '@storybook/nextjs',
-    options: {}
+    name: '@storybook/react-webpack5',
+    options: {
+      builder: {
+        useSWC: true
+      }
+    }
   },
-  core: {
-    builder: '@storybook/builder-vite' // Keep Vite for performance
+  staticDirs: ['../public'],
+  webpackFinal: async (config) => {
+    // Handle Next.js style absolute imports from 'src'
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, '../src'),
+    };
+
+    // Add proper JSX loader for .jsx files
+    config.module.rules.push({
+      test: /\.jsx?$/,
+      include: path.resolve(__dirname, '../src'),
+      use: [
+        {
+          loader: require.resolve('babel-loader'),
+          options: {
+            presets: [
+              require.resolve('@babel/preset-env'),
+              [
+                require.resolve('@babel/preset-react'),
+                {
+                  runtime: 'automatic',
+                },
+              ],
+            ],
+            babelrc: false,
+          },
+        },
+      ],
+    });
+
+    return config;
   }
 };
 

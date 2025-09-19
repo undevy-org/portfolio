@@ -1,10 +1,10 @@
 // src/app/components/atoms/CommandTitle.stories.js
-import CommandTitle from './CommandTitle';
+import CommandTitle from './CommandTitle.jsx';
 
 /**
  * CommandTitle Story Configuration
  */
-export default {
+const meta = {
   title: 'Atoms/CommandTitle',
   component: CommandTitle,
   parameters: {
@@ -31,6 +31,8 @@ export default {
     },
   },
 };
+
+export default meta;
 
 /**
  * Primary story - Default usage
