@@ -21,9 +21,13 @@
     "workflow:check": "./scripts/monitor-workflow.sh",
     "release": "standard-version",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "storybook:tailwind": "concurrently \"npm:tailwind:watch\" \"npm:storybook\"",
+    "tailwind:watch": "tailwindcss -i src/app/globals.css -o .storybook/storybook-tailwind.css --content \"src/**/*\" --watch",
+    "tailwind:compile": "tailwindcss -i src/app/globals.css -o .storybook/storybook-tailwind.css --content \"src/**/*\"",
+    "build-storybook": "tailwindcss -i src/app/globals.css -o .storybook/storybook-tailwind.css --content \"src/**/*\" && storybook build",
     "test-storybook": "test-storybook",
-    "coverage-storybook": "test-storybook --coverage"
+    "coverage-storybook": "test-storybook --coverage",
+    "verify-tailwind": "tailwindcss -i src/app/globals.css -o .storybook/storybook-tailwind.css --content \"src/**/*\" --verbosity"
   },
   "dependencies": {
     "@reown/appkit": "^1.7.18",

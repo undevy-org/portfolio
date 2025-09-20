@@ -1,5 +1,9 @@
 import React from 'react';
-import '../src/app/globals.css';
+// Temporarily comment out the globals.css import
+// import '../src/app/globals.css';
+
+// Import just the basic Tailwind CSS for Storybook
+import './storybook-tailwind.css';
 import { MockSessionProvider } from '../test-utils/storybook-mocks.jsx';
 
 export const parameters = {
@@ -24,7 +28,14 @@ export const parameters = {
 export const decorators = [
   (Story) => (
     <MockSessionProvider>
-      <div className="min-h-screen bg-black text-green-400 p-4">
+      <div
+        className="min-h-screen bg-black text-green-400 p-4"
+        style={{
+          fontFamily: 'IBM Plex Mono, monospace',
+          // Ensure CSS variables are applied
+          '--font-ibm-plex-mono': 'IBM Plex Mono, monospace',
+        }}
+      >
         <Story />
       </div>
     </MockSessionProvider>

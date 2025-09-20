@@ -32,6 +32,26 @@ const config = {
       '.././context/SessionContext': path.resolve(__dirname, '../test-utils/storybook-mocks.jsx'),
     };
 
+    // Remove ALL existing CSS rules and start fresh
+    config.module.rules = config.module.rules.filter(rule => {
+      // Filter out any CSS-related rules
+      return !(rule.test && rule.test.toString().includes('css'));
+    });
+
+    // Add a single, clean CSS rule
+    config.module.rules.unshift({
+      test: /\.css$/i,
+      use: [
+        'style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+          },
+        },
+      ],
+    });
+
     // Add proper JSX loader for .jsx and .js files (both src/ and .storybook/)
     config.module.rules.push({
       test: /\.jsx?$/,
