@@ -43,16 +43,16 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
     switch (item.type) {
       case 'text':
         return (
-          <p key={idx} className="text-sm leading-relaxed text-secondary">
+          <p key={idx} className="text-text-secondary text-sm leading-relaxed">
             {item.value}
           </p>
         );
-      
+
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
-            <span className="mr-2 text-success">[✓]</span>
-            <span className="text-secondary">{item.value}</span>
+            <span className="mr-2 text-text-secondary">[✓]</span>
+            <span className="text-text">{item.value}</span>
           </div>
         );
       case 'sub_heading':
@@ -100,7 +100,7 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
         </div>
       );
     }
-    return <div className="text-secondary">No content available</div>;
+    return <div className="p-4 text-text-secondary">No content available</div>;
   };
 
   // Don't render anything if no valid tabs
@@ -111,7 +111,7 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
     return (
     <div>
       <div className="w-full overflow-x-auto">
-        <div className="flex w-full border-b border-secondary">
+        <div className="flex w-full border-b border-border">
           {validTabs.map((tab) => (
             <button
               key={tab.id}
@@ -122,7 +122,7 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
                   : 'text-secondary bg-hover border-b-0'
               }`}
             >
-              ${tab.label}
+              {tab.label}
             </button>
           ))}
         </div>

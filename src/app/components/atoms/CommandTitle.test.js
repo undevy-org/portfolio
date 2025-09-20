@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import CommandTitle from './CommandTitle';
+import CommandTitle from './CommandTitle.jsx';
 
 describe('CommandTitle', () => {
   test('renders with required text prop and default level', () => {

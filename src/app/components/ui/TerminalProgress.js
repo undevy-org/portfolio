@@ -71,43 +71,43 @@ export default function TerminalProgress({
   if (!isLoading) return null;
   
   return (
-    <div className="w-full space-y-2 text-primary">
+    <div className="w-full space-y-2">
       {/* Header row with label and percentage */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           {/* Animated spinner icon */}
-          <span className="text-command">
+          <span className="text-text-secondary">
             {spinnerFrames[spinnerFrame]}
           </span>
           {/* Loading label */}
-          <span className="text-xs uppercase tracking-wider text-secondary">
+          <span className="text-text-secondary text-xs uppercase tracking-wider">
             {label}
           </span>
         </div>
-        
+
         {/* Percentage display on the right */}
         {showPercentage && (
-          <span className="text-xs text-success">
+          <span className="text-text-secondary text-xs">
             {Math.round(displayProgress)}%
           </span>
         )}
       </div>
-      
-      <div 
-        className={`${height} relative w-full overflow-hidden border border-secondary progress-track`}
+
+      <div
+        className={`${height} relative w-full overflow-hidden border border-secondary bg-surface`}
       >
-        <div 
-          className={`absolute inset-y-0 left-0 transition-all duration-300 ease-out progress-fill ${
+        <div
+          className={`absolute inset-y-0 left-0 transition-all duration-300 ease-out bg-success ${
             showPulse && displayProgress < 100 ? 'animate-pulse-progress' : ''
           }`}
-          style={{ 
+          style={{
             width: `${displayProgress}%`
           }}
         />
       </div>
-      
+
       {/* Status text below progress bar */}
-      <div className="text-xs text-secondary">
+      <div className="text-text-secondary text-xs">
         <span className="opacity-60">
           [{Math.round(displayProgress)}% complete]
         </span>
