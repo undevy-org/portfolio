@@ -12,7 +12,7 @@ export default function Label({
       className={`label-base ${className}`}
     >
       {text}
-      {required && <span className="text-error ml-1">*</span>}
+      {required && <span className="ml-1 text-error">*</span>}
     </label>
   );
 }

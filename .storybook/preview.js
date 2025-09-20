@@ -1,43 +1,55 @@
 import React from 'react';
-// Temporarily comment out the globals.css import
-// import '../src/app/globals.css';
-
-// Import just the basic Tailwind CSS for Storybook
+// Import global CSS for theme variables and Tailwind
+import '../src/app/globals.css';
 import './storybook-tailwind.css';
+import { withTheme } from './theme-decorator';
 import { MockSessionProvider } from '../test-utils/storybook-mocks.jsx';
 
+// Define the theme switcher for Storybook's toolbar
+export const globalTypes = {
+  theme: {
+    name: 'Theme',
+    description: 'Terminal theme for components',
+    defaultValue: 'default',
+    toolbar: {
+      icon: 'paintbrush',
+      title: 'Theme',
+      items: [
+        { value: 'default', title: 'Terminal Dark' },
+        { value: 'light', title: 'Terminal Light' },
+        { value: 'amber', title: 'Amber Phosphor' },
+        { value: 'bsod', title: 'BSOD Classic' },
+        { value: 'synthwave', title: 'Synthwave 84' },
+        { value: 'operator', title: 'Operator Mono' },
+        { value: 'kyoto', title: 'Kyoto Sunset' },
+        { value: 'radar', title: 'Radar Green' }
+      ],
+      dynamicTitle: true
+    }
+  }
+};
+
 export const parameters = {
-  actions: {},
+  actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
     matchers: {
       color: /(background|color)$/i,
-      date: /Date$/,
+      date: /Date$/i,
     },
+    expanded: true
   },
+  layout: 'padded',
   backgrounds: {
-    default: 'terminal',
-    values: [
-      { name: 'terminal', value: '#000000' },
-      { name: 'dark', value: '#1a1a1a' },
-      { name: 'light', value: '#ffffff' },
-    ],
-  },
+    disable: true // Disable default backgrounds since themes handle this
+  }
 };
 
-// Global decorator - applies MockSessionProvider to ALL stories automatically
+// Apply decorators in the correct order
 export const decorators = [
+  withTheme, // Theme must be first to set CSS variables
   (Story) => (
     <MockSessionProvider>
-      <div
-        className="min-h-screen bg-black text-green-400 p-4"
-        style={{
-          fontFamily: 'IBM Plex Mono, monospace',
-          // Ensure CSS variables are applied
-          '--font-ibm-plex-mono': 'IBM Plex Mono, monospace',
-        }}
-      >
-        <Story />
-      </div>
+      <Story />
     </MockSessionProvider>
-  ),
+  )
 ];

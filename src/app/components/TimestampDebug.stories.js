@@ -1,11 +1,13 @@
 import React from 'react';
 
-export default {
+const TailwindTestConfig = {
   title: 'Debug/TailwindTest',
   parameters: {
     layout: 'fullscreen',
   },
 };
+
+export default TailwindTestConfig;
 
 const TailwindTestTemplate = () => (
   <div className="min-h-screen bg-black text-green-400 p-8 space-y-6">

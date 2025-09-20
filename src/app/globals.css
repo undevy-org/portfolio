@@ -168,9 +168,37 @@
     --texture-grid-size: 110px;
   }
 
-  /* Specific body background for Kyoto theme */
+  /* Specific body backgrounds for each theme */
+  [data-theme='dark'] body {
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+  }
+
+  [data-theme='light'] body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  }
+
+  [data-theme='amber'] body {
+    background: linear-gradient(135deg, #1C140D 0%, #2d1a0e 100%);
+  }
+
+  [data-theme='bsod'] body {
+    background: linear-gradient(135deg, #0B4DA8 0%, #094494 100%);
+  }
+
+  [data-theme='synthwave'] body {
+    background: linear-gradient(135deg, #1A103C 0%, #2d1b69 100%);
+  }
+
+  [data-theme='operator'] body {
+    background: linear-gradient(135deg, #1E0000 0%, #330000 100%);
+  }
+
   [data-theme='kyoto'] body {
-    background-color: #D95D39;
+    background: linear-gradient(135deg, #B0B0B0 0%, #D95D39 100%);
+  }
+
+  [data-theme='radar'] body {
+    background: linear-gradient(135deg, #3C4D3A 0%, #2F3D2D 100%);
   }
 
   [data-theme='radar'] {
@@ -667,34 +695,121 @@
   /* IMPORTANT: z-index must be higher than HyperspaceTunnel (0) but lower than main content */
   z-index: 1;
   opacity: var(--texture-opacity);
-  
-  /* Create scanline effect with horizontal lines and vertical grid */
-  background-image: 
-    /* Horizontal scanlines - creates the CRT monitor effect */
+
+  /* Create unique textures for each theme */
+  /* Dark theme: Standard scanlines */
+  background-image:
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
       rgba(var(--texture-line-color), 0.3) 2px,
       rgba(var(--texture-line-color), 0.3) 4px
-    ),
-    /* Vertical grid lines - adds structure and depth */
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent var(--texture-grid-size),
-      rgba(var(--texture-line-color), 0.2) var(--texture-grid-size),
-      rgba(var(--texture-line-color), 0.2) calc(var(--texture-grid-size) + 2px)
     );
-  
+
+  /* Light theme: Subtle dots pattern */
+  [data-theme='light'] &::before {
+    background-image:
+      radial-gradient(circle, rgba(var(--texture-line-color), 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Amber theme: CRT phosphor glow */
+  [data-theme='amber'] &::before {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 4px,
+        rgba(var(--texture-line-color), 0.4) 4px,
+        rgba(var(--texture-line-color), 0.4) 6px,
+        rgba(var(--texture-line-color), 0.2) 6px,
+        rgba(var(--texture-line-color), 0.2) 8px
+      );
+    filter: blur(0.5px);
+  }
+
+  /* BSOD theme: Matrix rain effect */
+  [data-theme='bsod'] &::before {
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 15px,
+        rgba(var(--texture-line-color), 0.1) 15px,
+        rgba(var(--texture-line-color), 0.1) 17px
+      );
+  }
+
+  /* Synthwave theme: Neon grid */
+  [data-theme='synthwave'] &::before {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(var(--texture-line-color), 0.2) 3px,
+        rgba(var(--texture-line-color), 0.2) 5px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 20px,
+        rgba(var(--texture-line-color), 0.3) 20px,
+        rgba(var(--texture-line-color), 0.3) 22px
+      );
+  }
+
+  /* Operator theme: Classic terminal */
+  [data-theme='operator'] &::before {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(var(--texture-line-color), 0.1) 1px,
+        rgba(var(--texture-line-color), 0.1) 3px
+      );
+  }
+
+  /* Kyoto theme: Brick wall texture */
+  [data-theme='kyoto'] &::before {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 10px,
+        rgba(var(--texture-line-color), 0.3) 10px,
+        rgba(var(--texture-line-color), 0.3) 12px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 30px,
+        rgba(var(--texture-line-color), 0.2) 30px,
+        rgba(var(--texture-line-color), 0.2) 32px
+      );
+    background-size: 32px 12px;
+  }
+
+  /* Radar theme: Scan circles */
+  [data-theme='radar'] &::before {
+    background-image:
+      radial-gradient(circle at 50% 50%,
+        transparent 15px,
+        rgba(var(--texture-line-color), 0.1) 15px,
+        rgba(var(--texture-line-color), 0.1) 17px,
+        transparent 17px
+      );
+    background-size: 50px 50px;
+  }
+
   /* Performance optimization for large screens */
   will-change: opacity;
-  
+
   /* Smooth transition when switching themes */
   transition: opacity 0.3s ease;
 }
-
-/* Optional: Reduce texture on mobile for better performance */
 @media (max-width: 768px) {
   .terminal-texture::before {
     /* Simplify to just horizontal lines on mobile */
