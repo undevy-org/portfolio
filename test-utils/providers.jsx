@@ -170,7 +170,6 @@ export function MockSessionProvider({
     // Enhanced logging capabilities
     clearLogs,
     exportLogs,
-    logEntries: logs,
     systemLogCount: logs.length,
     
     // Web3 specific

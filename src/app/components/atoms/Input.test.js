@@ -7,7 +7,7 @@ describe('Input', () => {
     render(<Input />);
     const input = screen.getByRole('textbox');
     expect(input).toBeInTheDocument();
-    expect(input).toHaveClass('input-base');
+    expect(input).toHaveClass('w-full', 'px-3', 'py-2', 'bg-surface', 'text-text', 'border', 'border-border');
   });
 
   test('renders with custom type', () => {
@@ -25,7 +25,7 @@ describe('Input', () => {
   test('renders with error state', () => {
     render(<Input error={true} />);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('input-error');
+    expect(input).toHaveClass('border-error', 'focus:ring-error');
     expect(input).toHaveAttribute('aria-invalid', 'true');
   });
 

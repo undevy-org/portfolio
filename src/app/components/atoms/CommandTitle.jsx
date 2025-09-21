@@ -1,3 +1,4 @@
+// src/app/components/atoms/CommandTitle.jsx
 'use client';
 
 export default function CommandTitle({

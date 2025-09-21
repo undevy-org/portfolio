@@ -85,7 +85,7 @@ export default function ThemeSwitcher() {
   return (
     <div className="w-full max-w-2xl">
       {/* Main container using Panel component */}
-      <Panel className="p-2 border-primary">
+      <Panel className="border-border p-2">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {themes.map((themeName) => {
             // Get the icon component for this theme
