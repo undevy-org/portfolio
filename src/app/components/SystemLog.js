@@ -23,7 +23,7 @@ export default function SystemLog() {
         
         return (
         <div key={index} className="flex">
-          <span className="mr-2 select-none">{'>'}</span>
+          <span className="mr-2 select-none text-text-secondary">{'>'}</span>
             <p className={isAccessGranted ? "text-accent font-bold" : "text-secondary"}>
               {entry}
             </p>
@@ -33,7 +33,7 @@ export default function SystemLog() {
       
       {logEntries.length > 0 && (
       <div className="flex items-center mt-1">
-        <span className="mr-2 select-none">{'>'}</span>
+        <span className="mr-2 select-none text-text-secondary">{'>'}</span>
           <div className="relative flex-1">
             <input
               type="text"

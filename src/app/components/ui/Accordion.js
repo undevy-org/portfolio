@@ -19,15 +19,15 @@ export default function Accordion({ sections, defaultExpanded = null }) {
 
   const renderContentItem = (item, idx) => {
     if (typeof item !== 'object' || item === null) {
-      return <p key={idx} className="text-sm leading-relaxed text-secondary">{String(item)}</p>;
+      return <p key={idx} className="text-text-secondary text-sm leading-relaxed">{String(item)}</p>;
     }
     
     switch (item.type) {
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
-            <span className="mr-2 text-success">[✓]</span>
-            <span className="text-secondary">{item.value}</span>
+            <span className="mr-2 text-text-secondary">[✓]</span>
+            <span className="text-text">{item.value}</span>
           </div>
         );
       case 'tag_list':
@@ -40,18 +40,18 @@ export default function Accordion({ sections, defaultExpanded = null }) {
         );
       case 'text':
       default:
-        return <p key={idx} className="text-sm leading-relaxed text-secondary">{item.value}</p>;
+        return <p key={idx} className="text-text-secondary text-sm leading-relaxed">{item.value}</p>;
     }
   };
 
   return (
     <div className="space-y-3">
       {sections.map((section) => (
-        <Panel key={section.id} className="border-secondary">
+        <Panel key={section.id} className="border-border p-0">
           <button
             onClick={() => toggleSection(section.id)}
             className={`w-full p-4 text-left flex justify-between items-center transition-colors bg-hover ${
-              expandedSection === section.id ? 'border-b border-secondary rounded-b-none' : ''
+              expandedSection === section.id ? 'border-b border-border-darker rounded-b-none' : ''
             }`}
           >
             <CommandTitle text={section.title} level="h3" />

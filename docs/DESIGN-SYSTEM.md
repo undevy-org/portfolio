@@ -2,6 +2,8 @@
 
 This document outlines the design philosophy, architectural principles, and component guidelines for the Interactive Terminal Portfolio. It serves as the single source of truth for the project's UI/UX, ensuring consistency, maintainability, and a systematic, principle-driven approach to development. This version reflects the shift to a flexible, multi-theme architecture powered by CSS variables.
 
+**🌟 Component Library Integration**: This design system now powers a comprehensive Storybook component library with 56 documented components for isolated development and testing.
+
 ## **1. Design Philosophy**
 
 The Terminal UI system is built not just on aesthetics, but on a core philosophy of clarity, control, and character. Every design decision is guided by five key principles.
@@ -370,6 +372,232 @@ Adding a new theme is a simple, three-step process:
 1.  **Define CSS Variables:** Add a new `[data-theme='matrix']` block in `globals.css` and define all the color variables with your theme's values.
 2.  **Update Theme Configuration:** In `src/app/context/SessionContext.js`, add the new theme's name to the `themes` array and add an entry for it in the `themeConfig` object, defining its `intent` as either `'dark'` or `'light'`.
 3.  **Add Theme Icon:** Add an icon for the new theme to the `themeIcons` dictionary in `src/app/components/ui/ThemeSwitcher.js` and `src/app/layouts/TerminalWindow.js`.
+
+## **9. Component Library Integration: Storybook Development**
+
+This section covers the comprehensive Storybook component library that powers isolated component development, testing, and visual documentation for the Terminal UI System.
+
+### **9.1. Component Architecture Overview**
+
+The component library follows a structured architecture with 56 documented components across four priority categories:
+
+- **📊 P1: Core UI Components (16 components)** - Atomic primitives with minimal dependencies
+- **🏗️ P2: Layout Components (11 components)** - Structured layout patterns and composition
+- **⚡ P3: Feature Components (16 components)** - Business logic and external integrations
+- **🖥️ P4: Screen Components (13 components)** - Complete page-level implementations
+
+### **9.2. Story Development Standards**
+
+All component stories must follow the established template structure and quality standards:
+
+#### **Story File Structure**
+```javascript
+// {ComponentName}.stories.js within component directory
+src/app/components/
+├── atoms/Button/
+│   ├── Button.js
+│   ├── Button.stories.js      // Primary stories
+│   ├── Button.mdx            // Custom documentation
+│   └── Button.fixtures.js    // Mock data
+```
+
+#### **Story Organization**
+- **Title**: `Category/ComponentName` format (e.g., `'Atoms/CommandTitle'`)
+- **Layout**: `centered`, `fullscreen`, or `padded` based on component type
+- **Decorators**: Appropriate mock providers for component dependencies
+- **ArgTypes**: Complete prop definitions with controls and descriptions
+- **Stories**: Default, variants, states, edge cases, and interactions
+
+### **9.3. Component Development Workflow**
+
+#### **Creating a New Component**
+
+1. **Plan Component Architecture**
+   - Define component purpose and use cases
+   - Analyze dependencies (SessionContext, Web3, router)
+   - Assign appropriate priority category
+
+2. **Implement Component**
+   - Use semantic classes from this design system
+   - Follow component prop patterns from similar components
+   - Include proper TypeScript/PropTypes if available
+
+3. **Create Stories**
+   - Generate from template in `STORY_TEMPLATE.md`
+   - Cover all significant use cases and variants
+   - Test with Storybook development server
+
+4. **Add Documentation**
+   - Include inline story descriptions
+   - Create MDX documentation for complex components
+   - Update component inventory
+
+#### **Component Categories and Examples**
+
+**📊 P1: Core UI Components**
+```typescript
+// Simple, reusable primitives
+CommandTitle: text, level → Semantic title with $ prefix
+Button: onClick, variant, disabled → Interactive element
+Input: value, onChange, error → Form input field
+Divider: → Visual separator
+Tag: text, variant → Content categorization
+```
+
+**🏗️ P2: Layout Components**
+```typescript
+// Structured layout patterns
+Panel: children → Contained content area
+NavigationButton: screen, label, onClick → SessionContext navigation
+ResponsiveCardGrid: items, onItemClick → Data grid display
+DetailViewTemplate: metadata, content → Complex layout composition
+```
+
+**⚡ P3: Feature Components**
+```typescript
+// Business logic and external integrations
+AnalyticsPanel: → Matomo integration display
+Web3Manager: → Wallet connection management
+ThemeSwitcher: → Client-side theme management
+MatomoTracker: → Analytics service integration
+```
+
+**🖥️ P4: Screen Components**
+```typescript
+// Complete page implementations
+Entry: → Authentication screen with Web3
+ProfileBoot: → Initial profile setup screen
+CaseDetail: → Individual case study display
+Contact: → Contact form and information
+```
+
+### **9.4. Testing and Quality Assurance**
+
+#### **Story Validation Criteria**
+- [ ] **Title Format**: Follows `{Category}/{ComponentName}` convention
+- [ ] **Decorators**: Appropriate mocks for component dependencies
+- [ ] **ArgTypes**: Complete prop definitions with controls
+- [ ] **Stories**: Cover default, variants, states, and interactions
+- [ ] **Documentation**: Component purpose and usage guidelines
+- [ ] **Accessibility**: ARIA labels and keyboard navigation confirm
+- [ ] **Responsive**: Tested across viewport sizes in Storybook
+- [ ] **Interactions**: Critical flows tested with `@storybook/test`
+- [ ] **Themes**: Verified across all theme variants
+
+#### **Component Inventory Tracking**
+- All 56 components documented with categories
+- Dependencies mapped (SessionContext, Web3, external APIs)
+- Complexity scoring (Low/Medium/High priority)
+- Implementation status tracking
+
+### **9.5. Development Tool Integration**
+
+The component library integrates with modern development workflows:
+
+#### **Vite-Powered Storybook**
+- Lightning-fast development server with Vite
+- Hot module replacement for instant updates
+- Optimized build for production deployment
+
+#### **Interactive Documentation**
+- Live component playgrounds
+- Property control panels for real-time testing
+- Visual regression testing capabilities
+- Theme switching directly in Storybook
+
+#### **Automated Quality Checks**
+- Story validation scripts (pre-commit hooks)
+- Component coverage reporting
+- Automated visual testing integration
+
+### **9.6. Mock Infrastructure**
+
+Comprehensive mock system for isolated component testing:
+
+#### **SessionContext Mock**
+- Full context provider simulation
+- Authentication state management
+- Navigation mock callbacks
+- Theme state persistence
+
+#### **Web3 Mock System**
+- Wagmi provider simulation
+- @reown/appkit wallet interface mocks
+- Chain network state management
+- Transaction/contract interaction stubs
+
+#### **External Service Mocks**
+- Matomo analytics service stubs
+- Router/navigation simulation
+- Browser API mocking (localStorage, etc.)
+
+### **9.7. Component Usage Guidelines**
+
+#### **Import Best Practices**
+```javascript
+// ✅ Preferred: Semantic imports from component libraries
+import { Button, Input, Label } from '@/components/ui';
+
+// ✅ Acceptable: Direct component imports for complex needs
+import CommandTitle from '@/components/atoms/CommandTitle';
+```
+
+#### **Component Composition Guidelines**
+```jsx
+// ✅ Recommended: Use semantic classes for styling
+<div className="panel-full mb-4">
+  <CommandTitle text="user-profile" level="h3" />
+  <div className="text-primary">
+    Senior Frontend Developer
+  </div>
+</div>
+
+// ❌ Avoid: Theme-dependent styling logic
+<div className={theme === 'dark' ? 'bg-black' : 'bg-white'}>
+  Theme-dependent styles not allowed
+</div>
+```
+
+#### **Story Creation Standards**
+```javascript
+// ✅ Complete story with all required elements
+export default {
+  title: 'UI/Atoms/CommandTitle',
+  component: CommandTitle,
+  parameters: {
+    layout: 'centered',
+    docs: { description: { component: 'Description...' } }
+  },
+  argTypes: {
+    text: { control: 'text', description: 'The text...' },
+    level: { control: 'select', options: ['h1', 'h2', 'h3'] }
+  }
+};
+
+export const Default = {
+  args: { text: 'terminal', level: 'h3' },
+  parameters: { docs: { description: { story: '...' } } }
+};
+
+// ❌ Incomplete story
+export const Incomplete = {
+  args: { children: 'Wrong prop name' } // Doesn't match component props
+};
+```
+
+### **9.8. Maintenance and Evolution**
+
+#### **Regular Component Reviews**
+- Monthly audit of unused/mockable components
+- Performance profiling and optimization
+- Theme compatibility verification
+- Dependency relationship updates
+
+#### **Automated Maintenance Tasks**
+- Story generation automation scripts
+- Component health monitoring
+- Coverage reporting automation
+- Breaking change detection
 
 ### **8.3. Implementation Best Practices**
 
