@@ -197,24 +197,78 @@ This will:
 
 The current version is displayed in the application's system log on startup and is pulled directly from `package.json`, ensuring a single source of truth for versioning.
 
-## Project Documentation
+## 📚 Project Documentation
 
-This project is thoroughly documented. For comprehensive documentation, visit the **[Documentation Hub](./docs/)** or see the following guides:
+This project maintains comprehensive documentation organized for different audiences. Choose your path below:
 
-### Core Documentation
--   **[Setup & Deployment](./docs/SETUP.md):** Complete setup, configuration, and deployment guide.
--   **[Testing](./docs/TESTING.md):** Testing philosophy, strategies, and implementation guidelines.
--   **[Content Model](./docs/CONTENT-MODEL.md):** Structure and management of portfolio content.
--   **[Design System](./docs/DESIGN-SYSTEM.md):** Terminal-inspired design system and component library.
+### 🗺️ Documentation Map
 
-### Technical Documentation
--   **[Development History](./docs/DEVELOPMENT_HISTORY.md):** Technical decisions and project evolution.
--   **[Persistent Shell Architecture](./docs/PERSISTENT-SHELL.md):** Technical architecture documentation.
--   **[NPM Fallback Strategy](./docs/npm-fallback/):** NPM registry fallback implementation.
+```
+📁 Portfolio Documentation
+│
+├── 🏠 Root Level
+│   ├── README.md (you are here)
+│   ├── CHANGELOG.md
+│   └── ARCHITECTURE.md
+│
+└── 📚 docs/
+    ├── 🤖 AI Agent Guides
+    │   ├── README.md (Start Here)
+    │   ├── WORKFLOW.md
+    │   ├── DECISION-FRAMEWORK.md
+    │   ├── COMMUNICATION-PROTOCOL.md
+    │   └── TASK-EXECUTION.md
+    │
+    ├── 🎨 UI & Design
+    │   ├── DESIGN-SYSTEM.md
+    │   ├── THEME-GUIDE.md
+    │   └── PERSISTENT-SHELL.md
+    │
+    └── 🔧 Development
+        ├── SETUP.md
+        ├── GIT-WORKFLOW.md
+        ├── TESTING.md
+        ├── TESTING-OVERVIEW.md
+        └── CONTENT-MODEL.md
+```
 
-### Project Files
--   **[Changelog](./CHANGELOG.md):** Version history and release notes.
--   **[License](./LICENSE):** Project licensing information.
+### 🚀 Quick Start Paths
+
+#### For AI Agents (Claude Code)
+**Essential reading (~5 minutes):**
+1. [AI Agent Getting Started](./docs/ai-agent/README.md) - Complete orientation
+2. [Development Workflow](./docs/ai-agent/WORKFLOW.md) - How to work
+3. [Decision Framework](./docs/ai-agent/DECISION-FRAMEWORK.md) - Autonomy guidelines
+
+**Before each task:**
+- [Task Execution Protocol](./docs/ai-agent/TASK-EXECUTION.md)
+- [Git Workflow Standards](./docs/GIT-WORKFLOW.md)
+- [Testing Overview](./docs/TESTING-OVERVIEW.md)
+
+#### For External Developers
+**Getting started (~10 minutes):**
+1. [Setup & Deployment](./docs/SETUP.md) - Local development setup
+2. [Git Workflow](./docs/GIT-WORKFLOW.md) - Contribution standards
+3. [Testing Guide](./docs/TESTING.md) - Testing requirements
+
+**Development reference:**
+- [Design System](./docs/DESIGN-SYSTEM.md) - UI components & styling
+- [Theme Guide](./docs/THEME-GUIDE.md) - 8-theme system
+- [Content Model](./docs/CONTENT-MODEL.md) - Content structure
+
+#### For Understanding Architecture
+**Deep dive (optional):**
+- [System Architecture](./ARCHITECTURE.md) - Complete system design
+- [Persistent Shell](./docs/PERSISTENT-SHELL.md) - React patterns
+- [Development History](./docs/DEVELOPMENT_HISTORY.md) - Evolution & decisions
+
+### 📖 Complete Documentation Index
+
+Visit the **[Documentation Hub](./docs/)** for the complete, organized documentation index with detailed descriptions of all guides.
+
+### 📝 Project Files
+-   **[Changelog](./CHANGELOG.md)** - Version history and release notes
+-   **[License](./LICENSE)** - MIT License
 
 ## License
 
