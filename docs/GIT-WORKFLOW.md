@@ -6,16 +6,193 @@ This document contains the complete Git workflow standards for the Interactive T
 
 ## Table of Contents
 
-1. [Branch Naming Convention](#1-branch-naming-convention)
-2. [Commit Message Standards](#2-commit-message-standards)
-3. [Pull Request Process](#3-pull-request-process)
-4. [Code Review Guidelines](#4-code-review-guidelines)
-5. [Merge Strategy & Cleanup](#5-merge-strategy--cleanup)
-6. [Cross-Platform Branch Management](#6-cross-platform-branch-management)
+1. [Complete Task Workflow](#1-complete-task-workflow)
+2. [Branch Naming Convention](#2-branch-naming-convention)
+3. [Commit Message Standards](#3-commit-message-standards)
+4. [Pull Request Process](#4-pull-request-process)
+5. [Code Review Guidelines](#5-code-review-guidelines)
+6. [Merge Strategy & Cleanup](#6-merge-strategy--cleanup)
+7. [Cross-Platform Branch Management](#7-cross-platform-branch-management)
 
 ---
 
-## 1. Branch Naming Convention
+## 1. Complete Task Workflow
+
+This section outlines the mandatory, step-by-step process for implementing any change in the project. Following this workflow ensures code quality, prevents regressions, maintains clean history, and automates the release and deployment cycle.
+
+### Phase 1: Preparation & Branching
+
+**Goal:** Create a clean, isolated environment for your changes, based on the latest version of the project.
+
+1. **Synchronize Your Local `main` Branch:**
+   Before starting any new work, ensure your local `main` branch is in sync with the remote repository.
+
+   ```bash
+   # Switch to the main branch
+   git checkout main
+
+   # Pull the latest changes from remote
+   git pull origin main
+   ```
+
+2. **Create a New Feature Branch:**
+   Create a new branch from `main`. The branch name must follow the conventional naming standard (see [Branch Naming Convention](#2-branch-naming-convention)).
+
+   ```bash
+   # Examples:
+   # feat/add-contact-form
+   # fix/header-alignment-issue
+   # docs/update-readme
+
+   git checkout -b <type>/<descriptive-name>
+
+   # Real example:
+   git checkout -b feat/add-image-lightbox
+   ```
+
+### Phase 2: Development & Local Validation
+
+**Goal:** Write code and continuously verify its correctness locally. This is an iterative loop.
+
+1. **Code the Changes:**
+   Make all necessary code modifications.
+
+2. **Visually Verify Your Work:**
+   Run the local development server to see your changes.
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:3000` and confirm the feature or fix works as intended.
+
+3. **Run the Linter:**
+   Check your code for style or syntax issues.
+   ```bash
+   npm run lint
+   ```
+   Fix any errors or warnings that appear.
+
+4. **Run the Test Suite:**
+   Ensure your changes haven't broken existing functionality.
+   ```bash
+   npm test
+   ```
+   All tests must pass before proceeding.
+
+5. **Repeat:** Continue the code-and-validate cycle until the feature is complete and all local checks pass.
+
+### Phase 3: Documentation Update
+
+**Goal:** Ensure all project documentation accurately reflects the new changes. **Do not skip this step.**
+
+1. **Review and Update Relevant Documents:**
+   Based on your changes, update any relevant files:
+   - `README.md`: Project overview or feature list
+   - `ARCHITECTURE.md`: Core system architecture changes
+   - `docs/DESIGN-SYSTEM.md`: New UI components or style changes
+   - `docs/SETUP.md`: Deployment or setup process changes
+   - `docs/TESTING.md`: New testing patterns
+   - Any other relevant documentation
+
+   **Note:** `CHANGELOG.md` is updated automatically during the release process.
+
+### Phase 4: Code Review & Continuous Integration (CI)
+
+**Goal:** Get your code into `main` through a safe, automated, and reviewed process.
+
+1. **Commit Your Changes:**
+   Stage changes and write a commit message following [Conventional Commits](https://www.conventionalcommits.org/) (see [Commit Message Standards](#3-commit-message-standards)).
+
+   ```bash
+   git add .
+   git commit -m "feat(ui): add lightbox feature to project images"
+   ```
+
+2. **Push Your Branch to GitHub:**
+   ```bash
+   git push -u origin feat/add-image-lightbox
+   ```
+
+3. **Create a Pull Request (PR):**
+   - Go to the repository on GitHub
+   - Click "Compare & pull request" for your branch
+   - Write a clear title and description
+   - Click "Create pull request"
+
+4. **Await Automated CI Checks:**
+   The PR automatically triggers the CI Pipeline with three checks:
+   - **Linter:** Verifies code style
+   - **Tests:** Runs the full test suite
+   - **Build:** Confirms successful production build
+
+   The "Merge" button is blocked until all checks pass.
+
+5. **Merge the Pull Request:**
+   Once all checks are green, merge the PR using **"Squash and merge"** to keep `main` history clean.
+
+### Phase 5: Release & Deployment
+
+**Goal:** Create a new version, update the changelog, and deploy to production.
+
+1. **Sync Local `main` After Merging:**
+   Switch back to `main` and pull the merged changes.
+
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+
+2. **Determine the Version Type:**
+   Based on your changes:
+   - `patch`: Bug fixes and small improvements
+   - `minor`: New, backward-compatible features
+   - `major`: Breaking changes
+
+3. **Create the Release:**
+   Run the release script to automatically update `package.json` and `CHANGELOG.md`, then create a commit and tag.
+
+   ```bash
+   # For a patch release (most common)
+   npm run release -- --release-as patch
+
+   # For a minor release
+   npm run release -- --release-as minor
+
+   # For a major release
+   npm run release -- --release-as major
+   ```
+
+4. **Push the Release to GitHub:**
+   This pushes the commit and tag, triggering automated processes.
+
+   ```bash
+   git push --follow-tags origin main
+   ```
+
+5. **Monitor Automated Processes:**
+   - **GitHub Release:** Automatically created on the repository page
+   - **Deployment:** Automatic deployment to staging and production environments
+
+### Phase 6: Cleanup
+
+**Goal:** Keep the repository clean and organized.
+
+1. **Delete the Remote Branch:**
+   On the merged Pull Request page on GitHub, click "Delete branch".
+
+2. **Delete the Local Branch:**
+   ```bash
+   # Ensure you're on the main branch
+   git checkout main
+
+   # Delete the feature branch
+   git branch -D feat/add-image-lightbox
+   ```
+
+This completes the entire lifecycle of a task. Following this process rigorously ensures project stability and success.
+
+---
+
+## 2. Branch Naming Convention
 
 Use conventional branch naming with the format: `<type>/<brief-description>`
 
@@ -67,7 +244,7 @@ component-refactor-button      # Missing type
 
 ---
 
-## 2. Commit Message Standards
+## 3. Commit Message Standards
 
 Follow conventional commit format for all commits. See [COMMIT_CONVENTION.md](../COMMIT_CONVENTION.md) for complete reference.
 
@@ -186,7 +363,7 @@ Commits are validated during CI. Common issues:
 
 ---
 
-## 3. Pull Request Process
+## 4. Pull Request Process
 
 ### PR Creation Standards
 
@@ -348,7 +525,7 @@ Coverage:    X% statements, X% branches, X% functions, X% lines
 
 ---
 
-## 4. Code Review Guidelines
+## 5. Code Review Guidelines
 
 ### Review Process
 
@@ -477,7 +654,7 @@ FWIW, the current approach:
 
 ---
 
-## 5. Merge Strategy & Cleanup
+## 6. Merge Strategy & Cleanup
 
 ### Squash and Merge Policy
 
@@ -566,7 +743,7 @@ git log --oneline -5                     # Should show the squash commit
 
 ---
 
-## 6. Cross-Platform Branch Management
+## 7. Cross-Platform Branch Management
 
 ### Collaboration Workflow
 
@@ -698,7 +875,6 @@ git reset --hard HEAD~2  # Lose changes
 
 - **[COMMIT_CONVENTION.md](../COMMIT_CONVENTION.md)** - Complete commit message guide
 - **[docs/ai-agent/COMMUNICATION-PROTOCOL.md](../ai-agent/COMMUNICATION-PROTOCOL.md)** - Review response guidelines
-- **[STANDARD_TASK_WORKFLOW_PROTOCOL.md](STANDARD_TASK_WORKFLOW_PROTOCOL.md)** - Official workflow protocol
 - **[docs/THE_ULTIMATE_TESTING_ALGORITHM.md](THE_ULTIMATE_TESTING_ALGORITHM.md)** - Complete testing methodology
 - **[TESTING-OVERVIEW.md](TESTING-OVERVIEW.md)** - Testing philosophy summary
 - **Git Documentation:** Official Git documentation and Pro Git book
