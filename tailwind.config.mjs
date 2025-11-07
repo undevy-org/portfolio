@@ -1,186 +1,209 @@
 /** @type {import('tailwindcss').Config} */
+
+/*
+  Tailwind configuration for unified data-theme approach.
+
+  Notes:
+  - We disable Tailwind's built-in `darkMode` because theming is handled
+    via the `data-theme="<id>"` attribute and `.theme-<id>` legacy classes.
+  - Color tokens are named by theme + semantic token (e.g. 'dark-bg', 'amber-text-primary').
+  - Keep token names in sync with your globals.css theme overrides.
+*/
+
 const config = {
-  mode: 'jit', // Explicitly enable JIT mode
+  // We use [data-theme="..."] instead of Tailwind's built-in `dark:` variant.
+  darkMode: "media",
+
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/**/*.{js,jsx}',
-    './.storybook/**/*.{js,jsx}',
-    // Add explicit story file patterns to ensure JIT compiler scans them
-    './src/**/*.stories.{js,jsx}',
-    './.storybook/preview.{js,jsx}',
-    // Include test files that might contain Tailwind classes
-    './src/**/*.test.{js,jsx}',
-    // Enhanced content scanning for comprehensive coverage
-    './**/*.{stories,stories.js,stories.jsx}',
-    './src/**/*',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  safelist: [
-    // Border hover states - critical for interactive components like Accordion
-    {
-      pattern: /border-(gray|green|blue|red|yellow)-(400|500|600|700)/,
-      variants: ['hover', 'focus', 'active'],
-    },
-    // Background hover states for buttons and panels
-    {
-      pattern: /bg-(gray|green|blue|red|yellow)-(800|900|950)/,
-      variants: ['hover', 'active'],
-    },
-    // Transform and scale utilities for animations
-    'scale-105',
-    { pattern: /scale-(95|105|110)/ },
-    'rotate-180',
-    { pattern: /rotate-(90|180|270)/ },
-    'duration-200',
-    { pattern: /duration-(100|200|300)/ },
 
-    // Specific patterns identified from component analysis
-    'hover:border-green-400',
-    'hover:bg-gray-800',
-    'hover:border-primary',
-    'bg-hover',
-    'border-secondary',
-    'border-primary',
-    'border-tertiary',
-    'transition-colors',
-    'transition-transform',
-    'transform',
-
-    // Focus and ring states for accessible components
-    'focus:outline-none',
-    'focus:ring-2',
-    'focus:ring-green-400',
-    'focus:border-transparent',
-    'focus:ring-2',
-    'focus:ring-4',
-
-    // Opacity states
-    { pattern: /opacity-(0|40|50|60|75|80|100)/ },
-    'hover:opacity-100',
-    'hover:opacity-80',
-    'disabled:opacity-50',
-    'disabled:cursor-not-allowed',
-
-    // Cursor states
-    'cursor-pointer',
-    'cursor-not-allowed',
-    'cursor-default',
-
-    // Display utilities
-    'hidden',
-    'block',
-    'inline',
-    'inline-block',
-    'flex',
-    'grid',
-  ],
   theme: {
     extend: {
       colors: {
-        // Map CSS variables to Tailwind color names for hybrid approach
-        'primary': 'var(--color-text-primary)',
-        'background': 'var(--color-bg)',
-        'surface': 'var(--color-input-bg)',
-        'border': 'var(--color-border)',
-        'border-darker': 'var(--color-border-darker)',
-        'text': 'var(--color-text-primary)',
-        'text-secondary': 'var(--color-text-secondary)',
-        'text-tertiary': 'var(--color-text-tertiary)',
-        'accent': 'var(--color-accent)',
-        'error': 'var(--color-error)',
-        'success': 'var(--color-success)',
-        'warning': 'var(--color-text-command)',
-        'hover': 'var(--color-hover)',
-        'active': 'var(--color-active)',
-        'btn-bg': 'var(--color-btn-bg)',
-        'btn-bg-hover': 'var(--color-btn-bg-hover)',
+        // -------------------------
+        // DARK THEME TOKENS
+        // -------------------------
+        'dark-bg': '#000000',
+        'dark-text-white': '#ffffff',
+        'dark-text-primary': '#86efac',
+        'dark-text-secondary': '#9ca3af',
+        'dark-text-tertiary': '#6b7280',
+        'dark-text-command': '#eab308',
+        'dark-border': '#22c55e',
+        'dark-border-darker': '#166534',
+        'dark-active': '#15803d',
+        'dark-error': '#dc2626',
+        'dark-success': '#4ade80',
+        'dark-input-bg': '#111827',
+        'dark-hover': 'rgba(34, 197, 94, 0.1)',
+        'dark-accent': '#22d3ee',
 
-        // Keep some static colors for non-themed elements
-        'gray': {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827',
-          950: '#030712'
-        },
-        'green': {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-          950: '#052e16'
-        },
-        'red': {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
-          950: '#450a0a'
-        },
-        'blue': {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554'
-        },
-        'yellow': {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          300: '#fcd34d',
-          400: '#fbbf24',
-          500: '#f59e0b',
-          600: '#d97706',
-          700: '#b45309',
-          800: '#92400e',
-          900: '#78350f',
-          950: '#451a03'
-        }
+        // -------------------------
+        // LIGHT THEME TOKENS
+        // -------------------------
+        'light-bg': '#ffffff',
+        'light-text-black': '#0a0a0a',
+        'light-text-primary': '#065f46',
+        'light-text-secondary': '#4b5563',
+        'light-text-tertiary': '#9ca3af',
+        'light-text-command': '#b45309',
+        'light-border': '#10b981',
+        'light-border-darker': '#059669',
+        'light-border-lighter': '#6ee7b7',
+        'light-active': '#d1fae5',
+        'light-error': '#dc2626',
+        'light-success': '#059669',
+        'light-input-bg': '#ffffff',
+        'light-hover': 'rgba(5, 150, 105, 0.1)',
+        'light-accent': '#0284c7',
+
+        // -------------------------
+        // AMBER THEME TOKENS
+        // -------------------------
+        'amber-bg': '#1C1C1C',
+        'amber-surface': '#2A2A2A',
+        'amber-text-primary': '#FFFFFF',
+        'amber-text-secondary': '#D6D6D6',
+        'amber-text-tertiary': '#A3A3A3',
+        'amber-text-command': '#D94A1E',
+        'amber-border': '#D94A1E',
+        'amber-border-darker': '#7A2B12',
+        'amber-active': '#FF5C28',
+        'amber-error': '#FF3B30',
+        'amber-success': '#34C759',
+        'amber-input-bg': '#242424',
+        'amber-hover': 'rgba(217, 74, 30, 0.12)',
+        'amber-accent': '#FF784E',
+        'amber-tag-border': '#D6D6D6',
+
+        // -------------------------
+        // BSOD THEME TOKENS
+        // -------------------------
+        'bsod-bg': '#0B4DA8',
+        'bsod-surface': '#08429A',
+        'bsod-text-primary': '#FFFFFF',
+        'bsod-text-secondary': '#CFE9FF',
+        'bsod-text-tertiary': '#9EC7FF',
+        'bsod-text-command': '#E1F0FF',
+        'bsod-border': '#E6F3FF',
+        'bsod-border-darker': '#7FB3FF',
+        'bsod-active': '#0066FF',
+        'bsod-error': '#FF6B6B',
+        'bsod-success': '#00D084',
+        'bsod-input-bg': '#073A93',
+        'bsod-hover': 'rgba(230, 243, 255, 0.06)',
+        'bsod-accent': '#88B8FF',
+        'bsod-tag-border': '#C7E1FF',
+
+        // -------------------------
+        // SYNTHWAVE THEME TOKENS
+        // -------------------------
+        'synthwave-bg': '#1A103C',
+        'synthwave-text-white': '#FF00E5',
+        'synthwave-text-primary': '#FF00E5',
+        'synthwave-text-secondary': '#00BFFF',
+        'synthwave-text-tertiary': '#7B61FF',
+        'synthwave-text-command': '#F7B801',
+        'synthwave-border': '#FF00E5',
+        'synthwave-border-darker': '#00BFFF',
+        'synthwave-active': '#4C00A4',
+        'synthwave-error': '#FF1B1B',
+        'synthwave-success': '#39FF14',
+        'synthwave-input-bg': '#2C1E5C',
+        'synthwave-hover': 'rgba(255, 0, 229, 0.1)',
+        'synthwave-accent': '#00F6FF',
+
+        /// -------------------------
+        // OPERATOR THEME TOKENS
+        // --------------------------
+        'operator-bg': '#1E0000',
+        'operator-text-white': '#FF4100',
+        'operator-text-primary': '#FF4100',
+        'operator-text-secondary': '#FFA500',
+        'operator-text-tertiary': '#B37400',
+        'operator-text-command': '#FF4100',
+        'operator-border': '#FF4100',
+        'operator-border-darker': '#FFA500',
+        'operator-active': '#5D1800',
+        'operator-error': '#FFFF00',
+        'operator-success': '#A8FF00',
+        'operator-input-bg': '#1A1A1A',
+        'operator-hover': 'rgba(255, 65, 0, 0.1)',
+        'operator-accent': '#FFA500',
+
+        /// -------------------------
+        // KYOTO THEME TOKENS
+        // --------------------------
+        'kyoto-bg': '#B0B0B0',
+        'kyoto-text-white': '#1A1A1A',
+        'kyoto-text-primary': '#1A1A1A',
+        'kyoto-text-secondary': '#4A4A4A',
+        'kyoto-text-tertiary': '#7A7A7A',
+        'kyoto-text-command': '#D95D39',
+        'kyoto-border': '#1A1A1A',
+        'kyoto-border-darker': '#4A4A4A',
+        'kyoto-active': '#8E8E8E',
+        'kyoto-error': '#A80000',
+        'kyoto-success': '#0A6D0A',
+        'kyoto-input-bg': '#A0A0A0',
+        'kyoto-hover': 'rgba(74, 74, 74, 0.1)',
+        'kyoto-accent': '#39D9D9',
+
+        /// -------------------------
+        // RADAR THEME TOKENS
+        // --------------------------
+        'radar-bg': '#3C4D3A',
+        'radar-text-white': '#B3E2A7',
+        'radar-text-primary': '#B3E2A7',
+        'radar-text-secondary': '#8BAA85',
+        'radar-text-tertiary': '#5A5A5A',
+        'radar-text-command': '#D98E39',
+        'radar-border': '#2A2A2A',
+        'radar-border-darker': '#2A2A2A',
+        'radar-active': '#2F3D2D',
+        'radar-error': '#D94639',
+        'radar-success': '#65B354',
+        'radar-input-bg': '#32402F',
+        'radar-hover': 'rgba(179, 226, 167, 0.1)',
+        'radar-accent': '#54B3B3',
       },
+
+      // Font sizes intentionally set to fixed pixel values for terminal-like UI
       fontSize: {
-        '2xs': '0.625rem', // 10px
+        'xs': '12px',
+        'sm': '14px',
+        'base': '16px',
+        'lg': '18px',
+        'xl': '20px',
       },
+
+      // Ensure monospace stack is stable across platforms
       fontFamily: {
         mono: [
           'var(--font-mono)',
-          'IBM Plex Mono',
+          '"IBM Plex Mono"',
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'Monaco',
+          'Consolas',
+          '"Liberation Mono"',
+          '"Courier New"',
           'monospace'
         ],
       },
+
+      // Small, consistent rounded corners
       borderRadius: {
-        'terminal': '4px',
-      },
-      animation: {
-        'pulse-progress': 'pulse 2s ease-in-out infinite',
+        'DEFAULT': '0.25rem',
       },
     },
   },
+
   plugins: [],
 };
+
 export default config;

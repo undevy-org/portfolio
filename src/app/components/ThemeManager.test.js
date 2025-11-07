@@ -6,6 +6,7 @@ import ThemeManager from './ThemeManager';
 
 jest.mock('../context/SessionContext', () => ({
   useSession: jest.fn(),
+  themes: ['dark', 'light', 'amber', 'bsod']
 }));
 import { useSession } from '../context/SessionContext';
 
@@ -17,23 +18,25 @@ afterEach(() => {
 });
 
 describe('ThemeManager', () => {
-  test('applies data-theme attribute to html element when theme is dark', async () => {
+  test('applies dark class to html element when theme is dark', async () => {
     useSession.mockReturnValue({ theme: 'dark' });
     render(<ThemeManager />);
     await waitFor(() => {
+      expect(document.documentElement.classList.contains('theme-dark')).toBe(true);
       expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-      expect(document.body.classList.contains('bg-main')).toBe(true);
-      expect(document.body.classList.contains('text-primary')).toBe(true);
+      expect(document.body.classList.contains('bg-dark-bg')).toBe(true);
+      expect(document.body.classList.contains('text-dark-text-primary')).toBe(true);
     });
   });
 
-  test('removes old theme and applies new theme when theme changes', async () => {
+  test('removes dark class and applies light classes when theme is light', async () => {
     useSession.mockReturnValue({ theme: 'light' });
     render(<ThemeManager />);
     await waitFor(() => {
-      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-      expect(document.body.classList.contains('bg-main')).toBe(true);
-      expect(document.body.classList.contains('text-primary')).toBe(true);
+      expect(document.documentElement.classList.contains('dark')).toBe(false);
+      expect(document.body.classList.contains('bg-light-bg')).toBe(true);
+      expect(document.body.classList.contains('text-light-text-primary')).toBe(true);
+      expect(document.body.classList.contains('bg-dark-bg')).toBe(false);
     });
   });
 

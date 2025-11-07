@@ -61,4 +61,3 @@ diffs/
 # scripts
 sync-images-down.sh
 sync-images-up.sh
-*storybook.log

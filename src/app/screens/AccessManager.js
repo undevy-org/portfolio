@@ -3,10 +3,9 @@
 
 import { useEffect } from 'react';
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import Button from '../components/ui/Button';
-import { Home, Shield, Key, Users } from 'lucide-react';
-import { ListViewTemplate } from '../components/templates';
-import { CodeListSection } from '../components/organisms';
+import { Home, ChevronRight, Shield, Key, Users } from 'lucide-react';
 
 export default function AccessManager() {
   const { sessionData, navigate, addLog, setSessionData } = useSession();
@@ -29,13 +28,14 @@ export default function AccessManager() {
   // Function to simulate access with a specific code
   const handleCodeClick = async (code, isDemo = false) => {
     try {
+      
       // Handle demo access
       if (isDemo) {
         addLog(`DEMO MODE ACTIVATED`);
-
+        
         // Simulate fetching demo session data
         const response = await fetch(`/api/session`);
-
+        
         if (response.ok) {
           const demoData = await response.json();
           setSessionData(demoData);
@@ -46,26 +46,26 @@ export default function AccessManager() {
         }
         return;
       }
-
+      
       if (!code) return;
-
+      
       addLog(`ACCESS SIMULATION: Using code ${code}`);
-
+      
       // Make API call to authenticate with this code
       const response = await fetch(`/api/session?code=${code}`);
-
+      
       if (response.ok) {
         const userData = await response.json();
-
+        
         // Set session data with the authenticated user's data
         const enrichedData = {
           ...userData,
           accessCode: code
         };
-
+        
         setSessionData(enrichedData);
         addLog(`ACCESS GRANTED: Viewing portfolio for ${userData.meta?.company || code}`);
-
+        
         // Navigate to ProfileBoot to start the user experience
         navigate('ProfileBoot', false);
       } else {
@@ -81,7 +81,7 @@ export default function AccessManager() {
   const masterCodes = sessionData?.codes?.master || [];
   const specialCodes = sessionData?.codes?.special || [];
   const rawUserCodes = sessionData?.codes?.user || [];
-
+  
   // Filter out special codes from user codes to avoid duplication
   const specialCodeValues = specialCodes
     .filter(code => code.code)
@@ -90,72 +90,192 @@ export default function AccessManager() {
   const userCodes = rawUserCodes.filter(
     userCode => !specialCodeValues.includes(userCode.code)
   );
-
-  // Create data structure for ListViewTemplate
-  // Use custom render function to display CodeListSection components
-  const customRenderCard = (sectionData, index) => {
-    const { type, title, icon, codes, onCodeClick } = sectionData;
-    return (
-      <CodeListSection
-        key={index}
-        title={title}
-        icon={icon}
-        codes={codes}
-        onCodeClick={onCodeClick}
-        variant={type.replace('_codes', '')}
-      />
-    );
-  };
-
-  // Combine all sections into items array
-  const accessSections = [
-    {
-      id: 'master',
-      type: 'master_codes',
-      title: "Master Access",
-      icon: Shield,
-      codes: masterCodes,
-      onCodeClick: (code) => handleCodeClick(code.code)
-    },
-    {
-      id: 'special',
-      type: 'special_codes',
-      title: "Special Access",
-      icon: Key,
-      codes: specialCodes,
-      onCodeClick: (code) => {
-        if (code.type === 'demo' && !code.code) {
-          handleCodeClick(null, true);
-        } else if (code.code) {
-          handleCodeClick(code.code);
-        }
-      }
-    },
-    {
-      id: 'user',
-      type: 'user_codes',
-      title: `User Codes [${userCodes.length}]`,
-      icon: Users,
-      codes: userCodes,
-      onCodeClick: (code) => handleCodeClick(code.code)
-    }
-  ];
-
-  const navigationButtons = [
-    {
-      screen: '',
-      label: 'PROCEED TO MAIN HUB',
-      icon: Home,
-      onClick: handleProceed,
-      logMessage: 'NAVIGATE: MainHub'
-    }
-  ];
-
   return (
-    <ListViewTemplate
-      items={accessSections}
-      renderCard={customRenderCard}
-      navigationButtons={navigationButtons}
-    />
+    <ScreenWrapper>
+      {/* Master Codes Section */}
+      {masterCodes.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="w-4 h-4 text-command" />
+            <h3 className="text-sm uppercase tracking-wider text-command">Master Access</h3>
+          </div>
+          <div className="space-y-3">
+            {masterCodes.map((code, index) => (
+              <button
+                key={`master-${index}`}
+                onClick={() => handleCodeClick(code.code)}
+                className="w-full p-4 text-left border rounded transition-colors relative border-secondary bg-hover hover:border-primary cursor-pointer"
+              >
+                <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
+                  <span className="mt-1 text-command">
+                    [M{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <div>
+                    <div className="text-lg font-mono text-command">
+                      {code.code}
+                    </div>
+                    <div className="text-sm opacity-80 text-secondary">
+                      {code.label}
+                    </div>
+                    <div className="text-xs mt-1 text-secondary">
+                      {code.description}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
+                </div>
+                <div className="md:hidden">
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-mono text-command">
+                      {code.code}
+                    </span>
+                    <span className="mt-1 text-sm text-command">
+                      [M{String(index + 1).padStart(2, '0')}]
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm text-secondary">{code.label}</div>
+                  <div className="mt-1 text-xs text-secondary">
+                    {code.description}
+                  </div>
+                  <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Special Codes Section */}
+      {specialCodes.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Key className="w-4 h-4 text-command" />
+            <h3 className="text-sm uppercase tracking-wider text-command">Special Access</h3>
+          </div>
+          <div className="space-y-3">
+            {specialCodes.map((code, index) => (
+              <button
+                key={`special-${index}`}
+                onClick={() => {
+                  if (code.type === 'demo' && !code.code) {
+                    handleCodeClick(null, true); 
+                  } else if (code.code) {
+                    handleCodeClick(code.code);
+                  }
+                }}
+                disabled={false} 
+                className={`w-full p-4 text-left border rounded transition-colors relative ${
+                  code.code || code.type === 'demo'
+                    ? "border-secondary bg-hover hover:border-primary cursor-pointer" 
+                    : "border-secondary bg-main opacity-60 cursor-default"
+                }`}
+              >
+                <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
+                  <span className="mt-1 text-command">
+                    [S{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <div>
+                    <div className="text-lg font-mono text-command">
+                      {code.code || '[NO CODE REQUIRED]'}
+                    </div>
+                    <div className="text-sm opacity-80 text-secondary">
+                      {code.label}
+                    </div>
+                    <div className="text-xs mt-1 text-secondary">
+                      Type: {code.type} • {code.description}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
+                </div>
+                <div className="md:hidden">
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-mono text-command">
+                      {code.code || '[NO CODE]'}
+                    </span>
+                    <span className="mt-1 text-sm text-command">
+                      [S{String(index + 1).padStart(2, '0')}]
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm text-secondary">{code.label}</div>
+                  <div className="mt-1 text-xs text-secondary">
+                    Type: {code.type} • {code.description}
+                  </div>
+                  <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* User Codes Section */}
+      {userCodes.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="w-4 h-4 text-command" />
+            <h3 className="text-sm uppercase tracking-wider text-command">User Codes [{userCodes.length}]</h3>
+          </div>
+          <div className="space-y-3">
+            {userCodes.map((code, index) => (
+              <button
+                key={`user-${index}`}
+                onClick={() => handleCodeClick(code.code)}
+                className="w-full p-4 text-left border rounded transition-colors relative border-secondary bg-hover hover:border-primary"
+              >
+                <div className="hidden md:grid grid-cols-[auto,1fr,auto] items-start w-full gap-x-3">
+                  <span className="mt-1 text-command">
+                    [{String(index + 1).padStart(2, '0')}]
+                  </span>
+                  <div>
+                    <div className="text-lg font-mono text-command">
+                      {code.code}
+                    </div>
+                    <div className="text-sm opacity-80 text-secondary">
+                      {code.label}
+                    </div>
+                    <div className="text-xs mt-1 text-secondary">
+                      {code.email && <span>{code.email}</span>}
+                      {code.email && code.telegram && <span> • </span>}
+                      {code.telegram && <span>{code.telegram}</span>}
+                      {!code.email && !code.telegram && <span>No contact info</span>}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 mt-1 text-secondary" />
+                </div>
+                <div className="md:hidden">
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-mono text-command">
+                      {code.code}
+                    </span>
+                    <span className="mt-1 text-sm text-command">
+                      [{String(index + 1).padStart(2, '0')}]
+                    </span>
+                  </div>
+                  <div className="mt-1 text-sm text-secondary">{code.label}</div>
+                  <div className="mt-1 text-xs text-secondary">
+                    {code.email && <span>{code.email}</span>}
+                    {code.email && code.telegram && <span> • </span>}
+                    {code.telegram && <span>{code.telegram}</span>}
+                    {!code.email && !code.telegram && <span>No contact info</span>}
+                  </div>
+                  <ChevronRight className="w-5 h-5 absolute bottom-4 right-4 text-secondary" />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex mt-5 flex-col md:flex-row gap-3">
+        <Button
+          onClick={handleProceed}
+          icon={Home}
+          iconPosition="left"
+          variant="flex"
+        >
+          PROCEED TO MAIN HUB
+        </Button>
+      </div>
+    </ScreenWrapper>
   );
 }

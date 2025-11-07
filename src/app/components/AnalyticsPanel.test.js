@@ -64,26 +64,17 @@ describe('AnalyticsPanel Component', () => {
       renderAnalyticsPanel();
       
       expect(screen.getByText('$analytics')).toBeInTheDocument();
-      expect(screen.getByText('$analytics')).toHaveClass('title-command');
+      expect(screen.getByText('$analytics')).toHaveClass('text-command');
     });
 
     test('renders in correct container with proper styling', () => {
       renderAnalyticsPanel();
-
-      // Find the Panel component (the actual styled container)
-      const analyticsTitle = screen.getByText('$analytics');
-      const container = analyticsTitle.closest('[class*="panel-base"]'); // Find Panel component
-
-      // Panel provides: panel-base panel-theme (maps to border/border-secondary and bg-main/border-secondary)
-      // Custom className provides: p-3 border-primary text-sm border rounded
+      
+      const container = screen.getByText('$analytics').closest('div');
       expect(container).toHaveClass(
-        'panel-base', 'panel-theme', 'p-3',
-        'border-primary', 'text-sm', 'border', 'rounded'
+        'w-full', 'max-w-2xl', 'border', 'rounded', 'p-3', 
+        'text-sm', 'bg-main', 'border-primary'
       );
-
-      // Also verify the outer wrapper has the sizing classes
-      const wrapper = analyticsTitle.closest('[class*="w-full"]');
-      expect(wrapper).toHaveClass('w-full', 'max-w-2xl', 'text-sm');
     });
 
     test('does not render when sessionData is null', () => {
@@ -200,7 +191,7 @@ describe('AnalyticsPanel Component', () => {
       renderAnalyticsPanel();
       
       expect(screen.getByText('$session_trace')).toBeInTheDocument();
-      expect(screen.getByText('$session_trace')).toHaveClass('title-command');
+      expect(screen.getByText('$session_trace')).toHaveClass('text-command');
     });
 
     test('displays navigation history with correct indexing', () => {
@@ -231,10 +222,16 @@ describe('AnalyticsPanel Component', () => {
       
       // Find the current screen in the trace section - look for text-command that's not the heading
       const traceSection = screen.getByText('$session_trace').parentElement;
-      // The current screen should have the text-command class
-      const currentScreenElement = traceSection.querySelector('.text-command');
+      const commandElements = traceSection.querySelectorAll('.text-command');
+      // Should have at least 2: the heading and the current screen
+      expect(commandElements.length).toBeGreaterThanOrEqual(2);
+      
+      // Find the one that contains 'CaseDetail'
+      const currentScreenElement = Array.from(commandElements).find(el => 
+        el.textContent.includes('CaseDetail') && !el.textContent.includes('$session_trace')
+      );
       expect(currentScreenElement).toBeTruthy();
-      expect(currentScreenElement.textContent).toBe('CaseDetail');
+      expect(currentScreenElement).toHaveClass('text-command');
     });
 
     test('handles empty navigation history', () => {
@@ -303,19 +300,16 @@ describe('AnalyticsPanel Component', () => {
   describe('Responsive Layout', () => {
     test('uses responsive grid layout for statistics', () => {
       renderAnalyticsPanel();
-
-      const companyElement = screen.getByText('$company:');
-      const labelValuePair = companyElement.closest('div');
-      expect(labelValuePair).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-4', 'gap-y-1', 'text-sm');
+      
+      const gridContainer = screen.getByText('$company:').closest('.grid');
+      expect(gridContainer).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-x-4', 'gap-y-1');
     });
 
     test('session trace section has proper border styling', () => {
       renderAnalyticsPanel();
       
-      // Find the divider element instead of the div with border classes
-      const divider = document.querySelector('.border-t');
-      expect(divider).toBeInTheDocument();
-      expect(divider).toHaveClass('border-secondary');
+      const traceSection = screen.getByText('$session_trace').closest('div');
+      expect(traceSection).toHaveClass('mt-4', 'pt-3', 'border-t', 'border-secondary');
     });
   });
 
