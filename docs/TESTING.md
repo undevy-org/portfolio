@@ -283,6 +283,8 @@ Code coverage reporting is currently non-functional due to incompatibility betwe
 
 ## 7. Writing New Tests
 
+**📖 See [THE_ULTIMATE_TESTING_ALGORITHM.md](THE_ULTIMATE_TESTING_ALGORITHM.md) for detailed testing methodology.**
+
 ### 7.1. Async Testing Best Practices
 
 **Always Use `waitFor()` for Asynchronous Operations**
@@ -574,6 +576,8 @@ test('measures initial render performance', async () => {
 ```
 
 ## 10. Future Improvements
+
+**📖 See [TESTING-OVERVIEW.md](TESTING-OVERVIEW.md) for future roadmap.**
 
 ### 10.1. Short Term
 - Resolve coverage reporting issues with Next.js 13+

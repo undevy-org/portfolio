@@ -6,6 +6,27 @@ This project is an interactive portfolio experience designed to look and feel li
 
 After authentication, the application transforms into a seamless Single Page Application (SPA) with hash-based routing, ensuring an instant, app-like user experience.
 
+## 🤖 For AI Agents
+
+This project includes comprehensive documentation for autonomous AI agents:
+
+**Start here:** [docs/ai-agent/GETTING-STARTED.md](docs/ai-agent/GETTING-STARTED.md)
+
+Quick commands:
+\```bash
+# View the AI agent entry point
+cat docs/ai-agent/GETTING-STARTED.md | head -50
+
+# Understand the workflow
+cat docs/ai-agent/WORKFLOW.md
+\```
+
+### For Autonomous Development
+AI agents should follow this path:
+1. Read `docs/ai-agent/GETTING-STARTED.md`
+2. Study `docs/ai-agent/WORKFLOW.md`
+3. Execute following `docs/ai-agent/TASK-EXECUTION.md`
+
 ## Core Features
 
 -   **Gated & Personalized Access:** The site is accessible only via a unique code (`?code=...`). Based on this code, all content—from greetings to project case studies—is dynamically tailored for the visitor.
