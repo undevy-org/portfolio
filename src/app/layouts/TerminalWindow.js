@@ -190,7 +190,8 @@ function TerminalWindow({
       {/* BREADCRUMBS - Also stays fixed, doesn't scroll with content */}
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
         <div 
-          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0 bg-hover"
+          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0" 
+          style={{ backgroundColor: 'var(--color-hover)' }}
         >
           <div className="flex items-center flex-wrap">
             {breadcrumbPath.map((screen, index) => (
@@ -220,9 +221,9 @@ function TerminalWindow({
       {/* DEMO MODE BANNER - Also fixed, doesn't scroll */}
       {sessionData?.isDemoMode && !['Entry', 'ProfileBoot'].includes(currentScreen) && (
         <div className="px-4 py-2 bg-hover border-b border-secondary flex-shrink-0">
-          <span className="text-xs text-command">
+          <div className="text-xs text-command">
             DEMO MODE - This is example content. Get your personalized access code via Telegram.
-          </span>
+          </div>
         </div>
       )}
 

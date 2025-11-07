@@ -4,7 +4,6 @@
 import { useSession, themes } from '../../context/SessionContext';
 import { useEffect, useState } from 'react';
 import { Sun, Moon, Terminal, Bug, Waves, HardDrive, LayoutDashboard, SlidersHorizontal } from 'lucide-react';
-import Panel from '../../components/molecules/Panel';
 
 /**
  * ThemeSwitcher Component
@@ -84,16 +83,16 @@ export default function ThemeSwitcher() {
   
   return (
     <div className="w-full max-w-2xl">
-      {/* Main container using Panel component */}
-      <Panel className="border-border p-2">
+      {/* Main container with terminal-style border */}
+      <div className="border rounded bg-main border-primary p-2">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {themes.map((themeName) => {
             // Get the icon component for this theme
             const IconComponent = themeIcons[themeName] || Terminal;
-
+            
             // Determine if this is the currently active theme
             const isActive = themeName === currentTheme;
-
+            
             return (
               <button
                 key={themeName}
@@ -109,8 +108,8 @@ export default function ThemeSwitcher() {
                   transition-all duration-200
                   text-sm
                   font-mono
-                  ${isActive
-                    ? 'bg-active border-primary text-primary opacity-100'
+                  ${isActive 
+                    ? 'bg-active border-primary text-primary opacity-100' 
                     : 'border-secondary text-secondary opacity-75 hover:opacity-100 hover:border-primary bg-hover'
                   }
                 `}
@@ -120,7 +119,7 @@ export default function ThemeSwitcher() {
               >
                 {/* Theme icon with consistent sizing */}
                 <IconComponent className="w-4 h-4" />
-
+                
                 {/* Theme name */}
                 <span className="hidden sm:inline">
                   {themeNames[themeName]}
@@ -129,7 +128,7 @@ export default function ThemeSwitcher() {
             );
           })}
         </div>
-      </Panel>
+      </div>
     </div>
   );
 }

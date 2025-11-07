@@ -3,8 +3,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSession } from '../../context/SessionContext';
 import dynamic from 'next/dynamic';
-import { Divider, CommandTitle } from '../../components/atoms';
-import Panel from '../molecules/Panel';
 
 // Lazy load the image component since not all tabs will have images
 const TerminalImagePreview = dynamic(() => import('../TerminalImagePreview'), {
@@ -43,26 +41,28 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
     switch (item.type) {
       case 'text':
         return (
-          <p key={idx} className="text-text-secondary text-sm leading-relaxed">
+          <p key={idx} className="text-sm leading-relaxed text-secondary">
             {item.value}
           </p>
         );
-
+      
       case 'list_item':
         return (
           <div key={idx} className="text-sm flex items-start">
-            <span className="mr-2 text-text-secondary">[✓]</span>
-            <span className="text-text">{item.value}</span>
+            <span className="mr-2 text-success">[✓]</span>
+            <span className="text-secondary">{item.value}</span>
           </div>
         );
       case 'sub_heading':
         return (
-          <CommandTitle key={idx} text={item.value} level="h3" className="mb-2 mt-4" />
+          <div key={idx} className="mb-2 mt-4 text-command">
+            ${item.value}
+          </div>
         );
       
       case 'divider':
         return (
-          <Divider key={idx} spacing="my-3" />
+          <div key={idx} className="border-t my-3 border-secondary"></div>
         );
       
       case 'image':
@@ -100,7 +100,7 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
         </div>
       );
     }
-    return <div className="p-4 text-text-secondary">No content available</div>;
+    return <div className="text-secondary">No content available</div>;
   };
 
   // Don't render anything if no valid tabs
@@ -111,7 +111,7 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
     return (
     <div>
       <div className="w-full overflow-x-auto">
-        <div className="flex w-full border-b border-border">
+        <div className="flex w-full border-b border-secondary">
           {validTabs.map((tab) => (
             <button
               key={tab.id}
@@ -122,20 +122,22 @@ export default function Tabs({ tabs = [], defaultTab = null }) {
                   : 'text-secondary bg-hover border-b-0'
               }`}
             >
-              {tab.label}
+              ${tab.label}
             </button>
           ))}
         </div>
       </div>
 
-      <Panel className="-mt-px rounded-b rounded-bl">
+      <div className="-mt-px p-4 border rounded-b rounded-tr border-secondary">
         {activeTabData && (
           <>
-            <CommandTitle text={activeTabData.title || activeTabData.label} level="h3" className="mb-3" />
+            <h3 className="mb-3 text-command">
+              ${activeTabData.title || activeTabData.label}
+            </h3>
             {renderTabContent()}
           </>
         )}
-      </Panel>
+      </div>
     </div>
   );
 }

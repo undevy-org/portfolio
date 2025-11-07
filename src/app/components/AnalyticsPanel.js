@@ -2,9 +2,6 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { CommandTitle, Divider } from '../components/atoms';
-import { LabelValuePair } from '../components/molecules';
-import Panel from '../components/molecules/Panel';
 
 export default function AnalyticsPanel() {
   const { 
@@ -28,34 +25,61 @@ export default function AnalyticsPanel() {
   };
 
   return (
-    <div className="w-full max-w-2xl text-sm">
-      <Panel
-        className="p-3 border-primary text-sm border rounded"
-        noPadding={true}
-      >
+    <div className="w-full max-w-2xl border rounded p-3 text-sm bg-main border-primary">
 
-      <CommandTitle text="analytics" level="h2" className="mb-2" />
-      <LabelValuePair label="$company" value={sessionData.meta?.company} responsive />
-      <LabelValuePair label="$access_level" value={sessionData.meta?.depth || 'standard'} responsive />
-      <LabelValuePair label="$access_method" value={sessionData.meta?.accessMethod || 'Code'} responsive />
-      {sessionData.isWeb3User ? (
-        <LabelValuePair
-          label="$wallet_address"
-          value={`${sessionData.walletAddress.slice(0, 6)}...${sessionData.walletAddress.slice(-4)}`}
-          responsive
-        />
-      ) : (
-        <LabelValuePair label="$access_code" value={sessionData.accessCode} responsive />
-      )}
-      <LabelValuePair label="$current_screen" value={currentScreen} responsive />
-      <LabelValuePair label="$screens_visited" value={screensVisitedCount} responsive />
-      
-      <Divider spacing="my-4" />
+      <h2 className="text-base mb-2 text-command">$analytics</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
+        {/* 1. Company */}
+        <div>
+
+          <span className="text-primary mr-2">$company:</span>
+          <span className="text-secondary">{sessionData.meta?.company}</span>
+        </div>
+        
+        {/* 2. Access Level */}
+        <div>
+          <span className="text-primary mr-2">$access_level:</span>
+          <span className="text-secondary">{sessionData.meta?.depth || 'standard'}</span>
+        </div>
+
+        {/* 3. Access Method */}
+        <div>
+          <span className="text-primary mr-2">$access_method:</span>
+          <span className="text-secondary">{sessionData.meta?.accessMethod || 'Code'}</span>
+        </div>
+
+        {/* 4. Access Code or Wallet */}
+        {sessionData.isWeb3User ? (
+          <div>
+            <span className="text-primary mr-2">$wallet_address:</span>
+            <span className="text-secondary">
+              {sessionData.walletAddress.slice(0, 6)}...{sessionData.walletAddress.slice(-4)}
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span className="text-primary mr-2">$access_code:</span>
+            <span className="text-secondary">{sessionData.accessCode}</span>
+          </div>
+        )}
+
+        {/* 5. Current Screen */}
+        <div>
+          <span className="text-primary mr-2">$current_screen:</span>
+          <span className="text-secondary">{currentScreen}</span>
+        </div>
+        
+        {/* 6. Screens Visited */}
+        <div>
+          <span className="text-primary mr-2">$screens_visited:</span>
+          <span className="text-secondary">{screensVisitedCount}</span>
+        </div>
+      </div>
       
       {/* Navigation Path / Breadcrumbs */}
-      <div className="mt-4 pt-3">
+      <div className="mt-4 pt-3 border-t border-secondary">
 
-        <CommandTitle text="session_trace" level="h3" className="mb-2" />
+        <h3 className="text-base mb-2 text-command">$session_trace</h3>
         
         <div className="text-sm flex items-center flex-wrap">
           {navigationHistory.length > 0 ? (
@@ -86,8 +110,6 @@ export default function AnalyticsPanel() {
           )}
         </div>
       </div>
-
-      </Panel>
     </div>
   );
 }

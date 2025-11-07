@@ -71,43 +71,48 @@ export default function TerminalProgress({
   if (!isLoading) return null;
   
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-2 text-primary">
       {/* Header row with label and percentage */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           {/* Animated spinner icon */}
-          <span className="text-text-secondary">
+          <span className="text-command">
             {spinnerFrames[spinnerFrame]}
           </span>
           {/* Loading label */}
-          <span className="text-text-secondary text-xs uppercase tracking-wider">
+          <span className="text-xs uppercase tracking-wider text-secondary">
             {label}
           </span>
         </div>
-
+        
         {/* Percentage display on the right */}
         {showPercentage && (
-          <span className="text-text-secondary text-xs">
+          <span className="text-xs text-success">
             {Math.round(displayProgress)}%
           </span>
         )}
       </div>
-
-      <div
-        className={`${height} relative w-full overflow-hidden border border-secondary bg-surface`}
+      
+      <div 
+        className={`${height} relative w-full overflow-hidden border border-secondary`}
+        style={{
+          backgroundColor: 'var(--color-hover)'
+        }}
       >
-        <div
-          className={`absolute inset-y-0 left-0 transition-all duration-300 ease-out bg-success ${
+        <div 
+          className={`absolute inset-y-0 left-0 transition-all duration-300 ease-out ${
             showPulse && displayProgress < 100 ? 'animate-pulse-progress' : ''
           }`}
-          style={{
-            width: `${displayProgress}%`
+          style={{ 
+            width: `${displayProgress}%`,
+            // Use CSS variable for theme-aware success color
+            backgroundColor: 'var(--color-success)'
           }}
         />
       </div>
-
+      
       {/* Status text below progress bar */}
-      <div className="text-text-secondary text-xs">
+      <div className="text-xs text-secondary">
         <span className="opacity-60">
           [{Math.round(displayProgress)}% complete]
         </span>

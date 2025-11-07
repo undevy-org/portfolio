@@ -2,10 +2,10 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
+import ScreenWrapper from '../components/ScreenWrapper';
 import { getAvailabilityDate } from '../utils/formatters';
 import { Mail, Globe, ExternalLink, Copy, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
-import { StandardScreenTemplate } from '../components/templates';
 
 export default function Contact() {
   const { sessionData, addLog, domainData } = useSession();
@@ -71,17 +71,7 @@ export default function Contact() {
   const availabilityDate = getAvailabilityDate();
 
   return (
-    <StandardScreenTemplate
-      title="contact"
-      headerData={{
-        seeking: profileStatus.seeking || 'Not specified',
-        location: 'Remote, EMEA',
-        target_comp: profileStatus.salary || 'Negotiable',
-        availability: availabilityDate
-      }}
-      headerDataTitle="current_status"
-      headerDataBeforeChildren={false}
-    >
+    <ScreenWrapper>
       <div className="flex flex-col gap-3 mb-4">
         <button
           onClick={handleCopyEmail}
@@ -111,7 +101,7 @@ export default function Contact() {
             <div className="flex items-center">
                 <MessageCircle className="w-5 h-5 mr-3 text-command" />
                 <span className="text-white-black">
-                  {contactData.telegram.includes('t.me/')
+                  {contactData.telegram.includes('t.me/') 
                     ? '@' + contactData.telegram.split('t.me/')[1]
                     : contactData.telegram
                   }
@@ -122,6 +112,25 @@ export default function Contact() {
         )}
         </div>
       </div>
-    </StandardScreenTemplate>
+
+      <div className="p-4 border rounded border-secondary">
+        <h3 className="text-base mb-2 text-command">
+          $current_status
+          </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm">
+          <span className="text-primary">$seeking:</span>
+          <span className="text-secondary">{profileStatus.seeking || 'Not specified'}</span>
+
+          <span className="text-primary">$location:</span>
+          <span className="text-secondary">Remote, EMEA</span>
+
+          <span className="text-primary">$target_comp:</span>
+          <span className="text-secondary">{profileStatus.salary || 'Negotiable'}</span>
+          
+          <span className="text-primary">$availability:</span>
+          <span className="text-secondary">{availabilityDate}</span>
+        </div>
+      </div>
+    </ScreenWrapper>
   );
 }
