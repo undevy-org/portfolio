@@ -22,8 +22,8 @@ Project evolution, technical decisions, and development timeline.
 ### ⚡ **[PERSISTENT-SHELL.md](./PERSISTENT-SHELL.md)**
 Technical documentation of the persistent application shell architecture.
 
-### 🛠️ **[GIT-WORKFLOW.md](./GIT-WORKFLOW.md)** | **[STANDARD_TASK_WORKFLOW_PROTOCOL.md](./STANDARD_TASK_WORKFLOW_PROTOCOL.md)**
-Git workflow standards + official workflow protocol
+### 🛠️ **[GIT-WORKFLOW.md](./GIT-WORKFLOW.md)**
+Complete Git workflow standards and task execution protocol
 
 ### 🧪 **[THE_ULTIMATE_TESTING_ALGORITHM.md](./THE_ULTIMATE_TESTING_ALGORITHM.md)**
 Complete testing methodology for React/Next.js component development
