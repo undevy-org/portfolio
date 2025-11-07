@@ -7,14 +7,14 @@ Welcome to the Interactive Terminal Portfolio documentation. This directory cont
 ### 🚀 **[SETUP.md](./SETUP.md)**
 Complete setup and deployment guide for development and production environments.
 
-### 🧪 **[TESTING.md](./TESTING.md)** 
-Comprehensive testing strategies, patterns, and implementation guidelines.
+### 🧪 **[TESTING-OVERVIEW.md](./TESTING-OVERVIEW.md)** | **[TESTING.md](./TESTING.md)**
+Testing philosophy summary + comprehensive testing strategies
 
 ### 📄 **[CONTENT-MODEL.md](./CONTENT-MODEL.md)**
 Content structure, schema definitions, and content management documentation.
 
-### 🎨 **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)**
-UI components, theming system, styling guidelines, and design standards.
+### 🎨 **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)** | **[THEME-GUIDE.md](./THEME-GUIDE.md)**
+UI components & styling guide + theme system comprehensive overview
 
 ### 🔧 **[DEVELOPMENT_HISTORY.md](./DEVELOPMENT_HISTORY.md)**
 Project evolution, technical decisions, and development timeline.
@@ -22,10 +22,38 @@ Project evolution, technical decisions, and development timeline.
 ### ⚡ **[PERSISTENT-SHELL.md](./PERSISTENT-SHELL.md)**
 Technical documentation of the persistent application shell architecture.
 
-### 📦 **[NPM Fallback Strategy](./npm-fallback/)**
-Comprehensive NPM fallback implementation and integration guides.
+### 🛠️ **[GIT-WORKFLOW.md](./GIT-WORKFLOW.md)** | **[STANDARD_TASK_WORKFLOW_PROTOCOL.md](./STANDARD_TASK_WORKFLOW_PROTOCOL.md)**
+Git workflow standards + official workflow protocol
+
+### 🧪 **[THE_ULTIMATE_TESTING_ALGORITHM.md](./THE_ULTIMATE_TESTING_ALGORITHM.md)**
+Complete testing methodology for React/Next.js component development
 
 ## Quick Navigation
+
+### 🤖 For AI Agents
+
+If you're an autonomous AI agent working on this project, follow these essential paths:
+
+### 📚 Essential Reading Path
+1. **Quick Start** → [ai-agent/GETTING-STARTED.md](ai-agent/GETTING-STARTED.md)
+2. **Development Process** → [GIT-WORKFLOW.md](GIT-WORKFLOW.md) → [ai-agent/WORKFLOW.md](ai-agent/WORKFLOW.md)
+3. **Autonomy Guidelines** → [ai-agent/DECISION-FRAMEWORK.md](ai-agent/DECISION-FRAMEWORK.md)
+
+### Quick Navigation for AI
+```bash
+# How should I work?
+cat ai-agent/WORKFLOW.md
+
+# Can I decide this myself?
+cat ai-agent/DECISION-FRAMEWORK.md
+```
+
+### 📖 AI-Focused Guides
+- **[GIT-WORKFLOW.md](GIT-WORKFLOW.md)** - Complete Git workflow standards
+- **[THEME-GUIDE.md](THEME-GUIDE.md)** - Theme system comprehensive guide
+- **[TESTING-OVERVIEW.md](TESTING-OVERVIEW.md)** - Testing philosophy summary
+
+**→ Start with [ai-agent/GETTING-STARTED.md](ai-agent/GETTING-STARTED.md) ⭐**
 
 ### For Developers
 - **Getting Started**: [SETUP.md](./SETUP.md) → [TESTING.md](./TESTING.md)
@@ -40,7 +68,6 @@ Comprehensive NPM fallback implementation and integration guides.
 
 ### For Technical Understanding
 - **Architecture Deep Dive**: [PERSISTENT-SHELL.md](./PERSISTENT-SHELL.md)
-- **NPM Strategy**: [npm-fallback/](./npm-fallback/)
 - **Historical Context**: [DEVELOPMENT_HISTORY.md](./DEVELOPMENT_HISTORY.md)
 
 ## Project Links
@@ -66,7 +93,3 @@ When adding or updating documentation:
 - Use descriptive link text for better accessibility
 - Maintain consistent formatting and structure across all documents
 - Keep documentation up to date with code changes
-
----
-
-*Last updated: August 2025*
