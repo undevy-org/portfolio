@@ -347,29 +347,6 @@ Config no longer requires env vars during build phase
 
 ### [5.1.2](https://github.com/undevy-org/portfolio/compare/v5.1.1...v5.1.2) (2025-08-25)
 
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
-### [5.2.1](https://github.com/undevy-org/portfolio/compare/v5.2.0...v5.2.1) (2025-08-26)
-
-## [5.2.0](https://github.com/undevy-org/portfolio/compare/v5.1.2...v5.2.0) (2025-08-26)
-
-
-### Fixed
-
-* Implement comprehensive refinements to NPM fallback strategy ([#74](https://github.com/undevy-org/portfolio/issues/74)) ([98ea0e0](https://github.com/undevy-org/portfolio/commit/98ea0e001e6198715421f1433b9f7c29520e7434))
-
-### [5.1.2](https://github.com/undevy-org/portfolio/compare/v5.1.1...v5.1.2) (2025-08-25)
-=======
-## [5.2.0](https://github.com/undevy-org/portfolio/compare/v5.1.2...v5.2.0) (2025-08-26)
-
-
-### Fixed
-
-* Implement comprehensive refinements to NPM fallback strategy ([#74](https://github.com/undevy-org/portfolio/issues/74)) ([98ea0e0](https://github.com/undevy-org/portfolio/commit/98ea0e001e6198715421f1433b9f7c29520e7434))
-
-### [5.1.2](https://github.com/undevy-org/portfolio/compare/v5.1.1...v5.1.2) (2025-08-25)
-
->>>>>>> bf319b47d2cab210c1b9e7cc525c579cd94f19c2
-
 ### Added
 
 * **architecture:** implement persistent application shell pattern ([#72](https://github.com/undevy-org/portfolio/issues/72)) ([63fde77](https://github.com/undevy-org/portfolio/commit/63fde77475c93883421bac1f7b92e89e6f46b4fb))
