@@ -139,9 +139,9 @@ describe('AccessManager Screen', () => {
     );
 
     expect(screen.getByTestId('screen-wrapper')).toBeInTheDocument();
-    expect(screen.getByText('$Master Access')).toBeInTheDocument();
-    expect(screen.getByText('$Special Access')).toBeInTheDocument();
-    expect(screen.getByText(/\$User Codes \[2\]/)).toBeInTheDocument();
+    expect(screen.getByText('Master Access')).toBeInTheDocument();
+    expect(screen.getByText('Special Access')).toBeInTheDocument();
+    expect(screen.getByText(/User Codes \[2\]/)).toBeInTheDocument();
 
     expect(screen.getAllByText('LERUSIK').length).toBeGreaterThan(0);
     expect(screen.getAllByText('0XDEFI2311').length).toBeGreaterThan(0);
@@ -175,7 +175,7 @@ describe('AccessManager Screen', () => {
 
     expect(screen.queryByText('Master Access')).not.toBeInTheDocument();
     expect(screen.queryByText('Special Access')).not.toBeInTheDocument();
-    expect(screen.queryByText(/\$User Codes/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/User Codes/)).not.toBeInTheDocument();
     expect(screen.getByText('PROCEED TO MAIN HUB')).toBeInTheDocument();
   });
 
