@@ -108,10 +108,10 @@ describe('Tabs Component', () => {
   describe('Rendering', () => {
     test('renders all tab labels correctly', () => {
       renderTabs();
-
-      expect(screen.getByText('Overview')).toBeInTheDocument();
-      expect(screen.getByText('Technical Details')).toBeInTheDocument();
-      expect(screen.getByText('Results')).toBeInTheDocument();
+      
+      expect(screen.getByText('$Overview')).toBeInTheDocument();
+      expect(screen.getByText('$Technical Details')).toBeInTheDocument();
+      expect(screen.getByText('$Results')).toBeInTheDocument();
     });
 
     test('renders tab content with correct title', () => {
@@ -122,23 +122,23 @@ describe('Tabs Component', () => {
 
     test('renders with default first tab active when no defaultTab specified', () => {
       renderTabs();
-
-      const overviewTab = screen.getByRole('button', { name: 'Overview' });
+      
+      const overviewTab = screen.getByRole('button', { name: '$Overview' });
       expect(overviewTab).toHaveClass('bg-active', 'text-primary', 'border-t', 'border-x', 'border-secondary');
     });
 
     test('renders with specified defaultTab active', () => {
       renderTabs({ defaultTab: 'technical' });
-
-      const technicalTab = screen.getByRole('button', { name: 'Technical Details' });
+      
+      const technicalTab = screen.getByRole('button', { name: '$Technical Details' });
       expect(technicalTab).toHaveClass('bg-active', 'text-primary');
       expect(screen.getByText('$Technical Implementation')).toBeInTheDocument();
     });
 
     test('handles single tab correctly', () => {
       renderTabs({ tabs: SINGLE_TAB });
-
-      expect(screen.getByText('Only Tab')).toBeInTheDocument();
+      
+      expect(screen.getByText('$Only Tab')).toBeInTheDocument();
       expect(screen.getByText('$Single Tab Content')).toBeInTheDocument();
     });
 
@@ -152,13 +152,13 @@ describe('Tabs Component', () => {
   describe('Tab Navigation', () => {
     test('switches tabs when clicked', async () => {
       const { mockAddLog } = renderTabs();
-
-      const technicalTab = screen.getByRole('button', { name: 'Technical Details' });
-
+      
+      const technicalTab = screen.getByRole('button', { name: '$Technical Details' });
+      
       await act(async () => {
         fireEvent.click(technicalTab);
       });
-
+      
       expect(technicalTab).toHaveClass('bg-active', 'text-primary');
       expect(screen.getByText('$Technical Implementation')).toBeInTheDocument();
       expect(mockAddLog).toHaveBeenCalledWith('TAB SELECTED: Technical Details', 'info');
@@ -166,31 +166,31 @@ describe('Tabs Component', () => {
 
     test('logs tab selection with correct label', async () => {
       const { mockAddLog } = renderTabs();
-
-      const resultsTab = screen.getByRole('button', { name: 'Results' });
-
+      
+      const resultsTab = screen.getByRole('button', { name: '$Results' });
+      
       await act(async () => {
         fireEvent.click(resultsTab);
       });
-
+      
       // MockSessionProvider passes log type as second parameter
       expect(mockAddLog).toHaveBeenCalledWith('TAB SELECTED: Results', 'info');
     });
 
     test('updates active tab state correctly', async () => {
       renderTabs();
-
-      const overviewTab = screen.getByRole('button', { name: 'Overview' });
-      const technicalTab = screen.getByRole('button', { name: 'Technical Details' });
-
+      
+      const overviewTab = screen.getByRole('button', { name: '$Overview' });
+      const technicalTab = screen.getByRole('button', { name: '$Technical Details' });
+      
       // Initially overview should be active
       expect(overviewTab).toHaveClass('bg-active');
       expect(technicalTab).toHaveClass('bg-hover');
-
+      
       await act(async () => {
         fireEvent.click(technicalTab);
       });
-
+      
       // After click, technical should be active
       expect(technicalTab).toHaveClass('bg-active');
       expect(overviewTab).toHaveClass('bg-hover');
@@ -198,17 +198,17 @@ describe('Tabs Component', () => {
 
     test('supports keyboard navigation (accessibility)', async () => {
       renderTabs();
-
-      const overviewTab = screen.getByRole('button', { name: 'Overview' });
-      const technicalTab = screen.getByRole('button', { name: 'Technical Details' });
-
+      
+      const overviewTab = screen.getByRole('button', { name: '$Overview' });
+      const technicalTab = screen.getByRole('button', { name: '$Technical Details' });
+      
       // Focus first tab
       overviewTab.focus();
       expect(overviewTab).toHaveFocus();
-
+      
       // Navigate with Tab key
       fireEvent.keyDown(overviewTab, { key: 'Tab', code: 'Tab' });
-
+      
       // Buttons are naturally keyboard accessible (no need to check tabIndex)
       // Just verify they can be focused and interacted with via keyboard
       fireEvent.keyDown(technicalTab, { key: 'Enter', code: 'Enter' });
@@ -232,19 +232,15 @@ describe('Tabs Component', () => {
       
       expect(listItem).toBeInTheDocument();
       expect(checkmark).toHaveTextContent('[✓]');
-      expect(checkmark).toHaveClass('mr-2', 'text-text-secondary');
+      expect(checkmark).toHaveClass('text-success');
     });
 
     test('renders sub headings with command style', () => {
-      render(
-        <MockSessionProvider>
-          <Tabs tabs={TEST_TABS} />
-        </MockSessionProvider>
-      );
+      renderTabs();
       
       const subHeading = screen.getByText('$Key Features');
       expect(subHeading).toBeInTheDocument();
-      expect(subHeading).toHaveClass('title-command');
+      expect(subHeading).toHaveClass('text-command');
     });
 
     test('renders dividers correctly', () => {
@@ -338,19 +334,19 @@ describe('Tabs Component', () => {
   describe('SessionContext Integration', () => {
     test('integrates with SessionContext addLog function', async () => {
       const customAddLog = jest.fn();
-
+      
       render(
         <MockSessionProvider addLog={customAddLog}>
           <Tabs tabs={TEST_TABS} />
         </MockSessionProvider>
       );
-
-      const technicalTab = screen.getByRole('button', { name: 'Technical Details' });
-
+      
+      const technicalTab = screen.getByRole('button', { name: '$Technical Details' });
+      
       await act(async () => {
         fireEvent.click(technicalTab);
       });
-
+      
       expect(customAddLog).toHaveBeenCalledWith('TAB SELECTED: Technical Details', 'info');
     });
 
@@ -404,11 +400,11 @@ describe('Tabs Component', () => {
       await act(async () => {
         renderTabs({ defaultTab: 'nonexistent_tab' });
       });
-
+      
       // Should fallback to first tab when defaultTab is invalid
       await waitFor(() => {
         // The first tab should be active (Overview)
-        const overviewTab = screen.getByRole('button', { name: 'Overview' });
+        const overviewTab = screen.getByRole('button', { name: '$Overview' });
         expect(overviewTab).toHaveClass('bg-active');
         expect(screen.getByText('$Project Overview')).toBeInTheDocument();
       });
@@ -518,7 +514,7 @@ describe('Tabs Component', () => {
       
       await waitFor(() => {
         // First ensure the tab is rendered and active
-        const onlyTab = screen.getByRole('button', { name: 'Only Tab' });
+        const onlyTab = screen.getByRole('button', { name: '$Only Tab' });
         // Single tabs should be automatically active since it's the only option
         expect(onlyTab).toBeInTheDocument();
         expect(screen.getByText('$Single Tab Content')).toBeInTheDocument();

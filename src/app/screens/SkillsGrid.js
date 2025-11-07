@@ -3,8 +3,8 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { ResponsiveCardGrid } from '../components/organisms';
-import { StandardScreenTemplate } from '../components/templates';
+import ScreenWrapper from '../components/ScreenWrapper';
+import { ChevronRight } from 'lucide-react';
 
 export default function SkillsGrid() {
   const { sessionData, navigate, addLog, setSelectedSkill } = useSession();
@@ -29,51 +29,34 @@ export default function SkillsGrid() {
         return 'text-secondary'; // Default to the secondary text color.
     }
   };
-
-  // Custom render for skill cards
-  const renderSkillCard = (skill) => (
-    <>
-      <div className="hidden md:flex justify-between items-start gap-x-3">
-        <div className="space-y-1">
-          <span className="text-base text-command">
-            {skill.name}
-          </span>
-          <div className="text-sm text-secondary">
-            {skill.desc}
-          </div>
-          <div className={`text-sm pt-1 ${getLevelColor(skill.level)}`}>
-            [{skill.level}]
-          </div>
-        </div>
-        <div className="w-5 h-5"><span>→</span></div>
-      </div>
-      <div className="md:hidden">
-        <div className="space-y-1">
-          <span className="text-base text-command">
-            {skill.name}
-          </span>
-          <div className="text-sm text-secondary">
-            {skill.desc}
-          </div>
-          <div className={`text-sm pt-1 ${getLevelColor(skill.level)}`}>
-            [{skill.level}]
-          </div>
-          <div className="absolute bottom-4 right-4 text-secondary">→</div>
-        </div>
-      </div>
-    </>
-  );
-
+  
   return (
-    <StandardScreenTemplate
-      title="skills"
-    >
-      <ResponsiveCardGrid
-        items={skills}
-        onItemClick={handleSkillClick}
-        renderCard={renderSkillCard}
-        columns={2}
-      />
-    </StandardScreenTemplate>
+    <ScreenWrapper>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {skills.map((skill) => (
+          <button
+            key={skill.id}
+            onClick={() => handleSkillClick(skill)}
+            className="p-4 border rounded text-left transition-colors flex justify-between items-start border-secondary bg-hover"
+          > 
+            <div className="space-y-1">
+              <div className="text-base text-command">
+                {skill.name}
+              </div>
+              
+              <div className="text-sm text-secondary">
+                {skill.desc}
+              </div>
+              
+              <div className={`text-sm pt-1 ${getLevelColor(skill.level)}`}>
+                [{skill.level}]
+              </div>
+            </div>
+
+            <ChevronRight className="w-5 h-5 text-secondary" />
+          </button>
+        ))}
+      </div>
+    </ScreenWrapper>
   );
 }

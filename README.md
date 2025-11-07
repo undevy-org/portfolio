@@ -1,8 +1,6 @@
 # Interactive Terminal Portfolio
 
-This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It is a standalone Next.js application that can be deployed as a personal portfolio with comprehensive component documentation via Storybook.
-
-**🌟 New in v1.x.x: Storybook Integration** - Complete component library with interactive documentation, isolated component development, and automated visual testing.
+This project is an interactive portfolio experience designed to look and feel like a classic computer terminal. It is a standalone Next.js application that can be deployed as a personal portfolio.
 
 **_Architecture Note:_** This repository contains the frontend application. The accompanying headless CMS, a Telegram bot, is an **optional component** and resides in a separate repository: **[undevy-org/telegram-bot](https://github.com/undevy-org/telegram-bot)**.
 
@@ -35,7 +33,6 @@ After authentication, the application transforms into a seamless Single Page App
 | **Styling**        | Tailwind CSS       | Powers a highly scalable design system using CSS variables for multi-theme support. |
 | **State Mngmt**    | React Context      | A single `SessionContext` manages all shared state across the application. |
 | **Testing**        | Jest & RTL         | For unit and component testing, ensuring reliability and preventing regressions. |
-| **Component Library** | Storybook + Vite  | Vite-powered Storybook for interactive component development, testing, and documentation. |
 | **Web Server**     | Nginx              | Handles web traffic, SSL termination (Let's Encrypt), and reverse proxying. |
 | **Process Manager**| PM2                | Keeps the Node.js application alive and handles zero-downtime deployments. |
 | **Analytics**      | Matomo (self-hosted) | Runs in Docker, providing privacy-focused analytics with custom tracking. |

@@ -7,7 +7,7 @@
 // - Use getAllByText for code/text assertions that appear in both desktop and mobile DOM blocks
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MockSessionProvider } from '../../test-utils/providers';
 
@@ -67,9 +67,9 @@ describe('Integration Tests: User Flows', () => {
   // Mock session data for navigation testing
   const mockSessionDataWithMenu = {
     menu: [
-      { screen: 'Timeline', icon: '📅', label: 'Timeline', desc: 'My professional journey' },
-      { screen: 'CaseList', icon: '📁', label: 'Case Studies', desc: 'Featured projects' },
-      { screen: 'Contact', icon: '📧', label: 'Contact', desc: 'Get in touch' }
+      { screen: 'Timeline', icon: '📅', label: '$Timeline', desc: 'My professional journey' },
+      { screen: 'CaseList', icon: '📁', label: '$Case Studies', desc: 'Featured projects' },
+      { screen: 'Contact', icon: '📧', label: '$Contact', desc: 'Get in touch' }
     ],
     profile: {
       summary: {
@@ -144,30 +144,36 @@ describe('Integration Tests: User Flows', () => {
         })
       );
 
-      const { rerender } = render(
-        <MockSessionProvider
-          sessionData={null}
-          isAuthenticated={false}
-          currentScreen="Entry"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          setSessionData={mockSetSessionData}
-          logEntries={[]} // Add empty log entries
-        >
-          <Entry />
-        </MockSessionProvider>
-      );
+      let rerender;
+      await act(async () => {
+        const result = render(
+          <MockSessionProvider
+            sessionData={null}
+            isAuthenticated={false}
+            currentScreen="Entry"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            setSessionData={mockSetSessionData}
+            logEntries={[]} // Add empty log entries
+          >
+            <Entry />
+          </MockSessionProvider>
+        );
+        rerender = result.rerender;
+      });
 
       // Verify Entry screen renders
       expect(screen.getByPlaceholderText(/enter access code/i)).toBeInTheDocument();
 
-      // Enter access code
-      const codeInput = screen.getByPlaceholderText(/access code/i);
-      fireEvent.change(codeInput, { target: { value: 'testcode' } });
+      // Enter access code and submit
+      await act(async () => {
+        const codeInput = screen.getByPlaceholderText(/access code/i);
+        fireEvent.change(codeInput, { target: { value: 'testcode' } });
 
-      // Submit the form - use the actual button text from Entry component
-      const submitButton = screen.getByRole('button', { name: /authenticate/i });
-      fireEvent.click(submitButton);
+        // Submit the form - use the actual button text from Entry component
+        const submitButton = screen.getByRole('button', { name: /authenticate/i });
+        fireEvent.click(submitButton);
+      });
 
       // Wait for authentication to complete - just check that navigate was called
       await waitFor(() => {
@@ -178,23 +184,25 @@ describe('Integration Tests: User Flows', () => {
       expect(mockAddLog).toHaveBeenCalledWith('ACCESS CODE: TESTCODE', 'info');
 
       // Simulate successful navigation to MainHub
-      rerender(
-        <MockSessionProvider
-          sessionData={mockSessionDataWithMenu}
-          isAuthenticated={true}
-          currentScreen="MainHub"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          logEntries={[]} // Add empty log entries
-        >
-          <MainHub />
-        </MockSessionProvider>
-      );
+      await act(async () => {
+        rerender(
+          <MockSessionProvider
+            sessionData={mockSessionDataWithMenu}
+            isAuthenticated={true}
+            currentScreen="MainHub"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            logEntries={[]} // Add empty log entries
+          >
+            <MainHub />
+          </MockSessionProvider>
+        );
+      });
 
       // Verify MainHub renders with menu items
-      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
-      expect(screen.getAllByText('$Case Studies')).toHaveLength(2); // Desktop and mobile versions
-      expect(screen.getAllByText('$Contact')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
+      expect(screen.getByText('$Case Studies')).toBeInTheDocument();
+      expect(screen.getByText('$Contact')).toBeInTheDocument();
 
       // Cleanup: restore original fetch
       global.fetch = originalFetch;
@@ -214,27 +222,31 @@ describe('Integration Tests: User Flows', () => {
         })
       );
 
-      render(
-        <MockSessionProvider
-          sessionData={null}
-          isAuthenticated={false}
-          currentScreen="Entry"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          setAuthError={mockSetAuthError}
-          logEntries={[]} // Add empty log entries
-        >
-          <Entry />
-        </MockSessionProvider>
-      );
+      await act(async () => {
+        render(
+          <MockSessionProvider
+            sessionData={null}
+            isAuthenticated={false}
+            currentScreen="Entry"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            setAuthError={mockSetAuthError}
+            logEntries={[]} // Add empty log entries
+          >
+            <Entry />
+          </MockSessionProvider>
+        );
+      });
 
-      // Enter invalid access code
-      const codeInput = screen.getByPlaceholderText(/access code/i);
-      fireEvent.change(codeInput, { target: { value: 'invalidcode' } });
+      // Enter invalid access code and submit
+      await act(async () => {
+        const codeInput = screen.getByPlaceholderText(/access code/i);
+        fireEvent.change(codeInput, { target: { value: 'invalidcode' } });
 
-      // Submit the form - use the actual button text
-      const submitButton = screen.getByRole('button', { name: /authenticate/i });
-      fireEvent.click(submitButton);
+        // Submit the form - use the actual button text
+        const submitButton = screen.getByRole('button', { name: /authenticate/i });
+        fireEvent.click(submitButton);
+      });
 
       // Wait for error handling
       await waitFor(() => {
@@ -264,30 +276,36 @@ describe('Integration Tests: User Flows', () => {
         })
       );
 
-      const { rerender } = render(
-        <MockSessionProvider
-          sessionData={null}
-          isAuthenticated={false}
-          currentScreen="Entry"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          setSessionData={mockSetSessionData}
-          logEntries={[]} // Add empty log entries
-        >
-          <Entry />
-        </MockSessionProvider>
-      );
+      let rerender;
+      await act(async () => {
+        const result = render(
+          <MockSessionProvider
+            sessionData={null}
+            isAuthenticated={false}
+            currentScreen="Entry"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            setSessionData={mockSetSessionData}
+            logEntries={[]} // Add empty log entries
+          >
+            <Entry />
+          </MockSessionProvider>
+        );
+        rerender = result.rerender;
+      });
 
       // Verify Entry screen renders
       expect(screen.getByPlaceholderText(/enter access code/i)).toBeInTheDocument();
 
-      // Enter master code
-      const codeInput = screen.getByPlaceholderText(/access code/i);
-      fireEvent.change(codeInput, { target: { value: 'TEST_MASTER_CODE' } });
+      // Enter master code and submit
+      await act(async () => {
+        const codeInput = screen.getByPlaceholderText(/access code/i);
+        fireEvent.change(codeInput, { target: { value: 'TEST_MASTER_CODE' } });
 
-      // Submit the form
-      const submitButton = screen.getByRole('button', { name: /authenticate/i });
-      fireEvent.click(submitButton);
+        // Submit the form
+        const submitButton = screen.getByRole('button', { name: /authenticate/i });
+        fireEvent.click(submitButton);
+      });
 
       // Wait for authentication to complete and navigation to AccessManager
       await waitFor(() => {
@@ -299,22 +317,24 @@ describe('Integration Tests: User Flows', () => {
       expect(mockAddLog).toHaveBeenCalledWith('MASTER ACCESS GRANTED: TEST_MASTER_CODE', 'info');
 
       // Simulate successful navigation to AccessManager
-      rerender(
-        <MockSessionProvider
-          sessionData={mockMasterSessionData}
-          isAuthenticated={true}
-          currentScreen="AccessManager"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          setSessionData={mockSetSessionData}
-          logEntries={[]} // Add empty log entries
-        >
-          <AccessManager />
-        </MockSessionProvider>
-      );
+      await act(async () => {
+        rerender(
+          <MockSessionProvider
+            sessionData={mockMasterSessionData}
+            isAuthenticated={true}
+            currentScreen="AccessManager"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            setSessionData={mockSetSessionData}
+            logEntries={[]} // Add empty log entries
+          >
+            <AccessManager />
+          </MockSessionProvider>
+        );
+      });
 
       // Verify AccessManager renders with master section title and codes
-      expect(screen.getByText('$Master Access')).toBeInTheDocument();
+      expect(screen.getByText('Master Access')).toBeInTheDocument();
       expect(screen.getAllByText('TEST_MASTER_CODE').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Master Key').length).toBeGreaterThan(0);
       expect(screen.getAllByText('TEST_WEB3_CODE').length).toBeGreaterThan(0);
@@ -358,41 +378,47 @@ describe('Integration Tests: User Flows', () => {
       const mockAddLog = jest.fn();
       const mockEndSession = jest.fn();
 
-      const { rerender } = render(
-        <MockSessionProvider
-          sessionData={mockSessionDataWithMenu}
-          isAuthenticated={true}
-          currentScreen="MainHub"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          endSession={mockEndSession}
-          logEntries={[]} // Add empty log entries
-        >
-          <MainHub />
-        </MockSessionProvider>
-      );
+      let rerender;
+      await act(async () => {
+        const result = render(
+          <MockSessionProvider
+            sessionData={mockSessionDataWithMenu}
+            isAuthenticated={true}
+            currentScreen="MainHub"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            endSession={mockEndSession}
+            logEntries={[]} // Add empty log entries
+          >
+            <MainHub />
+          </MockSessionProvider>
+        );
+        rerender = result.rerender;
+      });
 
       // Verify MainHub is rendered
-      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
 
       // Simulate session termination trigger
       mockEndSession();
 
       // Simulate the termination process by re-rendering with terminating state
-      rerender(
-        <MockSessionProvider
-          sessionData={null}
-          isAuthenticated={false}
-          currentScreen="Entry"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          endSession={mockEndSession}
-          isTerminating={true}
-          logEntries={[]} // Add empty log entries
-        >
-          <Entry />
-        </MockSessionProvider>
-      );
+      await act(async () => {
+        rerender(
+          <MockSessionProvider
+            sessionData={null}
+            isAuthenticated={false}
+            currentScreen="Entry"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            endSession={mockEndSession}
+            isTerminating={true}
+            logEntries={[]} // Add empty log entries
+          >
+            <Entry />
+          </MockSessionProvider>
+        );
+      });
 
       // Verify we're back at Entry screen
       expect(screen.getByPlaceholderText(/enter access code/i)).toBeInTheDocument();
@@ -518,11 +544,11 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify initial theme
-      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
 
       // Simulate theme change
       currentTheme = 'light';
-      
+
       rerender(
         <MockSessionProvider
           sessionData={mockSessionDataWithMenu}
@@ -538,8 +564,8 @@ describe('Integration Tests: User Flows', () => {
       );
 
       // Verify the component still renders correctly after theme change
-      expect(screen.getAllByText('$Timeline')).toHaveLength(2); // Desktop and mobile versions
-      expect(screen.getAllByText('$Case Studies')).toHaveLength(2); // Desktop and mobile versions
+      expect(screen.getByText('$Timeline')).toBeInTheDocument();
+      expect(screen.getByText('$Case Studies')).toBeInTheDocument();
     });
   });
 
@@ -577,27 +603,31 @@ describe('Integration Tests: User Flows', () => {
         Promise.reject(new Error('Network error'))
       );
 
-      render(
-        <MockSessionProvider
-          sessionData={null}
-          isAuthenticated={false}
-          currentScreen="Entry"
-          navigate={mockNavigate}
-          addLog={mockAddLog}
-          setAuthError={mockSetAuthError}
-          logEntries={[]} // Add empty log entries
-        >
-          <Entry />
-        </MockSessionProvider>
-      );
+      await act(async () => {
+        render(
+          <MockSessionProvider
+            sessionData={null}
+            isAuthenticated={false}
+            currentScreen="Entry"
+            navigate={mockNavigate}
+            addLog={mockAddLog}
+            setAuthError={mockSetAuthError}
+            logEntries={[]} // Add empty log entries
+          >
+            <Entry />
+          </MockSessionProvider>
+        );
+      });
 
-      // Enter access code
-      const codeInput = screen.getByPlaceholderText(/access code/i);
-      fireEvent.change(codeInput, { target: { value: 'testcode' } });
+      // Enter access code and submit
+      await act(async () => {
+        const codeInput = screen.getByPlaceholderText(/access code/i);
+        fireEvent.change(codeInput, { target: { value: 'testcode' } });
 
-      // Submit the form - use correct button text
-      const submitButton = screen.getByRole('button', { name: /authenticate/i });
-      fireEvent.click(submitButton);
+        // Submit the form - use correct button text
+        const submitButton = screen.getByRole('button', { name: /authenticate/i });
+        fireEvent.click(submitButton);
+      });
 
       // Wait for error handling
       await waitFor(() => {

@@ -3,19 +3,23 @@
 'use client';
 
 import { useSession } from '../context/SessionContext';
-import { FolderGit2 } from 'lucide-react';
-import { DetailViewTemplate } from '../components/templates';
+import ScreenWrapper from '../components/ScreenWrapper';
+import Accordion from '../components/ui/Accordion';
+import Button from '../components/ui/Button';
+import { FolderGit2, ArrowLeft } from 'lucide-react';
 
 export default function RoleDetail() {
   const { sessionData, navigate, addLog, selectedRole } = useSession();
 
   if (!selectedRole) {
     return (
-      <div className="p-4 text-center text-secondary">
-        <p>No role selected. Please go back to Timeline.</p>
+      <div className="p-4 text-center">
+        <p className="text-secondary">
+          No role selected. Please go back to Timeline.
+        </p>
         <button
           onClick={() => navigate('Timeline')}
-          className="mt-4 px-4 py-2 rounded border border-primary text-white-black"
+          className="mt-4 px-4 py-2 rounded border transition-colors border-primary text-secondary bg-hover"
         >
           Back to Timeline
         </button>
@@ -25,88 +29,52 @@ export default function RoleDetail() {
 
   const roleDetails = sessionData?.role_details?.[selectedRole.id] || {};
 
-  // Prepare content sections for accordion
-  const content = [
-    {
-      label: 'quick_summary',
-      content: roleDetails.summary ? (
-        <p className="text-sm text-secondary">{roleDetails.summary}</p>
-      ) : (
-        <p className="text-sm text-secondary">No summary available.</p>
-      )
-    },
-    {
-      label: 'key_responsibilities',
-      content: roleDetails.responsibilities?.length > 0 ? (
-        <div className="space-y-2">
-          {roleDetails.responsibilities.map((responsibility, idx) => (
-            <div key={idx} className="flex items-start">
-              <span className="text-secondary mr-2">•</span>
-              <p className="text-sm text-secondary">{responsibility}</p>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-secondary">No responsibilities listed.</p>
-      )
-    },
-    {
-      label: 'main_achievements',
-      content: roleDetails.achievements?.length > 0 ? (
-        <div className="space-y-2">
-          {roleDetails.achievements.map((achievement, idx) => (
-            <div key={idx} className="flex items-start">
-              <span className="text-secondary mr-2">•</span>
-              <p className="text-sm text-secondary">{achievement}</p>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-secondary">No achievements listed.</p>
-      )
-    },
-    {
-      label: 'tech_stack',
-      content: roleDetails.tech?.length > 0 ? (
-        <div className="flex flex-wrap gap-2">
-          {roleDetails.tech.map((tech, idx) => (
-            <span key={idx} className="px-2 py-1 bg-primary/20 rounded text-xs text-primary">
-              {tech}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-secondary">No tech stack listed.</p>
-      )
-    }
-  ];
-
-  const additionalButtons = [
-    {
-      screen: 'CaseList',
-      label: 'READ CASES',
-      icon: FolderGit2,
-      logMessage: 'NAVIGATE: case studies'
-    }
+  const sections = [
+    { id: 'summary', title: 'quick_summary', content: roleDetails.summary ? [{ type: 'text', value: roleDetails.summary }] : [] },
+    { id: 'responsibilities', title: 'key_responsibilities', content: roleDetails.responsibilities?.map(r => ({ type: 'list_item', value: r })) || [] },
+    { id: 'achievements', title: 'main_achievements', content: roleDetails.achievements?.map(a => ({ type: 'list_item', value: a })) || [] },
+    { id: 'tech', title: 'tech_stack', content: roleDetails.tech ? [{ type: 'tag_list', value: roleDetails.tech }] : [] }
   ];
 
   return (
-    <DetailViewTemplate
-      entityType="role"
-      title={selectedRole.company}
-      subtitle={selectedRole.role}
-      metadata={{
-        period: selectedRole.period,
-        duration: selectedRole.duration
-      }}
-      content={content}
-      displayMode="accordion"
-      onBack={() => {
-        addLog('RETURN TO TIMELINE');
-        navigate('Timeline');
-      }}
-      backLabel="BACK TO TIMELINE"
-      additionalButtons={additionalButtons}
-    />
+    <ScreenWrapper>
+    <div className="space-y-4">
+      <div className="p-4 rounded border border-secondary">
+        <div className="space-y-1">
+          <h2 className="text-xl text-command">{selectedRole.company}</h2>
+          <p className="text-base text-primary">{selectedRole.role}</p>
+          <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
+        </div>
+      </div>
+
+      <Accordion sections={sections} defaultExpanded="summary" />
+
+      <div className="mt-4 flex flex-col md:flex-row gap-3">
+        <Button
+          onClick={() => {
+            addLog('RETURN TO TIMELINE');
+            navigate('Timeline');
+          }}
+            icon={ArrowLeft}
+            iconPosition="left"
+            variant="flex"
+            className="p-2"
+        >
+          BACK TO TIMELINE
+        </Button>
+        <Button
+          onClick={() => {
+            addLog('NAVIGATE: case studies');
+            navigate('CaseList');
+          }}
+          icon={FolderGit2}
+          iconPosition="left"
+          variant="flex"
+        >
+          READ CASES
+        </Button>
+      </div>
+    </div>
+    </ScreenWrapper>
   );
 }

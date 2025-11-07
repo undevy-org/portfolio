@@ -23,7 +23,7 @@ export default function SystemLog() {
         
         return (
         <div key={index} className="flex">
-          <span className="mr-2 select-none text-text-secondary">{'>'}</span>
+          <span className="mr-2 select-none">{'>'}</span>
             <p className={isAccessGranted ? "text-accent font-bold" : "text-secondary"}>
               {entry}
             </p>
@@ -33,7 +33,7 @@ export default function SystemLog() {
       
       {logEntries.length > 0 && (
       <div className="flex items-center mt-1">
-        <span className="mr-2 select-none text-text-secondary">{'>'}</span>
+        <span className="mr-2 select-none">{'>'}</span>
           <div className="relative flex-1">
             <input
               type="text"
@@ -45,10 +45,12 @@ export default function SystemLog() {
               style={{ caretColor: 'transparent' }}
             />
             <span 
-            className={'absolute top-1/2 -translate-y-1/2 inline-block w-2 h-4 animate-pulse cursor-terminal'}
+            className={'absolute top-1/2 -translate-y-1/2 inline-block w-2 h-4 animate-pulse'}
               style={{
               // Approximating character width more accurately for monospace font
-              left: `${inputValue.length * 7.2}px`
+              left: `${inputValue.length * 7.2}px`, 
+              pointerEvents: 'none',
+              backgroundColor: 'var(--color-text-secondary)'
               }}
             ></span>
       </div>
