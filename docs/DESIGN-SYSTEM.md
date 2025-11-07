@@ -2,6 +2,8 @@
 
 This document outlines the design philosophy, architectural principles, and component guidelines for the Interactive Terminal Portfolio. It serves as the single source of truth for the project's UI/UX, ensuring consistency, maintainability, and a systematic, principle-driven approach to development. This version reflects the shift to a flexible, multi-theme architecture powered by CSS variables.
 
+📖 **See THEME-GUIDE.md for complete theme system overview and implementation.**
+
 ## **1. Design Philosophy**
 
 The Terminal UI system is built not just on aesthetics, but on a core philosophy of clarity, control, and character. Every design decision is guided by five key principles.
