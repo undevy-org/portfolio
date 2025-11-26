@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.0.5](https://github.com/undevy-org/portfolio/compare/v6.0.4...v6.0.5) (2025-11-26)
+
+
+### Added
+
+* **docs:** complete documentation consolidation and file reorganization ([645518d](https://github.com/undevy-org/portfolio/commit/645518dcf7712c7fe2d7db97d41206ad557e4eb7))
+* **docs:** complete documentation consolidation and file reorganization ([#116](https://github.com/undevy-org/portfolio/issues/116)) ([eee6d68](https://github.com/undevy-org/portfolio/commit/eee6d68607f926b568c03b14731fdecfd9ce5cd0))
+* implement level 2 molecular components ([#104](https://github.com/undevy-org/portfolio/issues/104)) ([aa93ef6](https://github.com/undevy-org/portfolio/commit/aa93ef6312220c76da8be5cb62a7290fcc984c9e))
+
+
+### Documentation
+
+* add comprehensive revert summary report ([#113](https://github.com/undevy-org/portfolio/issues/113)) ([3d611da](https://github.com/undevy-org/portfolio/commit/3d611dacd0e478fa9a2399f54bb36533345f8539))
+* fix CHANGELOG merge conflicts and remove duplicate file ([2f1f30a](https://github.com/undevy-org/portfolio/commit/2f1f30a4af24d224fe171d1691ef5f5bc95e125f))
+* fix CHANGELOG merge conflicts and remove duplicate file ([#117](https://github.com/undevy-org/portfolio/issues/117)) ([ed632aa](https://github.com/undevy-org/portfolio/commit/ed632aa691e2152fb03e5f772bb0807733becf4c))
+* optimize documentation structure and navigation ([49f10b1](https://github.com/undevy-org/portfolio/commit/49f10b17dc5f70a2e920d9e36fdc03babecffc9e))
+* optimize documentation structure and navigation ([#118](https://github.com/undevy-org/portfolio/issues/118)) ([0661a72](https://github.com/undevy-org/portfolio/commit/0661a728a796708ade2801580ba8de2e7db71e27))
+
+
+### Changed
+
+* remove all Storybook contamination and restore clean v6.0.4 ([8da4c03](https://github.com/undevy-org/portfolio/commit/8da4c03704c4ea0dbb5b4ee7d2ff96840d06bbe7))
+* remove all Storybook contamination and restore clean v6.0.4 ([#115](https://github.com/undevy-org/portfolio/issues/115)) ([e29e170](https://github.com/undevy-org/portfolio/commit/e29e170e815a970f9f618dbabb60fb142051e44c))
+* trigger staging deployment ([51e0871](https://github.com/undevy-org/portfolio/commit/51e087173aecfd66ed6d09fc26209ffa51bbc62a))
+
+
+### Fixed
+
+* **ci:** fix staging deployment - artifact download & Node setup ([#121](https://github.com/undevy-org/portfolio/issues/121)) ([806c72d](https://github.com/undevy-org/portfolio/commit/806c72d27e905c0b57bfd1ea463e889295e16f98))
+* **ci:** remove broken NVM loading, use system Node ([f26c592](https://github.com/undevy-org/portfolio/commit/f26c592fca47ad7ed8496a3b707bc30516e17057))
+* **ci:** trigger staging deployment validation ([764acd8](https://github.com/undevy-org/portfolio/commit/764acd83ade7e559c0c2072fa252e22034c8a91a))
+* **ci:** use cross-workflow artifact download action ([44f1066](https://github.com/undevy-org/portfolio/commit/44f106690cb20a672d9e3b861314c0f333035c87))
+* **ci:** use cross-workflow artifact download action ([#120](https://github.com/undevy-org/portfolio/issues/120)) ([a225d3b](https://github.com/undevy-org/portfolio/commit/a225d3b7591c995ce1e22b96bef07b2b2a556e4d))
+* **deployment:** resolve staging artifact download SHA mismatch ([23656da](https://github.com/undevy-org/portfolio/commit/23656da72579d7c2754c8a0fe64ba33314c540d1))
+* **navigation:** prevent hash routing... ([9368358](https://github.com/undevy-org/portfolio/commit/9368358cd2dc0a6dce771731a14000e6940987b7))
+* **navigation:** prevent hash routing... ([#119](https://github.com/undevy-org/portfolio/issues/119)) ([1f8c94c](https://github.com/undevy-org/portfolio/commit/1f8c94cfccf374a969fa9482fbc7a66f10100d80))
+* package-lock.json ([#114](https://github.com/undevy-org/portfolio/issues/114)) ([52dc1b4](https://github.com/undevy-org/portfolio/commit/52dc1b45ccbb7517828031bfc5c751d7ab020a68))
+* wrap React state updates in act() for integration tests ([c5f02bd](https://github.com/undevy-org/portfolio/commit/c5f02bd997a9bf7f67d0fbe27f42435cc1c7f252))
+
 ### [6.0.4](https://github.com/undevy-org/portfolio/compare/v6.0.3...v6.0.4) (2025-09-14)
 
 
