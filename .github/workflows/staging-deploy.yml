@@ -26,9 +26,8 @@ jobs:
           echo "Target: ${{ secrets.STAGING_DOMAIN_1 }} / ${{ secrets.STAGING_DOMAIN_2 }}"
       
       - name: Download staging artifact
-        uses: dawidd6/action-download-artifact@v6
+        uses: actions/download-artifact@v4
         with:
-          run_id: ${{ github.event.workflow_run.id }}
           name: staging-package-${{ github.event.workflow_run.head_sha }}
           path: deployment-files
       
