@@ -349,7 +349,11 @@ export function SessionProvider({ children }) {
   // ========== HASH ROUTING ==========
   useEffect(() => {
     if (!sessionData || typeof window === 'undefined') return;
-    
+
+    // Don't allow hash navigation to override AccessManager
+    // AccessManager is a special admin screen that should only be accessed via master code
+    if (currentScreen === 'AccessManager') return;
+
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
       if (hash && hash !== currentScreen) {
@@ -358,16 +362,16 @@ export function SessionProvider({ children }) {
         addLog(`HASH NAVIGATE: ${currentScreen} → ${hash}`);
       }
     };
-    
+
     window.addEventListener('hashchange', handleHashChange);
-    
+
     const initialHash = window.location.hash.slice(1);
     if (initialHash && initialHash !== currentScreen) {
       setCurrentScreen(initialHash);
       setScreensVisitedCount(prev => prev + 1);
       addLog(`INITIAL HASH: ${initialHash}`);
     }
-    
+
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [sessionData, currentScreen, addLog]);
 
