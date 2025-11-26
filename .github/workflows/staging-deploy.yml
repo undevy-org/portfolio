@@ -89,9 +89,15 @@ jobs:
           script: |
             set -e
             
-            echo "🔧 Setting up Node environment..."
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            echo "🔧 Verifying Node environment..."
+            if ! command -v node &> /dev/null; then
+              echo "❌ FATAL: Node.js not found"
+              exit 1
+            fi
+
+            echo "✅ Node version: $(node --version)"
+            echo "✅ npm version: $(npm --version)"
+            echo "✅ PM2 version: $(pm2 --version)"
             
             STAGING_PATH="/home/undevy/releases/staging/current"
             TEMP_PATH="/home/undevy/releases/staging/temp-$(date +%s)"
