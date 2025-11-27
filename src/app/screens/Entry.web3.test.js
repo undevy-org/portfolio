@@ -35,11 +35,11 @@ import Entry from './Entry';
 // This needs to be placed BEFORE the Entry import
 jest.mock('../screens/Entry', () => {
   const ActualEntry = jest.requireActual('../screens/Entry');
-  
+
   // We need to mock the internal useWeb3Integration while keeping Entry intact
   // This is a bit tricky since it's defined inside Entry.js
   // Instead, we'll just ensure our other mocks handle the Web3 state properly
-  
+
   return ActualEntry;
 });
 
@@ -217,16 +217,16 @@ describe('Entry Screen Web3 Lazy Loading', () => {
 
   test('Web3 button is visible and clickable', () => {
     renderEntry();
-    
+
     const web3Button = screen.getByRole('button', { name: /WEB3 LOGIN/i });
     expect(web3Button).toBeInTheDocument();
     expect(web3Button).not.toBeDisabled();
   });
-  
+
   test('shows loading state when Web3 button is clicked for first time', async () => {
     // Import and configure the mock for useWeb3State
     const { useWeb3State } = require('../hooks/useWeb3State');
-    
+
     // Set up the mock to simulate loading state after click
     const mockOpenWeb3Modal = jest.fn();
     useWeb3State.mockReturnValue({
@@ -237,19 +237,19 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Loading: false,
       isWeb3Ready: false
     });
-    
+
     renderEntry();
-    
+
     const web3Button = screen.getByRole('button', { name: /WEB3 LOGIN/i });
-    
+
     // Click the button wrapped in act
     await act(async () => {
       fireEvent.click(web3Button);
     });
-    
+
     // Verify openWeb3Modal was called
     expect(mockOpenWeb3Modal).toHaveBeenCalled();
-    
+
     // Update mock to show loading state
     useWeb3State.mockReturnValue({
       address: null,
@@ -259,14 +259,14 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Loading: true, // Now loading
       isWeb3Ready: false
     });
-    
+
     // Should show loading state (Entry sets 'loading' status when !isWeb3Ready)
     await waitFor(() => {
       const button = screen.getByRole('button', { name: /LOADING WEB3\.\.\./i });
       expect(button).toBeInTheDocument();
     }, { timeout: 3000 });
   });
-  
+
   test('traditional authentication still works', async () => {
     // Mock successful authentication
     global.fetch.mockResolvedValueOnce({
@@ -278,38 +278,38 @@ describe('Entry Screen Web3 Lazy Loading', () => {
     });
 
     renderEntry();
-    
+
     const codeInput = screen.getByPlaceholderText(/ENTER ACCESS CODE/i);
     const authButton = screen.getByRole('button', { name: /AUTHENTICATE/i });
-    
+
     // Enter a code
     fireEvent.change(codeInput, { target: { value: 'TEST123' } });
-    
+
     // Click authenticate wrapped in act
     await act(async () => {
       fireEvent.click(authButton);
     });
-    
+
     // Verify fetch was called with the code
     // This is the main assertion - the authentication request was made
     expect(global.fetch).toHaveBeenCalledWith('/api/session?code=TEST123');
-    
+
     // We're not checking for button text change because it happens asynchronously
     // and may not be reliable in test environment
   });
-  
+
   test('Web3 loading does not interfere with other buttons', () => {
     renderEntry();
-    
+
     const getCodeButton = screen.getByRole('button', { name: /GET CODE/i });
-    const githubButton = screen.getByRole('button', { name: /GITHUB/i });
+    const githubButton = screen.getByRole('button', { name: /SOURCE CODE/i });
     const demoButton = screen.getByRole('button', { name: /DEMO MODE/i });
-    
+
     // All buttons should be present and enabled
     expect(getCodeButton).toBeInTheDocument();
     expect(githubButton).toBeInTheDocument();
     expect(demoButton).toBeInTheDocument();
-    
+
     expect(getCodeButton).not.toBeDisabled();
     expect(githubButton).not.toBeDisabled();
     expect(demoButton).not.toBeDisabled();
@@ -318,11 +318,11 @@ describe('Entry Screen Web3 Lazy Loading', () => {
   test('Web3 button shows different states correctly', async () => {
     // Use the new useWeb3State mock
     const { useWeb3State } = require('../hooks/useWeb3State');
-    
+
     // Start with disconnected state
     // CRITICAL: Must return a function that returns a Promise for disconnectWallet
     const mockDisconnectWallet = jest.fn(() => Promise.resolve());
-    
+
     useWeb3State.mockReturnValue({
       address: null,
       isConnected: false,
@@ -334,20 +334,20 @@ describe('Entry Screen Web3 Lazy Loading', () => {
 
     // Initial render
     const { unmount } = renderEntry();
-    
+
     // Find the Web3 button specifically by looking for the one with Web3-related text
     let buttons = screen.getAllByRole('button');
-    let web3Button = buttons.find(btn => 
-      btn.textContent === 'WEB3 LOGIN' || 
-      btn.textContent === 'LOADING WEB3...' || 
+    let web3Button = buttons.find(btn =>
+      btn.textContent === 'WEB3 LOGIN' ||
+      btn.textContent === 'LOADING WEB3...' ||
       btn.textContent === 'CONNECTING...'
     );
     expect(web3Button).toBeDefined();
     expect(web3Button.textContent).toBe('WEB3 LOGIN');
-    
+
     // Clean up for next state test
     unmount();
-    
+
     // Simulate loading state
     useWeb3State.mockReturnValue({
       address: null,
@@ -357,7 +357,7 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Loading: true, // Now loading
       isWeb3Ready: false
     });
-    
+
     // Re-render with new state (fresh mount instead of rerender)
     const { unmount: unmount2 } = render(
       <MockSessionProvider>
@@ -366,25 +366,25 @@ describe('Entry Screen Web3 Lazy Loading', () => {
         </Web3Manager>
       </MockSessionProvider>
     );
-    
+
     // Find the button again and check for loading text
     buttons = screen.getAllByRole('button');
-    web3Button = buttons.find(btn => 
-      btn.textContent === 'WEB3 LOGIN' || 
-      btn.textContent === 'LOADING WEB3...' || 
+    web3Button = buttons.find(btn =>
+      btn.textContent === 'WEB3 LOGIN' ||
+      btn.textContent === 'LOADING WEB3...' ||
       btn.textContent === 'CONNECTING...'
     );
     expect(web3Button).toBeDefined();
     // The button text should be one of the valid states
     expect(['WEB3 LOGIN', 'LOADING WEB3...', 'CONNECTING...']).toContain(web3Button.textContent);
-    
+
     // Clean up for next state test
     unmount2();
-    
+
     // Now simulate connected state
     // IMPORTANT: Create a fresh mock function that returns a Promise
     const freshDisconnectWallet = jest.fn(() => Promise.resolve());
-    
+
     useWeb3State.mockReturnValue({
       address: '0x1234567890123456789012345678901234567890',
       isConnected: true,
@@ -393,14 +393,14 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Loading: false,
       isWeb3Ready: true
     });
-    
+
     // Also update wagmi's useAccount to reflect connected state
     const { useAccount } = require('wagmi');
     useAccount.mockReturnValue({
       address: '0x1234567890123456789012345678901234567890',
       isConnected: true,
     });
-    
+
     // Fresh render with connected state
     render(
       <MockSessionProvider>
@@ -409,13 +409,13 @@ describe('Entry Screen Web3 Lazy Loading', () => {
         </Web3Manager>
       </MockSessionProvider>
     );
-    
+
     // When wallet is connected but no session exists, Entry automatically starts authentication
     // This sets web3Status to 'connecting', which shows "CONNECTING..." on the button
     buttons = screen.getAllByRole('button');
-    web3Button = buttons.find(btn => 
-      btn.textContent === 'WEB3 LOGIN' || 
-      btn.textContent === 'LOADING WEB3...' || 
+    web3Button = buttons.find(btn =>
+      btn.textContent === 'WEB3 LOGIN' ||
+      btn.textContent === 'LOADING WEB3...' ||
       btn.textContent === 'CONNECTING...'
     );
     expect(web3Button).toBeDefined();
@@ -426,14 +426,14 @@ describe('Entry Screen Web3 Lazy Loading', () => {
 
   test('clicking Web3 button triggers Web3Manager loading', async () => {
     const consoleSpy = jest.spyOn(console, 'log');
-    
+
     // Set up mock to trigger loading
     const { useWeb3State } = require('../hooks/useWeb3State');
     const mockOpenWeb3Modal = jest.fn(() => {
       // Simulate Web3Manager loading being triggered
       console.log('[Web3Manager] Initiating Web3 library loading');
     });
-    
+
     useWeb3State.mockReturnValue({
       address: null,
       isConnected: false,
@@ -442,20 +442,20 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Loading: false,
       isWeb3Ready: false
     });
-    
+
     renderEntry();
-    
+
     const web3Button = screen.getByRole('button', { name: /WEB3 LOGIN/i });
-    
+
     // Click wrapped in act
     await act(async () => {
       fireEvent.click(web3Button);
     });
-    
+
     // Check that Web3Manager initiated loading
     await waitFor(() => {
       const logs = consoleSpy.mock.calls.map(call => call[0]);
-      const hasLoadingLog = logs.some(log => 
+      const hasLoadingLog = logs.some(log =>
         typeof log === 'string' && (
           log.includes('[Web3Manager] Initiating Web3 library loading') ||
           log.includes('[useWeb3State]') // Look for new hook logs
@@ -463,14 +463,14 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       );
       expect(hasLoadingLog).toBe(true);
     });
-    
+
     consoleSpy.mockRestore();
   });
-  
+
   // New test to verify lazy loading behavior
   test('Web3 libraries are not loaded on initial render', () => {
     const { useWeb3State } = require('../hooks/useWeb3State');
-    
+
     // Mock shows Web3 not loaded initially
     useWeb3State.mockReturnValue({
       address: null,
@@ -481,13 +481,13 @@ describe('Entry Screen Web3 Lazy Loading', () => {
       isWeb3Ready: false,
       isWeb3Loaded: false // Not loaded initially
     });
-    
+
     renderEntry();
-    
+
     // Web3 button should be available but Web3 not loaded
     const web3Button = screen.getByRole('button', { name: /WEB3 LOGIN/i });
     expect(web3Button).toBeInTheDocument();
-    
+
     // Verify Web3Provider is not rendered (since it's lazy loaded)
     expect(screen.queryByTestId('mocked-web3-provider')).not.toBeInTheDocument();
   });

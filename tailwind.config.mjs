@@ -183,7 +183,7 @@ const config = {
       // Ensure monospace stack is stable across platforms
       fontFamily: {
         mono: [
-          'var(--font-mono)',
+          'var(--font-ibm-plex)',
           '"IBM Plex Mono"',
           'ui-monospace',
           'SFMono-Regular',

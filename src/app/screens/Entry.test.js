@@ -68,12 +68,12 @@ const mockSessionContextValues = {
 
 const renderWithProviders = (overrides = {}) => {
   useRouter.mockReturnValue(mockRouter);
-  
+
   const contextValue = {
     ...mockSessionContextValues,
     ...overrides,
   };
-  
+
   return render(
     <MockSessionProvider {...contextValue}>
       <Entry />
@@ -88,18 +88,18 @@ describe('Entry Screen Auto-Fill Feature', () => {
 
   test('renders Entry screen correctly', () => {
     renderWithProviders();
-    
+
     expect(screen.getByPlaceholderText('ENTER ACCESS CODE')).toBeInTheDocument();
     expect(screen.getByText('AUTHENTICATE')).toBeInTheDocument();
     expect(screen.getByText('GET CODE')).toBeInTheDocument();
     expect(screen.getByText('WEB3 LOGIN')).toBeInTheDocument();
-    expect(screen.getByText('GITHUB')).toBeInTheDocument();
+    expect(screen.getByText('SOURCE CODE')).toBeInTheDocument();
     expect(screen.getByText('DEMO MODE')).toBeInTheDocument();
   });
 
   test('renders with autoFillCode in context', () => {
     renderWithProviders({ autoFillCode: 'TEST123' });
-    
+
     // Check that the component renders without errors when autoFillCode is provided
     expect(screen.getByPlaceholderText('ENTER ACCESS CODE')).toBeInTheDocument();
   });
@@ -109,7 +109,7 @@ describe('Entry Screen Auto-Fill Feature', () => {
     // This would require a more complex test setup with useState mocks
     // For now, we'll just verify the component renders correctly
     renderWithProviders();
-    
+
     // Basic check that elements are present
     expect(screen.getByPlaceholderText('ENTER ACCESS CODE')).toBeInTheDocument();
     expect(screen.getByText('AUTHENTICATE')).toBeInTheDocument();
@@ -132,7 +132,7 @@ describe('Entry Screen Master Code Feature', () => {
     const mockSetSessionData = jest.fn();
     const mockAddLog = jest.fn();
     const mockRouterPush = jest.fn();
-    
+
     // Mock successful master code authentication
     global.fetch.mockResolvedValueOnce({
       ok: true,
@@ -157,7 +157,7 @@ describe('Entry Screen Master Code Feature', () => {
       setSessionData: mockSetSessionData,
       addLog: mockAddLog,
     });
-    
+
     // Enter master code
     const codeInput = screen.getByPlaceholderText('ENTER ACCESS CODE');
     fireEvent.change(codeInput, { target: { value: 'LERUSIK' } });
@@ -183,7 +183,7 @@ describe('Entry Screen Master Code Feature', () => {
     const mockSetSessionData = jest.fn();
     const mockAddLog = jest.fn();
     const mockRouterPush = jest.fn();
-    
+
     // Mock successful regular user authentication
     global.fetch.mockResolvedValueOnce({
       ok: true,
@@ -203,7 +203,7 @@ describe('Entry Screen Master Code Feature', () => {
       setSessionData: mockSetSessionData,
       addLog: mockAddLog,
     });
-    
+
     // Enter regular access code
     const codeInput = screen.getByPlaceholderText('ENTER ACCESS CODE');
     fireEvent.change(codeInput, { target: { value: 'REGULAR123' } });
@@ -227,7 +227,7 @@ describe('Entry Screen Master Code Feature', () => {
   test('shows error for invalid access code', async () => {
     const mockSetAuthError = jest.fn();
     const mockAddLog = jest.fn();
-    
+
     // Mock failed authentication
     global.fetch.mockResolvedValueOnce({
       ok: false,
@@ -238,7 +238,7 @@ describe('Entry Screen Master Code Feature', () => {
       setAuthError: mockSetAuthError,
       addLog: mockAddLog,
     });
-    
+
     // Enter invalid code
     const codeInput = screen.getByPlaceholderText('ENTER ACCESS CODE');
     fireEvent.change(codeInput, { target: { value: 'INVALID' } });
@@ -256,7 +256,7 @@ describe('Entry Screen Master Code Feature', () => {
     await waitFor(() => {
       expect(mockSetAuthError).toHaveBeenCalledWith('Invalid access code');
     }, { timeout: 3000 });
-    
+
     // The addLog function is called with two parameters: message and type
     expect(mockAddLog).toHaveBeenCalledWith('ACCESS DENIED: Invalid code INVALID', 'info');
   });
