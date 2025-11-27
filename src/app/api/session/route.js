@@ -16,20 +16,20 @@ function extractUserLabel(profileData) {
   if (profileData?.meta?.company) {
     return profileData.meta.company;
   }
-  
+
   // Try to find a suitable name field
-  return profileData.profileName || 
-         profileData.fullName || 
-         profileData.name || 
-         profileData.title || 
-         profileData.company ||
-         'Unknown User';
+  return profileData.profileName ||
+    profileData.fullName ||
+    profileData.name ||
+    profileData.title ||
+    profileData.company ||
+    'Unknown User';
 }
 
 // Helper function to extract contact information
 function extractContactInfo(profileData) {
   if (!profileData) return {};
-  
+
   return {
     email: profileData.contactEmail || profileData.email || null,
     telegram: profileData.contactTelegram || profileData.telegram || null
@@ -55,7 +55,7 @@ export async function GET(request) {
   const masterCode = process.env.MASTER_CODE;
   if (masterCode && code === masterCode) {
     console.log('[SESSION API] Master code detected');
-    
+
     try {
       // Gather all codes from different sources
       const codes = {
@@ -68,7 +68,7 @@ export async function GET(request) {
         special: [],
         user: []
       };
-      
+
       // Add Web3 code if available
       const web3Code = process.env.NEXT_PUBLIC_WEB3_SHARED_ACCESS_CODE;
       if (web3Code) {
@@ -79,7 +79,7 @@ export async function GET(request) {
           description: 'Shared access code for Web3 authentication'
         });
       }
-      
+
       // Add demo mode entry
       codes.special.push({
         code: null,
@@ -87,17 +87,17 @@ export async function GET(request) {
         type: 'demo',
         description: 'Activated by accessing the site without any code parameter'
       });
-      
+
       // Load user codes from content file
       const dataFilePath = getContentFilePath(false);
       let allData;
-      
+
       try {
         const fileContent = await fs.readFile(dataFilePath, 'utf-8');
         allData = JSON.parse(fileContent);
       } catch (error) {
         console.warn(`Could not read server content file. Falling back to local test data. Reason: ${error.message}`);
-        
+
         try {
           const testFilePath = process.env.USE_LOCAL_TEST_CONTENT
             ? path.join(process.cwd(), 'test-content-local.json')
@@ -110,7 +110,7 @@ export async function GET(request) {
           allData = {};
         }
       }
-      
+
       // Extract user codes (excluding special keys)
       const systemKeys = ['GLOBAL_DATA', 'DEMO_USER', masterCode];
       const userCodes = Object.keys(allData)
@@ -124,11 +124,21 @@ export async function GET(request) {
             ...extractContactInfo(profileData)
           };
         });
-      
+
       codes.user = userCodes;
-      
-      // Return master access response
+
+      // FIX: Also load the profile data for the master code itself
+      // This ensures the home screen isn't empty when using the master code
+      let masterSessionData = {};
+      if (allData[masterCode]) {
+        const globalData = allData.GLOBAL_DATA || {};
+        // Pass false as third parameter (not demo mode)
+        masterSessionData = mergeSessionData(allData[masterCode], globalData, false);
+      }
+
+      // Return master access response with merged session data
       return NextResponse.json({
+        ...masterSessionData, // Spread the session data (profile, menu, etc.)
         isMasterAccess: true,
         masterCode: masterCode,
         codes: codes
@@ -146,10 +156,10 @@ export async function GET(request) {
   // 3. Demo mode is enabled in configuration
   if (!code && !checkSession && isDemoModeEnabled()) {
     console.log('[SESSION API] Demo mode requested');
-    
+
     const demoContentPath = getContentFilePath(true);
     const demoData = await loadContent(demoContentPath);
-    
+
     if (demoData && demoData.DEMO_USER) {
       // Pass true as third parameter to indicate demo mode
       // This ensures demo content isn't overwritten by empty GLOBAL_DATA fields
@@ -169,15 +179,15 @@ export async function GET(request) {
   try {
     const fileContent = await fs.readFile(dataFilePath, 'utf-8');
     const allData = JSON.parse(fileContent);
-    
+
     const userProfile = allData[code];
-    
+
     if (!userProfile) {
       return NextResponse.json({ error: 'Invalid access code' }, { status: 404 });
     }
-    
+
     const globalData = allData.GLOBAL_DATA;
-    
+
     if (!globalData) {
       console.error('GLOBAL_DATA not found in content.json');
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
@@ -185,31 +195,31 @@ export async function GET(request) {
 
     // Pass false as third parameter for regular (non-demo) sessions
     const sessionData = mergeSessionData(userProfile, globalData, false);
-    
+
     return NextResponse.json(sessionData, { status: 200 });
-    
+
   } catch (error) {
     console.warn(`Could not read server content file. Falling back to local test data. Reason: ${error.message}`);
-    
+
     try {
       const testFilePath = process.env.USE_LOCAL_TEST_CONTENT
-      ? path.join(process.cwd(), 'test-content-local.json')
-      : path.join(process.cwd(), 'src/app/test-content.json');
+        ? path.join(process.cwd(), 'test-content-local.json')
+        : path.join(process.cwd(), 'src/app/test-content.json');
       const testContent = await fs.readFile(testFilePath, 'utf-8');
       const testData = JSON.parse(testContent);
-      
+
       const userProfile = testData[code];
-      
+
       if (!userProfile) {
         return NextResponse.json({ error: 'Invalid access code' }, { status: 404 });
       }
-      
+
       const globalData = testData.GLOBAL_DATA;
       // Pass false for test data (non-demo mode)
       const sessionData = mergeSessionData(userProfile, globalData, false);
-      
+
       return NextResponse.json(sessionData, { status: 200 });
-      
+
     } catch (localError) {
       console.error('Failed to load test data:', localError);
       return NextResponse.json({ error: 'Server content file not found' }, { status: 500 });
