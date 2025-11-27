@@ -11,7 +11,7 @@ import ThemeManager from "./components/ThemeManager";
 import { Web3Manager } from "./components/Web3Manager";
 import ThemeSwitcher from "./components/ui/ThemeSwitcher";
 import Web3CleanupManager from './components/Web3CleanupManager';
-import LatestProjectWidget from "./components/LatestProjectWidget";
+import LatestProjects from "./components/LatestProjects";
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['100', '200', '300', '400', '500', '600', '700'],
@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
 
               <div className="panels-container w-full max-w-2xl mx-auto space-y-2 mt-2">
                 <AnalyticsPanel />
-                <LatestProjectWidget />
+                <LatestProjects />
                 <ThemeSwitcher />
                 <SystemLog />
               </div>
