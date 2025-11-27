@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.1.0](https://github.com/undevy-org/portfolio/compare/v6.0.7...v6.1.0) (2025-11-27)
+
+
+### Fixed
+
+* load profile data for master code access ([8ead536](https://github.com/undevy-org/portfolio/commit/8ead53689714ebf3cc30fd505f1fa1ec1d40b70d))
+
+
+### Changed
+
+* add LinkedIn field and Entry screen widget ([9ddeabc](https://github.com/undevy-org/portfolio/commit/9ddeabcf70c3226b673a2c48ca0755532435c45a))
+
 ### [6.0.8](https://github.com/undevy-org/portfolio/compare/v6.0.7...v6.0.8) (2025-11-27)
 
 
