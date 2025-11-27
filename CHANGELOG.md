@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.0](https://github.com/undevy-org/portfolio/compare/v6.0.7...v6.2.0) (2025-11-27)
+
+
+### Fixed
+
+* load profile data for master code access ([8ead536](https://github.com/undevy-org/portfolio/commit/8ead53689714ebf3cc30fd505f1fa1ec1d40b70d))
+
+
+### Changed
+
+* **release:** 6.0.8 ([247a92e](https://github.com/undevy-org/portfolio/commit/247a92eea0eaffe779848189a433f343cd8b12de))
+* **release:** 6.1.0 ([5c8fb14](https://github.com/undevy-org/portfolio/commit/5c8fb14234018112092225f8d25231b0b61e4430))
+* replace LatestProjectWidget with reusable ProjectWidget and add Ekiden widget ([172d740](https://github.com/undevy-org/portfolio/commit/172d74091cee70f2135ae97ab6add1e07a1f29a4))
+
 ## [6.1.0](https://github.com/undevy-org/portfolio/compare/v6.0.7...v6.1.0) (2025-11-27)
 
 
