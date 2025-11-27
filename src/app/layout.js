@@ -8,15 +8,16 @@ import StableLayout from "./components/StableLayout";
 import { Suspense } from 'react';
 import { SessionProvider } from "./context/SessionContext";
 import ThemeManager from "./components/ThemeManager";
-import { Web3Manager } from "./components/Web3Manager"; 
+import { Web3Manager } from "./components/Web3Manager";
 import ThemeSwitcher from "./components/ui/ThemeSwitcher";
 import Web3CleanupManager from './components/Web3CleanupManager';
+import LatestProjectWidget from "./components/LatestProjectWidget";
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ['100', '200', '300', '400', '500', '600', '700'],
   subsets: ["latin"],
   display: 'swap',
-  variable: '--font-mono',
+  variable: '--font-ibm-plex',
 });
 
 const portfolioTitle = process.env.PORTFOLIO_TITLE || 'Interactive Portfolio';
@@ -36,20 +37,21 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${ibmPlexMono.variable} font-mono bg-main text-primary terminal-texture`}>
         <SessionProvider>
-          <Web3Manager> 
+          <Web3Manager>
             <ThemeManager />
             <Web3CleanupManager />
             <StableLayout>
               {/* Main content (TerminalWindow with screens) */}
               {children}
-              
+
               <div className="panels-container w-full max-w-2xl mx-auto space-y-2 mt-2">
                 <AnalyticsPanel />
+                <LatestProjectWidget />
                 <ThemeSwitcher />
                 <SystemLog />
               </div>
             </StableLayout>
-            
+
             <Suspense fallback={null}>
               <MatomoTracker />
             </Suspense>

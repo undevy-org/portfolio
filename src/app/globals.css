@@ -5,6 +5,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /* Define CSS variables for each theme */
   :root,
   [data-theme='dark'] {
@@ -26,8 +27,8 @@
     --color-btn-bg: rgba(255, 255, 255, 0.07);
     --color-btn-bg-hover: rgba(255, 255, 255, 0.09);
     --texture-line-color: 34, 197, 94;
-    --texture-opacity: 0.09;           
-    --texture-grid-size: 100px;        
+    --texture-opacity: 0.09;
+    --texture-grid-size: 100px;
   }
 
   [data-theme='light'] {
@@ -37,7 +38,7 @@
     --color-text-secondary: #4b5563;
     --color-text-tertiary: #9ca3af;
     --color-text-command: #b45309;
-    --color-text-white: #0a0a0a; 
+    --color-text-white: #0a0a0a;
     --color-border: #10b981;
     --color-border-darker: #059669;
     --color-active: #d1fae5;
@@ -48,9 +49,9 @@
     --color-accent: #0284c7;
     --color-btn-bg: rgba(5, 150, 105, 0.05);
     --color-btn-bg-hover: rgba(5, 150, 105, 0.1);
-    --texture-line-color: 59, 130, 246; 
-    --texture-opacity: 0.09;           
-    --texture-grid-size: 120px;        
+    --texture-line-color: 59, 130, 246;
+    --texture-opacity: 0.09;
+    --texture-grid-size: 120px;
   }
 
   [data-theme='amber'] {
@@ -71,8 +72,8 @@
     --color-accent: #FFDDAA;
     --color-btn-bg: rgba(255, 184, 108, 0.05);
     --color-btn-bg-hover: rgba(255, 184, 108, 0.1);
-    --texture-line-color: 251, 146, 60;  
-    --texture-opacity: 0.05;           
+    --texture-line-color: 251, 146, 60;
+    --texture-opacity: 0.05;
     --texture-grid-size: 100px;
   }
 
@@ -94,12 +95,12 @@
     --color-accent: #88B8FF;
     --color-btn-bg: rgba(230, 243, 255, 0.08);
     --color-btn-bg-hover: rgba(230, 243, 255, 0.15);
-    --texture-line-color: 255, 255, 255; 
-    --texture-opacity: 0.08;          
-    --texture-grid-size: 80px;         
+    --texture-line-color: 255, 255, 255;
+    --texture-opacity: 0.08;
+    --texture-grid-size: 80px;
   }
 
-    [data-theme='synthwave'] {
+  [data-theme='synthwave'] {
     /* Synthwave theme */
     --color-bg: #1A103C;
     --color-text-white: #FF00E5;
@@ -117,7 +118,7 @@
     --color-accent: #00F6FF;
     --color-btn-bg: rgba(255, 0, 229, 0.08);
     --color-btn-bg-hover: rgba(255, 0, 229, 0.12);
-    --texture-line-color: 236, 72, 153; 
+    --texture-line-color: 236, 72, 153;
     --texture-opacity: 0.09;
     --texture-grid-size: 100px;
   }
@@ -140,7 +141,7 @@
     --color-accent: #FFA500;
     --color-btn-bg: rgba(255, 65, 0, 0.08);
     --color-btn-bg-hover: rgba(255, 65, 0, 0.12);
-    --texture-line-color: 251, 191, 36; 
+    --texture-line-color: 251, 191, 36;
     --texture-opacity: 0.09;
     --texture-grid-size: 100px;
   }
@@ -163,7 +164,7 @@
     --color-accent: #39D9D9;
     --color-btn-bg: rgba(26, 26, 26, 0.05);
     --color-btn-bg-hover: rgba(26, 26, 26, 0.1);
-    --texture-line-color: 220, 38, 38;  
+    --texture-line-color: 220, 38, 38;
     --texture-opacity: 0.09;
     --texture-grid-size: 110px;
   }
@@ -191,7 +192,7 @@
     --color-accent: #54B3B3;
     --color-btn-bg: rgba(179, 226, 167, 0.05);
     --color-btn-bg-hover: rgba(179, 226, 167, 0.1);
-    --texture-line-color: 34, 197, 94;   
+    --texture-line-color: 34, 197, 94;
     --texture-opacity: 0.08;
     --texture-grid-size: 90px;
   }
@@ -199,78 +200,78 @@
 
 @layer components {
   /* Now all classes use CSS variables - no need for theme overrides! */
-  
+
   /* Text styles */
   .text-primary {
     color: var(--color-text-primary);
   }
-  
+
   .text-secondary {
     color: var(--color-text-secondary);
   }
-  
+
   .text-command {
     color: var(--color-text-command);
   }
-  
+
   .text-white-black {
     color: var(--color-text-white);
   }
-  
+
   .text-tertiary {
     color: var(--color-text-tertiary);
   }
-  
+
   .text-error {
     color: var(--color-error);
   }
-  
+
   .text-success {
     color: var(--color-success);
   }
-  
+
   .text-accent {
     color: var(--color-accent);
   }
-  
+
   /* Background styles */
   .bg-main {
     background-color: var(--color-bg);
   }
-  
+
   .bg-input {
     background-color: var(--color-input-bg);
   }
-  
+
   .bg-active {
     background-color: var(--color-active);
   }
-  
+
   .bg-hover:hover {
     background-color: var(--color-hover);
   }
-  
+
   /* Border styles */
   .border-primary {
     border-color: var(--color-border);
   }
-  
+
   .border-secondary {
     border-color: var(--color-border-darker);
   }
-  
+
   .border-active {
     border-color: var(--color-active);
   }
-  
+
   .border-error {
     border-color: var(--color-error);
   }
-  
+
   .border-success {
     border-color: var(--color-success);
   }
-  
+
   /* Composite components - now they automatically adapt to theme! */
   .input-base {
     @apply w-full px-3 py-2 rounded border font-mono text-sm;
@@ -278,41 +279,42 @@
     border-color: var(--color-border);
     color: var(--color-text-primary);
   }
-  
+
   .input-base:focus {
     @apply outline-none ring-2;
     --tw-ring-color: var(--color-border);
   }
-  
+
   .input-error {
     border-color: var(--color-error);
     color: var(--color-error);
   }
-  
+
   .btn-command {
     @apply border border-primary text-primary transition-colors duration-200;
     background-color: var(--color-btn-bg);
-    }
+  }
+
   .btn-command:hover {
     background-color: var(--color-btn-bg-hover);
   }
-  
+
   .btn-active {
     background-color: var(--color-active);
     border-color: var(--color-active);
   }
-  
+
   .tag-badge {
     @apply text-xs px-2 py-0.5 border rounded whitespace-nowrap;
     border-color: var(--color-border);
     color: var(--color-text-primary);
   }
-  
+
   .label-base {
     @apply block text-sm font-mono mb-1;
     color: var(--color-text-secondary);
   }
-  
+
   .panel-base {
     @apply border rounded-md p-4;
   }
@@ -336,7 +338,7 @@
   .value-primary {
     @apply text-xl font-mono text-primary;
   }
-  
+
   .interactive-base {
     @apply transition-all duration-200 cursor-pointer;
   }
@@ -369,7 +371,7 @@
     @apply font-mono text-xs leading-none;
     color: var(--color-text-secondary);
   }
-  
+
   /* Layout utilities */
   .flex-center {
     @apply flex items-center justify-center;
@@ -386,7 +388,7 @@
   .grid-responsive {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
   }
-  
+
   /* Mobile modifiers */
   .mobile-full {
     @apply w-full sm:w-auto;
@@ -399,7 +401,7 @@
   .show-mobile {
     @apply block sm:hidden;
   }
-  
+
   /* Animations */
   .animate-fade-in {
     @apply animate-[fadeIn_0.3s_ease-in-out];
@@ -415,6 +417,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -425,6 +428,7 @@
     transform: translateY(10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -435,21 +439,24 @@
   0% {
     opacity: 0.7;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.7;
   }
 }
 
 @layer utilities {
+
   /* Existing utility */
   .wallet-modal-override {
     background-color: transparent !important;
     color: var(--color-text-primary) !important;
   }
-  
+
   .animate-pulse-progress {
     animation: pulseProgress 1.5s ease-in-out infinite;
   }
@@ -464,11 +471,14 @@
 @keyframes screen-exit {
   from {
     opacity: 1;
-    transform: scale(1) translateZ(0); /* translateZ forces GPU acceleration */
+    transform: scale(1) translateZ(0);
+    /* translateZ forces GPU acceleration */
   }
+
   to {
     opacity: 0;
-    transform: scale(0.98) translateZ(0); /* 2% shrink creates depth */
+    transform: scale(0.98) translateZ(0);
+    /* 2% shrink creates depth */
   }
 }
 
@@ -476,11 +486,14 @@
 @keyframes screen-enter {
   from {
     opacity: 0;
-    transform: scale(1.02) translateZ(0); /* Start 2% larger */
+    transform: scale(1.02) translateZ(0);
+    /* Start 2% larger */
   }
+
   to {
     opacity: 1;
-    transform: scale(1) translateZ(0); /* Return to normal size */
+    transform: scale(1) translateZ(0);
+    /* Return to normal size */
   }
 }
 
@@ -504,23 +517,26 @@
     from {
       opacity: 1;
     }
+
     to {
       opacity: 0;
     }
   }
-  
+
   @keyframes screen-enter {
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
   }
-  
+
   .animate-screen-exit,
   .animate-screen-enter {
-    animation-duration: 150ms; /* Slightly faster for reduced motion */
+    animation-duration: 150ms;
+    /* Slightly faster for reduced motion */
   }
 }
 
@@ -536,6 +552,7 @@
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(-20px);
@@ -547,6 +564,7 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -568,10 +586,12 @@
     opacity: 0;
     transform: scale(0.95) translateY(10px);
   }
+
   50% {
     opacity: 0.5;
     transform: scale(0.98) translateY(5px);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -585,22 +605,28 @@
 /* Glitch effect for error states or special transitions */
 
 @keyframes glitch {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0);
     filter: hue-rotate(0deg);
   }
+
   20% {
     transform: translate(-1px, 1px);
     filter: hue-rotate(90deg);
   }
+
   40% {
     transform: translate(1px, -1px);
     filter: hue-rotate(180deg);
   }
+
   60% {
     transform: translate(-1px, -1px);
     filter: hue-rotate(270deg);
   }
+
   80% {
     transform: translate(1px, 1px);
     filter: hue-rotate(360deg);
@@ -614,26 +640,30 @@
 /* Scrollbar */
 
 @media (min-width: 768px) {
+
   /* Webkit (Chrome, Safari) */
   *::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   *::-webkit-scrollbar-track {
     background: var(--color-hover);
     border-radius: 4px;
   }
-  
+
   *::-webkit-scrollbar-thumb {
     background: var(--color-border);
     border-radius: 4px;
-    opacity: 0.7; /* ADDED: Makes the scrollbar thumb semi-transparent */
-    transition: opacity 0.2s ease-in-out; /* ADDED: Smooth transition for hover effect */
+    opacity: 0.7;
+    /* ADDED: Makes the scrollbar thumb semi-transparent */
+    transition: opacity 0.2s ease-in-out;
+    /* ADDED: Smooth transition for hover effect */
   }
-  
+
   *::-webkit-scrollbar-thumb:hover {
     background: var(--color-accent);
-    opacity: 1; /* ADDED: Makes it fully opaque on hover for better visibility */
+    opacity: 1;
+    /* ADDED: Makes it fully opaque on hover for better visibility */
   }
 }
 
@@ -652,29 +682,25 @@
   /* IMPORTANT: z-index must be higher than HyperspaceTunnel (0) but lower than main content */
   z-index: 1;
   opacity: var(--texture-opacity);
-  
+
   /* Create scanline effect with horizontal lines and vertical grid */
-  background-image: 
+  background-image:
     /* Horizontal scanlines - creates the CRT monitor effect */
-    repeating-linear-gradient(
-      0deg,
+    repeating-linear-gradient(0deg,
       transparent,
       transparent 2px,
       rgba(var(--texture-line-color), 0.3) 2px,
-      rgba(var(--texture-line-color), 0.3) 4px
-    ),
+      rgba(var(--texture-line-color), 0.3) 4px),
     /* Vertical grid lines - adds structure and depth */
-    repeating-linear-gradient(
-      90deg,
+    repeating-linear-gradient(90deg,
       transparent,
       transparent var(--texture-grid-size),
       rgba(var(--texture-line-color), 0.2) var(--texture-grid-size),
-      rgba(var(--texture-line-color), 0.2) calc(var(--texture-grid-size) + 2px)
-    );
-  
+      rgba(var(--texture-line-color), 0.2) calc(var(--texture-grid-size) + 2px));
+
   /* Performance optimization for large screens */
   will-change: opacity;
-  
+
   /* Smooth transition when switching themes */
   transition: opacity 0.3s ease;
 }
@@ -683,14 +709,12 @@
 @media (max-width: 768px) {
   .terminal-texture::before {
     /* Simplify to just horizontal lines on mobile */
-    background-image: 
-      repeating-linear-gradient(
-        0deg,
+    background-image:
+      repeating-linear-gradient(0deg,
         transparent,
         transparent 3px,
         rgba(var(--texture-line-color), 0.2) 3px,
-        rgba(var(--texture-line-color), 0.2) 5px
-      );
+        rgba(var(--texture-line-color), 0.2) 5px);
   }
 }
 
@@ -705,12 +729,10 @@
   pointer-events: none;
   z-index: 2;
   /* Radial gradient from center to edges */
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.1) 100%
-  );
+  background: radial-gradient(ellipse at center,
+      transparent 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.1) 100%);
 }
 
 /* Auto-fill animation effects */
@@ -720,11 +742,14 @@
 }
 
 @keyframes glow {
-  0%, 100% { 
-    box-shadow: 0 0 5px rgba(var(--color-accent-rgb, 255, 255, 255), 0.5); 
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(var(--color-accent-rgb, 255, 255, 255), 0.5);
   }
-  50% { 
-    box-shadow: 0 0 20px rgba(var(--color-accent-rgb, 255, 255, 255), 0.8); 
+
+  50% {
+    box-shadow: 0 0 20px rgba(var(--color-accent-rgb, 255, 255, 255), 0.8);
   }
 }
 
