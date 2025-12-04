@@ -1,11 +1,11 @@
 {
   "name": "portfolio-project",
-  "version": "6.5.0",
+  "version": "6.5.1",
   "private": true,
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/ensure_images.js && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
