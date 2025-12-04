@@ -61,3 +61,8 @@ diffs/
 # scripts
 sync-images-down.sh
 sync-images-up.sh
+# Server Knowledge Base (Private)
+server-knowledge/
+
+# Local Widget Configuration
+widgets-config.local.json
