@@ -1,6 +1,7 @@
 // src/app/utils/config.js
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 
 /**
  * Configuration utility for managing environment variables and domain settings
@@ -150,9 +151,9 @@ export const getWidgetsConfigPath = () => {
     return process.env.WIDGETS_CONFIG_PATH;
   }
 
-  // In production, use the standard server path
+  // In production, use the standard server path (user's home directory)
   if (process.env.NODE_ENV === 'production') {
-    return '/var/www/portfolio/config/widgets-config.json';
+    return path.join(os.homedir(), 'widgets-config.json');
   }
 
   // In development, use the local file in the project root
