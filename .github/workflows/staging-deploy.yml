@@ -68,6 +68,10 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           echo "🔐 Setting up SSH key..."
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "❌ Error: SSH_PRIVATE_KEY secret is empty or not accessible!"
+            exit 1
+          fi
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
