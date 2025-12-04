@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.5.0](https://github.com/undevy-org/portfolio/compare/v6.3.4...v6.5.0) (2025-12-04)
+
+
+### Added
+
+* implement implicit image handling and verification ([5af5edc](https://github.com/undevy-org/portfolio/commit/5af5edc07fba3a254bd8eb42bb9615cc2cb3a05d))
+
 ## [6.4.0](https://github.com/undevy-org/portfolio/compare/v6.3.4...v6.4.0) (2025-12-04)
 
 ## [6.2.0](https://github.com/undevy-org/portfolio/compare/v6.0.7...v6.2.0) (2025-11-27)
