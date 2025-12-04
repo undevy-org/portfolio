@@ -45,7 +45,6 @@ yarn-error.log*
 next-env.d.ts
 
 # local files
-/local-docs/
 test-content-local.json
 /content-backups
 config/domains.json
@@ -62,7 +61,10 @@ diffs/
 sync-images-down.sh
 sync-images-up.sh
 # Server Knowledge Base (Private)
-server-knowledge/
 
 # Local Widget Configuration
 widgets-config.local.json
+portfolio-local/
+# Google Drive local path (hidden)
+/Users/undevy/Library/CloudStorage/GoogleDrive-undevy@gmail.com/My Drive/Documents/portfolio-local
+
