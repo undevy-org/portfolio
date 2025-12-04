@@ -50,10 +50,10 @@ const getRandomThemeByIntent = (intent) => {
 const getSystemPreference = () => {
   // Server-side rendering safety
   if (typeof window === 'undefined') return 'dark';
-  
+
   // Check if the browser supports the media query
   if (!window.matchMedia) return 'dark';
-  
+
   // Query the system preference
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   return isDark ? 'dark' : 'light';
@@ -75,7 +75,7 @@ const screenHierarchy = {
   'RoleDetail': 'Timeline',
   'CaseDetail': 'CaseList',
   'SkillDetail': 'SkillsGrid',
-  
+
   // Top-level screens
   'Timeline': 'MainHub',
   'CaseList': 'MainHub',
@@ -83,7 +83,7 @@ const screenHierarchy = {
   'Introduction': 'MainHub',
   'SideProjects': 'MainHub',
   'Contact': 'MainHub',
-  
+
   // Master Code Access Manager
   'AccessManager': 'MainHub', // AccessManager leads to MainHub
 };
@@ -91,44 +91,44 @@ const screenHierarchy = {
 export function SessionProvider({ children }) {
   // ========== DOMAIN ==========
   const [currentDomain, setCurrentDomain] = useState(null);
-  const [domainData, setDomainData] = useState(null); 
+  const [domainData, setDomainData] = useState(null);
   const [domainConfigLoading, setDomainConfigLoading] = useState(true);
 
   // ========== SESSION STATE ==========
   const [sessionData, setSessionData] = useState(null);
   const [authError, setAuthError] = useState(null);
   const [isTerminating, setIsTerminating] = useState(false);
-  
+
   // Debugging: Log when sessionData changes
   useEffect(() => {
     console.log('[SESSION CONTEXT] sessionData changed to:', sessionData);
   }, [sessionData]);
-  
+
   // ========== WEB3 LOGOUT STATE (ADDED) ==========
   // This state provides a direct communication channel between SessionContext and Entry.js
   // for Web3 logout. It's more reliable than browser events which can be missed if the
   // component isn't mounted yet. When true, Entry.js knows it needs to disconnect the wallet.
   const [web3LogoutPending, setWeb3LogoutPending] = useState(false);
-  
+
   // ========== AUTO-FILL CODE STATE (ADDED) ==========
   // This state provides a way to pass access codes for auto-fill animation
   const [autoFillCode, setAutoFillCode] = useState(null);
-  
+
   // Debugging: Log when autoFillCode changes
   useEffect(() => {
     console.log('[SESSION CONTEXT] autoFillCode changed to:', autoFillCode);
   }, [autoFillCode]);
-  
+
   // ========== NAVIGATION ==========
   const [currentScreen, setCurrentScreen] = useState('Entry');
   const [navigationHistory, setNavigationHistory] = useState([]);
   const [screensVisitedCount, setScreensVisitedCount] = useState(1);
-  
+
   // ========== SELECTED ITEMS ==========
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
   const [selectedSkill, setSelectedSkill] = useState(null);
-  
+
   // ========== UI: THEME ==========
   /**
    * Theme initialization with automatic selection based on system preferences
@@ -138,34 +138,34 @@ export function SessionProvider({ children }) {
    * 3. Fallback to 'dark' theme (if something goes wrong)
    */
   const [theme, setTheme] = useState(() => {
-  try {
-    if (typeof window !== 'undefined') {
-      const savedTheme = window.localStorage.getItem('theme');
-      
-      // Check if user has a saved theme preference
-      if (savedTheme && themes.includes(savedTheme)) {
-        // User has visited before - use their saved theme
-        console.debug('[Theme Init] Using saved theme:', savedTheme);
-        return savedTheme;
+    try {
+      if (typeof window !== 'undefined') {
+        const savedTheme = window.localStorage.getItem('theme');
+
+        // Check if user has a saved theme preference
+        if (savedTheme && themes.includes(savedTheme)) {
+          // User has visited before - use their saved theme
+          console.debug('[Theme Init] Using saved theme:', savedTheme);
+          return savedTheme;
+        }
+
+        // First visit - select random theme based on system preference
+        const systemPref = getSystemPreference();
+        const randomTheme = getRandomThemeByIntent(systemPref);
+        console.debug('[Theme Init] First visit - selected random', systemPref, 'theme:', randomTheme);
+
+        // Save the randomly selected theme immediately
+        window.localStorage.setItem('theme', randomTheme);
+
+        return randomTheme;
       }
-      
-      // First visit - select random theme based on system preference
-      const systemPref = getSystemPreference();
-      const randomTheme = getRandomThemeByIntent(systemPref);
-      console.debug('[Theme Init] First visit - selected random', systemPref, 'theme:', randomTheme);
-      
-      // Save the randomly selected theme immediately
-      window.localStorage.setItem('theme', randomTheme);
-      
-      return randomTheme;
+    } catch (e) {
+      // Ignore storage errors and fallback to default
+      console.warn('[Theme Init] Error during initialization:', e);
     }
-  } catch (e) {
-    // Ignore storage errors and fallback to default
-    console.warn('[Theme Init] Error during initialization:', e);
-  }
-  // Fallback for SSR or errors
-  return 'dark';
-});
+    // Fallback for SSR or errors
+    return 'dark';
+  });
 
   /// Track whether the user has manually selected a theme
   // This helps us distinguish between automatic and manual theme selection
@@ -174,27 +174,27 @@ export function SessionProvider({ children }) {
       if (typeof window !== 'undefined') {
         // Check if the flag exists in localStorage
         const savedFlag = window.localStorage.getItem('themeManuallySet');
-        
+
         // If flag exists and is 'true', user has manually selected a theme
         if (savedFlag === 'true') {
           console.debug('[Theme Init] Manual theme selection detected');
           return true;
         }
-        
+
         // MIGRATION LOGIC: For users who had themes before this feature
         // Only migrate if they have BOTH a saved theme AND Web3/code in localStorage
         // This indicates they're an existing user, not a new visitor
         const savedTheme = window.localStorage.getItem('theme');
         const hasWeb3Data = window.localStorage.getItem('@appkit/connection_status') !== null;
         const hasAccessCode = window.localStorage.getItem('lastAccessCode') !== null;
-        
+
         if (savedTheme && themes.includes(savedTheme) && (hasWeb3Data || hasAccessCode)) {
           // Existing user with saved preferences - migrate as manual
           console.debug('[Theme Init] Migrating existing user theme as manually set');
           window.localStorage.setItem('themeManuallySet', 'true');
           return true;
         }
-        
+
         // New users or users without clear history - automatic mode
         console.debug('[Theme Init] No manual selection detected - using automatic mode');
         return false;
@@ -217,39 +217,66 @@ export function SessionProvider({ children }) {
 
   const [expandedSections, setExpandedSections] = useState({});
   const [activeTab, setActiveTab] = useState({});
-  
+
+  // ========== IMAGE VERIFICATION ==========
+  const [verifiedImages, setVerifiedImages] = useState({});
+
+  const verifyImage = useCallback(async (url) => {
+    // If already verified (true or false), don't check again
+    if (verifiedImages[url] !== undefined) return verifiedImages[url];
+
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      const isValid = response.ok;
+
+      setVerifiedImages(prev => ({
+        ...prev,
+        [url]: isValid
+      }));
+
+      return isValid;
+    } catch (error) {
+      console.warn(`[Image Verification] Failed to verify ${url}:`, error);
+      setVerifiedImages(prev => ({
+        ...prev,
+        [url]: false
+      }));
+      return false;
+    }
+  }, [verifiedImages]);
+
   // ========== SYSTEM LOG ==========
   const [logEntries, setLogEntries] = useState([]);
-  
+
   // ========== LOGGING FUNCTIONS ==========
   const addLog = useCallback((message) => {
     const newEntry = `[${getTimestamp()}] ${message}`;
     setLogEntries(prev => [...prev, newEntry].slice(-20));
   }, []);
-  
+
   // ========== DOMAIN DETECTION ==========
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       setCurrentDomain(hostname);
-      
+
       const fetchDomainConfig = async () => {
         try {
           setDomainConfigLoading(true);
-          
+
           const response = await fetch('/api/config');
-          
+
           if (response.ok) {
             const data = await response.json();
             setDomainData(data.config);
             addLog(`DOMAIN CONFIG LOADED: ${hostname}`);
-      } else {
-        setDomainData({
+          } else {
+            setDomainData({
               brandingToken: process.env.NEXT_PUBLIC_DEFAULT_PORTFOLIO_TITLE || '$terminal_portfolio',
               email: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_EMAIL || 'contact@example.com',
               telegram: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_TELEGRAM || 'https://t.me/example',
               website: process.env.NEXT_PUBLIC_DEFAULT_CONTACT_WEBSITE || 'https://example.com',
-        });
+            });
             addLog(`DOMAIN CONFIG FALLBACK: Using defaults for ${hostname}`);
           }
         } catch (error) {
@@ -265,30 +292,30 @@ export function SessionProvider({ children }) {
           setDomainConfigLoading(false);
         }
       };
-      
+
       fetchDomainConfig();
     }
   }, [addLog]);
-  
+
   // ========== NAVIGATION FUNCTIONS ==========
   const navigate = useCallback((screen, addToHistory = true) => {
     console.log('[SESSION CONTEXT] navigate called with:', screen, addToHistory, 'currentScreen:', currentScreen);
     if (currentScreen === screen) return;
-    
+
     if (addToHistory && currentScreen !== 'Entry') {
       setNavigationHistory(prev => [...prev, currentScreen]);
     }
-    
+
     setCurrentScreen(screen);
     setScreensVisitedCount(prev => prev + 1);
     addLog(`NAVIGATE: ${currentScreen} → ${screen}`);
-    
+
     if (typeof window !== 'undefined') {
       const currentUrl = new URL(window.location.href);
       currentUrl.hash = screen !== 'Entry' ? screen : '';
       window.history.replaceState({}, '', currentUrl.toString());
     }
-    
+
     if (['MainHub', 'Entry'].includes(screen)) {
       setSelectedCase(null);
       setSelectedRole(null);
@@ -301,11 +328,11 @@ export function SessionProvider({ children }) {
       const newHistory = [...navigationHistory];
       const previousScreen = newHistory.pop();
       setNavigationHistory(newHistory);
-      
+
       addLog(`NAVIGATE BACK: ${currentScreen} → ${previousScreen}`);
       setCurrentScreen(previousScreen);
       setScreensVisitedCount(prev => prev + 1);
-      
+
       if (typeof window !== 'undefined') {
         const currentUrl = new URL(window.location.href);
         currentUrl.hash = previousScreen !== 'Entry' ? previousScreen : '';
@@ -393,16 +420,16 @@ export function SessionProvider({ children }) {
       const safeIndex = currentIndex === -1 ? 0 : currentIndex;
       const nextIndex = (safeIndex + 1) % themes.length;
       const newTheme = themes[nextIndex];
-      
+
       // Log the upcoming change
       console.debug(`[Theme] Manual toggle: ${prevTheme} → ${newTheme}`);
-      
+
       return newTheme;
     });
-    
+
     // Mark this as a manual selection
     setIsThemeManuallySet(true);
-    
+
     // Persist the manual flag to localStorage
     try {
       if (typeof window !== 'undefined') {
@@ -422,10 +449,10 @@ export function SessionProvider({ children }) {
     if (themes.includes(newTheme)) {
       // Set the new theme
       setTheme(newTheme);
-      
+
       // Mark this as a manual selection
       setIsThemeManuallySet(true);
-      
+
       // Persist the manual flag to localStorage
       try {
         if (typeof window !== 'undefined') {
@@ -435,7 +462,7 @@ export function SessionProvider({ children }) {
       } catch (e) {
         console.warn('[Theme] Failed to save manual flag:', e);
       }
-      
+
       // Log the manual theme change
       addLog(`THEME SELECTED: ${newTheme.toUpperCase()} (Manual)`);
     } else {
@@ -455,7 +482,7 @@ export function SessionProvider({ children }) {
   const resetToAutoTheme = useCallback(() => {
     // Clear the manual flag
     setIsThemeManuallySet(false);
-    
+
     // Remove the flag from localStorage
     try {
       if (typeof window !== 'undefined') {
@@ -465,19 +492,19 @@ export function SessionProvider({ children }) {
     } catch (e) {
       console.warn('[Theme] Failed to clear manual flag:', e);
     }
-    
+
     // Get fresh system preference (in case it changed while in manual mode)
     const currentSystemPref = getSystemPreference();
     setSystemPreference(currentSystemPref); // Update tracked preference
-    
+
     // Select a new random theme based on current system preference
     const newTheme = getRandomThemeByIntent(currentSystemPref);
     setTheme(newTheme);
-    
+
     // Log the change with full context
     addLog(`THEME MODE: Switched to AUTOMATIC`);
     addLog(`AUTO THEME: Applied ${newTheme.toUpperCase()} (System: ${currentSystemPref})`);
-    
+
     console.info(`[Theme] Reset to auto mode - applied ${newTheme} for ${currentSystemPref} system`);
   }, [addLog]);
 
@@ -486,7 +513,7 @@ export function SessionProvider({ children }) {
     try {
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('theme', theme);
-        
+
         // Log additional context about theme mode
         const mode = isThemeManuallySet ? 'MANUAL' : 'AUTO';
         console.debug(`[Theme] Saved theme: ${theme} (Mode: ${mode})`);
@@ -508,16 +535,16 @@ export function SessionProvider({ children }) {
   useEffect(() => {
     // Skip on server-side rendering
     if (typeof window === 'undefined') return;
-    
+
     // Check if browser supports matchMedia
     if (!window.matchMedia) {
       console.warn('[Theme] matchMedia not supported - system theme monitoring disabled');
       return;
     }
-    
+
     // Create media query for dark mode preference
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     /**
      * Handle system theme preference change
      * This fires when user changes their OS theme settings
@@ -525,22 +552,22 @@ export function SessionProvider({ children }) {
     const handleSystemThemeChange = (e) => {
       const newSystemPref = e.matches ? 'dark' : 'light';
       const oldSystemPref = systemPreference;
-      
+
       // Update the tracked system preference
       setSystemPreference(newSystemPref);
-      
+
       console.debug(`[Theme] System preference changed: ${oldSystemPref} → ${newSystemPref}`);
-      
+
       // Only auto-switch theme if user hasn't manually selected one
       if (!isThemeManuallySet) {
         // Select a random theme matching the new system preference
         const newRandomTheme = getRandomThemeByIntent(newSystemPref);
         setTheme(newRandomTheme);
-        
+
         // Log the automatic change
         addLog(`AUTO THEME: System changed to ${newSystemPref.toUpperCase()}`);
         addLog(`AUTO THEME: Applied ${newRandomTheme.toUpperCase()} theme`);
-        
+
         console.info(`[Theme] Auto-switched to ${newRandomTheme} (system: ${newSystemPref})`);
       } else {
         // User has manual control - just log that we detected the change
@@ -548,7 +575,7 @@ export function SessionProvider({ children }) {
         console.info(`[Theme] System changed to ${newSystemPref} but keeping manual theme`);
       }
     };
-    
+
     // Modern browsers support addEventListener for MediaQueryList
     // Using both methods for maximum compatibility
     try {
@@ -563,7 +590,7 @@ export function SessionProvider({ children }) {
         console.warn('[Theme] Could not attach system theme listener:', e2);
       }
     }
-    
+
     // Cleanup function - CRITICAL for preventing memory leaks
     return () => {
       try {
@@ -601,11 +628,11 @@ export function SessionProvider({ children }) {
   const endSession = useCallback(() => {
     // Set flag BEFORE clearing session
     setLogoutInProgress(true);
-    
+
     // Clear session data
     setSessionData(null);
     setAutoFillCode(null);
-    
+
     // Reset page.js tracking refs to prevent demo mode auto-login
     // This calls a global function that page.js exposes to reset its internal refs
     // Without this, hasProcessedDemoModeRef remains true and demo mode can re-trigger
@@ -613,12 +640,12 @@ export function SessionProvider({ children }) {
       console.log('[SESSION CONTEXT] Resetting page.js tracking refs');
       window.__resetPageRefs();
     }
-    
+
     // NEW: Clear Web3/WalletConnect data from localStorage
     // This prevents "Already connected" issues on subsequent visits
     if (typeof window !== 'undefined') {
       addLog('CLEARING WEB3 DATA');
-      
+
       // Collect keys to remove (can't modify localStorage while iterating)
       const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
@@ -635,19 +662,19 @@ export function SessionProvider({ children }) {
           keysToRemove.push(key);
         }
       }
-      
+
       // Remove collected keys
       keysToRemove.forEach(key => {
         console.log('[SESSION] Removing Web3 localStorage key:', key);
         localStorage.removeItem(key);
       });
-      
+
       // Also clear sessionStorage for Web3 data
       for (let i = sessionStorage.length - 1; i >= 0; i--) {
         const key = sessionStorage.key(i);
         if (key && (
-          key.includes('wc') || 
-          key.includes('reown') || 
+          key.includes('wc') ||
+          key.includes('reown') ||
           key.includes('wagmi') ||
           key.includes('appkit') ||
           key.includes('W3M')
@@ -657,26 +684,26 @@ export function SessionProvider({ children }) {
         }
       }
     }
-    
+
     // Clear URL using browser API (NOT router, it's not available here)
     if (typeof window !== 'undefined') {
       // Use replaceState to clear URL without navigation
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, '', cleanUrl);
     }
-    
+
     // Navigate to Entry
     navigate('Entry', false);
-    
+
     // Increased delay to ensure all components properly see the logout flag
     // This gives page.js more time to check logoutInProgress before processing any URL params
     // Previously 500ms was not enough in some race conditions
     setTimeout(() => {
       setLogoutInProgress(false);
     }, 1000); // Increased from 500ms to 1000ms for better reliability
-    
+
   }, [navigate, addLog]);
-  
+
   // Track logout intent
   const [logoutInProgress, setLogoutInProgress] = useState(false);
 
@@ -730,6 +757,10 @@ export function SessionProvider({ children }) {
     activeTab,
     setTab,
 
+    // Image Verification
+    verifiedImages,
+    verifyImage,
+
     // System log
     logEntries,
     addLog,
@@ -738,11 +769,11 @@ export function SessionProvider({ children }) {
     // Session management
     logoutInProgress,
     endSession,
-    
+
     // Auth error state
     authError,
     setAuthError,
-    
+
     // Web3 logout state
     // These are exposed to Entry.js for direct state-based communication
     // This is more reliable than browser events which can be missed

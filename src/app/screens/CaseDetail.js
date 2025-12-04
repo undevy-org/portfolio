@@ -8,8 +8,8 @@ import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
 
 export default function CaseDetail() {
-  const { sessionData, navigate, addLog, selectedCase } = useSession();
-  
+  const { sessionData, navigate, addLog, selectedCase, verifiedImages } = useSession();
+
   if (!selectedCase) {
     return (
       <div className="p-4 text-center">
@@ -27,8 +27,20 @@ export default function CaseDetail() {
   }
 
   const caseDetails = sessionData?.case_details?.[selectedCase.id] || {};
-  const caseImages = caseDetails.images || {};
-  
+  const hiddenImages = caseDetails.hidden_images || [];
+
+  // Helper to check if image should be shown
+  const shouldShowImage = (tabId) => {
+    if (hiddenImages.includes(tabId)) return false;
+    const url = `/images/projects/${selectedCase.id}_${tabId}.webp`;
+    // If verification failed (false), don't show. 
+    // If undefined (not checked yet) or true (verified), show it (optimistic).
+    return verifiedImages[url] !== false;
+  };
+
+  // Helper to get image URL
+  const getImageUrl = (tabId) => `/images/projects/${selectedCase.id}_${tabId}.webp`;
+
   const tabs = [
     {
       id: 'challenge',
@@ -36,10 +48,9 @@ export default function CaseDetail() {
       title: 'problem_statement',
       content: [
         { type: 'text', value: caseDetails.challenge || 'No challenge description available.' },
-        // Add image object if it exists - Tabs will need to handle this new type
-        ...(caseImages.challenge ? [{
+        ...(shouldShowImage('challenge') ? [{
           type: 'image',
-          src: caseImages.challenge,
+          src: getImageUrl('challenge'),
           alt: 'Problem visualization',
           height: 300
         }] : [])
@@ -49,10 +60,18 @@ export default function CaseDetail() {
       id: 'approach',
       label: 'approach',
       title: 'methodology',
-      content: caseDetails.approach?.map(item => ({ 
-        type: 'list_item', 
-        value: item 
-      })) || []
+      content: [
+        ...(caseDetails.approach?.map(item => ({
+          type: 'list_item',
+          value: item
+        })) || []),
+        ...(shouldShowImage('approach') ? [{
+          type: 'image',
+          src: getImageUrl('approach'),
+          alt: 'Approach visualization',
+          height: 300
+        }] : [])
+      ]
     },
     {
       id: 'solution',
@@ -60,9 +79,9 @@ export default function CaseDetail() {
       title: 'implementation',
       content: [
         { type: 'text', value: caseDetails.solution || 'No solution description available.' },
-        ...(caseImages.solution ? [{
+        ...(shouldShowImage('solution') ? [{
           type: 'image',
-          src: caseImages.solution,
+          src: getImageUrl('solution'),
           alt: 'Solution implementation',
           height: 250
         }] : [])
@@ -73,27 +92,27 @@ export default function CaseDetail() {
       label: 'results',
       title: 'impact_metrics',
       content: [
-        ...(caseDetails.results?.map(item => ({ 
-          type: 'list_item', 
-          value: item 
+        ...(caseDetails.results?.map(item => ({
+          type: 'list_item',
+          value: item
         })) || []),
         ...(caseDetails.learnings ? [
           { type: 'divider' },
           { type: 'sub_heading', value: 'key_learnings' },
           { type: 'text', value: caseDetails.learnings }
         ] : []),
-        ...(caseImages.results ? [{
+        ...(shouldShowImage('results') ? [{
           type: 'image',
-          src: caseImages.results,
+          src: getImageUrl('results'),
           alt: 'Results visualization',
           height: 200
         }] : [])
       ]
     }
   ];
-  
+
   return (
-  <ScreenWrapper>
+    <ScreenWrapper>
       {/* Main info panel */}
       <div className="p-4 rounded border border-secondary">
         <div className="space-y-2">
@@ -128,7 +147,7 @@ export default function CaseDetail() {
         >
           BACK TO CASES
         </Button>
-        
+
         <Button
           onClick={() => {
             addLog('NAVIGATE: skills matrix');
@@ -142,6 +161,6 @@ export default function CaseDetail() {
           VIEW SKILLS
         </Button>
       </div>
-  </ScreenWrapper>
+    </ScreenWrapper>
   );
 }
