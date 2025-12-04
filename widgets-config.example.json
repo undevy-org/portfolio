@@ -1,0 +1,58 @@
+{
+    "default": {
+        "featuredProjects": [
+            {
+                "title": "Default Project",
+                "description": "This appears if no domain match is found",
+                "status": "ACTIVE",
+                "link": "https://example.com",
+                "icon": "Bot",
+                "label": "$latest_project"
+            }
+        ]
+    },
+    "example.com": {
+        "featuredProjects": [
+            {
+                "title": "Production Project 1",
+                "description": "Project specific to example.com",
+                "status": "LIVE",
+                "link": "https://example.com/project1",
+                "icon": "Rocket",
+                "label": "$production"
+            },
+            {
+                "title": "Production Project 2",
+                "description": "Another project for example.com",
+                "status": "IN DEV",
+                "link": "https://github.com/username/project",
+                "icon": "Code",
+                "label": "$dev"
+            }
+        ]
+    },
+    "another-domain.com": {
+        "featuredProjects": [
+            {
+                "title": "Design System",
+                "description": "Design system for the project",
+                "status": "BETA",
+                "link": "https://design.example.com",
+                "icon": "Sparkles",
+                "label": "$design"
+            }
+        ]
+    },
+    "localhost": {
+        "featuredProjects": [
+            {
+                "title": "Local Test Project",
+                "description": "Visible only on localhost",
+                "status": "TESTING",
+                "link": "http://localhost:3000",
+                "icon": "Zap",
+                "label": "$local"
+            }
+        ]
+    }
+}

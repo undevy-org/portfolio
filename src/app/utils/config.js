@@ -21,7 +21,7 @@ export function validateEnvironment() {
   if (process.env.NODE_ENV === 'development' || process.env.NEXT_PHASE === 'phase-production-build') {
     return;
   }
-  
+
   const required = [
     'CONTENT_FILE_PATH',
     'BACKUP_DIR',
@@ -67,7 +67,7 @@ export function getContentFilePath(isDemoMode = false) {
 
   // Fallback to default test content for development
   if (process.env.NODE_ENV !== 'production') {
-    return path.join(process.cwd(), 'test-content-local.json'); 
+    return path.join(process.cwd(), 'test-content-local.json');
   }
 
   // Production without explicit path - return a default
@@ -126,7 +126,7 @@ async function loadDomainConfig() {
     return config;
   } catch (error) {
     console.warn('[CONFIG] Could not load domains.json, using defaults:', error.message);
-    
+
     // Return default configuration if file doesn't exist
     return {
       localhost: {
@@ -139,6 +139,33 @@ async function loadDomainConfig() {
     };
   }
 }
+
+/**
+ * Get the path to the widgets configuration file
+ * @returns {string} Absolute path to the widgets config file
+ */
+export const getWidgetsConfigPath = () => {
+  // Check for environment variable override
+  if (process.env.WIDGETS_CONFIG_PATH) {
+    return process.env.WIDGETS_CONFIG_PATH;
+  }
+
+  // In production, use the standard server path
+  if (process.env.NODE_ENV === 'production') {
+    return '/var/www/portfolio/config/widgets-config.json';
+  }
+
+  // In development, use the local file in the project root
+  return path.join(process.cwd(), 'widgets-config.local.json');
+};
+
+/**
+ * Get the path to the example widgets configuration file (fallback)
+ * @returns {string} Absolute path to the example widgets config file
+ */
+export const getExampleWidgetsConfigPath = () => {
+  return path.join(process.cwd(), 'widgets-config.example.json');
+};
 
 /**
  * Gets configuration for a specific domain
