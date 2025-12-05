@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.5.8](https://github.com/undevy-org/portfolio/compare/v6.5.7...v6.5.8) (2025-12-05)
+
+
+### Fixed
+
+* correct isDemoMode access and use scp-action for staging ([3677576](https://github.com/undevy-org/portfolio/commit/36775761f3ea592046b6efbfbe7c239a2970519c))
+* create archive in workspace for scp-action ([26c6561](https://github.com/undevy-org/portfolio/commit/26c6561a4f338e52caf2d6481739313148504eb7))
+* include scripts folder in staging deployment package ([f9ad84e](https://github.com/undevy-org/portfolio/commit/f9ad84e0d8f4a35507663dbc4a6031e6c45466b8))
+* preserve template.webp in deployment (only delete projects subfolder) ([21287b2](https://github.com/undevy-org/portfolio/commit/21287b29352842181bf06e4ac0f377c94855e85e))
+
 ### [6.5.7](https://github.com/undevy-org/portfolio/compare/v6.5.6...v6.5.7) (2025-12-05)
 
 
