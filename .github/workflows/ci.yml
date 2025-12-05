@@ -193,6 +193,7 @@ jobs:
           echo "📁 Copying production files..."
           cp -r .next deployment-package/
           cp -r public deployment-package/ 2>/dev/null || echo "ℹ️ No public directory"
+          cp -r scripts deployment-package/
           cp package.json deployment-package/
           cp package-lock.json deployment-package/
           cp next.config.mjs deployment-package/
