@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.5.5](https://github.com/undevy-org/portfolio/compare/v6.5.3...v6.5.5) (2025-12-05)
+
+
+### Fixed
+
+* update image generation logic, workflows, and tests ([59f7662](https://github.com/undevy-org/portfolio/commit/59f7662c4de1c994bf26feb88ee03abbc721d6bf))
+
 ### [6.5.4](https://github.com/undevy-org/portfolio/compare/v6.5.3...v6.5.4) (2025-12-05)
 
 ### [6.5.3](https://github.com/undevy-org/portfolio/compare/v6.5.2...v6.5.3) (2025-12-05)
