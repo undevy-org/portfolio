@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.5.6](https://github.com/undevy-org/portfolio/compare/v6.5.5...v6.5.6) (2025-12-05)
+
+
+### Fixed
+
+* use correct server paths and improve anonymity ([8a393a1](https://github.com/undevy-org/portfolio/commit/8a393a1e92cbb95b5bbddf17d058415aa9d8b213))
+
 ### [6.5.5](https://github.com/undevy-org/portfolio/compare/v6.5.3...v6.5.5) (2025-12-05)
 
 
