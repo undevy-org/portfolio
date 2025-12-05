@@ -154,8 +154,10 @@ jobs:
             
             # Generate images from template (using server content.json or staging env)
             echo "🖼️ Generating missing images..."
-            export CONTENT_FILE_PATH=~/content.json
-            export IMAGES_DIR=~/static-assets/images/projects
+            # Generate images from template (using server content.json or staging env)
+            echo "🖼️ Generating missing images..."
+            export CONTENT_FILE_PATH=$HOME/content.json
+            export IMAGES_DIR=$HOME/static-assets/images/projects
             node scripts/ensure_images.js || echo "⚠️ Image generation warning (non-fatal)"
             
             # Stop existing staging process if running

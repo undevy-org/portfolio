@@ -46,6 +46,7 @@ const colors = {
 function ensureImages() {
     console.log(`${colors.blue}Starting image verification process...${colors.reset}`);
     console.log(`${colors.gray}Using content file: ${CONTENT_FILE}${colors.reset}`);
+    console.log(`${colors.gray}Target images directory: ${IMAGES_DIR}${colors.reset}`);
 
     // 1. Verify prerequisites
     if (!fs.existsSync(CONTENT_FILE)) {
