@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const IMAGES_DIR = path.join(__dirname, '../public/images/projects');
+const IMAGES_DIR = process.env.IMAGES_DIR
+    ? path.resolve(process.env.IMAGES_DIR)
+    : path.join(__dirname, '../public/images/projects');
 const TEMPLATE_FILE = path.join(__dirname, '../public/images/template.webp');
 const TABS = ['challenge', 'approach', 'solution', 'results'];
 
