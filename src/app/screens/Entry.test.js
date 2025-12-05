@@ -91,9 +91,9 @@ describe('Entry Screen Auto-Fill Feature', () => {
 
     expect(screen.getByPlaceholderText('ENTER ACCESS CODE')).toBeInTheDocument();
     expect(screen.getByText('AUTHENTICATE')).toBeInTheDocument();
-    expect(screen.getByText('GET CODE')).toBeInTheDocument();
+    expect(screen.getByText('REQUEST ACCESS')).toBeInTheDocument();
     expect(screen.getByText('WEB3 LOGIN')).toBeInTheDocument();
-    expect(screen.getByText('SOURCE CODE')).toBeInTheDocument();
+    expect(screen.getByText('OPEN REPO')).toBeInTheDocument();
     expect(screen.getByText('DEMO MODE')).toBeInTheDocument();
   });
 
