@@ -63,26 +63,14 @@ jobs:
           echo "✅ Archive created: $(du -h /tmp/staging-deploy.tar.gz | cut -f1)"
       
       - name: Transfer files to server
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-        run: |
-          echo "🔐 Setting up SSH key..."
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "❌ Error: SSH_PRIVATE_KEY secret is empty or not accessible!"
-            exit 1
-          fi
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          
-          # Add host to known hosts
-          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts 2>/dev/null
-          
-          echo "📤 Transferring staging files to server..."
-          scp -i ~/.ssh/deploy_key /tmp/staging-deploy.tar.gz $SSH_USER@$SSH_HOST:/tmp/
-          
-          echo "✅ Files transferred successfully"
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "/tmp/staging-deploy.tar.gz"
+          target: "/tmp/"
+          strip_components: 2
       
       - name: Deploy to staging environment
         uses: appleboy/ssh-action@master

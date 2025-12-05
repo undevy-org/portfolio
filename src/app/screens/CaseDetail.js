@@ -8,7 +8,10 @@ import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
 
 export default function CaseDetail() {
-  const { sessionData, navigate, addLog, selectedCase, verifiedImages, isDemoMode } = useSession();
+  const { sessionData, navigate, addLog, selectedCase, verifiedImages } = useSession();
+
+  // Demo mode flag is stored inside sessionData, not as a separate context field
+  const isDemoMode = sessionData?.isDemoMode;
 
   if (!selectedCase) {
     return (
