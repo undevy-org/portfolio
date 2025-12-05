@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.5.3](https://github.com/undevy-org/portfolio/compare/v6.5.2...v6.5.3) (2025-12-05)
+
+
+### Fixed
+
+* force add template.webp for CI build ([5e294c8](https://github.com/undevy-org/portfolio/commit/5e294c8484d3acaa6c01f28b94c9e06a48f00a8a))
+
 ### [6.5.2](https://github.com/undevy-org/portfolio/compare/v6.5.0...v6.5.2) (2025-12-04)
 
 
