@@ -257,8 +257,11 @@ jobs:
             # Generate images from template (using server content.json)
             echo "🖼️ Generating missing images..."
             # Ensure script has access to content.json (default fallback)
-            export CONTENT_FILE_PATH=~/content.json
-            export IMAGES_DIR=~/static-assets/images/projects
+            # Generate images from template (using server content.json)
+            echo "🖼️ Generating missing images..."
+            # Ensure script has access to content.json (default fallback)
+            export CONTENT_FILE_PATH=$HOME/content.json
+            export IMAGES_DIR=$HOME/static-assets/images/projects
             node scripts/ensure_images.js || echo "⚠️ Image generation warning (non-fatal)"
             
             # Get current version for rollback info

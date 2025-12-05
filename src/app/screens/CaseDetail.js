@@ -8,7 +8,7 @@ import Button from '../components/ui/Button';
 import { ArrowLeft, Zap } from 'lucide-react';
 
 export default function CaseDetail() {
-  const { sessionData, navigate, addLog, selectedCase, verifiedImages } = useSession();
+  const { sessionData, navigate, addLog, selectedCase, verifiedImages, isDemoMode } = useSession();
 
   if (!selectedCase) {
     return (
@@ -31,6 +31,9 @@ export default function CaseDetail() {
 
   // Helper to check if image should be shown
   const shouldShowImage = (tabId) => {
+    // In demo mode, always show images (they will be templates)
+    if (isDemoMode) return true;
+
     if (hiddenImages.includes(tabId)) return false;
     const url = `/images/projects/${selectedCase.id}_${tabId}.webp`;
     // If verification failed (false), don't show. 
@@ -39,7 +42,12 @@ export default function CaseDetail() {
   };
 
   // Helper to get image URL
-  const getImageUrl = (tabId) => `/images/projects/${selectedCase.id}_${tabId}.webp`;
+  const getImageUrl = (tabId) => {
+    if (isDemoMode) {
+      return '/images/template.webp';
+    }
+    return `/images/projects/${selectedCase.id}_${tabId}.webp`;
+  };
 
   const tabs = [
     {
