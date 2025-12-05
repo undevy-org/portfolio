@@ -105,9 +105,9 @@ jobs:
             echo "📦 Extracting staging files..."
             tar -xzf /tmp/staging-deploy.tar.gz -C "$TEMP_PATH"
 
-            # Ensure no duplicate image directories  
+            # Ensure no duplicate image directories (but preserve template.webp)
             echo "🧹 Ensuring clean static assets setup..."
-            rm -rf "$TEMP_PATH/public/images" || true
+            rm -rf "$TEMP_PATH/public/images/projects" || true
             echo "✅ Static assets will be served directly by Nginx"
             
             # Copy staging environment file

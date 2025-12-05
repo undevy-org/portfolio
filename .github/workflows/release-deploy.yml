@@ -228,9 +228,9 @@ jobs:
             echo "📦 Extracting release files..."
             tar -xzf /tmp/portfolio-release-$RELEASE_TAG.tar.gz -C "$RELEASE_DIR"
 
-            # Ensure no duplicate image directories
+            # Ensure no duplicate image directories (but preserve template.webp)
             echo "🧹 Ensuring clean static assets setup..."
-            rm -rf "$RELEASE_DIR/public/images" || true
+            rm -rf "$RELEASE_DIR/public/images/projects" || true
             echo "✅ Static assets will be served directly by Nginx"
             
             # Copy shared files (env, uploads)
