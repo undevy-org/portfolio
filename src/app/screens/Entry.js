@@ -544,101 +544,101 @@ export default function Entry() {
   // ========== RENDER ==========
   return (
     <div className="p-4">
-        {/* Accessibility: Announce auto-fill process */}
-        <div aria-live="polite" className="sr-only">
-          {isAnimating ? `Auto-filling access code: ${code}` : ''}
+      {/* Accessibility: Announce auto-fill process */}
+      <div aria-live="polite" className="sr-only">
+        {isAnimating ? `Auto-filling access code: ${code}` : ''}
+      </div>
+
+      {/* Main authentication section */}
+      <div className="flex flex-col md:flex-row gap-3 mb-3">
+        {/* Input field - now same size text as buttons */}
+        <input
+          type="text"
+          value={code}
+          onChange={(e) => setCode(e.target.value.toUpperCase())}
+          onKeyPress={handleKeyPress}
+          className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
+          placeholder="ENTER ACCESS CODE"
+          autoFocus
+          disabled={isLoading || isConnected || isAnimating}
+          data-testid="auth-input"
+        />
+
+        {/* Authenticate button - now on same line as input on desktop */}
+        <Button
+          onClick={handleSubmit}
+          disabled={isLoading || isConnected || isAnimating}
+          icon={LockOpen}
+          variant="inline"
+          className="md:w-auto w-full"
+          data-testid="auth-button"
+        >
+          {/* Icon color handled by button component */}
+          <span className="flex items-center gap-2">
+            {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
+          </span>
+        </Button>
+      </div>
+
+      {/* Error message display */}
+      {authError && (
+        <div className="mb-3 text-sm text-error">
+          {authError}
         </div>
+      )}
 
-        {/* Main authentication section */}
-        <div className="flex flex-col md:flex-row gap-3 mb-3">
-          {/* Input field - now same size text as buttons */}
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            onKeyPress={handleKeyPress}
-            className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
-            placeholder="ENTER ACCESS CODE"
-            autoFocus
-            disabled={isLoading || isConnected || isAnimating}
-            data-testid="auth-input"
-          />
+      {/* Primary action buttons */}
+      <div className="flex gap-3 mb-4">
+        <Button
+          onClick={handleGetCode}
+          disabled={isConnected || isAnimating}
+          icon={MessageSquare}
+          className="flex-1"
+        >
+          {/* Icon automatically gets text-command class from Button component */}
+          REQUEST ACCESS
+        </Button>
 
-          {/* Authenticate button - now on same line as input on desktop */}
-          <Button
-            onClick={handleSubmit}
-            disabled={isLoading || isConnected || isAnimating}
-            icon={LockOpen}
-            variant="inline"
-            className="md:w-auto w-full"
-            data-testid="auth-button"
-          >
-            {/* Icon color handled by button component */}
-            <span className="flex items-center gap-2">
-              {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
-            </span>
-          </Button>
-        </div>
+        <Button
+          onClick={handleWeb3Login}
+          disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending || isAnimating}
+          icon={Wallet}
+          className="flex-1"
+        >
+          {web3Status === 'loading'
+            ? 'LOADING WEB3...'
+            : web3Status === 'connecting'
+              ? 'CONNECTING...'
+              : isWeb3Ready && !isConnected
+                ? 'OPEN MODAL'
+                : 'WEB3 LOGIN'
+          }
+        </Button>
+      </div>
 
-        {/* Error message display */}
-        {authError && (
-          <div className="mb-3 text-sm text-error">
-            {authError}
-          </div>
-        )}
+      {/* Divider - subtle border like in AnalyticsPanel */}
+      <div className="border-t border-secondary opacity-50 my-4"></div>
 
-        {/* Primary action buttons */}
-        <div className="flex gap-3 mb-4">
-          <Button
-            onClick={handleGetCode}
-            disabled={isConnected || isAnimating}
-            icon={MessageSquare}
-            className="flex-1"
-          >
-            {/* Icon automatically gets text-command class from Button component */}
-            GET CODE
-          </Button>
+      {/* Secondary action buttons - GitHub and Demo Mode */}
+      <div className="flex gap-3">
+        <Button
+          onClick={handleGitHub}
+          icon={Github}
+          className="flex-1"
+          disabled={isAnimating}
+        >
+          OPEN REPO
+        </Button>
 
-          <Button
-            onClick={handleWeb3Login}
-            disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending || isAnimating}
-            icon={Wallet}
-            className="flex-1"
-          >
-            {web3Status === 'loading'
-              ? 'LOADING WEB3...'
-              : web3Status === 'connecting'
-                ? 'CONNECTING...'
-                : isWeb3Ready && !isConnected
-                  ? 'OPEN MODAL'
-                  : 'WEB3 LOGIN'
-            }
-          </Button>
-        </div>
-
-        {/* Divider - subtle border like in AnalyticsPanel */}
-        <div className="border-t border-secondary opacity-50 my-4"></div>
-
-        {/* Secondary action buttons - GitHub and Demo Mode */}
-        <div className="flex gap-3">
-          <Button
-            onClick={handleGitHub}
-            icon={Github}
-            className="flex-1"
-            disabled={isAnimating}
-          >
-            SOURCE CODE
-          </Button>
-
-          <Button
-            onClick={handleDemoMode}
-            icon={Sparkles}
-            className="flex-1"
-            disabled={isLoading || isAnimating}
-          >
-            DEMO MODE
-          </Button>
-        </div>
+        <Button
+          onClick={handleDemoMode}
+          icon={Sparkles}
+          className="flex-1"
+          disabled={isLoading || isAnimating}
+        >
+          DEMO MODE
+        </Button>
+      </div>
     </div>
   );
 }

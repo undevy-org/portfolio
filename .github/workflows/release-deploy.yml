@@ -86,7 +86,9 @@ jobs:
           cp -r public release-package/ 2>/dev/null || echo "ℹ️ No public directory"
           cp package.json release-package/
           cp package-lock.json release-package/
+          cp package-lock.json release-package/
           cp next.config.mjs release-package/
+          cp -r scripts release-package/
           
           # Add version file for tracking
           echo "${{ github.ref_name }}" > release-package/VERSION
@@ -251,6 +253,12 @@ jobs:
             cd "$RELEASE_DIR"
             echo "📦 Installing production dependencies..."
             npm ci --omit=dev || npm install --production
+            
+            # Generate images from template (using server content.json)
+            echo "🖼️ Generating missing images..."
+            # Ensure script has access to content.json (default fallback)
+            export CONTENT_FILE_PATH="/home/undevy/content.json"
+            node scripts/ensure_images.js || echo "⚠️ Image generation warning (non-fatal)"
             
             # Get current version for rollback info
             PREVIOUS_VERSION=""

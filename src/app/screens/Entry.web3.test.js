@@ -301,8 +301,8 @@ describe('Entry Screen Web3 Lazy Loading', () => {
   test('Web3 loading does not interfere with other buttons', () => {
     renderEntry();
 
-    const getCodeButton = screen.getByRole('button', { name: /GET CODE/i });
-    const githubButton = screen.getByRole('button', { name: /SOURCE CODE/i });
+    const getCodeButton = screen.getByRole('button', { name: /REQUEST ACCESS/i });
+    const githubButton = screen.getByRole('button', { name: /OPEN REPO/i });
     const demoButton = screen.getByRole('button', { name: /DEMO MODE/i });
 
     // All buttons should be present and enabled

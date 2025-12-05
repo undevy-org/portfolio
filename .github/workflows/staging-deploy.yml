@@ -152,6 +152,11 @@ jobs:
             echo "📦 Installing production dependencies..."
             npm ci --omit=dev || npm install --production
             
+            # Generate images from template (using server content.json or staging env)
+            echo "🖼️ Generating missing images..."
+            export CONTENT_FILE_PATH="/home/undevy/content.json"
+            node scripts/ensure_images.js || echo "⚠️ Image generation warning (non-fatal)"
+            
             # Stop existing staging process if running
             echo "🔍 Checking for existing staging process..."
             if pm2 describe "staging-portfolio" >/dev/null 2>&1; then

@@ -2,10 +2,34 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const CONTENT_FILE = path.join(__dirname, '../test-content-local.json');
 const IMAGES_DIR = path.join(__dirname, '../public/images/projects');
 const TEMPLATE_FILE = path.join(__dirname, '../public/images/template.webp');
 const TABS = ['challenge', 'approach', 'solution', 'results'];
+
+// Determine content file path
+function getContentFile() {
+    // 1. Environment variable (highest priority)
+    if (process.env.CONTENT_FILE_PATH) {
+        return path.resolve(process.cwd(), process.env.CONTENT_FILE_PATH);
+    }
+
+    // 2. Production default (server)
+    const productionPath = path.join(__dirname, '../content.json');
+    if (fs.existsSync(productionPath)) {
+        return productionPath;
+    }
+
+    // 3. Local development default
+    const localPath = path.join(__dirname, '../test-content-local.json');
+    if (fs.existsSync(localPath)) {
+        return localPath;
+    }
+
+    // 4. CI/Fallback (always exists in repo)
+    return path.join(__dirname, '../src/app/test-content.json');
+}
+
+const CONTENT_FILE = getContentFile();
 
 // Colors for console output
 const colors = {
@@ -19,6 +43,7 @@ const colors = {
 
 function ensureImages() {
     console.log(`${colors.blue}Starting image verification process...${colors.reset}`);
+    console.log(`${colors.gray}Using content file: ${CONTENT_FILE}${colors.reset}`);
 
     // 1. Verify prerequisites
     if (!fs.existsSync(CONTENT_FILE)) {
