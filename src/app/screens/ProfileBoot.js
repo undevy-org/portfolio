@@ -8,7 +8,6 @@ import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
 import HyperspaceTunnel from '../components/ui/HyperspaceTunnel';
-import ThemeSwitcher from '../components/ui/ThemeSwitcher';
 
 export default function ProfileBoot() {
   const {
