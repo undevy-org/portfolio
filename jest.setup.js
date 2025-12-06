@@ -73,10 +73,10 @@ if (typeof global.localStorage === 'undefined') {
 // IntersectionObserver fallback
 if (typeof global.IntersectionObserver === 'undefined') {
   global.IntersectionObserver = class IntersectionObserver {
-    constructor() {}
-    disconnect() {}
-    observe() {}
-    unobserve() {}
+    constructor() { }
+    disconnect() { }
+    observe() { }
+    unobserve() { }
     takeRecords() { return [] }
   }
 }
@@ -84,10 +84,10 @@ if (typeof global.IntersectionObserver === 'undefined') {
 // ResizeObserver fallback
 if (typeof global.ResizeObserver === 'undefined') {
   global.ResizeObserver = class ResizeObserver {
-    constructor() {}
-    disconnect() {}
-    observe() {}
-    unobserve() {}
+    constructor() { }
+    disconnect() { }
+    observe() { }
+    unobserve() { }
   }
 }
 
@@ -115,13 +115,18 @@ jest.mock('next/navigation', () => ({
 // Mock lucide-react icons to avoid import/render issues.
 // Return simple functional components for compatibility with React renderers.
 jest.mock('lucide-react', () => {
+  const React = require('react');
   const makeIcon = (name) => {
-    return (props) => {
-      // return a simple element so tests can query by role/text if needed
-      // keep it minimal to avoid cluttering snapshots
-      return name
-    }
-  }
+    return React.forwardRef((props, ref) => {
+      // Return a simple div that can be queried in tests
+      return React.createElement('svg', {
+        ...props,
+        ref,
+        'data-testid': `icon-${name}`,
+        'aria-label': name
+      });
+    });
+  };
 
   return {
     ChevronDown: makeIcon('ChevronDown'),
@@ -139,9 +144,18 @@ jest.mock('lucide-react', () => {
     Github: makeIcon('Github'),
     Linkedin: makeIcon('Linkedin'),
     Twitter: makeIcon('Twitter'),
+    // Icons used by Entry.js
+    LockOpen: makeIcon('LockOpen'),
+    MessageSquare: makeIcon('MessageSquare'),
+    Wallet: makeIcon('Wallet'),
+    Sparkles: makeIcon('Sparkles'),
+    Bot: makeIcon('Bot'),
+    ExternalLink: makeIcon('ExternalLink'),
+    // Icons used by ProfileBoot.js
+    ArrowRight: makeIcon('ArrowRight'),
     // Add other icons as plain stubs if needed
-  }
-})
+  };
+});
 
 // Suppress specific expected noisy warnings, but DO NOT swallow everything.
 const originalError = console.error
@@ -167,7 +181,7 @@ beforeAll(() => {
     }
     originalError.call(console, ...args)
   }
-  
+
   console.warn = (...args) => {
     const first = typeof args[0] === 'string' ? args[0] : ''
     if (WARN_SUPPRESSION_PATTERNS.some(p => first.includes(p))) {

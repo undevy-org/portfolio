@@ -48,6 +48,17 @@ jest.mock('../components/ui/Button', () => {
   };
 });
 
+// Mock useWeb3State hook
+jest.mock('../hooks/useWeb3State', () => ({
+  useWeb3State: () => ({
+    isWeb3Loaded: false,
+    isWeb3Ready: false,
+    isLoading: false,
+    openWeb3Modal: jest.fn(),
+  }),
+}));
+
+
 // Create a mock router
 const mockRouter = {
   push: jest.fn(),

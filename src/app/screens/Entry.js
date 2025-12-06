@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles, Bot, ExternalLink } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useWeb3State } from '../hooks/useWeb3State';
-import ThemeSwitcher from '../components/ui/ThemeSwitcher';
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
