@@ -82,7 +82,7 @@ jobs:
           
           # 1. Copy standalone build
           echo "📁 Copying standalone build..."
-          cp -r .next/standalone/* release-package/
+          cp -r .next/standalone/. release-package/
           
           # 2. Copy static assets (required for standalone)
           echo "📁 Copying static assets..."
