@@ -8,6 +8,7 @@ import Button from '../components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 import TerminalProgress from '../components/ui/TerminalProgress';
 import HyperspaceTunnel from '../components/ui/HyperspaceTunnel';
+import ThemeSwitcher from '../components/ui/ThemeSwitcher';
 
 export default function ProfileBoot() {
   const {
@@ -157,9 +158,11 @@ export default function ProfileBoot() {
 
       {/* Main content area */}
       <ScreenWrapper>
-        <div className="p-8 flex flex-col items-center justify-center min-h-[500px]">
+        {/* Desktop ThemeSwitcher handled in layout.js */}
 
-          {/* Unified progress and button section - both visible from start */}
+        <div className="flex flex-col items-center justify-center min-h-[400px]">
+
+          {/* Unified progress and button section - styling provided by outer TerminalWindow */}
           <div className="w-full max-w-md flex flex-col items-center space-y-6">
             {/* Progress bar - wrapped in same width container as button */}
             <div className="w-full max-w-xs">
@@ -194,7 +197,7 @@ export default function ProfileBoot() {
             </div>
           </div>
         </div>
-      </ScreenWrapper>
+      </ScreenWrapper >
     </>
   );
 }

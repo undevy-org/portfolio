@@ -40,12 +40,18 @@ export default function RootLayout({ children }) {
           <Web3Manager>
             <ThemeManager />
             <Web3CleanupManager />
+
             <StableLayout>
+              {/* Desktop ThemeSwitcher - Top mounted, appearing only on Entry/ProfileBoot */}
+              <div className="w-full max-w-2xl mx-auto mb-2 hidden md:block z-50 relative">
+                <ThemeSwitcher />
+              </div>
+
               {/* Main content (TerminalWindow with screens) */}
               {children}
 
               <div className="panels-container w-full max-w-2xl mx-auto space-y-2 mt-2">
-                <ThemeSwitcher />
+                <ThemeSwitcher className="md:hidden" />
                 <AnalyticsPanel />
                 <LatestProjects />
                 <SystemLog />

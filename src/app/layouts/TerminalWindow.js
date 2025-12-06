@@ -4,32 +4,32 @@
 import { memo, useMemo, useCallback } from 'react';
 import { useSession } from '../context/SessionContext';
 import Button from '../components/ui/Button';
-import { 
-  ArrowLeft, 
-  Sun, 
-  Moon, 
-  X, 
-  Home, 
-  ArrowUp, 
-  Bug, 
-  Terminal, 
-  Waves, 
-  HardDrive, 
-  LayoutDashboard, 
+import {
+  ArrowLeft,
+  Sun,
+  Moon,
+  X,
+  Home,
+  ArrowUp,
+  Bug,
+  Terminal,
+  Waves,
+  HardDrive,
+  LayoutDashboard,
   SlidersHorizontal
 } from 'lucide-react';
 import { getScreenDisplayName } from '../utils/formatters';
 
-function TerminalWindow({ 
-  title, 
-  children, 
+function TerminalWindow({
+  title,
+  children,
   fixedHeight = false  // NEW PROP: Controls whether to use fixed height mode
 }) {
-  const { 
-    theme, 
-    toggleTheme, 
-    goBack, 
-    endSession, 
+  const {
+    theme,
+    toggleTheme,
+    goBack,
+    endSession,
     currentScreen,
     navigationHistory,
     goHome,
@@ -62,21 +62,21 @@ function TerminalWindow({
   const breadcrumbPath = useMemo(() => {
     const path = [];
     let current = currentScreen;
-    
+
     // Don't show breadcrumbs on Entry screen
     if (current === 'Entry') return [];
-    
+
     // Build path from current screen up to MainHub
     while (current && current !== 'MainHub') {
       path.unshift(current);
       current = screenHierarchy[current];
     }
-    
+
     // Add MainHub at the beginning if we have any path
     if (path.length > 0 || currentScreen === 'MainHub') {
       path.unshift('MainHub');
     }
-    
+
     return path;
   }, [currentScreen, screenHierarchy]);
 
@@ -90,8 +90,8 @@ function TerminalWindow({
 
   // Memoize theme icons dictionary and current icon selection
   const themeIcons = useMemo(() => ({
-    dark: Sun,     
-    light: Terminal,     
+    dark: Sun,
+    light: Terminal,
     amber: Bug,
     bsod: Waves,
     synthwave: HardDrive,
@@ -100,8 +100,8 @@ function TerminalWindow({
     radar: Moon,
   }), []);
 
-  const CurrentThemeIcon = useMemo(() => 
-    themeIcons[theme] || Sun, 
+  const CurrentThemeIcon = useMemo(() =>
+    themeIcons[theme] || Sun,
     [theme, themeIcons]
   );
 
@@ -113,20 +113,27 @@ function TerminalWindow({
     rounded 
     bg-main 
     border-primary
-    ${fixedHeight ? 
+    ${fixedHeight ?
       // Fixed height mode: Become a flex container that fills parent
-      'h-full flex flex-col' : 
+      'h-full flex flex-col' :
       // Standard mode: Normal flow, grow with content
       ''
     }
   `, [fixedHeight]);
 
   const contentClasses = useMemo(() => `
-  ${fixedHeight ? 
-    'flex-1 overflow-y-auto md:overflow-y-scroll min-h-0' : 
-    ''
+  ${fixedHeight ?
+      'flex-1 overflow-y-auto md:overflow-y-scroll min-h-0' :
+      ''
     }
   `, [fixedHeight]);
+
+  // For Entry screen only, completely skip the terminal container logic.
+  // We return a Fragment to be a true "pass-through" transparency.
+  // ProfileBoot still gets the terminal container like other screens.
+  if (currentScreen === 'Entry') {
+    return <>{children}</>;
+  }
 
   return (
     <div className={containerClasses}>
@@ -144,25 +151,25 @@ function TerminalWindow({
                   onClick={goBack}
                   icon={ArrowLeft}
                   variant="icon-only"
-            className={`p-1 ${isBackDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`p-1 ${isBackDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isBackDisabled}
-            aria-label="Go back"
+                  aria-label="Go back"
                 />
                 <Button
                   onClick={goUp}
                   icon={ArrowUp}
                   variant="icon-only"
-            className={`p-1 ${isUpDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`p-1 ${isUpDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isUpDisabled}
-            aria-label="Go up one level"
+                  aria-label="Go up one level"
                 />
                 <Button
                   onClick={goHome}
                   icon={Home}
                   variant="icon-only"
-            className={`p-1 ${isHomeDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`p-1 ${isHomeDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                   disabled={isHomeDisabled}
-            aria-label="Go to Main Hub"
+                  aria-label="Go to Main Hub"
                 />
               </>
             )}
@@ -170,18 +177,18 @@ function TerminalWindow({
               onClick={toggleTheme}
               icon={CurrentThemeIcon}
               variant="icon-only"
-            className="p-1"
-            aria-label="Toggle theme"
-            />
-          {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
-            <Button
-              onClick={handleClose}
-              icon={X}
-              variant="icon-only"
               className="p-1"
-              aria-label="Close session"
+              aria-label="Toggle theme"
             />
-          )}
+            {!['Entry', 'ProfileBoot'].includes(currentScreen) && (
+              <Button
+                onClick={handleClose}
+                icon={X}
+                variant="icon-only"
+                className="p-1"
+                aria-label="Close session"
+              />
+            )}
           </div>
 
         </div>
@@ -189,8 +196,8 @@ function TerminalWindow({
 
       {/* BREADCRUMBS - Also stays fixed, doesn't scroll with content */}
       {!['ProfileBoot', 'Entry'].includes(currentScreen) && breadcrumbPath.length > 0 && (
-        <div 
-          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0" 
+        <div
+          className="px-4 py-2 text-sm border-b border-primary flex-shrink-0"
           style={{ backgroundColor: 'var(--color-hover)' }}
         >
           <div className="flex items-center flex-wrap">
@@ -227,7 +234,7 @@ function TerminalWindow({
         </div>
       )}
 
-      <div className={contentClasses}>
+      <div className={`${fixedHeight ? 'flex-1 overflow-y-auto md:overflow-y-scroll min-h-0' : ''}`}>
         {children}
       </div>
     </div>

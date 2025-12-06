@@ -8,7 +8,7 @@ import { MockSessionProvider } from '../../../../test-utils/providers';
 describe('ThemeSwitcher', () => {
   const renderComponent = (initialTheme = 'terminal', currentScreen = 'Entry') => {
     return render(
-      <MockSessionProvider 
+      <MockSessionProvider
         theme={initialTheme}
         currentScreen={currentScreen}
         setThemeExplicit={jest.fn()}
@@ -19,9 +19,51 @@ describe('ThemeSwitcher', () => {
     );
   };
 
+  it('should apply custom className to the container', async () => {
+    render(
+      <MockSessionProvider
+        theme="dark"
+        currentScreen="Entry"
+        setThemeExplicit={jest.fn()}
+        addLog={jest.fn()}
+      >
+        <ThemeSwitcher className="test-class" />
+      </MockSessionProvider>
+    );
+
+    await waitFor(() => {
+      // Find one of the buttons and then its closest parent with the 'w-full' class
+      // This parent is where the className prop should be applied.
+      const darkButton = screen.getByRole('button', { name: /Switch to DARK theme/i });
+      const container = darkButton.closest('.w-full');
+      expect(container).toHaveClass('test-class');
+    });
+  });
+
+  it('should apply custom className to the container', async () => {
+    render(
+      <MockSessionProvider
+        theme="dark"
+        currentScreen="Entry"
+        setThemeExplicit={jest.fn()}
+        addLog={jest.fn()}
+      >
+        <ThemeSwitcher className="test-class" />
+      </MockSessionProvider>
+    );
+
+    await waitFor(() => {
+      // Find one of the buttons and then its closest parent with the 'w-full' class
+      // This parent is where the className prop should be applied.
+      const darkButton = screen.getByRole('button', { name: /Switch to DARK theme/i });
+      const container = darkButton.closest('.w-full');
+      expect(container).toHaveClass('test-class');
+    });
+  });
+
   it('should render theme switcher button grid on Entry screen', async () => {
     renderComponent('terminal', 'Entry');
-    
+
     await waitFor(() => {
       const buttons = screen.getAllByRole('button');
       expect(buttons.length).toBeGreaterThan(0);
@@ -30,14 +72,14 @@ describe('ThemeSwitcher', () => {
 
   it('should not render on non-Entry/ProfileBoot screens', () => {
     renderComponent('terminal', 'MainHub');
-    
+
     const buttons = screen.queryAllByRole('button');
     expect(buttons).toHaveLength(0);
   });
 
   it('should render on ProfileBoot screen', async () => {
     renderComponent('terminal', 'ProfileBoot');
-    
+
     await waitFor(() => {
       const buttons = screen.getAllByRole('button');
       expect(buttons.length).toBeGreaterThan(0);
@@ -46,7 +88,7 @@ describe('ThemeSwitcher', () => {
 
   it('should highlight current theme', async () => {
     renderComponent('dark', 'Entry');
-    
+
     await waitFor(() => {
       const darkButton = screen.getByRole('button', { pressed: true });
       expect(darkButton).toBeInTheDocument();
@@ -57,9 +99,9 @@ describe('ThemeSwitcher', () => {
   it('should handle theme selection', async () => {
     const mockSetThemeExplicit = jest.fn();
     const mockAddLog = jest.fn();
-    
+
     render(
-      <MockSessionProvider 
+      <MockSessionProvider
         theme="dark"
         currentScreen="Entry"
         setThemeExplicit={mockSetThemeExplicit}
@@ -68,24 +110,24 @@ describe('ThemeSwitcher', () => {
         <ThemeSwitcher />
       </MockSessionProvider>
     );
-    
+
     await waitFor(() => {
       // First make sure component is rendered
       const buttons = screen.getAllByRole('button');
       expect(buttons.length).toBeGreaterThan(0);
-      
+
       // Let's find the button differently - through getAllByRole and filtering
-      const lightButton = buttons.find(button => 
+      const lightButton = buttons.find(button =>
         button.getAttribute('aria-label') === 'Switch to LIGHT theme'
       );
-      
+
       // Check that button is found
       expect(lightButton).toBeDefined();
-      
+
       // Now click
       if (lightButton) {
         fireEvent.click(lightButton);
-        
+
         // Check the call
         expect(mockSetThemeExplicit).toHaveBeenCalledWith('light');
       }
@@ -94,9 +136,9 @@ describe('ThemeSwitcher', () => {
 
   it('should not trigger theme change when clicking current theme', async () => {
     const mockSetThemeExplicit = jest.fn();
-    
+
     render(
-      <MockSessionProvider 
+      <MockSessionProvider
         theme="dark"
         currentScreen="Entry"
         setThemeExplicit={mockSetThemeExplicit}
@@ -105,21 +147,21 @@ describe('ThemeSwitcher', () => {
         <ThemeSwitcher />
       </MockSessionProvider>
     );
-    
+
     await waitFor(() => {
       const darkButton = screen.getByRole('button', { pressed: true });
       fireEvent.click(darkButton);
-      
+
       expect(mockSetThemeExplicit).not.toHaveBeenCalled();
     });
   });
 
   it('should have proper accessibility attributes', async () => {
     renderComponent('terminal', 'Entry');
-    
+
     await waitFor(() => {
       const buttons = screen.getAllByRole('button');
-      
+
       buttons.forEach(button => {
         expect(button).toHaveAttribute('aria-label');
         expect(button).toHaveAttribute('aria-pressed');
@@ -129,7 +171,7 @@ describe('ThemeSwitcher', () => {
 
   it('should display theme icons', async () => {
     renderComponent('dark', 'Entry');
-    
+
     await waitFor(() => {
       const buttons = screen.getAllByRole('button');
       expect(buttons[0].textContent).toBeTruthy();
@@ -139,11 +181,11 @@ describe('ThemeSwitcher', () => {
   // Add debug test to understand structure
   it('DEBUG: should show button structure', async () => {
     renderComponent('dark', 'Entry');
-    
+
     await waitFor(() => {
       const buttons = screen.getAllByRole('button');
       console.log('Total buttons found:', buttons.length);
-      
+
       buttons.forEach((button, index) => {
         console.log(`Button ${index}:`, {
           ariaLabel: button.getAttribute('aria-label'),
@@ -151,7 +193,7 @@ describe('ThemeSwitcher', () => {
           textContent: button.textContent,
         });
       });
-      
+
       // This test always passes - it's only for debugging
       expect(buttons.length).toBeGreaterThan(0);
     });

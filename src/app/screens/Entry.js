@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { MessageSquare, Wallet, LockOpen, Github, Sparkles, Bot, ExternalLink } from 'lucide-react';
 import Button from '../components/ui/Button';
 import { useWeb3State } from '../hooks/useWeb3State';
+import ThemeSwitcher from '../components/ui/ThemeSwitcher';
 
 export default function Entry() {
   // ========== LOCAL STATE ==========
@@ -532,6 +533,7 @@ export default function Entry() {
     window.open('https://github.com/undevy-org/portfolio', '_blank');
   };
 
+
   // New handleDemoMode that navigates to URL with demo parameter
   // This avoids duplicating the authentication logic - page.js will handle it
   const handleDemoMode = () => {
@@ -542,103 +544,163 @@ export default function Entry() {
   };
 
   // ========== RENDER ==========
+  // Note: ScreenWrapper centers content for Entry screen. 
+  // We return a fragment so ThemeSwitcher and Auth block are separate siblings at the wrapper level.
   return (
-    <div className="p-4">
+    <>
+      {/* Desktop ThemeSwitcher is now handled in layout.js */}
+
+      {/* Main authentication block - separate block with same container styling as ThemeSwitcher */}
+      <div className="w-full max-w-2xl border rounded bg-main border-primary p-2">
+        {/* Input + Authenticate row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+          {/* Input field - styled exactly like inactive ThemeSwitcher button (transparent bg) */}
+          <div className="md:col-span-2">
+            <input
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              onKeyPress={handleKeyPress}
+              className={`
+                flex items-center justify-center gap-2
+                px-3 py-2
+                rounded
+                border
+                transition-all duration-200
+                text-sm
+                font-mono
+                w-full
+                outline-none
+                bg-transparent
+                ${authError
+                  ? 'border-error text-error animate-pulse'
+                  : code
+                    ? 'bg-active border-primary text-primary opacity-100'
+                    : 'border-secondary text-secondary opacity-75 focus:opacity-100 focus:border-primary placeholder:text-secondary placeholder:opacity-50'
+                }
+              `}
+              placeholder="ENTER ACCESS CODE"
+              autoFocus
+              disabled={isLoading || isConnected || isAnimating}
+              data-testid="auth-input"
+            />
+          </div>
+
+          {/* Authenticate button - styled like inactive ThemeSwitcher button */}
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading || isConnected || isAnimating}
+            className={`
+              flex items-center justify-center gap-2
+              px-3 py-2
+              rounded
+              border
+              transition-all duration-200
+              text-sm
+              font-mono
+              bg-transparent
+              ${isLoading || isConnected || isAnimating
+                ? 'border-secondary text-secondary opacity-50 cursor-not-allowed'
+                : 'border-secondary text-secondary opacity-75 hover:opacity-100 hover:border-primary'
+              }
+            `}
+            data-testid="auth-button"
+          >
+            <LockOpen className="w-4 h-4" />
+            <span>{isLoading ? 'WAIT...' : 'AUTHENTICATE'}</span>
+          </button>
+        </div>
+
+        {/* Error message display */}
+        {authError && (
+          <div className="mb-2 text-sm text-error font-mono px-1">
+            {authError}
+          </div>
+        )}
+
+        {/* Primary action buttons - styled like ThemeSwitcher buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button
+            onClick={handleGetCode}
+            disabled={isConnected || isAnimating}
+            className={`
+              flex items-center justify-center gap-2
+              px-3 py-2
+              rounded
+              border
+              transition-all duration-200
+              text-sm
+              font-mono
+              bg-transparent
+              ${isConnected || isAnimating
+                ? 'border-secondary text-secondary opacity-50 cursor-not-allowed'
+                : 'border-secondary text-secondary opacity-75 hover:opacity-100 hover:border-primary'
+              }
+            `}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>REQUEST ACCESS</span>
+          </button>
+
+          <button
+            onClick={handleWeb3Login}
+            disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending || isAnimating}
+            className={`
+              flex items-center justify-center gap-2
+              px-3 py-2
+              rounded
+              border
+              transition-all duration-200
+              text-sm
+              font-mono
+              bg-transparent
+              ${isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending || isAnimating
+                ? 'border-secondary text-secondary opacity-50 cursor-not-allowed'
+                : 'border-secondary text-secondary opacity-75 hover:opacity-100 hover:border-primary'
+              }
+            `}
+          >
+            <Wallet className="w-4 h-4" />
+            <span>
+              {web3Status === 'loading'
+                ? 'LOADING...'
+                : web3Status === 'connecting'
+                  ? 'CONNECTING...'
+                  : isWeb3Ready && !isConnected
+                    ? 'OPEN MODAL'
+                    : 'WEB3 LOGIN'
+              }
+            </span>
+          </button>
+
+          <button
+            onClick={handleDemoMode}
+            disabled={isLoading || isAnimating}
+            className={`
+              flex items-center justify-center gap-2
+              px-3 py-2
+              rounded
+              border
+              transition-all duration-200
+              text-sm
+              font-mono
+              bg-transparent
+              ${isLoading || isAnimating
+                ? 'border-secondary text-secondary opacity-50 cursor-not-allowed'
+                : 'border-secondary text-secondary opacity-75 hover:opacity-100 hover:border-primary'
+              }
+            `}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>DEMO MODE</span>
+          </button>
+        </div>
+      </div>
+
       {/* Accessibility: Announce auto-fill process */}
       <div aria-live="polite" className="sr-only">
         {isAnimating ? `Auto-filling access code: ${code}` : ''}
       </div>
-
-      {/* Main authentication section */}
-      <div className="flex flex-col md:flex-row gap-3 mb-3">
-        {/* Input field - now same size text as buttons */}
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          onKeyPress={handleKeyPress}
-          className={`input-base flex-1 text-sm min-h-[3rem] tracking-wider ${authError ? 'input-error animate-pulse' : ''}`}
-          placeholder="ENTER ACCESS CODE"
-          autoFocus
-          disabled={isLoading || isConnected || isAnimating}
-          data-testid="auth-input"
-        />
-
-        {/* Authenticate button - now on same line as input on desktop */}
-        <Button
-          onClick={handleSubmit}
-          disabled={isLoading || isConnected || isAnimating}
-          icon={LockOpen}
-          variant="inline"
-          className="md:w-auto w-full"
-          data-testid="auth-button"
-        >
-          {/* Icon color handled by button component */}
-          <span className="flex items-center gap-2">
-            {isLoading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
-          </span>
-        </Button>
-      </div>
-
-      {/* Error message display */}
-      {authError && (
-        <div className="mb-3 text-sm text-error">
-          {authError}
-        </div>
-      )}
-
-      {/* Primary action buttons */}
-      <div className="flex gap-3 mb-4">
-        <Button
-          onClick={handleGetCode}
-          disabled={isConnected || isAnimating}
-          icon={MessageSquare}
-          className="flex-1"
-        >
-          {/* Icon automatically gets text-command class from Button component */}
-          REQUEST ACCESS
-        </Button>
-
-        <Button
-          onClick={handleWeb3Login}
-          disabled={isLoggingOut.current || web3Status === 'disconnecting' || web3LogoutPending || isAnimating}
-          icon={Wallet}
-          className="flex-1"
-        >
-          {web3Status === 'loading'
-            ? 'LOADING WEB3...'
-            : web3Status === 'connecting'
-              ? 'CONNECTING...'
-              : isWeb3Ready && !isConnected
-                ? 'OPEN MODAL'
-                : 'WEB3 LOGIN'
-          }
-        </Button>
-      </div>
-
-      {/* Divider - subtle border like in AnalyticsPanel */}
-      <div className="border-t border-secondary opacity-50 my-4"></div>
-
-      {/* Secondary action buttons - GitHub and Demo Mode */}
-      <div className="flex gap-3">
-        <Button
-          onClick={handleGitHub}
-          icon={Github}
-          className="flex-1"
-          disabled={isAnimating}
-        >
-          OPEN REPO
-        </Button>
-
-        <Button
-          onClick={handleDemoMode}
-          icon={Sparkles}
-          className="flex-1"
-          disabled={isLoading || isAnimating}
-        >
-          DEMO MODE
-        </Button>
-      </div>
-    </div>
+    </>
   );
 }

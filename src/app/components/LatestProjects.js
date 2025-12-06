@@ -2,7 +2,7 @@
 
 import { useSession } from '../context/SessionContext';
 import { useState, useEffect } from 'react';
-import { Bot, LineChart, Sparkles, Code, Rocket, Zap } from 'lucide-react';
+import { Bot, LineChart, Sparkles, Code, Rocket, Zap, Github } from 'lucide-react';
 import ProjectWidget from './ProjectWidget';
 
 // Icon mapping - maps string names to Lucide icon components
@@ -12,7 +12,8 @@ const iconMap = {
     Sparkles,
     Code,
     Rocket,
-    Zap
+    Zap,
+    Github
 };
 
 export default function LatestProjects() {

@@ -288,6 +288,26 @@ CSS classes for the Entry screen auto-fill feature:
 
 These visual effects work in harmony with the existing layout stability architecture, ensuring smooth transitions and consistent performance across all devices and themes.
 
+### 3.6. Global Component Placement Strategy
+
+Certain UI components need to appear on specific screens but should be managed at the layout level rather than within individual screens. The ThemeSwitcher component exemplifies this pattern:
+
+**Placement**: ThemeSwitcher is rendered in `layout.js` within `StableLayout`, positioned above the main content children (`{children}`).
+
+**Visibility Control**: CSS classes control when it's visible (`hidden md:block` for desktop-only display). The component itself uses `currentScreen` from SessionContext to determine whether to render.
+
+**Architecture Benefits**:
+- Separation of Concerns: Screen components focus on their content, not chrome elements
+- Layout Independence: For Entry screen, TerminalWindow returns a Fragment, making it transparent. ThemeSwitcher sits outside this, creating true visual separation
+- Reusability: Pattern can be applied to other global UI elements that need screen-specific visibility
+
+**Implementation**:
+- Entry screen: TerminalWindow is transparent (Fragment return), ThemeSwitcher appears above content
+- ProfileBoot screen: TerminalWindow renders standard container, ThemeSwitcher appears above header
+- Other screens: ThemeSwitcher hidden, standard TerminalWindow with header/breadcrumbs
+
+This pattern maintains clean separation between layout-level concerns and screen-specific content while enabling precise control over component visibility across different application states.
+
 ## 4. Testing Architecture
 
 The testing infrastructure follows a three-tier pyramid model designed to catch issues at different levels of abstraction while maintaining fast feedback loops. This architecture creates a safety net that enables confident refactoring and feature development.
