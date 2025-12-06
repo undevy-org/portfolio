@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.5.11](https://github.com/undevy-org/portfolio/compare/v6.5.10...v6.5.11) (2025-12-06)
+
+
+### Fixed
+
+* **deploy:** fix cp command to include dotfiles (.next directory) ([e5f6245](https://github.com/undevy-org/portfolio/commit/e5f624592352c1096fa15767a46b4ab39423ca84))
+
 ### [6.5.10](https://github.com/undevy-org/portfolio/compare/v6.5.9...v6.5.10) (2025-12-06)
 
 
