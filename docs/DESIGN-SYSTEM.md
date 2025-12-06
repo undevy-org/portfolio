@@ -354,6 +354,16 @@ A consistent spacing scale is used throughout the application to maintain visual
 -   **Buttons:** Interactive elements styled with `.btn-command`. They must be theme-agnostic and receive their icon as a component reference prop (`icon={IconComponent}`).
 -   **Tabs & Accordions:** These components use `.bg-active` and `.border-secondary` to feel integrated with the panels they belong to.
 
+### **7.1. Component Placement Patterns**
+
+For components that need screen-specific visibility but should be managed globally:
+
+-   **Layout-Level Placement:** Components like `ThemeSwitcher` that appear on specific screens should be placed in `layout.js` within `StableLayout`, not within individual screen components.
+-   **Visibility Control:** Use CSS classes (e.g., `hidden md:block`) combined with `currentScreen` checks within the component to control when it renders.
+-   **Architectural Independence:** For screens like Entry that need visual separation, `TerminalWindow` can return a Fragment to become transparent, allowing layout-level components to sit outside the terminal container.
+
+This pattern maintains separation of concerns while enabling precise control over component placement across application states.
+
 ## **8. Developer's Guide: How to Extend the System**
 
 ### **8.1. How to Style a New Component**

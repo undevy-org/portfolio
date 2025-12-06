@@ -7,28 +7,28 @@ import { useSession } from '../context/SessionContext';
 export default function StableLayout({ children, showPanels = true }) {
   const { currentScreen } = useSession();
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkViewport = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkViewport();
     window.addEventListener('resize', checkViewport);
     return () => window.removeEventListener('resize', checkViewport);
   }, []);
-  
+
   // Special handling for Entry screen - it shouldn't have fixed height
   const isFlexibleScreen = ['Entry', 'ProfileBoot'].includes(currentScreen);
-  
+
   return (
     <div className="stable-layout-root min-h-screen flex flex-col">
-      <div 
+      <div
         className={`
           flex-1 
           flex 
           flex-col 
-          ${isMobile ? 
+          ${isMobile ?
             'pt-4' :  // Mobile: Add top padding
             'justify-center'  // Desktop: Center vertically
           }
@@ -37,12 +37,12 @@ export default function StableLayout({ children, showPanels = true }) {
         `}
       >
         {/* Main content container */}
-        <div 
+        <div
           className={`
             mx-auto 
             w-full 
             max-w-2xl
-            ${!isFlexibleScreen && !isMobile ? 
+            ${!isFlexibleScreen && !isMobile ?
               'md:h-[700px]' :  // Fixed height for non-Entry screens on desktop
               ''  // Flexible height for Entry or mobile
             }
@@ -50,7 +50,7 @@ export default function StableLayout({ children, showPanels = true }) {
         >
           {children}
         </div>
-        
+
         {showPanels && !isMobile && (
           <div className="h-64 mt-4" aria-hidden="true">
             {/* This matches approximate height of AnalyticsPanel + SystemLog */}

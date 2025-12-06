@@ -93,7 +93,7 @@ describe('Entry Screen Auto-Fill Feature', () => {
     expect(screen.getByText('AUTHENTICATE')).toBeInTheDocument();
     expect(screen.getByText('REQUEST ACCESS')).toBeInTheDocument();
     expect(screen.getByText('WEB3 LOGIN')).toBeInTheDocument();
-    expect(screen.getByText('OPEN REPO')).toBeInTheDocument();
+    expect(screen.queryByText('OPEN REPO')).not.toBeInTheDocument();
     expect(screen.getByText('DEMO MODE')).toBeInTheDocument();
   });
 
