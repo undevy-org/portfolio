@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [6.5.9](https://github.com/undevy-org/portfolio/compare/v6.5.8...v6.5.9) (2025-12-06)
+
+
+### Added
+
+* **layout:** implement global component placement strategy for ThemeSwitcher ([d049133](https://github.com/undevy-org/portfolio/commit/d0491339aed2e5382e319e765d63b06e2132fd40))
+
+
+### Tests
+
+* fix Entry.web3.test.js string matching for button states ([6a435b3](https://github.com/undevy-org/portfolio/commit/6a435b3c229a0c9e319cfd8ff0e9724ba9cc6e37))
+* fix lucide-react icon mocks and add useWeb3State mock ([048b203](https://github.com/undevy-org/portfolio/commit/048b203851cd75649cc517cdda5076844154d930))
+
 ### [6.5.8](https://github.com/undevy-org/portfolio/compare/v6.5.7...v6.5.8) (2025-12-05)
 
 
