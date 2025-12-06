@@ -204,6 +204,7 @@ const nextConfig = {
   compress: true,
   distDir: '.next',
   poweredByHeader: false,
+  output: 'standalone',
 };
 
 export default nextConfig;
