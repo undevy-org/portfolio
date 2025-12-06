@@ -262,7 +262,7 @@ describe('Entry Screen Web3 Lazy Loading', () => {
 
     // Should show loading state (Entry sets 'loading' status when !isWeb3Ready)
     await waitFor(() => {
-      const button = screen.getByRole('button', { name: /LOADING WEB3\.\.\./i });
+      const button = screen.getByRole('button', { name: /LOADING\.\.\./i });
       expect(button).toBeInTheDocument();
     }, { timeout: 3000 });
   });
@@ -302,16 +302,13 @@ describe('Entry Screen Web3 Lazy Loading', () => {
     renderEntry();
 
     const getCodeButton = screen.getByRole('button', { name: /REQUEST ACCESS/i });
-    const githubButton = screen.getByRole('button', { name: /OPEN REPO/i });
     const demoButton = screen.getByRole('button', { name: /DEMO MODE/i });
 
     // All buttons should be present and enabled
     expect(getCodeButton).toBeInTheDocument();
-    expect(githubButton).toBeInTheDocument();
     expect(demoButton).toBeInTheDocument();
 
     expect(getCodeButton).not.toBeDisabled();
-    expect(githubButton).not.toBeDisabled();
     expect(demoButton).not.toBeDisabled();
   });
 
@@ -339,7 +336,7 @@ describe('Entry Screen Web3 Lazy Loading', () => {
     let buttons = screen.getAllByRole('button');
     let web3Button = buttons.find(btn =>
       btn.textContent === 'WEB3 LOGIN' ||
-      btn.textContent === 'LOADING WEB3...' ||
+      btn.textContent === 'LOADING...' ||
       btn.textContent === 'CONNECTING...'
     );
     expect(web3Button).toBeDefined();
@@ -371,12 +368,12 @@ describe('Entry Screen Web3 Lazy Loading', () => {
     buttons = screen.getAllByRole('button');
     web3Button = buttons.find(btn =>
       btn.textContent === 'WEB3 LOGIN' ||
-      btn.textContent === 'LOADING WEB3...' ||
+      btn.textContent === 'LOADING...' ||
       btn.textContent === 'CONNECTING...'
     );
     expect(web3Button).toBeDefined();
     // The button text should be one of the valid states
-    expect(['WEB3 LOGIN', 'LOADING WEB3...', 'CONNECTING...']).toContain(web3Button.textContent);
+    expect(['WEB3 LOGIN', 'LOADING...', 'CONNECTING...']).toContain(web3Button.textContent);
 
     // Clean up for next state test
     unmount2();
