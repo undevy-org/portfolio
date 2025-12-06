@@ -135,13 +135,14 @@ jobs:
             fi
             mv "$TEMP_PATH" "$STAGING_PATH"
             
-            # Install production dependencies
             cd "$STAGING_PATH"
-            echo "📦 Installing production dependencies..."
-            npm ci --omit=dev || npm install --production
             
-            # Generate images from template (using server content.json or staging env)
-            echo "🖼️ Generating missing images..."
+            # Verify standalone build
+            if [ ! -f "server.js" ]; then
+               echo "❌ FATAL: server.js not found in deployment!"
+               exit 1
+            fi
+            
             # Generate images from template (using server content.json or staging env)
             echo "🖼️ Generating missing images..."
             export CONTENT_FILE_PATH=$HOME/content.json
@@ -157,14 +158,12 @@ jobs:
             fi
             
             # Start staging application with auto-shutdown after 2 hours
-            echo "🚀 Starting staging application with auto-shutdown..."
+            # Standalone mode: Run server.js directly (no npm start)
+            echo "🚀 Starting staging application (Standalone Mode)..."
             cd "$STAGING_PATH"
-            PORT=3001 pm2 start npm --name "staging-portfolio" \
+            PORT=3001 pm2 start server.js --name "staging-portfolio" \
               --max-memory-restart="200M" \
-              --env production \
-              -- start
-            
-            pm2 save || true
+              --env production
             
             # Show application status
             echo "📊 Staging application status:"

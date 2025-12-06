@@ -185,28 +185,37 @@ jobs:
       - name: Prepare staging deployment package
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "📦 Creating staging deployment package..."
+          echo "📦 Creating staging deployment package (Standalone Mode)..."
           
+          # Create package directory
           mkdir -p deployment-package
           
-          # Copy production-necessary files (no src needed)
-          echo "📁 Copying production files..."
-          cp -r .next deployment-package/
-          cp -r public deployment-package/ 2>/dev/null || echo "ℹ️ No public directory"
-          cp -r scripts deployment-package/
-          cp package.json deployment-package/
-          cp package-lock.json deployment-package/
-          cp next.config.mjs deployment-package/
+          # 1. Copy standalone build (contains server.js, minimalistic node_modules, package.json)
+          echo "📁 Copying standalone build..."
+          cp -r .next/standalone/* deployment-package/
           
-          # Remove development artifacts
-          echo "🧹 Removing development artifacts..."
-          rm -rf deployment-package/.next/cache
+          # 2. Copy static assets (required for standalone)
+          # Next.js standalone does NOT include .next/static by default, must copy manually
+          echo "📁 Copying static assets..."
+          mkdir -p deployment-package/.next
+          cp -r .next/static deployment-package/.next/
+          
+          # 3. Copy public directory (images, fonts, etc.)
+          echo "📁 Copying public directory..."
+          cp -r public deployment-package/ 2>/dev/null || echo "ℹ️ No public directory"
+          
+          # 4. Copy custom scripts (e.g., ensure_images.js)
+          echo "📁 Copying scripts..."
+          cp -r scripts deployment-package/
+          
+          # Remove development artifacts if any slipped in
+          echo "🧹 Cleanup..."
           find deployment-package -name "*.map" -type f -delete 2>/dev/null || true
           
           # Verify package integrity
           echo "🔍 Verifying deployment package..."
-          if [ ! -d "deployment-package/.next" ]; then
-            echo "❌ FATAL: .next missing from package!"
+          if [ ! -f "deployment-package/server.js" ]; then
+            echo "❌ FATAL: server.js missing! Standalone build failed."
             exit 1
           fi
           
@@ -214,14 +223,13 @@ jobs:
           echo ""
           echo "📊 Staging deployment package statistics:"
           echo "  Total size: $(du -sh deployment-package | cut -f1)"
-          echo "  .next size: $(du -sh deployment-package/.next | cut -f1)"
           echo ""
           echo "📦 Package contents:"
-          echo "  ✅ .next/ (compiled application)"
-          echo "  ✅ public/ (static assets)"
-          echo "  ✅ package.json, package-lock.json"
-          echo "  ✅ next.config.mjs"
-          echo "  ❌ src/ (NOT included - not needed in production)"
+          echo "  ✅ server.js (Entry point)"
+          echo "  ✅ node_modules/ (Bundled dependencies)"
+          echo "  ✅ .next/static/ (Static assets)"
+          echo "  ✅ public/ (Public assets)"
+          echo "  ✅ scripts/ (Maintenance scripts)"
       
       - name: Upload staging deployment artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

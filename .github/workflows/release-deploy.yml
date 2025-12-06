@@ -76,18 +76,25 @@ jobs:
       
       - name: Prepare production release package
         run: |
-          echo "📦 Creating production release package..."
+          echo "📦 Creating production release package (Standalone Mode)..."
           
           mkdir -p release-package
           
-          # Copy production files only
-          echo "📁 Copying production files..."
-          cp -r .next release-package/
+          # 1. Copy standalone build
+          echo "📁 Copying standalone build..."
+          cp -r .next/standalone/* release-package/
+          
+          # 2. Copy static assets (required for standalone)
+          echo "📁 Copying static assets..."
+          mkdir -p release-package/.next
+          cp -r .next/static release-package/.next/
+          
+          # 3. Copy public directory
+          echo "📁 Copying public directory..."
           cp -r public release-package/ 2>/dev/null || echo "ℹ️ No public directory"
-          cp package.json release-package/
-          cp package-lock.json release-package/
-          cp package-lock.json release-package/
-          cp next.config.mjs release-package/
+          
+          # 4. Copy scripts
+          echo "📁 Copying scripts..."
           cp -r scripts release-package/
           
           # Add version file for tracking
@@ -97,7 +104,6 @@ jobs:
           
           # Remove all development artifacts
           echo "🧹 Cleaning development artifacts..."
-          rm -rf release-package/.next/cache
           find release-package -name "*.map" -type f -delete 2>/dev/null || true
           
           # Create deployment archive
@@ -108,6 +114,10 @@ jobs:
           
           echo "✅ Release package created"
           echo "📊 Package size: $(du -h portfolio-release-${{ github.ref_name }}.tar.gz | cut -f1)"
+          echo "📦 Package contents:"
+          echo "  ✅ server.js (Entry point)"
+          echo "  ✅ node_modules/ (Bundled dependencies)"
+          echo "  ✅ .next/static/ (Static assets)"
       
       - name: Create GitHub Release with artifact
         env:
@@ -249,14 +259,14 @@ jobs:
               cp -r "$(readlink -f $CURRENT_LINK)/public/images/projects" "$RELEASE_DIR/public/images/" || true
             fi
             
-            # Install production dependencies
             cd "$RELEASE_DIR"
-            echo "📦 Installing production dependencies..."
-            npm ci --omit=dev || npm install --production
             
-            # Generate images from template (using server content.json)
-            echo "🖼️ Generating missing images..."
-            # Ensure script has access to content.json (default fallback)
+            # Verify standalone build
+            if [ ! -f "server.js" ]; then
+               echo "❌ FATAL: server.js not found in release!"
+               exit 1
+            fi
+            
             # Generate images from template (using server content.json)
             echo "🖼️ Generating missing images..."
             # Ensure script has access to content.json (default fallback)
@@ -276,21 +286,20 @@ jobs:
             ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
             
             # Restart application
-            echo "🔄 Restarting production application..."
+            # Standalone mode: Run server.js directly (no npm start)
+            echo "🔄 Restarting production application (Standalone Mode)..."
             if pm2 describe "$PM2_APP" >/dev/null 2>&1; then
               pm2 stop "$PM2_APP" || true
               pm2 delete "$PM2_APP" || true
               cd "$CURRENT_LINK"
-              pm2 start npm --name "$PM2_APP" \
+              pm2 start server.js --name "$PM2_APP" \
                 --max-memory-restart="400M" \
-                -- start
               echo "✅ Application restarted: $PM2_APP"
             else
               # First time setup
               cd "$CURRENT_LINK"
-              pm2 start npm --name "$PM2_APP" \
+              pm2 start server.js --name "$PM2_APP" \
                 --max-memory-restart="400M" \
-                -- start
               echo "✅ Application started: $PM2_APP"
             fi
             
