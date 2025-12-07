@@ -69,5 +69,9 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
-  "_comment": "Trigger CI build to validate staging workflow fix"
+  "_comment": "Trigger CI build to validate staging workflow fix",
+  "optionalDependencies": {
+    "@next/swc-linux-x64-gnu": "15.5.3",
+    "@next/swc-linux-x64-musl": "15.5.3"
+  }
 }
