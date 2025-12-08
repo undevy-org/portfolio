@@ -63,6 +63,15 @@ jobs:
           cd ..
           echo "✅ Archive created: $(du -h staging-deploy.tar.gz | cut -f1)"
       
+      - name: Prepate artifact directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /home/undevy/releases/staging/artifacts
+
       - name: Transfer files to server
         uses: appleboy/scp-action@master
         with:
@@ -70,8 +79,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "staging-deploy.tar.gz"
-          target: "/tmp/"
-      
+          target: "/home/undevy/releases/staging/artifacts"
+
       - name: Deploy to staging environment
         uses: appleboy/ssh-action@master
         with:
@@ -93,6 +102,15 @@ jobs:
             
             STAGING_PATH="/home/undevy/releases/staging/current"
             TEMP_PATH="/home/undevy/releases/staging/temp-$(date +%s)"
+            ARTIFACT_PATH="/home/undevy/releases/staging/artifacts/staging-deploy.tar.gz"
+            
+            echo "🔍 Debugging artifact location:"
+            ls -la /home/undevy/releases/staging/artifacts/
+            
+            if [ ! -f "$ARTIFACT_PATH" ]; then
+                echo "❌ FATAL: Artifact not found at $ARTIFACT_PATH"
+                exit 1
+            fi
             
             # Create staging directories if they don't exist
             mkdir -p /home/undevy/releases/staging
@@ -103,7 +121,7 @@ jobs:
             
             # Extract new files
             echo "📦 Extracting staging files..."
-            tar -xzf /tmp/staging-deploy.tar.gz -C "$TEMP_PATH"
+            tar -xzf "$ARTIFACT_PATH" -C "$TEMP_PATH"
 
             # Ensure no duplicate image directories (but preserve template.webp)
             echo "🧹 Ensuring clean static assets setup..."
