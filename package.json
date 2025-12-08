@@ -69,6 +69,9 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
+  "comments": {
+    "next": "Locked at 15.5.3 due to CVE-2025-55182. React@19.1.1 contains the fix. Will upgrade when 15.5.8+ released (15.5.7 had npm registry sync issues)"
+  },
   "_comment": "Trigger CI build to validate staging workflow fix",
   "optionalDependencies": {
     "@next/swc-linux-x64-gnu": "15.5.3",
