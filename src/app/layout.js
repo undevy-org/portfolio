@@ -24,19 +24,29 @@ import { headers } from 'next/headers';
 
 const portfolioTitle = process.env.PORTFOLIO_TITLE || 'Interactive Portfolio';
 
-// Determine favicon base path based on hostname
-// This forces dynamic rendering, ensuring the correct icon is shown based on the actual domain
-// regardless of build environment.
+// Determine favicon base path based on hostname or environment variables
+// This forces dynamic rendering.
 const getFaviconBase = async () => {
   const headersList = await headers();
   const host = headersList.get('host') || '';
+  const forwardedHost = headersList.get('x-forwarded-host') || '';
+  const domain = forwardedHost || host;
 
-  if (host.includes('localhost') || host.includes('127.0.0.1')) {
+  // Debug logging to help identify why staging might be detecting incorrectly
+  console.log(`[FAVICON_DEBUG] Host: ${host}, FwdHost: ${forwardedHost}, Env: ${process.env.APP_ENV || process.env['NEXT_PUBLIC_ENV']}`);
+
+  // 1. Check for specific environment variable overrides (Runtime)
+  // We prefer APP_ENV as it's not inlined, but check NEXT_PUBLIC_ENV dynamically too.
+  const envVar = process.env.APP_ENV || process.env['NEXT_PUBLIC_ENV'];
+  if (envVar === 'staging') return '/images/favicons/staging';
+  if (envVar === 'production') return '/images/favicons/production';
+
+  // 2. Check Domain / Hostname
+  if (domain.includes('localhost') || domain.includes('127.0.0.1')) {
     return '/images/favicons/local';
   }
 
-  // Check for staging domains
-  if (host.includes('stage') || host.includes('staging')) {
+  if (domain.includes('stage') || domain.includes('staging')) {
     return '/images/favicons/staging';
   }
 
