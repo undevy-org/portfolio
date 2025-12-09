@@ -44,6 +44,7 @@ next-env.d.ts
 # local files
 test-content-local.json
 /content-backups
+portfolio-project.code-workspace
 
 # Project images - stored locally and on server only
 /public/
