@@ -20,48 +20,57 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: '--font-ibm-plex',
 });
 
+import { headers } from 'next/headers';
+
 const portfolioTitle = process.env.PORTFOLIO_TITLE || 'Interactive Portfolio';
 
-// Determine favicon base path based on environment
-// Note: NEXT_PUBLIC_ENV must be set to 'staging' in the staging environment's .env file
-const getFaviconBase = () => {
-  if (process.env.NODE_ENV === 'development') {
+// Determine favicon base path based on hostname
+// This forces dynamic rendering, ensuring the correct icon is shown based on the actual domain
+// regardless of build environment.
+const getFaviconBase = async () => {
+  const headersList = await headers();
+  const host = headersList.get('host') || '';
+
+  if (host.includes('localhost') || host.includes('127.0.0.1')) {
     return '/images/favicons/local';
   }
-  if (process.env.NEXT_PUBLIC_ENV === 'staging') {
+
+  // Check for staging domains
+  if (host.includes('stage') || host.includes('staging')) {
     return '/images/favicons/staging';
   }
+
   return '/images/favicons/production';
 };
 
-const faviconBase = getFaviconBase();
+export async function generateMetadata() {
+  const faviconBase = await getFaviconBase();
 
-export const metadata = {
-  title: {
-    // Use the constant for the default title.
-    default: portfolioTitle,
-    // Use the constant in the template as well.
-    template: `%s | ${portfolioTitle}`,
-  },
-  description: "Interactive terminal-based portfolio",
-  manifest: `${faviconBase}/site.webmanifest`,
-  icons: {
-    icon: [
-      { url: `${faviconBase}/favicon-16x16.png`, sizes: '16x16', type: 'image/png' },
-      { url: `${faviconBase}/favicon-32x32.png`, sizes: '32x32', type: 'image/png' },
-      { url: `${faviconBase}/favicon.ico` }, // Fallback
-    ],
-    apple: [
-      { url: `${faviconBase}/apple-touch-icon.png`, sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      {
-        rel: 'apple-touch-icon-precomposed',
-        url: `${faviconBase}/apple-touch-icon.png`,
-      },
-    ],
-  },
-};
+  return {
+    title: {
+      default: portfolioTitle,
+      template: `%s | ${portfolioTitle}`,
+    },
+    description: "Interactive terminal-based portfolio",
+    manifest: `${faviconBase}/site.webmanifest`,
+    icons: {
+      icon: [
+        { url: `${faviconBase}/favicon-16x16.png`, sizes: '16x16', type: 'image/png' },
+        { url: `${faviconBase}/favicon-32x32.png`, sizes: '32x32', type: 'image/png' },
+        { url: `${faviconBase}/favicon.ico` }, // Fallback
+      ],
+      apple: [
+        { url: `${faviconBase}/apple-touch-icon.png`, sizes: '180x180', type: 'image/png' },
+      ],
+      other: [
+        {
+          rel: 'apple-touch-icon-precomposed',
+          url: `${faviconBase}/apple-touch-icon.png`,
+        },
+      ],
+    },
+  };
+}
 
 export default function RootLayout({ children }) {
   return (
