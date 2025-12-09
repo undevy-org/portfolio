@@ -179,7 +179,7 @@ jobs:
             # Standalone mode: Run server.js directly (no npm start)
             echo "🚀 Starting staging application (Standalone Mode)..."
             cd "$STAGING_PATH"
-            PORT=3001 pm2 start server.js --name "staging-portfolio" \
+            PORT=3001 APP_ENV=staging pm2 start server.js --name "staging-portfolio" \
               --max-memory-restart="200M" \
               --env production
             
