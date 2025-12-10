@@ -24,42 +24,63 @@ import { headers } from 'next/headers';
 
 const portfolioTitle = process.env.PORTFOLIO_TITLE || 'Interactive Portfolio';
 
-// Determine favicon base path based on hostname or environment variables
+// Determine environment configuration based on hostname or environment variables
 // This forces dynamic rendering.
-const getFaviconBase = async () => {
+const getEnvironmentConfig = async () => {
   const headersList = await headers();
   const host = headersList.get('host') || '';
   const forwardedHost = headersList.get('x-forwarded-host') || '';
   const domain = forwardedHost || host;
 
-  // Debug logging to help identify why staging might be detecting incorrectly
-  console.log(`[FAVICON_DEBUG] Host: ${host}, FwdHost: ${forwardedHost}, Env: ${process.env.APP_ENV || process.env['NEXT_PUBLIC_ENV']}`);
+  // Debug logging
+  console.log(`[ENV_DEBUG] Host: ${host}, FwdHost: ${forwardedHost}, Env: ${process.env.APP_ENV || process.env['NEXT_PUBLIC_ENV']}`);
+
+  // Base config
+  let config = {
+    faviconBase: '/images/favicons/production',
+    title: portfolioTitle
+  };
 
   // 1. Check for specific environment variable overrides (Runtime)
-  // We prefer APP_ENV as it's not inlined, but check NEXT_PUBLIC_ENV dynamically too.
   const envVar = process.env.APP_ENV || process.env['NEXT_PUBLIC_ENV'];
-  if (envVar === 'staging') return '/images/favicons/staging';
-  if (envVar === 'production') return '/images/favicons/production';
+
+  if (envVar === 'staging') {
+    return {
+      faviconBase: '/images/favicons/staging',
+      title: 'Staging Env'
+    };
+  }
+
+  if (envVar === 'production') {
+    return config;
+  }
 
   // 2. Check Domain / Hostname
   if (domain.includes('localhost') || domain.includes('127.0.0.1')) {
-    return '/images/favicons/local';
+    return {
+      faviconBase: '/images/favicons/local',
+      title: 'Localhost Env'
+    };
   }
 
   if (domain.includes('stage') || domain.includes('staging')) {
-    return '/images/favicons/staging';
+    return {
+      faviconBase: '/images/favicons/staging',
+      title: 'Staging Env'
+    };
   }
 
-  return '/images/favicons/production';
+  return config;
 };
 
 export async function generateMetadata() {
-  const faviconBase = await getFaviconBase();
+  const envConfig = await getEnvironmentConfig();
+  const { faviconBase, title } = envConfig;
 
   return {
     title: {
-      default: portfolioTitle,
-      template: `%s | ${portfolioTitle}`,
+      default: title,
+      template: `%s | ${title}`,
     },
     description: "Interactive terminal-based portfolio",
     manifest: `${faviconBase}/site.webmanifest`,
