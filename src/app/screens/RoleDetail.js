@@ -9,7 +9,7 @@ import Button from '../components/ui/Button';
 import { FolderGit2, ArrowLeft } from 'lucide-react';
 
 export default function RoleDetail() {
-  const { sessionData, navigate, addLog, selectedRole } = useSession();
+  const { sessionData, navigate, addLog, selectedRole, setTab } = useSession();
 
   if (!selectedRole) {
     return (
@@ -28,6 +28,7 @@ export default function RoleDetail() {
   }
 
   const roleDetails = sessionData?.role_details?.[selectedRole.id] || {};
+  const hasRelatedCases = roleDetails.related_cases && roleDetails.related_cases.length > 0;
 
   const sections = [
     { id: 'summary', title: 'quick_summary', content: roleDetails.summary ? [{ type: 'text', value: roleDetails.summary }] : [] },
@@ -36,45 +37,54 @@ export default function RoleDetail() {
     { id: 'tech', title: 'tech_stack', content: roleDetails.tech ? [{ type: 'tag_list', value: roleDetails.tech }] : [] }
   ];
 
+  const handleReadCases = () => {
+    if (hasRelatedCases) {
+      addLog(`NAVIGATE: ${selectedRole.id} cases`);
+      setTab('CaseList', 'filtered');
+      navigate('CaseList');
+    } else {
+      addLog('NAVIGATE: All cases (no specific cases for role)');
+      setTab('CaseList', 'all');
+      navigate('CaseList');
+    }
+  };
+
   return (
     <ScreenWrapper>
-    <div className="space-y-4">
-      <div className="p-4 rounded border border-secondary">
-        <div className="space-y-1">
-          <h2 className="text-xl text-command">{selectedRole.company}</h2>
-          <p className="text-base text-primary">{selectedRole.role}</p>
-          <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
+      <div className="space-y-4">
+        <div className="p-4 rounded border border-secondary">
+          <div className="space-y-1">
+            <h2 className="text-xl text-command">{selectedRole.company}</h2>
+            <p className="text-base text-primary">{selectedRole.role}</p>
+            <p className="text-sm text-secondary">{selectedRole.period} • {selectedRole.duration}</p>
+          </div>
         </div>
-      </div>
 
-      <Accordion sections={sections} defaultExpanded="summary" />
-
-      <div className="mt-4 flex flex-col md:flex-row gap-3">
-        <Button
-          onClick={() => {
-            addLog('RETURN TO TIMELINE');
-            navigate('Timeline');
-          }}
+        <div className="flex flex-col md:flex-row gap-3">
+          <Button
+            onClick={() => {
+              addLog('RETURN TO TIMELINE');
+              navigate('Timeline');
+            }}
             icon={ArrowLeft}
             iconPosition="left"
             variant="flex"
             className="p-2"
-        >
-          BACK TO TIMELINE
-        </Button>
-        <Button
-          onClick={() => {
-            addLog('NAVIGATE: case studies');
-            navigate('CaseList');
-          }}
-          icon={FolderGit2}
-          iconPosition="left"
-          variant="flex"
-        >
-          READ CASES
-        </Button>
+          >
+            BACK TO TIMELINE
+          </Button>
+          <Button
+            onClick={handleReadCases}
+            icon={FolderGit2}
+            iconPosition="left"
+            variant="flex"
+          >
+            {hasRelatedCases ? 'READ CASES' : 'READ ALL CASES'}
+          </Button>
+        </div>
+
+        <Accordion sections={sections} defaultExpanded="summary" />
       </div>
-    </div>
     </ScreenWrapper>
   );
 }

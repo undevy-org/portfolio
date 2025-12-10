@@ -1,0 +1,1707 @@
+{
+  "LERUSIK": {
+    "meta": {
+      "company": "Testing Profile",
+      "timeline": "scenario_admin",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "gmx_v2",
+        "gmx_multichain",
+        "gmx_system",
+        "key_app",
+        "cere_nft",
+        "wildberries",
+        "loyalty",
+        "mercuryo_offramp_ecosystem",
+        "mercuryo_rebranding",
+        "cere_creator_tools",
+        "portfolio_dev_experience",
+        "gmx_institutional_tools",
+        "trading_bot",
+        "ekiden_case",
+        "mercuryo_trust_wallet",
+        "mercuryo_spend_card",
+        "app_foundry"
+      ],
+      "lastModified": "2025-08-02T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier (Admin)",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Full-Stack Design Professional",
+        "background": "9 Years of Diverse Experience"
+      },
+      "attributes": [
+        "Web3/DeFi Pioneer",
+        "Design Systems Expert",
+        "User Research Specialist",
+        "Technical Background",
+        "Complex Systems Architecture",
+        "Institutional Trading Tools",
+        "Cross-Chain UX",
+        "Data-Driven Iteration"
+      ],
+      "status": {
+        "seeking": "Product Design Opportunities",
+        "location": "Remote, EMEA",
+        "availability": "Immediate",
+        "salary": "Negotiable"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer with 9 years of experience bridging technical complexity and exceptional craft. Specializing in institutional-grade DeFi interfaces, scalable design systems, and high-impact product transformations. Background in engineering allows for deep collaboration with technical teams.",
+      "casual": "Hey! I'm Kier. I build digital products that make complex systems feel simple. From crypto wallets to e-commerce giants, I focus on delivering measurable business impact through design.",
+      "formal": "Senior Product Designer with comprehensive experience transforming complex digital products into intuitive experiences. Expert in design systems, Web3 protocols, and fintech infrastructure."
+    }
+  },
+  "KIER2408": {
+    "meta": {
+      "company": "Undevy Portfolio",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "ekiden_case",
+        "gmx_v2",
+        "key_app",
+        "cere_nft"
+      ],
+      "lastModified": "2025-11-24T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Full-Stack Design",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Product Strategy",
+        "Design Systems",
+        "User Research",
+        "Perpetual Futures UX",
+        "Token-Based Architecture",
+        "Cross-Chain Flows",
+        "0-to-1 Product Launch"
+      ],
+      "status": {
+        "seeking": "Product Design Roles",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer with 9 years of experience bridging technical complexity and exceptional craft. Specializing in institutional-grade DeFi interfaces, scalable design systems, and high-impact product transformations.",
+      "casual": "Hey! I'm Kier. I build digital products that make complex systems feel simple. From crypto wallets to e-commerce giants, I focus on delivering measurable business impact through design.",
+      "formal": "Senior Product Designer with comprehensive experience transforming complex digital products into intuitive experiences. Expert in design systems, Web3 protocols, and fintech infrastructure."
+    }
+  },
+  "EPAM9283": {
+    "meta": {
+      "company": "EPAM",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "ekiden_case",
+        "gmx_v2",
+        "cere_nft",
+        "trading_bot",
+        "app_foundry"
+      ],
+      "lastModified": "2025-12-01T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Lead UX/UI Designer",
+        "specialization": "Systems Thinking & AI-Driven UX",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Design Systems",
+        "AI-Powered UX",
+        "Strategic Leadership",
+        "Complex Systems",
+        "Data-Driven Design",
+        "Enterprise SaaS",
+        "User Research"
+      ],
+      "status": {
+        "seeking": "Lead UX/UI Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Lead UX/UI Designer with 9 years of experience, specializing in complex systems and AI-driven user experiences. I bridge the gap between technical constraints and intuitive design, delivering scalable solutions for enterprise clients.",
+      "casual": "Hey! I'm Kier. I lead design for complex digital products, blending systems thinking with AI innovation to create interfaces that just work.",
+      "formal": "Lead UX/UI Designer specializing in design systems, strategy, and AI-powered user experiences. Proven track record of delivering high-impact solutions for global organizations."
+    }
+  },
+  "KIRILL1110": {
+    "meta": {
+      "company": "Foxous Design",
+      "timeline": "scenario_kirill",
+      "depth": "detailed",
+      "tone": "formal",
+      "cases": [
+        "mercuryo_trust_wallet",
+        "mercuryo_offramp_ecosystem",
+        "mercuryo_spend_card",
+        "mercuryo_rebranding"
+      ],
+      "lastModified": "2025-11-24T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kirill",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Fintech & Web3",
+        "background": "Specialized in High-Growth Fintech"
+      },
+      "attributes": [
+        "Fintech Expert",
+        "Rebranding",
+        "Product Leadership",
+        "Payment Gateway UX",
+        "White-Label Systems",
+        "Conversion Optimization",
+        "Regulatory Compliance",
+        "B2B2C Platforms"
+      ],
+      "status": {
+        "seeking": "Lead Roles",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "foxous@proton.me",
+        "website": "https://foxous.design",
+        "linkedin": "https://www.linkedin.com/in/foxous/"
+      }
+    },
+    "introduction": {
+      "technical": "Senior Product Designer with a track record of transforming underperforming fintech products into multi-million euro revenue generators. Expert in payment infrastructure, white-label systems, and regulatory-compliant design.",
+      "casual": "Hi, I'm Kirill. I transform fintech products into revenue-generating machines. I specialize in payment gateways, banking interfaces, and making complex financial flows simple.",
+      "formal": "Lead Product Designer with extensive experience in high-growth fintech. Proven ability to drive revenue growth through design system optimization and strategic product repositioning."
+    }
+  },
+  "0XDEFI2311": {
+    "meta": {
+      "company": "DeFi Technical Focus",
+      "timeline": "scenario_defi",
+      "depth": "detailed",
+      "tone": "technical",
+      "cases": [
+        "gmx_v2",
+        "gmx_multichain",
+        "gmx_system",
+        "key_app"
+      ],
+      "lastModified": "2025-08-02T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Test User",
+      "summary": {
+        "title": "Product Designer",
+        "specialization": "DeFi/Web3 Technical Specialist",
+        "background": "Engineering-First Design Approach"
+      },
+      "attributes": [
+        "DeFi Protocol Expert",
+        "Token-Based Design Systems",
+        "Smart Contract UX",
+        "Developer Collaboration"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer - DeFi/Web3",
+        "location": "Remote, EMEA",
+        "availability": "Immediate",
+        "salary": "Negotiable"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer specializing in DeFi/Web3 with deep technical foundation. Engineering degree (MIET) enables me to bridge complex blockchain mechanics with intuitive user experiences. Expertise in designing for permissionless protocols, AMMs, and decentralized trading systems.",
+      "casual": "I make DeFi actually usable. With my engineering background, I translate complex smart contract interactions into interfaces that traders love.",
+      "formal": "Technical Product Designer focused on decentralized finance, bringing engineering rigor to user experience design in blockchain protocols."
+    }
+  },
+  "NANSEN5821": {
+    "meta": {
+      "company": "Nansen",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "gmx_v2",
+        "cere_nft",
+        "ekiden_case",
+        "gmx_institutional_tools"
+      ],
+      "lastModified": "2025-11-28T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Web3 & Design Systems",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Web3/DeFi Expert",
+        "Design Systems",
+        "Protocol UX",
+        "Institutional Trading",
+        "Data Visualization",
+        "Cross-Chain Architecture",
+        "User Research"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer bridging the gap between complex Web3 protocols and intuitive user experiences. Specializing in institutional-grade interfaces and data visualization for high-value traders.",
+      "casual": "Hey! I'm Kier. I build digital products that make crypto accessible and professional. I focus on clarity, trust, and performance in high-stakes environments.",
+      "formal": "Senior Product Designer with extensive experience in Web3, Design Systems, and Institutional DeFi tools."
+    }
+  },
+  "DEEL5821": {
+    "meta": {
+      "company": "Deel",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "gmx_v2",
+        "ekiden_case",
+        "cere_nft",
+        "key_app"
+      ],
+      "lastModified": "2025-11-28T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Web3 & Design Systems",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Web3/DeFi Expert",
+        "Design Systems",
+        "Protocol UX",
+        "Fintech Systems",
+        "Global Compliance UX",
+        "B2B SaaS",
+        "Complex Flows"
+      ],
+      "status": {
+        "seeking": "Staff Product Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer with 9 years of experience building scalable financial systems and global infrastructure. Expert in bridging technical complexity with intuitive design for institutional and enterprise users.",
+      "casual": "Hey! I'm Kier. I build digital products that make complex financial systems feel simple. From crypto protocols to global payroll, I focus on scalability and user trust.",
+      "formal": "Senior Product Designer with extensive experience in Web3, Fintech, and Design Systems. Proven track record of delivering high-impact solutions for global platforms."
+    }
+  },
+  "HOTSTUFFLABS3728": {
+    "meta": {
+      "company": "Hotstuff Labs",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "ekiden_case",
+        "gmx_v2",
+        "cere_nft",
+        "trading_bot"
+      ],
+      "lastModified": "2025-11-28T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "DeFi & Trading UX",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "DeFi Protocol Expert",
+        "Trading Interface Design",
+        "Design Systems",
+        "User Research",
+        "Perpetual Futures",
+        "Technical Analysis UX",
+        "Risk Management Tools"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer with deep expertise in DeFi trading interfaces and blockchain user experience. I design systems that handle billions in volume with zero critical errors.",
+      "casual": "Hey! I'm Kier. I design trading platforms that make DeFi accessible and performant. I focus on the details that matter to professional traders.",
+      "formal": "Senior Product Designer specializing in DeFi protocols, institutional trading UX, and high-performance financial interfaces."
+    }
+  },
+  "LARIXON4829": {
+    "meta": {
+      "company": "Larixon Classifieds",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "wildberries",
+        "gmx_system",
+        "gmx_v2",
+        "cere_nft"
+      ],
+      "lastModified": "2025-11-28T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Marketplace & Design Systems",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Design Systems",
+        "User Research",
+        "Complex UX Flows",
+        "Conversion Optimization",
+        "Marketplace Dynamics",
+        "E-commerce Scale",
+        "Seller Tools"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer specializing in marketplace platforms and scalable design systems. Experience building systems that serve millions of users and thousands of sellers.",
+      "casual": "Hey! I'm Kier. I design marketplaces and complex user experiences that drive engagement and sales. I build the systems that make platforms scale.",
+      "formal": "Senior Product Designer with expertise in marketplace UX, design systems, and conversion optimization for large-scale platforms."
+    }
+  },
+  "KAST4829": {
+    "meta": {
+      "company": "Kast",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "ekiden_case",
+        "gmx_system",
+        "gmx_v2",
+        "cere_nft",
+        "wildberries",
+        "loyalty"
+      ],
+      "lastModified": "2025-11-28T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Design Systems & Operations",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Design Systems Expert",
+        "Operations Leadership",
+        "Fintech Experience",
+        "Cross-Functional Alignment",
+        "Process Optimization",
+        "Team Mentorship",
+        "Scalable Architecture"
+      ],
+      "status": {
+        "seeking": "Senior Product Ops Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer with deep expertise in building scalable design systems and operational excellence in high-velocity fintech environments. I build the tools and processes that help teams ship better product, faster.",
+      "casual": "Hey! I'm Kier. I build design systems that scale and operational processes that drive teams forward. I bridge the gap between design, engineering, and product.",
+      "formal": "Senior Product Designer specializing in design systems architecture, cross-functional operations, and team efficiency."
+    }
+  },
+  "TAXDOME4829": {
+    "meta": {
+      "company": "TaxDome",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "gmx_system",
+        "wildberries",
+        "loyalty",
+        "cere_nft"
+      ],
+      "lastModified": "2025-11-28T20:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "Web Interfaces & Design Systems",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Design Systems Expert",
+        "User Research",
+        "Web Interface Design",
+        "Fintech Experience",
+        "B2B SaaS",
+        "Complex Workflows",
+        "Data Visualization"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer specializing in modern web interfaces, design systems, and user research. Engineering background enables effective collaboration with development teams to build robust SaaS products.",
+      "casual": "Hey! I'm Kier. I design intuitive web experiences and build design systems that scale. I focus on making complex professional tools feel simple and efficient.",
+      "formal": "Senior Product Designer with expertise in web interfaces, design systems, and user-centered design for complex B2B applications."
+    }
+  },
+  "REVOLUT2354": {
+    "meta": {
+      "company": "Revolut",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "mercuryo_offramp_ecosystem",
+        "loyalty",
+        "gmx_system",
+        "key_app"
+      ],
+      "lastModified": "2025-12-01T10:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Product Designer",
+        "specialization": "Fintech & Design Systems",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "Fintech Expert",
+        "Design Systems",
+        "Mobile-First Design",
+        "Complex UX Flows",
+        "Banking Interfaces",
+        "Investment Products",
+        "Global Payments"
+      ],
+      "status": {
+        "seeking": "Product Designer",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer with deep expertise in fintech products, design systems, and cross-platform mobile applications. Engineering background enables effective collaboration with technical teams to build secure, high-performance financial apps.",
+      "casual": "Hey! I'm Kier. I design financial products that millions of people use every day, from banking apps to crypto platforms. I make money management feel effortless.",
+      "formal": "Product Designer specializing in fintech applications, design systems, and mobile-first user experiences for complex commercial products."
+    }
+  },
+  "CMC9382": {
+    "meta": {
+      "company": "CoinMarketCap",
+      "timeline": "scenario_kier",
+      "depth": "detailed",
+      "tone": "casual",
+      "cases": [
+        "trading_bot",
+        "ekiden_case",
+        "gmx_institutional_tools",
+        "app_foundry"
+      ],
+      "lastModified": "2025-12-05T12:00:00.000Z"
+    },
+    "profile": {
+      "greeting_name": "Kier",
+      "summary": {
+        "title": "Senior Product Designer",
+        "specialization": "AI-Driven Interfaces & DeFi",
+        "background": "9 Years Experience"
+      },
+      "attributes": [
+        "AI/ML Product UI",
+        "Data Visualization",
+        "Algorithmic Trading",
+        "Design Systems",
+        "Python/React",
+        "Institutional Tools",
+        "User Research"
+      ],
+      "status": {
+        "seeking": "Senior Product Designer - AI",
+        "location": "Remote",
+        "availability": "Open",
+        "salary": "Negotiable"
+      },
+      "contact": {
+        "email": "undevy@gmail.com",
+        "website": "https://undevy.com",
+        "linkedin": "https://www.linkedin.com/in/undevy/"
+      }
+    },
+    "introduction": {
+      "technical": "Product Designer bridging the gap between AI/ML complexity and intuitive user experiences. Specializing in data-heavy interfaces, algorithmic trading systems, and institutional-grade tools.",
+      "casual": "Hey! I'm Kier. I design interfaces for complex automated systems. From trading bots to data analytics, I make advanced technology accessible and actionable.",
+      "formal": "Senior Product Designer with expertise in AI-driven products, data visualization, and complex system architecture. Proven ability to translate algorithmic logic into user-centric designs."
+    }
+  },
+  "GLOBAL_DATA": {
+    "menu": [
+      {
+        "label": "about_me",
+        "screen": "Introduction",
+        "icon": "[USR]",
+        "desc": "Background & approach"
+      },
+      {
+        "label": "experience",
+        "screen": "Timeline",
+        "icon": "[EXP]",
+        "desc": "9 years in product design"
+      },
+      {
+        "label": "case_studies",
+        "screen": "CaseList",
+        "icon": "[PRJ]",
+        "desc": "Featured projects"
+      },
+      {
+        "label": "skills",
+        "screen": "SkillsGrid",
+        "icon": "[SKL]",
+        "desc": "Technical expertise"
+      },
+      {
+        "label": "side_projects",
+        "screen": "SideProjects",
+        "icon": "[LAB]",
+        "desc": "Personal initiatives"
+      },
+      {
+        "label": "contact",
+        "screen": "Contact",
+        "icon": "[MSG]",
+        "desc": "Get in touch"
+      }
+    ],
+    "experience": {
+      "scenario_admin": [
+        {
+          "id": "ekiden",
+          "company": "Composability Labs / Ekiden",
+          "role": "Senior Product Designer",
+          "period": "Current",
+          "duration": "Ongoing",
+          "highlight": "Leading design for Ekiden"
+        },
+        {
+          "id": "gmx",
+          "company": "GMX Exchange",
+          "role": "Senior Product Designer (Part-Time)",
+          "period": "August 2024 - June 2025",
+          "duration": "11 months",
+          "highlight": "Led V2 redesign as a part-time designer"
+        },
+        {
+          "id": "mercuryo",
+          "company": "Mercuryo",
+          "role": "Senior Product Designer",
+          "period": "May 2023 - November 2025",
+          "duration": "1+ year",
+          "highlight": "Led product transformation, driving a key partnership to €1.7M monthly turnover"
+        },
+        {
+          "id": "cere",
+          "company": "Cere Network",
+          "role": "Lead Product Designer",
+          "period": "May 2023 - August 2024",
+          "duration": "1+ year",
+          "highlight": "Increased NFT Marketplace user satisfaction by 150%"
+        },
+        {
+          "id": "p2p",
+          "company": "P2P Validator / Key App",
+          "role": "Lead Product Designer",
+          "period": "July 2021 - May 2023",
+          "duration": "2 years",
+          "highlight": "0-to-1 Solana wallet, led team of 4"
+        },
+        {
+          "id": "loyalty",
+          "company": "Loyalty Media Group",
+          "role": "Senior Product Designer",
+          "period": "Nov 2020 - July 2021",
+          "duration": "8 months",
+          "highlight": "Improved key screen discovery by 50%"
+        },
+        {
+          "id": "wb",
+          "company": "Wildberries",
+          "role": "Senior Product Designer",
+          "period": "Feb 2020 - Nov 2020",
+          "duration": "9 months",
+          "highlight": "Created design system for Russia's largest e-commerce"
+        }
+      ],
+      "scenario_kier": [
+        {
+          "id": "ekiden",
+          "company": "Composability Labs / Ekiden",
+          "role": "Senior Product Designer",
+          "period": "Current",
+          "duration": "Ongoing",
+          "highlight": "Leading design for Ekiden"
+        },
+        {
+          "id": "gmx",
+          "company": "GMX Exchange",
+          "role": "Senior Product Designer (Part-Time)",
+          "period": "August 2024 - June 2025",
+          "duration": "11 months",
+          "highlight": "Led V2 redesign as a part-time designer"
+        },
+        {
+          "id": "cere",
+          "company": "Cere Network",
+          "role": "Lead Product Designer",
+          "period": "May 2023 - August 2024",
+          "duration": "1+ year",
+          "highlight": "Increased NFT Marketplace user satisfaction by 150%"
+        },
+        {
+          "id": "p2p",
+          "company": "P2P Validator / Key App",
+          "role": "Lead Product Designer",
+          "period": "July 2021 - May 2023",
+          "duration": "2 years",
+          "highlight": "0-to-1 Solana wallet, led team of 4"
+        },
+        {
+          "id": "loyalty",
+          "company": "Loyalty Media Group",
+          "role": "Senior Product Designer",
+          "period": "Nov 2020 - July 2021",
+          "duration": "8 months",
+          "highlight": "Improved key screen discovery by 50%"
+        },
+        {
+          "id": "wb",
+          "company": "Wildberries",
+          "role": "Senior Product Designer",
+          "period": "Feb 2020 - Nov 2020",
+          "duration": "9 months",
+          "highlight": "Created design system for Russia's largest e-commerce"
+        }
+      ],
+      "scenario_kirill": [
+        {
+          "id": "mercuryo",
+          "company": "Mercuryo",
+          "role": "Senior Product Designer",
+          "period": "May 2023 - November 2025",
+          "duration": "1+ year",
+          "highlight": "Led product transformation, driving a key partnership to €1.7M monthly turnover."
+        }
+      ],
+      "scenario_defi": [
+        {
+          "id": "p2p",
+          "company": "P2P Validator / Key App",
+          "role": "Lead Product Designer",
+          "period": "July 2021 - May 2023",
+          "duration": "2 years",
+          "highlight": "0-to-1 Solana wallet, led team of 4"
+        }
+      ]
+    },
+    "role_details": {
+      "gmx": {
+        "related_cases": [
+          "gmx_v2",
+          "gmx_multichain",
+          "gmx_system",
+          "gmx_institutional_tools"
+        ],
+        "summary": "Joined as the first full-time designer to lead the platform's critical V2 update. Operated as the sole lead designer in a fully anonymous, async DAO environment, driving the platform to $100B+ in volume.",
+        "responsibilities": [
+          "End-to-end design ownership for web and mobile platforms",
+          "User research and data analysis (50+ interviews)",
+          "Design system architecture and implementation",
+          "Cross-functional collaboration with anonymous team",
+          "Documentation and process establishment"
+        ],
+        "achievements": [
+          "300% increase in unique traders post-V2 launch",
+          "60% reduction in order placement errors",
+          "35% increase in TVL through improved LP UX",
+          "40% uplift in cross-chain transaction volume",
+          "Built comprehensive design system from scratch"
+        ],
+        "tech": [
+          "Figma",
+          "FigJam",
+          "React",
+          "Design Tokens",
+          "Notion",
+          "Python"
+        ]
+      },
+      "cere": {
+        "related_cases": [
+          "cere_nft",
+          "cere_creator_tools",
+          "app_foundry"
+        ],
+        "summary": "Led design across diverse Web3 portfolio including NFT Marketplace, decentralized storage, and wallet applications.",
+        "responsibilities": [
+          "Design leadership for multi-product portfolio",
+          "Team mentorship and design reviews",
+          "Design system development and maintenance",
+          "Stakeholder management and strategy alignment"
+        ],
+        "achievements": [
+          "150% increase in NFT Marketplace user satisfaction",
+          "20% boost in team velocity through design system",
+          "25% reduction in design turnaround time",
+          "10% increase in user acquisition through gamified flows"
+        ],
+        "tech": [
+          "Figma",
+          "Confluence",
+          "JIRA",
+          "React",
+          "Web3.js"
+        ]
+      },
+      "ekiden": {
+        "related_cases": [
+          "ekiden_case"
+        ],
+        "summary": "Sole product designer for Ekiden, an institutional perpetual futures DEX on Aptos. Led complete 0-to-1 product design following strategic pivot, building best-in-class trading interface recognized by ecosystem partners.",
+        "responsibilities": [
+          "Architecting entire trading interface and UX strategy",
+          "Building 50+ component design system with Radix UI",
+          "Conducting competitive analysis across 6+ platforms",
+          "Collaborating with distributed engineering team",
+          "Leading QA and interface testing"
+        ],
+        "achievements": [
+          "Driven $8M volume in first days of testnet",
+          "Onboarded 1k+ users with zero critical UX errors",
+          "Recognized by Aptos Foundation as 'best UI in ecosystem'",
+          "Engineered dual-vault architecture UX for capital efficiency"
+        ],
+        "tech": [
+          "Figma",
+          "Radix UI",
+          "Aptos",
+          "Linear",
+          "Mixpanel",
+          "React"
+        ]
+      },
+      "p2p": {
+        "related_cases": [
+          "key_app"
+        ],
+        "summary": "Joined as first designer, grew to lead team of 4. Built non-custodial Solana wallet from scratch in true 0-to-1 experience.",
+        "responsibilities": [
+          "Design leadership across iOS, Android, and Web",
+          "User research with crypto natives and newcomers",
+          "Team building and mentorship",
+          "Product strategy and roadmap planning"
+        ],
+        "achievements": [
+          "63% increase in wallet creation conversion",
+          "10,000 users",
+          "150% increase in positive store reviews",
+          "Simplest StableCoin sending on Solana"
+        ],
+        "tech": [
+          "Figma",
+          "Swift",
+          "Kotlin",
+          "React Native",
+          "Solana Web3.js"
+        ]
+      },
+      "loyalty": {
+        "related_cases": [
+          "loyalty"
+        ],
+        "summary": "Designed white-label banking applications for financial institutions' loyalty programs, focusing on B2B2C user experiences.",
+        "responsibilities": [
+          "Creating white-label banking and fintech applications",
+          "Conducting card-sorting exercises for intuitive navigation",
+          "Developing custom UI kit from scratch",
+          "Redesigning information architecture based on user research",
+          "Collaborating with banks for customization requirements"
+        ],
+        "achievements": [
+          "50% improvement in key screen discovery",
+          "Enhanced feature discoverability for loyalty programs",
+          "Created modular system flexible for multiple bank partners",
+          "Redesigned over 50 screens based on user research",
+          "Developed architecture serving millions of end-users"
+        ],
+        "tech": [
+          "Figma",
+          "Sketch",
+          "Principle",
+          "Miro",
+          "UserTesting"
+        ]
+      },
+      "wb": {
+        "related_cases": [
+          "wildberries"
+        ],
+        "summary": "Created Russia's largest e-commerce design system while working in the financial department on complex dashboards and CRM systems.",
+        "responsibilities": [
+          "Building comprehensive design system from scratch",
+          "Implementing components in Storybook for developers",
+          "Designing CRM systems for finance staff",
+          "Creating financial dashboards for internal users",
+          "Providing UX consulting for iOS and Android payment apps"
+        ],
+        "achievements": [
+          "80% component implementation in Storybook",
+          "Created the company's most technically advanced design system",
+          "Standardized design across multiple departments",
+          "Improved internal workflow efficiency through better tools",
+          "Established design processes that outlived tenure"
+        ],
+        "tech": [
+          "Figma",
+          "Storybook",
+          "React",
+          "JavaScript",
+          "Design Tokens"
+        ]
+      },
+      "mercuryo": {
+        "related_cases": [
+          "mercuryo_offramp_ecosystem",
+          "mercuryo_rebranding",
+          "mercuryo_trust_wallet",
+          "mercuryo_spend_card"
+        ],
+        "summary": "Joined Mercuryo to lead a dual product transformation. I was responsible for reviving and scaling the company's entire off-ramp product line while simultaneously spearheading a complete company-wide visual rebranding and design system overhaul. My role involved close collaboration with C-level executives to turn strategic business goals into high-impact product realities.",
+        "responsibilities": [
+          "Owning the end-to-end design strategy for the Off-Ramp, Spend Card, and Trust Wallet integration projects.",
+          "Leading a full-scale company rebranding, including the creation of a new design philosophy and multi-platform design system.",
+          "Driving product discovery, from user research and data analysis to competitive benchmarking and stakeholder workshops.",
+          "Collaborating directly with the CPO and business analysts to define product roadmaps and success metrics.",
+          "Mentoring other designers and establishing new design processes to improve consistency and velocity."
+        ],
+        "achievements": [
+          "Grew a single partnership's revenue from zero to €1.7M in monthly turnover.",
+          "Increased weekly off-ramp transaction volume from €250K to over €500K.",
+          "Implemented A/B testing framework to track conversion improvements against historical baselines.",
+          "Reduced off-ramp related support tickets by 50%, saving an estimated 90 hours of support time monthly."
+        ],
+        "tech": [
+          "Figma, FigJam, After Effects, Spline, Framer, ProtoPie, Principle, React",
+          "Metabase, Amplitude, Mixpanel, Hotjar, FullStory, Useberry, Crazy Egg",
+          "Jira, Confluence, Storybook, Zeroheight, Loom, Python (for analysis)"
+        ]
+      }
+    },
+    "case_studies": {
+      "ekiden_case": {
+        "title": "Ekiden DEX: Rebrand & Design System",
+        "desc": "Building a high-performance trading platform identity from scratch on Aptos.",
+        "metrics": "$8M Vol in First Days, 100% System Adoption",
+        "tags": [
+          "DeFi",
+          "Design System",
+          "Branding",
+          "Product Design"
+        ]
+      },
+      "gmx_v2": {
+        "title": "GMX V2 Platform Redesign",
+        "desc": "Complete transformation addressing user trust crisis",
+        "metrics": "+300% traders, -60% errors",
+        "tags": [
+          "DeFi",
+          "Trading",
+          "Research"
+        ]
+      },
+      "gmx_multichain": {
+        "title": "Multichain Trading Interface",
+        "desc": "Abstracting blockchain complexity for traders",
+        "metrics": "+40% cross-chain volume",
+        "tags": [
+          "DeFi",
+          "Innovation",
+          "Complex UX"
+        ]
+      },
+      "gmx_system": {
+        "title": "GMX Design System",
+        "desc": "Token-based system accelerating development",
+        "metrics": "+30% dev velocity, -40% UI bugs",
+        "tags": [
+          "Systems",
+          "Scale",
+          "Documentation"
+        ]
+      },
+      "key_app": {
+        "title": "Key App - Solana Wallet",
+        "desc": "0-to-1 non-custodial wallet for mainstream users, solana foundation as exemplary ux",
+        "metrics": "10K users, +63% onboarding",
+        "tags": [
+          "Web3",
+          "Mobile",
+          "Consumer"
+        ]
+      },
+      "cere_nft": {
+        "title": "DaVinci NFT Marketplace",
+        "desc": "Artist-first marketplace with Web3 onboarding",
+        "metrics": "+150% satisfaction score",
+        "tags": [
+          "NFT",
+          "Marketplace",
+          "Web3"
+        ]
+      },
+      "wildberries": {
+        "title": "Wildberries Design System",
+        "desc": "E-commerce design system with Storybook",
+        "metrics": "80% component coverage",
+        "tags": [
+          "E-commerce",
+          "Systems",
+          "Scale"
+        ]
+      },
+      "loyalty": {
+        "title": "Banking Loyalty Apps",
+        "desc": "White-label B2B2C fintech applications",
+        "metrics": "+50% feature discovery",
+        "tags": [
+          "Fintech",
+          "B2B2C",
+          "Mobile"
+        ]
+      },
+      "mercuryo_offramp_ecosystem": {
+        "title": "Off-Ramp Ecosystem: From Revival to €1.7M/mo",
+        "desc": "Transformed a neglected product into the company's #2 revenue generator by reviving its core, scaling it through a major partnership (Trust Wallet), and expanding it with a flagship card product.",
+        "metrics": "€1.7M/mo Turnover, +31% Acceptance Rate",
+        "tags": [
+          "Fintech",
+          "Product Strategy",
+          "B2B2C",
+          "Scaling"
+        ]
+      },
+      "mercuryo_rebranding": {
+        "title": "Mercuryo's Visual Revolution & Rebranding",
+        "desc": "Led a complete company-wide rebranding to combat an outdated look. Created a new 'living interface' design philosophy and a robust design system that improved conversion and brand recognition across 200+ partners.",
+        "metrics": "89% Brand Recognition",
+        "tags": [
+          "Branding",
+          "Design System",
+          "UI/UX",
+          "Visual Design"
+        ]
+      },
+      "mercuryo_trust_wallet": {
+        "title": "Trust Wallet Integration: From Zero to €1.7M Monthly",
+        "desc": "Designed complete off-ramp integration for Trust Wallet's 70 million users, creating seamless white-label solution optimized for mobile-first experience. Achieved 3-month delivery timeline with premium quality standards.",
+        "metrics": "€1.7M/mo Volume, 70-80% Off-Ramp Volume",
+        "tags": [
+          "Fintech",
+          "B2B2C",
+          "White-Label",
+          "Mobile UX"
+        ]
+      },
+      "mercuryo_spend_card": {
+        "title": "Mercuryo Spend Card: From 8% to 33% Conversion",
+        "desc": "Transformed underperforming card product through complete strategic repositioning. Redesigned from buried feature to flagship product with simplified onboarding and clear value proposition.",
+        "metrics": "8% → 33% Conversion, 11x Application Growth",
+        "tags": [
+          "Fintech",
+          "Product Strategy",
+          "Card Products",
+          "Conversion Optimization"
+        ]
+      },
+      "cere_creator_tools": {
+        "title": "Freeport & DaVinci: Creator Economy Engine",
+        "desc": "A comprehensive platform combining NFT custody infrastructure (Freeport) with a consumer-facing marketplace (DaVinci) and subscription tools.",
+        "metrics": "150% Artist CSAT, 25% Higher Sub Conversion",
+        "tags": [
+          "Creator Economy",
+          "Infrastructure",
+          "SaaS",
+          "NFT"
+        ]
+      },
+      "app_foundry": {
+        "title": "App Foundry: Decentralized AWS Console",
+        "desc": "A powerful dashboard for developers to manage and visualize data for applications built on Cere's DDC.",
+        "metrics": "25% Dev Efficiency Increase",
+        "tags": [
+          "Developer Tools",
+          "Infrastructure",
+          "B2B",
+          "Dashboard"
+        ]
+      },
+      "portfolio_dev_experience": {
+        "title": "Interactive Terminal Portfolio (Full-Stack Project)",
+        "desc": "Designed and built a full-stack portfolio application with a custom headless CMS, demonstrating deep developer empathy and technical skill.",
+        "metrics": "React, Node.js, CI/CD",
+        "tags": [
+          "Developer Experience",
+          "Full-Stack",
+          "React",
+          "Headless CMS"
+        ]
+      },
+      "gmx_institutional_tools": {
+        "title": "Risk Visualization & Institutional DeFi Tools",
+        "desc": "Designed a suite of professional tools for GMX, focusing on advanced risk management, portfolio analysis, and data visualization for institutional traders.",
+        "metrics": "-80% Multi-Chain Errors",
+        "tags": [
+          "DeFi",
+          "Institutional",
+          "Risk Management",
+          "Data Viz"
+        ]
+      },
+      "trading_bot": {
+        "title": "Binance Multi-Asset Trading Bot",
+        "desc": "Production-ready automated trading system with enterprise-grade architecture, comprehensive testing, and sophisticated risk management.",
+        "metrics": "594+ Tests, 93% Coverage",
+        "tags": [
+          "Full-Stack",
+          "Python",
+          "React",
+          "DevOps"
+        ]
+      }
+    },
+    "case_details": {
+      "ekiden_case": {
+        "challenge": "Ekiden (formerly V12) needed a complete strategic pivot and rebrand to launch on the Aptos blockchain. As the sole designer, I had to build a professional, institutional-grade trading interface and a comprehensive design system from scratch in just 3 months, with zero existing assets.",
+        "approach": [
+          "Developed 'Vibrant Precision' design philosophy (Lime Green + Dark Mode)",
+          "Built a token-based design system using Radix Colors for accessibility",
+          "Designed complex trading features: Cross-Margin Vaults, Real-time PnL",
+          "Collaborated closely with engineers to ensure 100% design system adoption",
+          "Solved information overload in Portfolio view through user research"
+        ],
+        "solution": "I delivered a complete brand identity and a scalable, component-based design system that powered the entire platform. The interface balances professional trading density with retail-friendly accessibility, featuring a distinctive lime-green aesthetic that stands out in the DeFi landscape.",
+        "results": [
+          "Testnet achieved $8M trading volume in the first days after launch",
+          "Recognized by Aptos Foundation as 'best UI in ecosystem'",
+          "Design system accelerated frontend development by 3-5 days per feature",
+          "95%+ positive community sentiment on UI/UX"
+        ],
+        "learnings": "Systematic design pays dividends. By investing time upfront in a robust token-based architecture, we maintained consistency across rapid feature iterations and enabled a small team to ship an institutional-grade product."
+      },
+      "gmx_v2": {
+        "challenge": "GMX V1 was bleeding user trust. The platform had opaque fee structures, a confusing interface that was hostile to both new and experienced traders, and was missing core features like limit orders. User complaints were mounting and growth was stalling.",
+        "approach": [
+          "Conducted 50+ semi-structured user interviews to understand pain points",
+          "Analyzed support tickets using LLM aggregation to identify patterns",
+          "Created user journey maps highlighting critical friction points",
+          "Rapid prototyping with continuous async feedback loops",
+          "Close collaboration with engineering on technical constraints"
+        ],
+        "solution": "Complete redesign of the trading interface focusing on transparency and usability. Introduced clear fee breakdowns, intuitive order placement flow, comprehensive position management, and responsive design for all devices. Built everything within 3 months.",
+        "results": [
+          "300% increase in unique traders within first month",
+          "60% reduction in order placement errors",
+          "Complete reversal in community sentiment",
+          "Platform became the UI standard for DeFi derivatives"
+        ],
+        "learnings": "Working in an anonymous DAO taught me the importance of over-communication and documentation. Success came from deeply understanding user needs and translating complex DeFi mechanics into intuitive interfaces."
+      },
+      "gmx_multichain": {
+        "challenge": "Traders needed to manage positions across multiple blockchains (Arbitrum and Avalanche) but were forced to switch networks manually, track positions separately, and manage different gas tokens. This complexity was limiting trading volume and user adoption.",
+        "approach": [
+          "Mapped current multi-chain user journeys to identify friction points",
+          "Researched account abstraction and cross-chain messaging protocols",
+          "Designed unified 'GMX Account' concept to abstract chain complexity",
+          "Created progressive disclosure system for chain-specific details",
+          "Tested prototypes with power traders managing multi-chain positions"
+        ],
+        "solution": "Designed a seamless multi-chain interface where users see a unified portfolio view regardless of underlying chains. Implemented smart routing that automatically selects the best chain for each trade based on liquidity and fees. Chain switching happens invisibly in the background.",
+        "results": [
+          "40% increase in cross-chain transaction volume",
+          "Reduced multi-chain position management time by 65%",
+          "Expanded addressable market to users on both chains",
+          "Set new standard for multi-chain DeFi UX"
+        ],
+        "learnings": "The best Web3 UX often means hiding Web3 complexity entirely. Users care about outcomes (their trades), not the underlying technology (which blockchain). Success came from thinking like a trader, not a blockchain engineer."
+      },
+      "gmx_system": {
+        "challenge": "GMX had accumulated massive design debt with inconsistent components, no documentation, and developers recreating UI elements from scratch. This was slowing development velocity and creating a fragmented user experience across the platform.",
+        "approach": [
+          "Audited entire platform to catalog existing patterns and inconsistencies",
+          "Built token-based architecture using Figma variables and JSON export",
+          "Created comprehensive component library with usage guidelines",
+          "Developed automated documentation system for developer handoff",
+          "Established contribution guidelines for maintaining system integrity"
+        ],
+        "solution": "Built a complete design system from the ground up, featuring semantic color tokens, responsive typography scale, and over 200 production-ready components. Integrated directly with development workflow through automated JSON token export and comprehensive Storybook documentation.",
+        "results": [
+          "30% increase in feature development velocity",
+          "40% reduction in UI-related bug reports",
+          "90% reduction in design-dev handoff time",
+          "Enabled consistent experience across all GMX products"
+        ],
+        "learnings": "A design system is only as good as its adoption. By involving developers from day one and automating as much as possible, we created a system that teams actually wanted to use. The key was making the right thing also the easiest thing."
+      },
+      "cere_nft": {
+        "challenge": "Cere's NFT marketplace struggled with low artist retention and buyer engagement. Artists found the minting process confusing, buyers couldn't discover relevant content, and the Web3 onboarding created massive drop-off rates for mainstream users.",
+        "approach": [
+          "Conducted interviews with 30+ artists about their minting experience",
+          "Analyzed buyer behavior patterns and discovery challenges",
+          "Benchmarked against Web2 marketplaces for UX patterns",
+          "Designed progressive Web3 onboarding with email/social login",
+          "Created artist-first features like batch minting and analytics"
+        ],
+        "solution": "Redesigned the entire marketplace with artists at the center. Simplified minting to a 3-step process, added powerful discovery features with AI-powered recommendations, and implemented Web2-style onboarding that gradually introduced Web3 concepts.",
+        "results": [
+          "150% increase in artist satisfaction scores (CSAT)",
+          "200% improvement in buyer engagement metrics",
+          "Reduced minting abandonment rate by 45%",
+          "10% increase in overall platform user acquisition"
+        ],
+        "learnings": "NFT marketplaces succeed when they prioritize creators. By focusing on artist tools and experience first, we created a virtuous cycle where better content attracted more buyers, which attracted more artists."
+      },
+      "wildberries": {
+        "challenge": "Russia's largest e-commerce platform had no unified design language across teams. Each department built features independently, resulting in inconsistent experiences, duplicated work, and a fragmented brand presence that confused users.",
+        "approach": [
+          "Audited design patterns across all departments and platforms",
+          "Built coalition of stakeholders to champion standardization",
+          "Created design system with developer-first documentation",
+          "Implemented components directly in Storybook for easy adoption",
+          "Established governance model for system maintenance"
+        ],
+        "solution": "Developed the most comprehensive design system in the company's history, with over 80% of components implemented in production Storybook. Created extensive documentation, usage guidelines, and a contribution model that empowered teams while maintaining consistency.",
+        "results": [
+          "80% reduction in design inconsistencies across platforms",
+          "Saved 100+ hours monthly on component recreation",
+          "Improved page load performance through standardized components",
+          "System adopted by 6 different departments within 3 months"
+        ],
+        "learnings": "Building a design system in a large organization is as much about politics as it is about pixels. Success required building consensus, demonstrating value quickly, and making adoption painless for overwhelmed teams."
+      },
+      "loyalty": {
+        "challenge": "Banks needed white-label applications for loyalty programs but existing solutions were generic and failed to engage users. Loyalty features were buried, redemption flows were complex, and personalization was non-existent, leading to low program participation.",
+        "approach": [
+          "Conducted card-sorting with 50+ banking customers",
+          "Analyzed loyalty program engagement across 10 partner banks",
+          "Designed modular architecture for bank customization",
+          "Created information hierarchy based on user mental models",
+          "Built flexible UI kit supporting multiple brand identities"
+        ],
+        "solution": "Restructured entire application around user needs rather than bank requirements. Created intuitive navigation that surfaced loyalty benefits prominently, simplified redemption to 2-tap process, and built personalization engine showing relevant offers based on spending patterns.",
+        "results": [
+          "50% improvement in loyalty feature discovery",
+          "Increased program participation by 35% across partner banks",
+          "Reduced customer support tickets by 40%",
+          "Enabled deployment to 5 new bank partners"
+        ],
+        "learnings": "B2B2C products require balancing multiple stakeholders' needs. By focusing on end-user experience while building flexibility for business customers, we created a solution that served both audiences effectively."
+      },
+      "key_app": {
+        "challenge": "Building a non-custodial crypto wallet that mainstream users could actually use. The Solana ecosystem lacked user-friendly wallets, and existing solutions were too technical for average users.",
+        "approach": [
+          "Competitive analysis of 15+ crypto wallets",
+          "User interviews with both crypto natives and newcomers",
+          "Iterative prototyping with weekly user testing",
+          "Close collaboration with Solana ecosystem partners",
+          "Focus on reducing cognitive load at every step"
+        ],
+        "solution": "Designed the simplest StableCoin sending feature on Solana, integrated social login (Google/Apple) for easy onboarding, created educational tooltips without being patronizing, and built trust through transparent security messaging.",
+        "results": [
+          "Featured by Solana Foundation as exemplary UX",
+          "63% increase in wallet creation conversion",
+          "10,000 users",
+          "150% increase in positive store (Google and Apple) reviews"
+        ],
+        "learnings": "Simplifying Web3 isn't about hiding complexity—it's about progressive disclosure. Users want to understand what's happening with their money, but only when they're ready for that information."
+      },
+      "mercuryo_offramp_ecosystem": {
+        "challenge": "When I took over, Mercuryo's off-ramp product was in crisis. It was a neglected, unprofitable feature with a dismal 49% acceptance rate and a user experience so confusing that 53% of all initiated transactions failed. This broken foundation not only cost us revenue but also blocked our ability to secure major partnerships and launch new products like the Spend Card.",
+        "approach": [
+          "1. Data-Driven Revival: I started by 'resurrecting' the core off-ramp product. I analyzed over 1,000 support tickets and transaction patterns to map 21 distinct failure points. Based on this, I redesigned the entire flow to focus on communication clarity and user trust.",
+          "2. Embedded Partnership & Scaling: With a newly stable product, we secured a deal with Trust Wallet. I acted as an embedded partner, shadowing their team to design a seamless white-label integration that felt completely native to their 70 million users.",
+          "3. Strategic Repositioning: Finally, I leveraged our now-successful off-ramp infrastructure to relaunch the 'Spend Card'. I repositioned it from a confusing technical feature into an intuitive, standalone flagship product with its own clear value proposition."
+        ],
+        "solution": "I delivered a holistic transformation of Mercuryo's entire off-ramp strategy. This included a revived and profitable core product, a high-performing white-label solution that became our most successful partnership, and a strategically repositioned Spend Card. Together, these three components formed a powerful, interconnected ecosystem for converting crypto to fiat.",
+        "results": [
+          "Grew the Trust Wallet integration to €1.7M in monthly turnover, becoming Mercuryo's #2 revenue source.",
+          "Increased the core widget's acceptance rate from 49% to 80.5%.",
+          "Boosted Spend Card conversion from 8% to 33%.",
+          "Reached over 50,000 unique users on the Trust Wallet integration within the first quarter.",
+          "Reduced average transaction completion time from 15 minutes to 3 minutes."
+        ],
+        "learnings": "The greatest business opportunities are often hidden within neglected or 'broken' products. By fixing the foundation first, we didn't just solve one problem—we unlocked a chain reaction of new opportunities for partnerships and product innovation that transformed the company's growth trajectory."
+      },
+      "mercuryo_rebranding": {
+        "challenge": "Mercuryo's visual identity was critically outdated. We had 47 different button styles, no consistent design language, and our brand became unrecognizable when partners customized our widgets. This 'design debt' was not just cosmetic—it was actively hurting conversion rates and damaging our credibility against modern competitors like MoonPay and Stripe.",
+        "approach": [
+          "1. Challenged Industry Norms: Instead of copying the sterile, flat aesthetic common in fintech, I proposed a new philosophy of 'living interfaces' that used subtle glows, micro-animations, and dynamic effects to feel more responsive and alive.",
+          "2. Pioneered a Partner Framework: To solve the customization paradox, I created a framework where brand recognition was driven by unique animation patterns, grid systems, and component behaviors—not just colors. This allowed partners deep customization while keeping the Mercuryo 'feel' intact.",
+          "3. Architected a Dual-Theme System: I designed light and dark modes to be unique experiences, not simple color inversions, using different visual effects (aurora glows vs. clean gradients) to craft distinct moods for each theme."
+        ],
+        "solution": "I designed and delivered a complete, token-based design system that transformed Mercuryo's visual identity. The system included a new core design language (Run Bold font, signature 'glow' effects), over 120 fully documented components, the innovative 'Living Card' concept with holographic effects, and a three-tier customization framework for our 200+ partners.",
+        "results": [
+          "Measured registration-to-transaction conversion against 37% baseline.",
+          "Established A/B testing framework to measure brand recognition on customized widgets.",
+          "Improved partner satisfaction (NPS) from +15 to +52.",
+          "Reduced new partner integration time from 3 weeks to just 3 days.",
+          "Achieved industry recognition with features on Awwwards and CSS Design Awards."
+        ],
+        "learnings": "In a sea of minimalist design, a bold and opinionated visual identity can be a powerful competitive advantage. This project proved that customization and brand identity are not opposing forces; a thoughtful design system can empower partners while strengthening the core brand experience."
+      },
+      "mercuryo_trust_wallet": {
+        "challenge": "Trust Wallet needed to integrate a reliable off-ramp solution for its 70 million users within a tight, three-month deadline. The challenge was to design a white-label experience that felt completely native to Trust Wallet's minimalist UI while handling complex regional compliance and high transaction volumes.",
+        "approach": [
+          "Conducted a two-week embedded partnership at Trust Wallet's offices to deeply understand their design philosophy and user needs.",
+          "Designed an intelligent, progressive disclosure flow that hid complexity, showing only the essential amount and payment method upfront.",
+          "Collaborated with engineering to prioritize a performance-first architecture, reducing initial load times by 60%.",
+          "Ran 12 iterative testing cycles with the Trust Wallet community to refine the experience."
+        ],
+        "solution": "Delivered a seamless, white-label integration that felt native to the Trust Wallet app. All Mercuryo branding was removed, and the UI components were custom-designed to match Trust Wallet's design system, creating a frictionless user journey.",
+        "results": [
+          "Generated €1.7M in monthly turnover, accounting for 70-80% of Mercuryo's total off-ramp volume.",
+          "Improved the transaction acceptance rate from a baseline of 49% to 75.28%.",
+          "Onboarded over 50,000 unique users in the first quarter.",
+          "Reduced the average transaction completion time from 15 minutes to just 3 minutes."
+        ],
+        "learnings": "Successful B2B2C products require 'invisible excellence.' The best design work was the complexity users never saw. By fully embracing our partner's vision, we created a win-win integration that transformed both companies."
+      },
+      "mercuryo_spend_card": {
+        "challenge": "The Spend Card product was an underperforming off-ramp extension with only 100 test cards issued. Users didn't understand its value proposition, and the entire flow felt like a technical afterthought. A complete strategic and design pivot was needed to turn it into a flagship product.",
+        "approach": [
+          "Conducted 15 user interviews and competitive analysis of Revolut and MoonPay to understand user expectations.",
+          "Pioneered the 'Fiat Balance' concept, reframing the product with familiar banking language to reduce cognitive load.",
+          "Designed a new information architecture that separated the Spend Card from the standard off-ramp flow, giving it a distinct product identity.",
+          "Created a flexible design framework to support customized card designs for enterprise partners like Ledger and Trust Wallet."
+        ],
+        "solution": "Led a complete, end-to-end redesign that repositioned the Spend Card as a standalone product. The new experience featured a simplified 3-step onboarding, a unified balance display, and the industry's first direct fiat transfer feature between Mercuryo cards.",
+        "results": [
+          "Increased the off-ramp to Spend Card conversion rate from 8% to 33% within three months.",
+          "Grew from 100 test cards to over 200 active cards issued, with major partners like Ledger and Tonkeeper contributing.",
+          "Improved the user satisfaction (NPS) score for the product from -12 to +28.",
+          "Reduced the average card issuance time from 72 hours to just 4 minutes."
+        ],
+        "learnings": "Users don't want to think about crypto technology; they want familiar banking experiences. By hiding the complexity and emphasizing utility, we transformed a technical feature into a lifestyle product that resonated with mainstream users."
+      },
+      "cere_creator_tools": {
+        "challenge": "The NFT space suffered from broken asset links and poor user experience. We needed a secure custody infrastructure (Freeport) and a compelling consumer layer (DaVinci) to solve this. Creators needed powerful tools to monetize content, while enterprises required white-label customization.",
+        "approach": [
+          "Designed the core Freeport platform for secure asset custody and royalty enforcement.",
+          "Created the DaVinci marketplace with a 'One-Tap Buy' feature to reduce friction.",
+          "Implemented a modular design system shared across both infrastructure and consumer products.",
+          "Developed subscription flows (formerly CereFans) to drive recurring revenue for creators."
+        ],
+        "solution": "Delivered a unified 'Creator Suite' that combined the robust Freeport infrastructure with the consumer-friendly DaVinci marketplace. The platform allowed for secure NFT minting, seamless cross-chain management, and direct fan engagement through subscriptions.",
+        "results": [
+          "Achieved a 150% increase in artist satisfaction (CSAT) on the DaVinci marketplace.",
+          "Achieved a 25% higher conversion rate on subscription flows compared to industry benchmarks.",
+          "The 'One-Tap Buy' feature drove a 30% increase in purchase conversion.",
+          "Successfully onboarded 10,000+ creators to the platform suite."
+        ],
+        "learnings": "Building a successful creator economy requires solving both the infrastructure layer (trust/custody) and the application layer (usability/discovery). By connecting them, we created a seamless experience that empowered creators to own their data."
+      },
+      "app_foundry": {
+        "challenge": "As the ecosystem matured, we needed to support external developers. The existing tools were fragmented, making it difficult for developers to visualize data related to the CDN and DDC. We needed a 'Decentralized AWS Console' to empower third-party builders.",
+        "approach": [
+          "Conducted extensive developer interviews to understand their workflow needs.",
+          "Designed a highly modular, widget-based dashboard allowing for custom views.",
+          "Created an internal tab system for multitasking between different data streams.",
+          "Standardized data visualization components for clarity and performance."
+        ],
+        "solution": "I designed the App Foundry as a flexible, professional-grade console. It features a library of modular widgets that allow developers to build custom dashboards suited to their specific application needs, positioning Cere as a viable decentralized alternative to CloudFlare.",
+        "results": [
+          "25% Increase in Developer Efficiency for routine maintenance tasks.",
+          "Streamlined management of DDC nodes and Edge Clusters.",
+          "Enabled seamless onboarding for third-party developers.",
+          "Established a scalable pattern for future developer tools."
+        ],
+        "learnings": "Developer tools must be as well-designed as consumer products. By applying user-centered design to technical infrastructure, we significantly reduced the barrier to entry for building on the Cere Network."
+      },
+      "portfolio_dev_experience": {
+        "challenge": "Standard portfolio websites are static and fail to demonstrate deep technical understanding or developer empathy. I needed a platform that was not just a gallery of my work, but a testament to my skills in product architecture, development, and building tools for technical users.",
+        "approach": [
+          "Designed a fully decoupled, configuration-driven architecture where a single JSON file acts as a headless CMS.",
+          "Developed the frontend using Next.js and Tailwind CSS, creating a dynamic single-page application that renders content based on a server-provided session object.",
+          "Built a custom headless CMS on Telegram using Node.js and the grammY framework to manage all portfolio content on the go.",
+          "Implemented a full CI/CD pipeline with GitHub Actions for automated, zero-downtime deployments."
+        ],
+        "solution": "The result is this interactive terminal-style portfolio. It's a full-stack application that allows for deep personalization for every visitor via unique access codes. The entire content is managed through a secure Telegram bot I built, which includes features for version control, backups, and real-time analytics notifications.",
+        "results": [
+          "Demonstrated proficiency in modern web technologies: React, Next.js, Node.js, and CI/CD.",
+          "Showcased deep understanding of developer experience (DX) by building a custom, practical CMS.",
+          "Proved ability to design and architect complex, scalable systems from the ground up.",
+          "Created a powerful, personalized communication tool that goes far beyond a traditional PDF or website."
+        ],
+        "learnings": "The best way to demonstrate empathy for developers is to build your own tools. This project solidified my belief in the power of decoupled architectures and gave me firsthand experience in every stage of the product development lifecycle, from ideation to deployment and maintenance."
+      },
+      "gmx_institutional_tools": {
+        "challenge": "While GMX's core platform served retail traders well, institutional and professional users required more sophisticated tools for risk management and portfolio analysis. They needed to manage large, multi-chain positions with absolute confidence and clarity, a need the existing UI didn't fully address.",
+        "approach": [
+          "Conducted targeted interviews with 15+ high-volume traders ('whales') to map their specific risk management workflows.",
+          "Designed a real-time Liquidation Risk Calculator to provide instant feedback on how new trades would affect their overall position health.",
+          "Architected a unified Cross-Chain Position Manager to abstract away the complexity of managing assets on both Arbitrum and Avalanche.",
+          "Developed a comprehensive Institutional Trading Dashboard that surfaced critical data points like funding rate history and detailed PnL."
+        ],
+        "solution": "Delivered a suite of advanced features tailored for professional use. This included an interactive risk calculator, a unified dashboard for multi-chain asset management, and detailed data visualizations. These tools were designed with a 'progressive disclosure' approach, offering deep insights without cluttering the primary trading interface for retail users.",
+        "results": [
+          "Reduced user errors in multi-chain operations by 80% with the new position manager.",
+          "The Liquidation Risk Calculator is now used by over 50,000 traders monthly to manage their positions.",
+          "Increased capital efficiency and confidence for institutional users, leading to higher trading volumes from that segment.",
+          "Established GMX as a more credible platform for professional and institutional capital."
+        ],
+        "learnings": "Institutional and retail users can coexist on the same platform, but they require different toolsets. Effective risk communication through clear data visualization is the most critical element in building trust with professional traders who manage significant capital."
+      },
+      "trading_bot": {
+        "challenge": "Building an automated trading system that could execute sophisticated trading strategies while maintaining strict capital protection and operational reliability. The bot needed enterprise-grade architecture with comprehensive testing, risk management, and production-ready deployment.",
+        "approach": [
+          "Architected modular Python backend with FastAPI for real-time monitoring dashboard",
+          "Implemented three-tier risk management: individual position stops, portfolio emergency protocol, and circuit breaker",
+          "Built dynamic pricing engine calculating entry levels in real-time based on market conditions",
+          "Developed comprehensive testing strategy with 594+ tests achieving 93% code coverage",
+          "Created React/TypeScript dashboard for real-time position monitoring and algorithm visualization"
+        ],
+        "solution": "Delivered a production-ready trading system featuring intelligent multi-asset positioning across BTC, BNB, SOL, and XRP on Binance Futures. The system includes automated order management, crash recovery, WebSocket integration for <100ms latency, and enterprise-grade monitoring with Telegram alerts. Full GitHub repository available at https://github.com/undevy-org/binance-manual-oco",
+        "results": [
+          "Achieved 99.9% uptime target with automatic crash recovery",
+          "Implemented capital-efficient strategy using 10% of portfolio with 5x leverage",
+          "Built comprehensive test suite with 594+ tests and 93% coverage",
+          "Created production CI/CD pipeline with automated deployment",
+          "Demonstrated full-stack capabilities across Python, React, DevOps, and financial systems"
+        ],
+        "learnings": "Building reliable automated trading systems requires obsessive attention to risk management and testing. The three-tier risk system proved that systematic capital protection can coexist with aggressive positioning. This project showcased my technical capabilities beyond design, demonstrating proficiency in backend architecture, testing methodologies, and production DevOps practices."
+      }
+    },
+    "skills": [
+      {
+        "name": "Design Systems",
+        "id": "design_systems",
+        "level": "EXPERT",
+        "desc": "Token-based, scalable systems"
+      },
+      {
+        "name": "Web3/DeFi UX",
+        "id": "web3_ux",
+        "level": "EXPERT",
+        "desc": "Making crypto accessible"
+      },
+      {
+        "name": "User Research",
+        "id": "user_research",
+        "level": "ADVANCED",
+        "desc": "Data-driven insights"
+      },
+      {
+        "name": "Frontend Dev",
+        "id": "frontend",
+        "level": "INTERMEDIATE",
+        "desc": "React, CSS, Prototyping"
+      },
+      {
+        "name": "Data Analysis",
+        "id": "data_analysis",
+        "level": "ADVANCED",
+        "desc": "Metrics & optimization"
+      },
+      {
+        "name": "Team Leadership",
+        "id": "leadership",
+        "level": "ADVANCED",
+        "desc": "Mentorship & processes"
+      },
+      {
+        "name": "Fintech Systems",
+        "id": "fintech",
+        "level": "EXPERT",
+        "desc": "Payments & Compliance"
+      }
+    ],
+    "skill_details": {
+      "Design Systems": {
+        "description": "Built comprehensive design systems from scratch at multiple companies, focusing on scalability and developer handoff.",
+        "examples": [
+          "GMX: Token-based system with Figma variables and JSON export",
+          "Wildberries: Component library with 80% Storybook coverage",
+          "Key App: Multi-platform system for iOS/Android consistency"
+        ],
+        "tools": [
+          "Figma",
+          "Design Tokens",
+          "Storybook",
+          "Style Dictionary"
+        ],
+        "impact": [
+          "Reduced design inconsistencies by 90%",
+          "Accelerated development by 30%"
+        ]
+      },
+      "Web3/DeFi UX": {
+        "description": "Specialized in making complex blockchain interactions accessible to mainstream users without sacrificing functionality.",
+        "examples": [
+          "Simplified gas fee explanations with progressive disclosure",
+          "One-click trading interfaces hiding complex DeFi mechanics",
+          "Social login integration for Web3 onboarding"
+        ],
+        "tools": [
+          "Web3.js",
+          "Ethers.js",
+          "WalletConnect",
+          "Rainbow Kit"
+        ],
+        "impact": [
+          "Increased user adoption by 300%",
+          "Reduced support tickets by 50%"
+        ]
+      },
+      "User Research": {
+        "description": "Combining quantitative and qualitative methods to drive design decisions based on real user behavior and needs.",
+        "examples": [
+          "50+ user interviews for GMX V2 redesign",
+          "LLM-powered support ticket analysis",
+          "Behavioral analytics with Hotjar and Mixpanel"
+        ],
+        "tools": [
+          "Figma",
+          "Maze",
+          "Hotjar",
+          "Python (for analysis)"
+        ],
+        "impact": [
+          "Identified critical UX issues leading to 60% error reduction"
+        ]
+      },
+      "Frontend Dev": {
+        "description": "Engineering background enables deep collaboration with developers and ability to prototype complex interactions directly in code.",
+        "examples": [
+          "Built portfolio site with Next.js and custom animations",
+          "Prototyped Web3 interactions in React for faster iteration",
+          "Implemented design tokens pipeline with automated export"
+        ],
+        "tools": [
+          "React",
+          "TypeScript",
+          "Next.js",
+          "Tailwind CSS"
+        ],
+        "impact": [
+          "Reduced design-dev friction by 50%",
+          "Enabled rapid prototyping of complex features"
+        ]
+      },
+      "Data Analysis": {
+        "description": "Leveraging quantitative data to inform design decisions and measure impact of changes on business metrics.",
+        "examples": [
+          "Built Python scripts to analyze user behavior patterns",
+          "Created dashboards tracking design KPIs in Mixpanel",
+          "Used cohort analysis to optimize onboarding flows"
+        ],
+        "tools": [
+          "Python",
+          "SQL",
+          "Mixpanel",
+          "Google Analytics",
+          "Hotjar"
+        ],
+        "impact": [
+          "Increased conversion rates by 63% through data-driven optimization"
+        ]
+      },
+      "Fintech Systems": {
+        "description": "Designing secure, compliant, and user-friendly financial interfaces for global markets.",
+        "examples": [
+          "Designed white-label payment gateways for 200+ partners",
+          "Optimized KYC/AML flows to reduce drop-off",
+          "Built multi-currency wallet architectures"
+        ],
+        "tools": [
+          "Figma",
+          "Whimsical",
+          "Linear",
+          "Storybook"
+        ],
+        "impact": [
+          "Processed €1.7M+ monthly volume",
+          "Reduced compliance-related errors by 40%"
+        ]
+      },
+      "Team Leadership": {
+        "description": "Built and led design teams from scratch, establishing processes and culture while maintaining hands-on involvement.",
+        "examples": [
+          "Grew Key App design team from 1 to 4 designers",
+          "Established design review process at Cere Network",
+          "Mentored junior designers at multiple companies"
+        ],
+        "tools": [
+          "Figma",
+          "Notion",
+          "Slack",
+          "Linear"
+        ],
+        "impact": [
+          "Improved team velocity by 20%",
+          "Maintained high designer retention rates"
+        ]
+      }
+    },
+    "side_projects": [
+      {
+        "id": "binance_trading_bot",
+        "name": "Binance Trading Bot",
+        "desc": "Production-ready automated trading system",
+        "status": "COMPLETED",
+        "tech": [
+          "Python",
+          "React",
+          "FastAPI",
+          "TypeScript"
+        ],
+        "github": "https://github.com/undevy-org/binance-manual-oco"
+      },
+      {
+        "id": "counterpress",
+        "name": "CounterPress",
+        "desc": "Sports media platform design & development",
+        "status": "COMPLETED",
+        "tech": [
+          "Design",
+          "PM",
+          "Content"
+        ]
+      },
+      {
+        "id": "teaching",
+        "name": "Teaching at GeekBrains",
+        "desc": "UI/UX courses for 200+ students",
+        "status": "COMPLETED",
+        "tech": [
+          "Education",
+          "Mentorship"
+        ]
+      }
+    ],
+    "public_speaking": [
+      {
+        "title": "Layer 2 Meetup Tbilisi - 'UX in Web3'",
+        "url": "https://youtu.be/C5NPMy7r_-M?si=3qtQuWzfw6STp14T"
+      },
+      {
+        "title": "BasicBlock Podcast - Guest speaker",
+        "url": "https://basicblockradio.com/e165/"
+      },
+      {
+        "title": "Published articles on Web3 design",
+        "url": "https://mirror.xyz/undevy.eth/YOn0GzSp_B-vgW7iQ0nvB1bsS92Cu-xlPMOIxgIw-mA"
+      }
+    ],
+    "contact": {
+      "email": "foxous@proton.me",
+      "website": "https://foxous.design",
+      "linkedin": "https://www.linkedin.com/in/undevy/",
+      "location": "Tbilisi, Georgia (GMT+4)",
+      "work_type": "Fully Remote Only",
+      "target_comp": "$6,000+/month",
+      "start_date": "IMMEDIATE"
+    }
+  }
+}
