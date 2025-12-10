@@ -51,6 +51,7 @@ portfolio-project.code-workspace
 
 # But keep the directory structure
 !public/images/.gitkeep
+!public/images/favicons/
 
 # scripts
 sync-images-down.sh
