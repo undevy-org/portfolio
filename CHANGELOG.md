@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.6.0](https://github.com/undevy-org/portfolio/compare/v6.5.20...v6.6.0) (2025-12-10)
+
+
+### Added
+
+* link RoleDetail to filtered CaseList, fix freeze bug ([c132adc](https://github.com/undevy-org/portfolio/commit/c132adce8572f40218e9cc7ebfb5e7d590a515bb))
+
 ### [6.5.19](https://github.com/undevy-org/portfolio/compare/v6.5.18...v6.5.19) (2025-12-10)
 
 
