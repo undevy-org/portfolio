@@ -65,7 +65,9 @@
     "glob": "^10.4.5",
     "inflight": "npm:lru-cache@10.0.0",
     "zustand": "5.0.0",
-    "@next/env": "15.4.7"
+    "@next/env": "15.4.7",
+    "@next/swc-linux-x64-gnu": "15.4.7",
+    "@next/swc-linux-x64-musl": "15.4.7"
   },
   "comments": {
     "next": "HYBRID FIX: Core next@15.4.8 (Secure). Ecosystem @next/env|swc@15.4.7 (Available). 15.4.8/15.5.7 deps are missing in registry."
