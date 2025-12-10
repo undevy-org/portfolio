@@ -26,7 +26,7 @@
     "@reown/appkit-adapter-wagmi": "^1.7.18",
     "@tanstack/react-query": "^5.84.1",
     "lucide-react": "^0.528.0",
-    "next": "15.5.3",
+    "next": "15.4.8",
     "qr": "^0.4.2",
     "react": "19.1.1",
     "react-dom": "19.1.1",
@@ -57,24 +57,22 @@
     "typescript": "5.9.3",
     "webpack-bundle-analyzer": "4.10.2"
   },
-  "overrides": {
-    "glob": "^10.4.5",
-    "inflight": "npm:lru-cache@10.0.0",
-    "zustand": "5.0.0"
-  },
-  "resolutions": {
-    "zustand": "5.0.0"
-  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
+  "overrides": {
+    "glob": "^10.4.5",
+    "inflight": "npm:lru-cache@10.0.0",
+    "zustand": "5.0.0",
+    "@next/env": "15.4.7"
+  },
   "comments": {
-    "next": "Locked at 15.5.3 due to CVE-2025-55182. React@19.1.1 contains the fix. Will upgrade when 15.5.8+ released (15.5.7 had npm registry sync issues)"
+    "next": "HYBRID FIX: Core next@15.4.8 (Secure). Ecosystem @next/env|swc@15.4.7 (Available). 15.4.8/15.5.7 deps are missing in registry."
   },
   "_comment": "Trigger CI build to validate staging workflow fix",
   "optionalDependencies": {
-    "@next/swc-linux-x64-gnu": "15.5.3",
-    "@next/swc-linux-x64-musl": "15.5.3"
+    "@next/swc-linux-x64-gnu": "15.4.7",
+    "@next/swc-linux-x64-musl": "15.4.7"
   }
 }
