@@ -183,6 +183,19 @@ jobs:
               --max-memory-restart="200M" \
               --env production
             
+            # Sync favicons to static-assets (since Nginx serves from there)
+            echo "🖼️ Syncing favicons to static-assets..."
+            STATIC_FAVICONS="$HOME/static-assets/images/favicons"
+            mkdir -p "$STATIC_FAVICONS"
+            # Copy contents of favicons from release to static-assets
+            # careful not to use public/images/projects which is huge
+            if [ -d "$STAGING_PATH/public/images/favicons" ]; then
+                cp -r "$STAGING_PATH/public/images/favicons/." "$STATIC_FAVICONS/"
+                echo "✅ Favicons synced to $STATIC_FAVICONS"
+            else
+                echo "⚠️ WARNING: Favicons not found in release at $STAGING_PATH/public/images/favicons"
+            fi
+            
             # Show application status
             echo "📊 Staging application status:"
             pm2 list | grep "staging-portfolio" || true
